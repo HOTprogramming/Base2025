@@ -6,9 +6,29 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Subsystems.Drivetrain.Drive;
+import frc.robot.Subsystems.Drivetrain.DriveKraken;
+import frc.robot.Subsystems.Drivetrain.DriveSim;
 
 public class RobotContainer {
+  public Drive drivetrain;
+  
+  private final CommandXboxController driver = new CommandXboxController(0);
+  private final CommandXboxController operator = new CommandXboxController(1);
+
   public RobotContainer() {
+    switch (Constants.getRobot()) {
+      case COMPBOT -> {
+        this.drivetrain = new Drive(new DriveKraken());
+      }
+      case DEVBOT -> {}
+      case SIMBOT -> {
+        this.drivetrain = new Drive(new DriveSim());
+      }
+    }
+
+
     configureBindings();
   }
 
