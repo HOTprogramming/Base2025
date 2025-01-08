@@ -1,18 +1,22 @@
-package frc.robot.Subsystems.Drivetrain;
+package frc.robot.subsystems.Drivetrain;
 
 import static edu.wpi.first.units.Units.Volts;
-import static frc.robot.Subsystems.Drivetrain.DriveConstants.*;
+import static frc.robot.subsystems.Drivetrain.DriveConstants.*;
 
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.swerve.SwerveDrivetrain;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix6.swerve.*;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -22,12 +26,15 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.subsystems.Drivetrain.DriveIO.DriveIOdata;
+
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 
 
 
-public class DriveKraken extends SwerveDrivetrain implements DriveIO {
+public class DriveKraken extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> implements DriveIO {
 
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
@@ -35,7 +42,7 @@ public class DriveKraken extends SwerveDrivetrain implements DriveIO {
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
     private final Rotation2d RedAlliancePerspectiveRotation = Rotation2d.fromDegrees(180);
 
-    
+    private Pigeon2 m_Pigeon2;
 
 
     private SwerveDriveState currentState;
@@ -46,23 +53,27 @@ public class DriveKraken extends SwerveDrivetrain implements DriveIO {
 
     public DriveKraken() {
         // drivetrain constants
-        super(DriveConfig.DRIVETRAIN(), 
+        
+        super(TalonFX::new, TalonFX::new, CANcoder::new,
+        DriveConfig.DRIVETRAIN(), 
         DriveConfig.FRONT_LEFT(), 
         DriveConfig.FRONT_RIGHT(), 
         DriveConfig.BACK_LEFT(), 
         DriveConfig.BACK_RIGHT());
 
-        for (int i = 0; i < ModuleCount; i++) {
-            Modules[i].getDriveMotor().getConfigurator().apply(DriveConstants.SWERVE_DRIVE_GAINS, 1.0);
-            Modules[i].getSteerMotor().getConfigurator().apply(DriveConstants.SWERVE_STEER_GAINS, 1.0);
+        m_Pigeon2 = getPigeon2();
 
-            // apply all types of current limits because 2024 ptsd :)
-            Modules[i].getDriveMotor().getConfigurator().apply(DriveConstants.DRIVE_CURRENT_LIMITS, 1.0);
-            Modules[i].getSteerMotor().getConfigurator().apply(DriveConstants.AZIMUTH_CURRENT_LIMITS, 1.0);
+        // for (int i = 0; i < 4; i++) {
+        //     m_modules[i].getDriveMotor().getConfigurator().apply(DriveConstants.SWERVE_DRIVE_GAINS, 1.0);
+        //     m_modules[i].getSteerMotor().getConfigurator().apply(DriveConstants.SWERVE_STEER_GAINS, 1.0);
 
-            Modules[i].getDriveMotor().getConfigurator().apply(DriveConstants.DRIVE_TORQUE_CONFIGS, 1.0);
-            Modules[i].getSteerMotor().getConfigurator().apply(DriveConstants.AZIMUTH_TORQUE_CONFIGS, 1.0);
-        }
+        //     // apply all types of current limits because 2024 ptsd :)
+        //     m_modules[i].getDriveMotor().getConfigurator().apply(DriveConstants.DRIVE_CURRENT_LIMITS, 1.0);
+        //     m_modules[i].getSteerMotor().getConfigurator().apply(DriveConstants.AZIMUTH_CURRENT_LIMITS, 1.0);
+
+        //     m_modules[i].getDriveMotor().getConfigurator().apply(DriveConstants.DRIVE_TORQUE_CONFIGS, 1.0);
+        //     m_modules[i].getSteerMotor().getConfigurator().apply(DriveConstants.AZIMUTH_TORQUE_CONFIGS, 1.0);
+        // }
 
         this.iOdata.m_moduleLocations = getModuleLocations();
     }
@@ -103,6 +114,6 @@ public class DriveKraken extends SwerveDrivetrain implements DriveIO {
 
     @Override
     public void resetPidgeon() {
-        m_pigeon2.setYaw(0);
+        m_Pigeon2.setYaw(0);
     }
 }

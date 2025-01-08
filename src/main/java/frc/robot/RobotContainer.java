@@ -7,13 +7,13 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Subsystems.Drivetrain.Drive;
-import frc.robot.Subsystems.Drivetrain.DriveKraken;
-import frc.robot.Subsystems.Drivetrain.DriveSim;
+import frc.robot.subsystems.Drivetrain.Drive;
+import frc.robot.subsystems.Drivetrain.DriveKraken;
+import frc.robot.subsystems.Drivetrain.DriveSim;
 
 public class RobotContainer {
   public Drive drivetrain;
-  
+
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
 
