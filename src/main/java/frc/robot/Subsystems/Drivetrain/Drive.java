@@ -11,20 +11,13 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Subsystems.Drivetrain.DriveIO.DriveIOdata;
 import com.ctre.phoenix6.swerve.*;
 
-
-
-
-import java.util.List;
-
-import javax.swing.text.AbstractDocument.BranchElement;
-
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 
@@ -43,26 +36,14 @@ public class Drive extends SubsystemBase {
 
     private PIDConstants pidConstantsTranslation = new PIDConstants(10, 0, 0);
     private PIDConstants pidConstantsTheta = new PIDConstants (10, 0, 0); 
-    private HolonomicPathFollowerConfig holonomicPathFollowerConfig;
 
     private PIDController thetaController = new PIDController(10, 0, 0);
 
-   
-
-
-    private enum DriveMode {
-        JOYSTICK_NORMAL,
-        JOYSTICK_AUTOHEADING,
-        AUTON_PATHPLANNER,
-        AUTON_STATE
-    }
-
-    private DriveMode driveMode;
-
     private final SwerveRequest.SwerveDriveBrake BRAKE = new SwerveRequest.SwerveDriveBrake();
-    private static final SwerveRequest.FieldCentric FIELD_CENTRIC = new SwerveRequest.FieldCentric();
-     private static final SwerveRequest.RobotCentric ROBOT_CENTRIC = new SwerveRequest.RobotCentric();
-    private final SwerveRequest.ApplyChassisSpeeds AUTON_CHASSIS_SPEEDS = new SwerveRequest.ApplyChassisSpeeds();
+    private final SwerveRequest.FieldCentric FIELD_CENTRIC = new SwerveRequest.FieldCentric();
+    private final SwerveRequest.RobotCentric ROBOT_CENTRIC = new SwerveRequest.RobotCentric();
+    private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
+
 
 
     public Drive(DriveIO driveIO) { 
@@ -76,45 +57,16 @@ public class Drive extends SubsystemBase {
         speedEntry = driveTab.add("Speed", 0.0).getEntry();
         poseEntry = driveTab.add("Pose", new Double[] {0.0, 0.0, 0.0}).getEntry();
 
-        driveMode = DriveMode.JOYSTICK_NORMAL;
-
         double driveBaseRadius = 0;
         for (var moduleLocation : this.iOdata.m_moduleLocations) {
             driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
         }
 
-        holonomicPathFollowerConfig = new HolonomicPathFollowerConfig(
-            pidConstantsTranslation,
-            pidConstantsTheta,
-            DriveConstants.MAX_VELOCITY_METERS,
-            driveBaseRadius,
-            new ReplanningConfig()
-            );
-
+        
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
 
         configurePathPlanner();
-
-        List<Translation2d> waypoints = PathPlannerPath.bezierFromPoses(List.of(
-            new Pose2d(5.56, 7.4, Rotation2d.fromDegrees(0)),
-            new Pose2d(8.1, 7.2, Rotation2d.fromDegrees(0)),
-            new Pose2d(6.65, 4.6, Rotation2d.fromRadians(4.4))
-        ));
-
-
-        PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // The constraints for this path.
-        // PathConstraints constraints = PathConstraints.unlimitedConstraints(12.0); // You can also use unlimited constraints, only limited by motor torque and nominal battery voltage
-
-        // Create the path using the waypoints created above
-        ringPath = new PathPlannerPath(
-                waypoints,
-                constraints,
-                new GoalEndState(4.0, Rotation2d.fromRadians(0.0)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-        );
-
-        // Prevent the path from being flipped if the coordinates are already correct
-        ringPath.preventFlipping = true;
     }
 
     public void teleopDrive(double driveX, double driveY, double driveTheta)  {
@@ -179,10 +131,10 @@ public class Drive extends SubsystemBase {
     @Override
     public void periodic() {
         this.iOdata = driveIO.update();
-        if (this.iOdata.state.speeds != null) {
+        if (this.iOdata.state.Speeds != null) {
             speedEntry.setDouble(Math.hypot(
-                this.iOdata.state.speeds.vxMetersPerSecond,
-                this.iOdata.state.speeds.vyMetersPerSecond));
+                this.iOdata.state.Speeds.vxMetersPerSecond,
+                this.iOdata.state.Speeds.vyMetersPerSecond));
         }
         if (this.iOdata.state.Pose != null) {
             poseEntry.setDoubleArray(new Double[]{
@@ -194,10 +146,6 @@ public class Drive extends SubsystemBase {
 
     }
 
-    public Command regenOTF() {
-        return runOnce(() -> ringPath = ringPath.replan(this.iOdata.state.Pose, this.iOdata.state.speeds));
-    }
-
     public Command pathOTF() {
         return AutoBuilder.followPath(ringPath);
     }
@@ -207,19 +155,32 @@ public class Drive extends SubsystemBase {
     }
 
     private void configurePathPlanner() {
-        double driveBaseRadius = 0;
-        for (var moduleLocation : this.iOdata.m_moduleLocations) {
-            driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
+        try {
+            var config = RobotConfig.fromGUISettings();
+            AutoBuilder.configure(
+                () -> this.iOdata.state.Pose,   // Supplier of current robot pose
+                this::seedPose,         // Consumer for seeding pose against auto
+                () -> this.iOdata.state.Speeds, // Supplier of current robot speeds
+                // Consumer of ChassisSpeeds and feedforwards to drive the robot
+                (speeds, feedforwards) -> driveIO.setSwerveRequest(
+                    m_pathApplyRobotSpeeds.withSpeeds(speeds)
+                        .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
+                ),
+                new PPHolonomicDriveController(
+                    // PID constants for translation
+                    new PIDConstants(10, 0, 0),
+                    // PID constants for rotation
+                    new PIDConstants(7, 0, 0)
+                ),
+                config,
+                // Assume the path needs to be flipped for Red vs Blue, this is normally the case
+                () -> false,
+                this // Subsystem for requirements
+            );
+        } catch (Exception ex) {
+            DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
         }
-
-        AutoBuilder.configureHolonomic(
-            () -> this.iOdata.state.Pose, // Supplier of current robot pose
-            (Pose2d location) -> {this.driveIO.seedFieldRelative(location);},  // Consumer for seeding pose against auto
-            () -> this.iOdata.state.speeds,
-            (speeds) -> driveIO.setSwerveRequest(AUTON_CHASSIS_SPEEDS.withSpeeds(speeds)), // Consumer of ChassisSpeeds to drive the robot
-            holonomicPathFollowerConfig,
-            () -> false, // Supplier to flip the path, not needed without cameras
-            this); // Subsystem
     }
 
     public Command seedPose(Pose2d seedling){

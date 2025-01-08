@@ -1,11 +1,20 @@
 package frc.robot.Subsystems.Drivetrain;
 
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 
+import static edu.wpi.first.units.Units.*;
+
+import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.*;
+import com.ctre.phoenix6.hardware.*;
+import com.ctre.phoenix6.signals.*;
+import com.ctre.phoenix6.swerve.*;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
+
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import java.lang.Math;
+import edu.wpi.first.units.measure.*;
 
 
 import frc.robot.Constants;
@@ -16,13 +25,13 @@ public class DriveConstants {
         .withStatorCurrentLimit(80)
         .withStatorCurrentLimitEnable(true)
         .withSupplyCurrentLimit(90)
-        .withSupplyCurrentLimitEnable(true)
+        .withSupplyCurrentLimitEnable(true);
 
     static CurrentLimitsConfigs AZIMUTH_CURRENT_LIMITS = new CurrentLimitsConfigs()
         .withStatorCurrentLimit(50)
         .withStatorCurrentLimitEnable(true)
         .withSupplyCurrentLimit(40)
-        .withSupplyCurrentLimitEnable(true)
+        .withSupplyCurrentLimitEnable(true);
 
     static TorqueCurrentConfigs DRIVE_TORQUE_CONFIGS = new TorqueCurrentConfigs()
         .withPeakForwardTorqueCurrent(65)
@@ -41,11 +50,11 @@ public class DriveConstants {
 
     // WCS Docs X3 11 https://docs.wcproducts.com/wcp-swervex/general-info/ratio-options 
     // SWERVE BUILDER
-    static Slot0Configs SWERVE_STEER_GAINS = new Slot0Configs()
+    static Slot0Configs STEER_GAINS = new Slot0Configs()
     .withKP(100).withKI(0).withKD(.2) // 400, 0, 8 , 0 ,1.5, 0
     .withKS(0).withKV(1.5).withKA(0);
 
-    static Slot0Configs SWERVE_DRIVE_GAINS = new Slot0Configs()
+    static Slot0Configs DRIVE_GAINS = new Slot0Configs()
     .withKP(3).withKI(0).withKD(0)
     .withKS(0).withKV(0).withKA(0);
     
@@ -85,34 +94,33 @@ public class DriveConstants {
 
     static SwerveDrivetrainConstants DRIVETRAIN_CONSTANTS = new SwerveDrivetrainConstants()
         .withPigeon2Id(PIDGEON_CAN)
-        .withCANbusName(CANBUS_NAME);
+        .withCANBusName(CANBUS_NAME);
 
     static SwerveModuleConstantsFactory ConstantCreator = new SwerveModuleConstantsFactory()
         .withDriveMotorGearRatio(kDriveGearRatio)
         .withSteerMotorGearRatio(kSteerGearRatio)
         .withWheelRadius(kWheelRadiusInches)
         .withSlipCurrent(WHEEL_SLIP_CURRENT)
-        .withSteerMotorGains(SWERVE_STEER_GAINS)
-        .withDriveMotorGains(SWERVE_DRIVE_GAINS)
+        .withSteerMotorGains(STEER_GAINS)
+        .withDriveMotorGains(DRIVE_GAINS)
         .withSteerMotorClosedLoopOutput(STEER_CLOSED_LOOP_OUTPUT_TYPE)
         .withDriveMotorClosedLoopOutput(DRIVE_CLOSED_LOOP_OUTPUT_TYPE)
-        .withSpeedAt12VoltsMps(FREE_SPEED_12V)
+        .withSpeedAt12Volts(FREE_SPEED_12V)
         .withSteerInertia(kSteerInertia)
         .withDriveInertia(kDriveInertia)
         .withSteerFrictionVoltage(kSteerFrictionVoltage)
         .withDriveFrictionVoltage(kDriveFrictionVoltage)
         .withFeedbackSource(SteerFeedbackType.FusedCANcoder)
-        .withCouplingGearRatio(kCoupleRatio)
-        .withSteerMotorInverted(kSteerMotorReversed);
-
+        .withCouplingGearRatio(kCoupleRatio);
 
                 
     
     // offsets in radians
 
     // Front Left
-    static boolean SWERVE_FRONT_LEFT_DRIVE_UNINVERT = !true;
-    static boolean SWERVE_FRONT_LEFT_STEER_UNINVERT = false;
+    static boolean FRONT_LEFT_DRIVE_INVERT = false;
+    static boolean FRONT_LEFT_STEER_INVERT = false;
+    static boolean FRONT_LEFT_ENCODDER_INVERT = false;
     static int kFrontLeftDriveMotorId = 1;
     static int kFrontLeftSteerMotorId = 2;
     static int kFrontLeftEncoderId = 43;
@@ -122,8 +130,10 @@ public class DriveConstants {
     static double kFrontLeftYPosInches = 10.125;
 
     // Front Right
-    static boolean SWERVE_FRONT_RIGHT_DRIVE_UNINVERT = !true;
-    static boolean SWERVE_FRONT_RIGHT_STEER_UNINVERT = true;
+    static boolean FRONT_RIGHT_DRIVE_INVERT = false;
+    static boolean FRONT_RIGHT_STEER_INVERT = false;
+    static boolean FRONT_RIGHT_ENCODDER_INVERT = false;
+
     static int kFrontRightDriveMotorId = 3;
     static int kFrontRightSteerMotorId = 4;
     static int kFrontRightEncoderId = 41;
@@ -133,8 +143,10 @@ public class DriveConstants {
     static double kFrontRightYPosInches = -10.125;
 
     // Back Left
-    static boolean SWERVE_BACK_LEFT_DRIVE_UNINVERT = !false;
-    static boolean SWERVE_BACK_LEFT_STEER_UNINVERT = false;
+    static boolean BACK_LEFT_DRIVE_INVERT = false;
+    static boolean BACK_LEFT_STEER_INVERT = false;
+    static boolean BACK_LEFT_ENCODDER_INVERT = false;
+
     static int kBackLeftDriveMotorId = 5;
     static int kBackLeftSteerMotorId = 6;
     static int kBackLeftEncoderId = 42;
@@ -145,8 +157,10 @@ public class DriveConstants {
 
 
     // Back Right
-    static boolean SWERVE_BACK_RIGHT_DRIVE_UNINVERT = !true;
-    static boolean SWERVE_BACK_RIGHT_STEER_UNINVERT = false;
+    static boolean BACK_RIGHT_DRIVE_INVERT = false;
+    static boolean BACK_RIGHT_STEER_INVERT = false;
+    static boolean BACK_RIGHT_ENCODDER_INVERT = false;
+
     static int kBackRightDriveMotorId = 7;
     static int kBackRightSteerMotorId = 8;
     static int kBackRightEncoderId = 40;
@@ -156,17 +170,24 @@ public class DriveConstants {
     static double kBackRightYPosInches = -10.125;
 
     static SwerveModuleConstants FRONT_LEFT_MODULE_CONSTANTS = ConstantCreator.createModuleConstants(
-    kFrontLeftSteerMotorId, kFrontLeftDriveMotorId, kFrontLeftEncoderId, kFrontLeftEncoderOffset / Math.PI, Units.inchesToMeters(kFrontLeftXPosInches), Units.inchesToMeters(kFrontLeftYPosInches), !SWERVE_FRONT_LEFT_DRIVE_UNINVERT)
-    .withSteerMotorInverted(!SWERVE_FRONT_LEFT_STEER_UNINVERT);
+    kFrontLeftSteerMotorId, kFrontLeftDriveMotorId, kFrontLeftEncoderId, 
+    kFrontLeftEncoderOffset / Math.PI, Units.inchesToMeters(kFrontLeftXPosInches), 
+    Units.inchesToMeters(kFrontLeftYPosInches), FRONT_LEFT_DRIVE_INVERT, FRONT_LEFT_STEER_INVERT, FRONT_LEFT_ENCODDER_INVERT);
+
     static SwerveModuleConstants FRONT_RIGHT_MODULE_CONSTANTS = ConstantCreator.createModuleConstants(
-    kFrontRightSteerMotorId, kFrontRightDriveMotorId, kFrontRightEncoderId, kFrontRightEncoderOffset / Math.PI, Units.inchesToMeters(kFrontRightXPosInches), Units.inchesToMeters(kFrontRightYPosInches), !SWERVE_FRONT_RIGHT_DRIVE_UNINVERT)
-    .withSteerMotorInverted(!SWERVE_FRONT_RIGHT_STEER_UNINVERT);
+    kFrontLeftSteerMotorId, kFrontLeftDriveMotorId, kFrontLeftEncoderId, 
+    kFrontLeftEncoderOffset / Math.PI, Units.inchesToMeters(kFrontLeftXPosInches), 
+    Units.inchesToMeters(kFrontLeftYPosInches), FRONT_RIGHT_DRIVE_INVERT, FRONT_RIGHT_STEER_INVERT, FRONT_RIGHT_ENCODDER_INVERT);
+
     static SwerveModuleConstants BACK_LEFT_MODULE_CONSTANTS = ConstantCreator.createModuleConstants(
-    kBackLeftSteerMotorId, kBackLeftDriveMotorId, kBackLeftEncoderId, kBackLeftEncoderOffset / Math.PI, Units.inchesToMeters(kBackLeftXPosInches), Units.inchesToMeters(kBackLeftYPosInches), !SWERVE_BACK_LEFT_DRIVE_UNINVERT)
-    .withSteerMotorInverted(!SWERVE_BACK_LEFT_STEER_UNINVERT);
+    kFrontLeftSteerMotorId, kFrontLeftDriveMotorId, kFrontLeftEncoderId, 
+    kFrontLeftEncoderOffset / Math.PI, Units.inchesToMeters(kFrontLeftXPosInches), 
+    Units.inchesToMeters(kFrontLeftYPosInches), BACK_LEFT_DRIVE_INVERT, BACK_LEFT_STEER_INVERT, BACK_LEFT_ENCODDER_INVERT);
+
     static SwerveModuleConstants BACK_RIGHT_MODULE_CONSTANTS = ConstantCreator.createModuleConstants(
-    kBackRightSteerMotorId, kBackRightDriveMotorId, kBackRightEncoderId, kBackRightEncoderOffset / Math.PI, Units.inchesToMeters(kBackRightXPosInches), Units.inchesToMeters(kBackRightYPosInches), !SWERVE_BACK_RIGHT_DRIVE_UNINVERT)
-    .withSteerMotorInverted(!SWERVE_BACK_RIGHT_STEER_UNINVERT);
+    kFrontLeftSteerMotorId, kFrontLeftDriveMotorId, kFrontLeftEncoderId, 
+    kFrontLeftEncoderOffset / Math.PI, Units.inchesToMeters(kFrontLeftXPosInches), 
+    Units.inchesToMeters(kFrontLeftYPosInches), BACK_RIGHT_DRIVE_INVERT, BACK_RIGHT_STEER_INVERT, BACK_RIGHT_ENCODDER_INVERT);
 
     public static final DriveConfig DriveConfig =
         switch (Constants.getRobot()) {
