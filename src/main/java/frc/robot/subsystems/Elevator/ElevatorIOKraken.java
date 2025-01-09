@@ -30,10 +30,7 @@ import edu.wpi.first.units.measure.Temperature;
 
 public class ElevatorIOKraken extends ElevatorIO {
 
-    // Member variables as per the original class
-    TalonFX elevator;
     MotionMagicVoltage elevatorMagic;
-    CANcoder cancoder;
 
     private final StatusSignal<Boolean> f_fusedSensorOutOfSync;
     private final StatusSignal<Boolean> sf_fusedSensorOutOfSync;
@@ -75,9 +72,9 @@ public class ElevatorIOKraken extends ElevatorIO {
     CANcoderConfiguration cancoderConfigElevator = new CANcoderConfiguration();
     cancoderConfigElevator.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
     cancoderConfigElevator.MagnetSensor.MagnetOffset = 0.2478;
-    cancoder.getConfigurator().apply(cancoderConfigElevator);
+    elevatorEncoder.getConfigurator().apply(cancoderConfigElevator);
 
-    cfg.Feedback.FeedbackRemoteSensorID = cancoder.getDeviceID();
+    cfg.Feedback.FeedbackRemoteSensorID = elevatorEncoder.getDeviceID();
     cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
     cfg.Feedback.SensorToMechanismRatio = 1; //changes what the cancoder and fx encoder ratio is
     cfg.Feedback.RotorToSensorRatio = 1; //12.8;
@@ -105,8 +102,8 @@ public class ElevatorIOKraken extends ElevatorIO {
     elevatorPosition = elevator.getPosition();
     elevatorVelocity = elevator.getVelocity();
     elevatorRotorPos = elevator.getRotorPosition();
-    cancoderPosition = cancoder.getPosition();
-    cancoderVelocity = cancoder.getVelocity();
+    cancoderPosition = elevatorEncoder.getPosition();
+    cancoderVelocity = elevatorEncoder.getVelocity();
 
     SupplyCurrent = elevator.getSupplyCurrent();
     TorqueCurrent = elevator.getTorqueCurrent();
