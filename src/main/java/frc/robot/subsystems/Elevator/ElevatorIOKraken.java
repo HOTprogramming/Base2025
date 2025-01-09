@@ -27,34 +27,32 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 
-public class ElevatorIOKraken  implements ElevatorIO {
 
-TalonFX elevator;
+public class ElevatorIOKraken extends ElevatorIO {
 
-MotionMagicVoltage elevatorMagic;
+    // Member variables as per the original class
+    TalonFX elevator;
+    MotionMagicVoltage elevatorMagic;
+    CANcoder cancoder;
 
-CANcoder cancoder;
+    private final StatusSignal<Boolean> f_fusedSensorOutOfSync;
+    private final StatusSignal<Boolean> sf_fusedSensorOutOfSync;
+    private final StatusSignal<Boolean> f_remoteSensorInvalid;
+    private final StatusSignal<Boolean> sf_remoteSensorInvalid;
 
-private final StatusSignal<Boolean> f_fusedSensorOutOfSync;
-private final StatusSignal<Boolean> sf_fusedSensorOutOfSync;
-private final StatusSignal<Boolean> f_remoteSensorInvalid;
-private final StatusSignal<Boolean> sf_remoteSensorInvalid;
+    private final StatusSignal<Angle> elevatorPosition;
+    private final StatusSignal<AngularVelocity> elevatorVelocity;
+    private final StatusSignal<Angle> elevatorRotorPos;
+    private final StatusSignal<Angle> cancoderPosition;
+    private final StatusSignal<AngularVelocity> cancoderVelocity;
 
-private final StatusSignal<Angle> elevatorPosition;
-private final StatusSignal<AngularVelocity> elevatorVelocity;
-private final StatusSignal<Angle> elevatorRotorPos;
-private final StatusSignal<Angle> cancoderPosition;
-private final StatusSignal<AngularVelocity> cancoderVelocity;
+    private final StatusSignal<Current> SupplyCurrent;
+    private final StatusSignal<Current> TorqueCurrent;
+    private final StatusSignal<Temperature> TempCelsius;
 
-private final StatusSignal<Current> SupplyCurrent;
-private final StatusSignal<Current> TorqueCurrent;
-private final StatusSignal<Temperature> TempCelsius;
+    public ElevatorIOKraken() {
 
-
-
-  public ElevatorIOKraken() {
-    elevator = new TalonFX(ElevatorConstants.elevatorMotorID, "CamBot");
-    cancoder = new CANcoder(ElevatorConstants.elevatorEncoderID, "CamBot");
+    super(ElevatorConstants.elevatorMotorID, "CamBot"); // Pass ID and CAN bus to abstract class
       
     elevatorMagic = new MotionMagicVoltage(0);
     TalonFXConfiguration cfg = new TalonFXConfiguration();
@@ -129,11 +127,11 @@ private final StatusSignal<Temperature> TempCelsius;
         TorqueCurrent,
         TempCelsius
       );
-  }
+    }
 
-  @Override
-  public void updateStats(ElevatorIOStats stats) {
-    stats.elevatorMotorConnected =
+    @Override
+    public void updateStats(ElevatorIOStats stats) {
+        stats.elevatorMotorConnected =
         BaseStatusSignal.refreshAll(
           f_fusedSensorOutOfSync,
           sf_fusedSensorOutOfSync,
@@ -157,11 +155,10 @@ private final StatusSignal<Temperature> TempCelsius;
     stats.SupplyCurrentAmps = SupplyCurrent.getValueAsDouble();
     stats.TorqueCurrentAmps = TorqueCurrent.getValueAsDouble();
     stats.TempCelsius = TempCelsius.getValueAsDouble();
-  }
+    }
 
-  @Override
-  public void setElevatorMotorControl(double commandedPosition){
-  elevator.setControl(elevatorMagic.withPosition(commandedPosition).withSlot(0));
-  }
-
+    @Override
+    public void setElevatorMotorControl(double commandedPosition) {
+      elevatorMotor.setControl(elevatorMagic.withPosition(commandedPosition).withSlot(0));
+    }
 }

@@ -22,9 +22,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.Constants;
 
-public class ElevatorIOSim implements ElevatorIO {
 
-    public TalonFX elevatorMotor;
+public class ElevatorIOSim extends ElevatorIO {
+
     public CANcoder elevatorEncoder;
 
     public TalonFXSimState elevatorMotorSimState;
@@ -32,29 +32,28 @@ public class ElevatorIOSim implements ElevatorIO {
 
     public ElevatorSim elevatorSim;
 
+    // Additional simulation variables
     private final Mechanism2d m_mech2d = new Mechanism2d(5, 5);
     private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Elevator Root", 2.5, 0);
-
     private final MechanismLigament2d m_elevatorMech2d;
 
-    // Standard classes for controlling our elevator
     private final ProfiledPIDController m_controller =
-        new ProfiledPIDController(
-            15,
-            0,
-            0,
-            new TrapezoidProfile.Constraints(2.45, 2.45));
-    ElevatorFeedforward m_feedforward =
-        new ElevatorFeedforward(
-            0,
-            .5,
-            0,
-            0);
+            new ProfiledPIDController(
+                15,
+                0,
+                0,
+                new TrapezoidProfile.Constraints(2.45, 2.45));
+        ElevatorFeedforward m_feedforward =
+            new ElevatorFeedforward(
+                0,
+                .5,
+                0,
+                0);
 
-    public ElevatorIOSim(){
+    public ElevatorIOSim() {
 
-
-        elevatorMotor = new TalonFX(ElevatorConstants.elevatorMotorID, "CamBot");
+        super(ElevatorConstants.elevatorMotorID, "SimulatedBus");
+   
         elevatorEncoder = new CANcoder(ElevatorConstants.elevatorEncoderID, "CamBot");
         
         elevatorMotorSimState = elevatorMotor.getSimState();
@@ -75,14 +74,20 @@ public class ElevatorIOSim implements ElevatorIO {
             new MechanismLigament2d("Elevator", elevatorSim.getPositionMeters(), 90, 100, new Color8Bit(235, 137, 52)));
 
         SmartDashboard.putData("Elevator Sim", m_mech2d);
+    }
+
+    @Override
+    public void updateStats(ElevatorIOStats stats) {
 
     }
 
-    public void setElevatorMotorControl(double power){
+    @Override
+    public void setElevatorMotorControl(double power) {
         elevatorMotor.set(power);
     }
 
-    public void reachGoal(double goal){
+    @Override
+    public void reachGoal(double goal) {
         m_controller.setGoal(goal);
 
         // With the setpoint value we run PID control like normal
@@ -91,8 +96,8 @@ public class ElevatorIOSim implements ElevatorIO {
         elevatorMotor.setVoltage(pidOutput + feedforwardOutput);
     }
 
-
-    public void simStuff(){
+    @Override
+    public void simStuff() {
         elevatorMotorSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
         elevatorEncoderSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
 
