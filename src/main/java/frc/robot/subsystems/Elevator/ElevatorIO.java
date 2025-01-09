@@ -22,6 +22,8 @@ public interface ElevatorIO {
                 public double TempCelsius = 0.0;
               }
 
+        ElevatorIOStats ioStats = new ElevatorIOStats();
+
         /** Update stats */
         default void updateStats(ElevatorIOStats stats) {}
 

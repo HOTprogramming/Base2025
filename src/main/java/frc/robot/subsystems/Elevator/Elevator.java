@@ -14,7 +14,7 @@ import frc.robot.subsystems.Elevator.ElevatorIO.ElevatorIOStats;
 
 public class Elevator extends SubsystemBase {
   private final ElevatorIO io;
-  private final ElevatorIOStats stats = new ElevatorIOStats();
+  private final ElevatorIOStats stats;
   private final ShuffleboardTab elevatorShuffleboard;
 
   /* Shuffleboard entrys */
@@ -50,6 +50,8 @@ public class Elevator extends SubsystemBase {
   public Elevator(ElevatorIO io) {
     this.io = io; 
 
+    this.stats = ElevatorIO.ioStats;
+
     this.elevatorShuffleboard = Shuffleboard.getTab("Elevator");
 
     elevatorVelocity = this.elevatorShuffleboard.add("Elevator RPM", 0.0).getEntry();
@@ -70,20 +72,19 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
+    io.updateStats(stats);
+      
+    UpdateTelemetry();
+  }
 
-  io.setElevatorMotorControl(elevatorCommandedPos);
-
-
-  io.updateStats(stats);
-    
-  UpdateTelemetry();
-
- }
+  public void powerElevator(double power){
+    io.setElevatorMotorControl(power);
+  }
 
   private void UpdateTelemetry() {
     elevatorVelocity.setDouble(stats.elevatorVelocity);
-    elevatorPosition.setDouble(stats.elevatorPosition * 540.0);
-    detectedelevatorPos.setDouble(detectedPos);
+    elevatorPosition.setDouble(stats.elevatorPosition);
+    // detectedelevatorPos.setDouble(detectedPos);
     elevatorSupplyCurrent.setDouble(stats.SupplyCurrentAmps);
     elevatorStatorCurrent.setDouble(stats.TorqueCurrentAmps);
     elevatorTemp.setDouble(stats.TempCelsius);

@@ -40,6 +40,11 @@ public class RobotContainer {
   /* Driver Controller */
   private void configureBindings() {
 
+    m_elevatorSubsystem.setDefaultCommand(
+      (m_elevatorSubsystem.run(() -> {
+        m_elevatorSubsystem.powerElevator(driver.getLeftX());
+      }))
+    );
 
   }
 

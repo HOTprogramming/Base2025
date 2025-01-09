@@ -54,7 +54,7 @@ private final StatusSignal<Temperature> TempCelsius;
 
   public ElevatorIOKraken() {
     elevator = new TalonFX(ElevatorConstants.elevatorMotorID, "CamBot");
-    cancoder = new CANcoder(ElevatorConstants.cancoderID, "CamBot");
+    cancoder = new CANcoder(ElevatorConstants.elevatorEncoderID, "CamBot");
       
     elevatorMagic = new MotionMagicVoltage(0);
     TalonFXConfiguration cfg = new TalonFXConfiguration();
