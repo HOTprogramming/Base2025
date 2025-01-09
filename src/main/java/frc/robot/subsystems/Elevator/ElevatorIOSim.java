@@ -5,8 +5,11 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
+import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
@@ -17,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.robot.Constants;
 
 public class ElevatorIOSim implements ElevatorIO {
 
@@ -28,14 +32,24 @@ public class ElevatorIOSim implements ElevatorIO {
 
     public ElevatorSim elevatorSim;
 
-    public DCMotorSim motorSim;
-
-    double kElevatorEncoderDistPerPulse = 2.0 * Math.PI * Units.inchesToMeters(2.0) / 4096;
-
     private final Mechanism2d m_mech2d = new Mechanism2d(5, 5);
     private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Elevator Root", 2.5, 0);
 
     private final MechanismLigament2d m_elevatorMech2d;
+
+    // Standard classes for controlling our elevator
+    private final ProfiledPIDController m_controller =
+        new ProfiledPIDController(
+            15,
+            0,
+            0,
+            new TrapezoidProfile.Constraints(2.45, 2.45));
+    ElevatorFeedforward m_feedforward =
+        new ElevatorFeedforward(
+            0,
+            .5,
+            0,
+            0);
 
     public ElevatorIOSim(){
 
@@ -45,13 +59,6 @@ public class ElevatorIOSim implements ElevatorIO {
         
         elevatorMotorSimState = elevatorMotor.getSimState();
         elevatorEncoderSimState = elevatorEncoder.getSimState();
-
-        motorSim = new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(
-                DCMotor.getKrakenX60Foc(1),
-                100,
-                100),
-            DCMotor.getKrakenX60Foc(1));
 
         elevatorSim = new ElevatorSim(
             DCMotor.getKrakenX60Foc(1),
@@ -72,21 +79,22 @@ public class ElevatorIOSim implements ElevatorIO {
     }
 
     public void setElevatorMotorControl(double power){
+        elevatorMotor.set(power);
+    }
+
+    public void reachGoal(double goal){
+        m_controller.setGoal(goal);
+
+        // With the setpoint value we run PID control like normal
+        double pidOutput = m_controller.calculate(elevatorSim.getPositionMeters());
+        double feedforwardOutput = m_feedforward.calculate(m_controller.getSetpoint().velocity);
+        elevatorMotor.setVoltage(pidOutput + feedforwardOutput);
+    }
+
+
+    public void simStuff(){
         elevatorMotorSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
         elevatorEncoderSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
-
-        elevatorMotor.set(power);
-
-        ioStats.TempCelsius = elevatorMotorSimState.getMotorVoltage();
-        
-        motorSim.setInputVoltage(elevatorMotorSimState.getMotorVoltage());
-        motorSim.update(.02);
-
-        elevatorMotorSimState.setRawRotorPosition(motorSim.getAngularPositionRotations());
-        elevatorMotorSimState.setRotorVelocity(motorSim.getAngularVelocityRPM());
-
-        // ioStats.elevatorPosition = motorSim.getAngularPositionRotations();
-        // ioStats.elevatorVelocity = motorSim.getAngularVelocityRPM();
 
         elevatorSim.setInputVoltage(elevatorMotorSimState.getMotorVoltage());
 

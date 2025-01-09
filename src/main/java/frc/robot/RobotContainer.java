@@ -6,9 +6,13 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Elevator.ElevatorIOKraken;
 import frc.robot.subsystems.Elevator.ElevatorIOSim;
+import frc.robot.subsystems.Elevator.Elevator.ElevatorState;
 import frc.robot.subsystems.Elevator.ElevatorIO;
 import frc.robot.subsystems.Elevator.Elevator;
 
@@ -20,6 +24,8 @@ public class RobotContainer {
 
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
+
+  FunctionalCommand highCommand;
 
   public RobotContainer() {
     switch (Constants.getRobot()) {
@@ -42,10 +48,54 @@ public class RobotContainer {
 
     m_elevatorSubsystem.setDefaultCommand(
       (m_elevatorSubsystem.run(() -> {
-        m_elevatorSubsystem.powerElevator(driver.getLeftX());
+        m_elevatorSubsystem.setElevatorState(ElevatorState.ZERO);;
       }))
     );
 
+    driver.a().whileTrue(
+      (m_elevatorSubsystem.run(() -> {
+        m_elevatorSubsystem.setElevatorState(ElevatorState.L1);
+      }))
+    );
+
+    driver.b().whileTrue(
+      (m_elevatorSubsystem.run(() -> {
+        m_elevatorSubsystem.setElevatorState(ElevatorState.L2);
+      }))
+    );
+
+    driver.x().whileTrue(
+      (m_elevatorSubsystem.run(() -> {
+        m_elevatorSubsystem.setElevatorState(ElevatorState.L3);
+      }))
+    );
+
+    driver.y().whileTrue(
+      (m_elevatorSubsystem.run(() -> {
+        m_elevatorSubsystem.setElevatorState(ElevatorState.L4);
+      }))
+    );
+
+  }
+
+  public Command getAutonomousCommand() {
+    return new SequentialCommandGroup(
+      (m_elevatorSubsystem.run(() -> {
+        m_elevatorSubsystem.setElevatorState(ElevatorState.L4);
+      })).until(() -> m_elevatorSubsystem.checkInRange(.1)),
+      new WaitCommand(5),
+      (m_elevatorSubsystem.run(() -> {
+        m_elevatorSubsystem.setElevatorState(ElevatorState.L3);
+      })).until(() -> m_elevatorSubsystem.checkInRange(.1)),
+      new WaitCommand(5),
+      (m_elevatorSubsystem.run(() -> {
+        m_elevatorSubsystem.setElevatorState(ElevatorState.L2);
+      })).until(() -> m_elevatorSubsystem.checkInRange(.1)),
+      new WaitCommand(5),
+      (m_elevatorSubsystem.run(() -> {
+        m_elevatorSubsystem.setElevatorState(ElevatorState.L1);
+      }))
+    );
   }
 
 }

@@ -9,12 +9,25 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Elevator.ElevatorIO.ElevatorIOStats;
 
 public class Elevator extends SubsystemBase {
+  public enum ElevatorState{
+    L4,
+    L3,
+    L2,
+    L1,
+    ZERO
+  }
+
+  public FunctionalCommand testCommand;
+
+  public ElevatorState elevatorState;
+
   private final ElevatorIO io;
-  private final ElevatorIOStats stats;
+  public final ElevatorIOStats stats;
   private final ShuffleboardTab elevatorShuffleboard;
 
   /* Shuffleboard entrys */
@@ -50,6 +63,8 @@ public class Elevator extends SubsystemBase {
   public Elevator(ElevatorIO io) {
     this.io = io; 
 
+    this.elevatorState = ElevatorState.ZERO;
+
     this.stats = ElevatorIO.ioStats;
 
     this.elevatorShuffleboard = Shuffleboard.getTab("Elevator");
@@ -67,14 +82,51 @@ public class Elevator extends SubsystemBase {
     sf_fusedSensorOutOfSync = this.elevatorShuffleboard.add("sf_fusedSensorOutOfSync", false).getEntry();
     f_remoteSensorInvalid = this.elevatorShuffleboard.add("f_remoteSensorInvalid", false).getEntry();
     sf_remoteSensorInvalid = this.elevatorShuffleboard.add("sf_remoteSensorInvalid", false).getEntry();
+
+    testCommand = new FunctionalCommand(
+      this::zero,
+      () -> io.reachGoal(1), 
+      interrupted -> this.zero(),
+      () -> this.checkInRange(.1),
+      this);
   }
 
 
   @Override
   public void periodic() {
+
+    
+    if(elevatorState == ElevatorState.ZERO){
+      zero();
+    } else if (elevatorState == ElevatorState.L1){
+      elevatorCommandedPos = .5;
+    } else if (elevatorState == ElevatorState.L2){
+      elevatorCommandedPos = 1;
+    } else if (elevatorState == ElevatorState.L3){
+      elevatorCommandedPos = 1.5;
+    } else if (elevatorState == ElevatorState.L4){
+      elevatorCommandedPos = 2;
+    } else {
+      zero();
+    }
+
+    if(elevatorState != ElevatorState.ZERO || elevatorState == null){
+      io.reachGoal(elevatorCommandedPos);
+    }
+
     io.updateStats(stats);
+
+    SmartDashboard.putNumber("State", elevatorCommandedPos);
       
     UpdateTelemetry();
+  }
+
+  public boolean checkInRange(double deadband){
+    return (stats.elevatorPosition >= elevatorCommandedPos - deadband) && (stats.elevatorPosition <= elevatorCommandedPos + deadband);
+  }
+
+  public void setElevatorState(ElevatorState elevatorState){
+    this.elevatorState = elevatorState;
   }
 
   public void powerElevator(double power){
@@ -98,6 +150,10 @@ public class Elevator extends SubsystemBase {
     sf_remoteSensorInvalid.setBoolean(stats.sf_remoteSensorInvalid);
   }
 
+  public void zero(){
+    io.setElevatorMotorControl(0);
+  }
+
   public Command setPID() {
     return runOnce(() -> {io.setPID(
       this.shuffKP.getDouble(0.0),
@@ -107,6 +163,6 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-
+    io.simStuff();
   }
 }

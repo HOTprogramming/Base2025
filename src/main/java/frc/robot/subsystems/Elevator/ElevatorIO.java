@@ -45,5 +45,9 @@ public interface ElevatorIO {
     
         default void runCharacterization(double input) {
         }
+
+        default void reachGoal(double goal){}
+
+        default void simStuff(){}
        
 }
