@@ -157,7 +157,7 @@ public class Drive extends SubsystemBase {
             var config = RobotConfig.fromGUISettings();
             AutoBuilder.configure(
                 () -> this.iOdata.state.Pose,   // Supplier of current robot pose
-                this::seedPose,         // Consumer for seeding pose against auto
+                this::setPose,         // Consumer for seeding pose against auto
                 () -> this.iOdata.state.Speeds, // Supplier of current robot speeds
                 // Consumer of ChassisSpeeds and feedforwards to drive the robot
                 (speeds, feedforwards) -> driveIO.setSwerveRequest(
@@ -180,8 +180,7 @@ public class Drive extends SubsystemBase {
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
         }
     }
-
-    public Command seedPose(Pose2d seedling){
-        return runOnce(() -> this.driveIO.seedFieldRelative(seedling));
+    private void setPose(Pose2d pose) {
+        this.driveIO.seedFieldRelative(pose);
     }
 }
