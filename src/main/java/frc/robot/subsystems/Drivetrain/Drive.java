@@ -123,8 +123,7 @@ public class Drive extends SubsystemBase {
             .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(),
             Math.toRadians(60*Math.round(rotToReef/60))))
         );        
-        heading = this.iOdata.state.Pose.getRotation();
-        System.out.println(rotToReef);
+        heading = new Rotation2d (Math.toRadians(60*Math.round(rotToReef/60)));
     }
 
 
