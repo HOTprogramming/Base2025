@@ -51,20 +51,19 @@ public class DriveSim extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder>  impl
 
         m_Pigeon2 = getPigeon2();
 
-
-        // for (int i = 0; i < ModuleCount; i++) { // this fixes the jitter in auton, because the sim motors have inertia
-        //     Modules[i].getDriveMotor().getConfigurator().apply(DriveConstants.SWERVE_DRIVE_GAINS, 1.0);
-        //     Modules[i].getSteerMotor().getConfigurator().apply(DriveConstants.SWERVE_STEER_GAINS, 1.0);
-
-        //     // apply all types of current limits because 2024 ptsd :)
-        //     Modules[i].getDriveMotor().getConfigurator().apply(DriveConstants.DRIVE_CURRENT_LIMITS, 1.0);
-        //     Modules[i].getSteerMotor().getConfigurator().apply(DriveConstants.AZIMUTH_CURRENT_LIMITS, 1.0);
-
-        //     Modules[i].getDriveMotor().getConfigurator().apply(DriveConstants.DRIVE_TORQUE_CONFIGS, 1.0);
-        //     Modules[i].getSteerMotor().getConfigurator().apply(DriveConstants.AZIMUTH_TORQUE_CONFIGS, 1.0);
-        // }
-
         this.iOdata.m_moduleLocations = getModuleLocations();
+    }
+
+    public void setCurrentLimits() { // used for setting different current limits for auton/teleop
+        SwerveModule<TalonFX, TalonFX, CANcoder>[] m_modules = getModules();
+        
+        for (int i = 0; i < m_modules.length; i++) {
+            m_modules[i].getDriveMotor().getConfigurator().apply(DriveConstants.driveInitialConfigs.CurrentLimits, 1.0);
+            m_modules[i].getSteerMotor().getConfigurator().apply(DriveConstants.steerInitialConfigs.CurrentLimits, 1.0);
+            // apply these seperatly (not in a TalonFXConfiguration obj) to ensure PID doesn't get overwritten
+            m_modules[i].getDriveMotor().getConfigurator().apply(DriveConstants.driveInitialConfigs.TorqueCurrent, 1.0);
+            m_modules[i].getSteerMotor().getConfigurator().apply(DriveConstants.steerInitialConfigs.TorqueCurrent, 1.0);
+        }
     }
 
     @Override

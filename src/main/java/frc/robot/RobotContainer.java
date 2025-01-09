@@ -4,12 +4,16 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Drivetrain.Drive;
-import frc.robot.subsystems.Drivetrain.DriveKraken;
 import frc.robot.subsystems.Drivetrain.DriveSim;
+import frc.robot.subsystems.Drivetrain.DriveKraken;
 
 public class RobotContainer {
   public Drive drivetrain;
@@ -32,9 +36,94 @@ public class RobotContainer {
     configureBindings();
   }
 
-  private void configureBindings() {}
+  private void configureSimpleBindings() {
+    drivetrain.setDefaultCommand(
+      drivetrain.run(() -> drivetrain.teleopDrive( 
+        Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+        Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+        Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0)
+      )
+    );
+  }
+
+  private void configureBindings() {
+    drivetrain.setDefaultCommand
+      (drivetrain.run(() -> {
+            drivetrain.headingControl(
+              Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0, 
+              Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0);
+          }
+      ));    
+
+      driver.rightBumper().whileTrue
+      (drivetrain.run(() -> {
+        drivetrain.robotCentricTeleopDrive(
+          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+          Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
+        }
+      ));
+
+      driver.axisLessThan(4, -0.15)
+        .or(driver.axisGreaterThan(4, 0.15))
+        .and(driver.rightBumper().negate())
+        .and(driver.leftBumper().negate())
+        .whileTrue
+      (drivetrain.run(() -> {
+        drivetrain.teleopDrive(
+          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+          Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
+        }
+      ));
+
+      driver.povLeft().whileTrue
+      (drivetrain.run(() -> {
+        drivetrain.lockRotation(
+          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+          Rotation2d.fromDegrees(90));
+        }
+      ));
+
+      driver.povRight().whileTrue
+      (drivetrain.run(() -> {
+        drivetrain.lockRotation(
+          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+          Rotation2d.fromDegrees(-90));
+        }
+      ));
+
+      driver.povUp().whileTrue
+      (drivetrain.run(() -> {
+        drivetrain.lockRotation(
+          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+          Rotation2d.fromDegrees(0));
+        }
+      ));
+
+      driver.povDown().whileTrue
+      (drivetrain.run(() -> {
+        drivetrain.lockRotation(
+          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+          Rotation2d.fromDegrees(179.9));
+        }
+      ));
+
+      driver.leftBumper().whileTrue
+      (drivetrain.run(() -> {
+        drivetrain.facePoint(
+          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+          new Pose2d(5, 5, new Rotation2d(0)));
+        }
+      ));
+  }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return new PathPlannerAuto("New Auto");
   }
 }

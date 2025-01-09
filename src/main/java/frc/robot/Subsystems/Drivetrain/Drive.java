@@ -13,7 +13,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Drivetrain.DriveIO.DriveIOdata;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import com.ctre.phoenix6.swerve.*;
+
+
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
@@ -41,7 +48,8 @@ public class Drive extends SubsystemBase {
     private PIDController thetaController = new PIDController(10, 0, 0);
 
     private final SwerveRequest.SwerveDriveBrake BRAKE = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.FieldCentric FIELD_CENTRIC = new SwerveRequest.FieldCentric();
+    private final SwerveRequest.FieldCentric FIELD_CENTRIC = new SwerveRequest.FieldCentric()
+    .withDeadband(5.0 * 0.1).withRotationalDeadband(3.14 * 0.1);
     private final SwerveRequest.RobotCentric ROBOT_CENTRIC = new SwerveRequest.RobotCentric();
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
 
@@ -72,62 +80,54 @@ public class Drive extends SubsystemBase {
 
     public void teleopDrive(double driveX, double driveY, double driveTheta)  {
        driveIO.setSwerveRequest(FIELD_CENTRIC
-            .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConstants.MAX_VELOCITY_METERS)
-            .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConstants.MAX_VELOCITY_METERS)
-            .withRotationalRate((driveTheta <= 0 ? -(driveTheta * driveTheta) : (driveTheta * driveTheta)) * DriveConstants.MAX_ANGULAR_VELOCITY_RADS)
+            .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConstants.kSpeedAt12Volts.in(MetersPerSecond))
+            .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConstants.kSpeedAt12Volts.in(MetersPerSecond))
+            .withRotationalRate((driveTheta <= 0 ? -(driveTheta * driveTheta) : (driveTheta * driveTheta)) * DriveConstants.kMaxAngularVelocity.in(RadiansPerSecond))
         );
 
         heading = this.iOdata.state.Pose.getRotation();
-        // System.out.println("Tele");
     }
 
     public void robotCentricTeleopDrive(double driveX, double driveY, double driveTheta)  {
-       driveIO.setSwerveRequest(ROBOT_CENTRIC
-            .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConstants.MAX_VELOCITY_METERS)
-            .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConstants.MAX_VELOCITY_METERS)
-            .withRotationalRate((driveTheta <= 0 ? -(driveTheta * driveTheta) : (driveTheta * driveTheta)) * DriveConstants.MAX_ANGULAR_VELOCITY_RADS)
-             //.withRotationalRate(0.0);
-             );
-
-        heading = this.iOdata.state.Pose.getRotation();
-        //System.out.println(driveTheta);
-    }
-
-
-    public void headingControl(double driveX, double driveY) {
-        driveIO.setSwerveRequest(FIELD_CENTRIC
-            .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConstants.MAX_VELOCITY_METERS)
-            .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConstants.MAX_VELOCITY_METERS)
-            .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(), heading.getRadians()))
-        );
-        // System.out.println("head");
-    }
-
-
-    public void lockRotation(double driveX, double driveY, Rotation2d rtarget) {
-        driveIO.setSwerveRequest(FIELD_CENTRIC
-            .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConstants.MAX_VELOCITY_METERS)
-            .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConstants.MAX_VELOCITY_METERS)
-            .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(), rtarget.getRadians()))
-        );
-        heading = rtarget;
-        System.out.println("lock rotation");
-    }
-
-    public void facePoint(double driveX, double driveY, Pose2d point) {
-        driveIO.setSwerveRequest(FIELD_CENTRIC
-            .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConstants.MAX_VELOCITY_METERS)
-            .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConstants.MAX_VELOCITY_METERS)
-            .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(),
-            Math.atan2(point.getY() - iOdata.state.Pose.getY(), point.getX() - iOdata.state.Pose.getX())))
-        );        
-        heading = this.iOdata.state.Pose.getRotation();
-        System.out.println("look at goal");
-    }
-
-    public Command brake() {
-        return run(() -> driveIO.setSwerveRequest(BRAKE));
-    }
+        driveIO.setSwerveRequest(ROBOT_CENTRIC
+             .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConstants.kSpeedAt12Volts.in(MetersPerSecond))
+             .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConstants.kSpeedAt12Volts.in(MetersPerSecond))
+             .withRotationalRate((driveTheta <= 0 ? -(driveTheta * driveTheta) : (driveTheta * driveTheta)) * DriveConstants.kMaxAngularVelocity.in(RadiansPerSecond))
+              //.withRotationalRate(0.0);
+              );
+ 
+         heading = this.iOdata.state.Pose.getRotation();
+     }
+ 
+ 
+     public void headingControl(double driveX, double driveY) {
+         driveIO.setSwerveRequest(FIELD_CENTRIC
+             .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConstants.kSpeedAt12Volts.in(MetersPerSecond))
+             .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConstants.kSpeedAt12Volts.in(MetersPerSecond))
+             .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(), heading.getRadians()))
+         );
+         // System.out.println("head");
+     }
+ 
+ 
+     public void lockRotation(double driveX, double driveY, Rotation2d rtarget) {
+         driveIO.setSwerveRequest(FIELD_CENTRIC
+             .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConstants.kSpeedAt12Volts.in(MetersPerSecond))
+             .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConstants.kSpeedAt12Volts.in(MetersPerSecond))
+             .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(), rtarget.getRadians()))
+         );
+         heading = rtarget;
+     }
+ 
+     public void facePoint(double driveX, double driveY, Pose2d point) {
+         driveIO.setSwerveRequest(FIELD_CENTRIC
+             .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConstants.kSpeedAt12Volts.in(MetersPerSecond))
+             .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConstants.kSpeedAt12Volts.in(MetersPerSecond))
+             .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(),
+             Math.atan2(point.getY() - iOdata.state.Pose.getY(), point.getX() - iOdata.state.Pose.getX())))
+         );        
+         heading = this.iOdata.state.Pose.getRotation();
+     }
 
     @Override
     public void periodic() {
@@ -147,9 +147,6 @@ public class Drive extends SubsystemBase {
 
     }
 
-    public Command pathOTF() {
-        return AutoBuilder.followPath(ringPath);
-    }
 
     public Command resetPidgeon() {
         return runOnce(() -> {driveIO.resetPidgeon();});
@@ -175,7 +172,7 @@ public class Drive extends SubsystemBase {
                     new PIDConstants(7, 0, 0)
                 ),
                 config,
-                // Assume the path needs to be flipped for Red vs Blue, this is normally the case
+                // Assume the path doesnt flip (Sep auto files for red and blue side)
                 () -> false,
                 this // Subsystem for requirements
             );
