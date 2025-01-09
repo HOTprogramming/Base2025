@@ -25,7 +25,6 @@ import frc.robot.Constants;
 
 public class ElevatorIOSim extends ElevatorIO {
 
-    public CANcoder elevatorEncoder;
 
     public TalonFXSimState elevatorMotorSimState;
     public CANcoderSimState elevatorEncoderSimState;
@@ -52,11 +51,9 @@ public class ElevatorIOSim extends ElevatorIO {
 
     public ElevatorIOSim() {
 
-        super(ElevatorConstants.elevatorMotorID, "SimulatedBus");
-   
-        elevatorEncoder = new CANcoder(ElevatorConstants.elevatorEncoderID, "CamBot");
+        super(ElevatorConstants.elevatorMotorID, ElevatorConstants.elevatorEncoderID, "SimulatedBus");
         
-        elevatorMotorSimState = elevatorMotor.getSimState();
+        elevatorMotorSimState = elevator.getSimState();
         elevatorEncoderSimState = elevatorEncoder.getSimState();
 
         elevatorSim = new ElevatorSim(
@@ -83,7 +80,7 @@ public class ElevatorIOSim extends ElevatorIO {
 
     @Override
     public void setElevatorMotorControl(double power) {
-        elevatorMotor.set(power);
+        elevator.set(power);
     }
 
     @Override
@@ -93,7 +90,7 @@ public class ElevatorIOSim extends ElevatorIO {
         // With the setpoint value we run PID control like normal
         double pidOutput = m_controller.calculate(elevatorSim.getPositionMeters());
         double feedforwardOutput = m_feedforward.calculate(m_controller.getSetpoint().velocity);
-        elevatorMotor.setVoltage(pidOutput + feedforwardOutput);
+        elevator.setVoltage(pidOutput + feedforwardOutput);
     }
 
     @Override

@@ -52,7 +52,7 @@ public class ElevatorIOKraken extends ElevatorIO {
 
     public ElevatorIOKraken() {
 
-    super(ElevatorConstants.elevatorMotorID, "CamBot"); // Pass ID and CAN bus to abstract class
+    super(ElevatorConstants.elevatorMotorID, ElevatorConstants.elevatorEncoderID, "CamBot"); // Pass ID and CAN bus to abstract class
       
     elevatorMagic = new MotionMagicVoltage(0);
     TalonFXConfiguration cfg = new TalonFXConfiguration();
@@ -159,6 +159,6 @@ public class ElevatorIOKraken extends ElevatorIO {
 
     @Override
     public void setElevatorMotorControl(double commandedPosition) {
-      elevatorMotor.setControl(elevatorMagic.withPosition(commandedPosition).withSlot(0));
+      elevator.setControl(elevatorMagic.withPosition(commandedPosition).withSlot(0));
     }
 }

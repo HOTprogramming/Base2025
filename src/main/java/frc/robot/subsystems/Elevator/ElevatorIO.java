@@ -1,11 +1,13 @@
 package frc.robot.subsystems.Elevator;
 
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 public abstract class ElevatorIO {
 
     // Protected TalonFX object accessible to subclasses
-    protected TalonFX elevatorMotor;
+    protected TalonFX elevator;
+    protected CANcoder elevatorEncoder;
 
     public static class ElevatorIOStats {
         public boolean elevatorMotorConnected = true;
@@ -30,8 +32,9 @@ public abstract class ElevatorIO {
     protected static ElevatorIOStats ioStats = new ElevatorIOStats();
 
     /** Constructor to initialize the TalonFX */
-    public ElevatorIO(int talonFXId, String canBus) {
-        this.elevatorMotor = new TalonFX(talonFXId, canBus);
+    public ElevatorIO(int elevatorID, int canCoderID, String canBus) {
+        this.elevator = new TalonFX(elevatorID, canBus);
+        this.elevatorEncoder = new CANcoder(canCoderID, canBus);
     }
 
     /** Update stats */
