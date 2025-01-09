@@ -3,30 +3,21 @@ package frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Drivetrain.DriveIO.DriveIOdata;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static frc.robot.subsystems.Drivetrain.DriveConstants.*;
 
-import com.ctre.phoenix6.swerve.*;
-
-
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.path.PathPlannerPath;
 
 
 
@@ -38,12 +29,9 @@ public class Drive extends SubsystemBase {
     private GenericEntry speedEntry;
     private GenericEntry poseEntry;
 
-    private PathPlannerPath ringPath;
-
     private Rotation2d heading;
 
-    private PIDConstants pidConstantsTranslation = new PIDConstants(10, 0, 0);
-    private PIDConstants pidConstantsTheta = new PIDConstants (10, 0, 0); 
+
 
     private PIDController thetaController = new PIDController(10, 0, 0);
 
@@ -60,7 +48,6 @@ public class Drive extends SubsystemBase {
         this.iOdata = driveIO.update();
 
         heading = new Rotation2d(0);
-
 
         driveTab = Shuffleboard.getTab("Drive");
         speedEntry = driveTab.add("Speed", 0.0).getEntry();
@@ -80,9 +67,9 @@ public class Drive extends SubsystemBase {
 
     public void teleopDrive(double driveX, double driveY, double driveTheta)  {
        driveIO.setSwerveRequest(FIELD_CENTRIC
-            .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConstants.kSpeedAt12Volts.in(MetersPerSecond))
-            .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConstants.kSpeedAt12Volts.in(MetersPerSecond))
-            .withRotationalRate((driveTheta <= 0 ? -(driveTheta * driveTheta) : (driveTheta * driveTheta)) * DriveConstants.kMaxAngularVelocity.in(RadiansPerSecond))
+            .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY())
+            .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
+            .withRotationalRate((driveTheta <= 0 ? -(driveTheta * driveTheta) : (driveTheta * driveTheta)) * DriveConfig.MAX_ANGULAR_VELOCITY())
         );
 
         heading = this.iOdata.state.Pose.getRotation();
@@ -90,9 +77,9 @@ public class Drive extends SubsystemBase {
 
     public void robotCentricTeleopDrive(double driveX, double driveY, double driveTheta)  {
         driveIO.setSwerveRequest(ROBOT_CENTRIC
-             .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConstants.kSpeedAt12Volts.in(MetersPerSecond))
-             .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConstants.kSpeedAt12Volts.in(MetersPerSecond))
-             .withRotationalRate((driveTheta <= 0 ? -(driveTheta * driveTheta) : (driveTheta * driveTheta)) * DriveConstants.kMaxAngularVelocity.in(RadiansPerSecond))
+             .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY())
+             .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
+             .withRotationalRate((driveTheta <= 0 ? -(driveTheta * driveTheta) : (driveTheta * driveTheta)) * DriveConfig.MAX_ANGULAR_VELOCITY())
               //.withRotationalRate(0.0);
               );
  
@@ -102,8 +89,8 @@ public class Drive extends SubsystemBase {
  
      public void headingControl(double driveX, double driveY) {
          driveIO.setSwerveRequest(FIELD_CENTRIC
-             .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConstants.kSpeedAt12Volts.in(MetersPerSecond))
-             .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConstants.kSpeedAt12Volts.in(MetersPerSecond))
+             .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY())
+             .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
              .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(), heading.getRadians()))
          );
          // System.out.println("head");
@@ -112,8 +99,8 @@ public class Drive extends SubsystemBase {
  
      public void lockRotation(double driveX, double driveY, Rotation2d rtarget) {
          driveIO.setSwerveRequest(FIELD_CENTRIC
-             .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConstants.kSpeedAt12Volts.in(MetersPerSecond))
-             .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConstants.kSpeedAt12Volts.in(MetersPerSecond))
+             .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY())
+             .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
              .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(), rtarget.getRadians()))
          );
          heading = rtarget;
@@ -121,8 +108,8 @@ public class Drive extends SubsystemBase {
  
      public void facePoint(double driveX, double driveY, Pose2d point) {
          driveIO.setSwerveRequest(FIELD_CENTRIC
-             .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConstants.kSpeedAt12Volts.in(MetersPerSecond))
-             .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConstants.kSpeedAt12Volts.in(MetersPerSecond))
+             .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY())
+             .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
              .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(),
              Math.atan2(point.getY() - iOdata.state.Pose.getY(), point.getX() - iOdata.state.Pose.getX())))
          );        
@@ -156,25 +143,25 @@ public class Drive extends SubsystemBase {
         try {
             var config = RobotConfig.fromGUISettings();
             AutoBuilder.configure(
-                () -> this.iOdata.state.Pose,   // Supplier of current robot pose
-                this::setPose,         // Consumer for seeding pose against auto
-                () -> this.iOdata.state.Speeds, // Supplier of current robot speeds
-                // Consumer of ChassisSpeeds and feedforwards to drive the robot
+                () -> this.iOdata.state.Pose,   // Supplier of robot pose
+                this::setPose,         // Consumer for seeding pose
+                () -> this.iOdata.state.Speeds, // Supplier of robot speeds
+                // Consumer of ChassisSpeeds and feedforwards
                 (speeds, feedforwards) -> driveIO.setSwerveRequest(
                     m_pathApplyRobotSpeeds.withSpeeds(speeds)
                         .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
                         .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
                 ),
                 new PPHolonomicDriveController(
-                    // PID constants for translation
-                    new PIDConstants(10, 0, 0),
-                    // PID constants for rotation
-                    new PIDConstants(7, 0, 0)
+                    // translation
+                    DriveConfig.AUTON_TRANSLATION_PID(),
+                    // rotation
+                    DriveConfig.AUTON_ROTATION_PID()
                 ),
                 config,
                 // Assume the path doesnt flip (Sep auto files for red and blue side)
                 () -> false,
-                this // Subsystem for requirements
+                this
             );
         } catch (Exception ex) {
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());

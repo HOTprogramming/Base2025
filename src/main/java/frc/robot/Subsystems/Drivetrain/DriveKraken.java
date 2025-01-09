@@ -15,20 +15,10 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.ctre.phoenix6.swerve.*;
-import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Notifier;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.subsystems.Drivetrain.DriveIO.DriveIOdata;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import com.pathplanner.lib.auto.AutoBuilder;
+
 
 
 
@@ -82,8 +72,6 @@ public class DriveKraken extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
         setControl(requestToApply);
     }
 
-    
-
     @Override
     public DriveIOdata update() {
         this.currentState = getState();
@@ -95,12 +83,6 @@ public class DriveKraken extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
         // TODO ADD MODULE DATA
         return this.iOdata;
     }
-
-    // @Override
-    // public void seedFieldRelative(Pose2d seedling) {
-        
-    //     this.seedFieldRelative(seedling);
-    // }
 
     @Override
     public void setTeamRotation(Alliance alliance) {
