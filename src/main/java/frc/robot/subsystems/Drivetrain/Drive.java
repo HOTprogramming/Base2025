@@ -4,6 +4,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -80,7 +81,6 @@ public class Drive extends SubsystemBase {
              .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY())
              .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
              .withRotationalRate((driveTheta <= 0 ? -(driveTheta * driveTheta) : (driveTheta * driveTheta)) * DriveConfig.MAX_ANGULAR_VELOCITY())
-              //.withRotationalRate(0.0);
               );
  
          heading = this.iOdata.state.Pose.getRotation();
@@ -93,7 +93,6 @@ public class Drive extends SubsystemBase {
              .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
              .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(), heading.getRadians()))
          );
-         // System.out.println("head");
      }
  
  
@@ -115,6 +114,19 @@ public class Drive extends SubsystemBase {
          );        
          heading = this.iOdata.state.Pose.getRotation();
      }
+
+     public void lockReef(double driveX, double driveY, Pose2d point) {
+       double rotToReef = Math.toDegrees(Math.atan2(point.getY() - iOdata.state.Pose.getY(), point.getX() - iOdata.state.Pose.getX()));
+        driveIO.setSwerveRequest(FIELD_CENTRIC
+            .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY())
+            .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
+            .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(),
+            Math.toRadians(60*Math.round(rotToReef/60))))
+        );        
+        heading = this.iOdata.state.Pose.getRotation();
+        System.out.println(rotToReef);
+    }
+
 
     @Override
     public void periodic() {

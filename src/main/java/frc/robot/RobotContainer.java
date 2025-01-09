@@ -75,7 +75,12 @@ public class RobotContainer {
           Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
           Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
         }
-      ));
+      )).onFalse(Commands.race(Commands.waitSeconds(0.2), drivetrain.run(() -> {
+        drivetrain.teleopDrive(
+          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+          Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
+        })));
 
       driver.povLeft().whileTrue
       (drivetrain.run(() -> {
@@ -119,6 +124,15 @@ public class RobotContainer {
           Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
           Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
           new Pose2d(5, 5, new Rotation2d(0)));
+        }
+      ));
+
+      driver.b().whileTrue
+      (drivetrain.run(() -> {
+        drivetrain.lockReef(
+          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+          new Pose2d(4.5, 4, new Rotation2d(0)));
         }
       ));
   }
