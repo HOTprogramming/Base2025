@@ -128,7 +128,7 @@ public class Drive extends SubsystemBase {
             poseEntry.setDoubleArray(new Double[]{
                 this.iOdata.state.Pose.getX(), 
                 this.iOdata.state.Pose.getY(), 
-                this.iOdata.state.Pose.getRotation().getDegrees()});
+                this.iOdata.state.Pose.getRotation().getRadians()});
         } 
 
 
