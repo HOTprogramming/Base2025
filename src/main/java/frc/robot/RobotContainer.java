@@ -14,9 +14,20 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.Elevator.ElevatorIOReal;
+import frc.robot.subsystems.Elevator.ElevatorIOSim;
+import frc.robot.subsystems.Elevator.Elevator;
+
 
 public class RobotContainer {
   public Drive drivetrain;
+
+  private Elevator elevatorSubsystem = null;
+
+  FunctionalCommand highCommand;
+
 
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
@@ -25,10 +36,12 @@ public class RobotContainer {
     switch (Constants.getRobot()) {
       case COMPBOT -> {
         this.drivetrain = new Drive(new DriveKraken());
+        this.elevatorSubsystem = new Elevator(new ElevatorIOReal());
       }
       case DEVBOT -> {}
       case SIMBOT -> {
         this.drivetrain = new Drive(new DriveSim());
+        elevatorSubsystem = new Elevator(new ElevatorIOSim());
       }
     }
 
@@ -114,9 +127,19 @@ public class RobotContainer {
       ));
 
       driver.start().onTrue(drivetrain.resetPidgeon());
+
+
+      elevatorSubsystem.setDefaultCommand(elevatorSubsystem.stop());
+
+      driver.a().whileTrue(elevatorSubsystem.runToPosition(.5));
+      driver.x().whileTrue(elevatorSubsystem.runToPosition(1));
+      driver.y().whileTrue(elevatorSubsystem.runToPosition(1.5));
+      driver.b().whileTrue(elevatorSubsystem.runToPosition(2));
+
   }
 
   public Command getAutonomousCommand() {
     return new PathPlannerAuto("New Auto");
   }
+
 }

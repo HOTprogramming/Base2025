@@ -45,6 +45,13 @@
       disableHAL = true;
     }
 
+    /** Checks whether the correct robot is selected when deploying. */
+    public static void main(String... args) {
+      if (robotType == RobotType.SIMBOT) {
+        System.err.println("Cannot deploy, invalid robot selected: " + robotType);
+        System.exit(1);
+      }
+    }
     public static class OperatorConstants {
       public static final int kDriverControllerPort = 0;
     }
