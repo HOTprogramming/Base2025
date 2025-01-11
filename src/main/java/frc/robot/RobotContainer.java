@@ -50,11 +50,6 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    // if(DriverStation.isAutonomous()){
-    // } else {
-    //   elevatorSubsystem.setDefaultCommand(elevatorSubsystem.stop());
-    // }
-
     elevatorSubsystem.setDefaultCommand(elevatorSubsystem.stop());
 
     driver.a().whileTrue(elevatorSubsystem.runToPosition(.5));

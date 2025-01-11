@@ -37,7 +37,7 @@ public class ElevatorIOSim extends ElevatorIO {
 
         m_elevatorMech2d =
         m_mech2dRoot.append(
-            new MechanismLigament2d("Elevator", elevatorSim.getPositionMeters(), 90, 100, new Color8Bit(235, 137, 52)));
+            new MechanismLigament2d("Elevator", elevatorSim.getPositionMeters(), 90, 10, new Color8Bit(235, 137, 52)));
 
         SmartDashboard.putData("Elevator Sim", m_mech2d);
     }
