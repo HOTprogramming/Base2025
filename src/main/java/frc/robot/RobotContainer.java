@@ -112,6 +112,8 @@ public class RobotContainer {
           Math.abs(driver.getRightY()) >= 0.1 ? -driver.getRightY() : 0);
         }
       ));
+
+      driver.start().onTrue(drivetrain.resetPidgeon());
   }
 
   public Command getAutonomousCommand() {
