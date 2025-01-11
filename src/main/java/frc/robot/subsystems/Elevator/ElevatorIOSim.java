@@ -13,8 +13,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 
 public class ElevatorIOSim extends ElevatorIO {
-
-
     public TalonFXSimState elevatorMotorSimState;
 
     public ElevatorSim elevatorSim;

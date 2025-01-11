@@ -20,20 +20,15 @@ public class Elevator extends SubsystemBase {
   private final ShuffleboardTab elevatorShuffleboard;
 
   /* Shuffleboard entrys */
+  public GenericEntry elevatorPosition;
+  public GenericEntry elevatorDirection;
   private GenericEntry elevatorVelocity;
   private GenericEntry elevatorSupplyCurrent;
   private GenericEntry elevatorStatorCurrent;
   private GenericEntry elevatorTemp;
 
-  private GenericEntry shuffKP;
-  private GenericEntry shuffKS;
-  private GenericEntry shuffKV;
-  public GenericEntry elevatorPosition;
-  public GenericEntry elevatorDirection;
-  public double simelevatorPosition = 0.0;
   public double elevatorCommandedPos;
   
-
   public Elevator(ElevatorIO io) {
     this.io = io; 
 
@@ -73,13 +68,6 @@ public class Elevator extends SubsystemBase {
     return run(() -> {
         io.stop();
     });  
-}
-
-  public Command setPID() {
-    return runOnce(() -> {io.setPID(
-      this.shuffKP.getDouble(0.0),
-      this.shuffKS.getDouble(0.0), 
-      this.shuffKV.getDouble(0.0));});
   }
 
   @Override

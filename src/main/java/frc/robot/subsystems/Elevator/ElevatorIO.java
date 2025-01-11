@@ -3,17 +3,13 @@ package frc.robot.subsystems.Elevator;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -29,12 +25,9 @@ public abstract class ElevatorIO {
     public static class ElevatorIOStats {
         public boolean elevatorMotorConnected = true;
         public double elevatorPosition = 0.0;
-        public double krakenElevatorPosition = 0.0;
         public double elevatorVelocity = 0.0;
-        public double elevatorRotorPos = 0.0;
         public double elevatorAppliedVolts = 0.0;
         public double elevatorCurrentAmps = 0.0;
-
         public double SupplyCurrentAmps = 0.0;
         public double TorqueCurrentAmps = 0.0;
         public double TempCelsius = 0.0;
@@ -44,8 +37,6 @@ public abstract class ElevatorIO {
 
     private final StatusSignal<Angle> elevatorPosition;
     private final StatusSignal<AngularVelocity> elevatorVelocity;
-    private final StatusSignal<Angle> elevatorRotorPos;
-
     private final StatusSignal<Current> SupplyCurrent;
     private final StatusSignal<Current> TorqueCurrent;
     private final StatusSignal<Temperature> TempCelsius;
@@ -85,11 +76,9 @@ public abstract class ElevatorIO {
         if (!elevatorStatus.isOK()) {
             System.out.println("Could not configure device. Error: " + elevatorStatus.toString());
         }
-        
+
         elevatorPosition = elevator.getPosition();
         elevatorVelocity = elevator.getVelocity();
-        elevatorRotorPos = elevator.getRotorPosition();
-    
         SupplyCurrent = elevator.getSupplyCurrent();
         TorqueCurrent = elevator.getTorqueCurrent();
         TempCelsius = elevator.getDeviceTemp();
@@ -98,8 +87,6 @@ public abstract class ElevatorIO {
             100.0,
             elevatorPosition,
             elevatorVelocity,
-
-            elevatorRotorPos,
             SupplyCurrent,
             TorqueCurrent,
             TempCelsius
@@ -112,7 +99,6 @@ public abstract class ElevatorIO {
         BaseStatusSignal.refreshAll(
           elevatorPosition,
           elevatorVelocity,
-          elevatorRotorPos,
           SupplyCurrent,
           TorqueCurrent,
           TempCelsius)
@@ -120,7 +106,6 @@ public abstract class ElevatorIO {
 
         stats.elevatorPosition = elevatorPosition.getValueAsDouble();
         stats.elevatorVelocity = elevatorVelocity.getValueAsDouble();
-
         stats.SupplyCurrentAmps = SupplyCurrent.getValueAsDouble();
         stats.TorqueCurrentAmps = TorqueCurrent.getValueAsDouble();
         stats.TempCelsius = TempCelsius.getValueAsDouble();
@@ -132,19 +117,9 @@ public abstract class ElevatorIO {
         elevator.setControl(elevatorMagic.withPosition(commandedPosition).withSlot(0));
     }
 
-    /** Set PID gains */
-    public void setPID(double kP, double kI, double kD) {
-        // Optional override in subclasses
-    }
-
     /** Stop motor */
     public void stop() {
         elevator.setVoltage(0);
-    }
-
-    /** Run motor characterization */
-    public void runCharacterization(double input) {
-        // Optional override in subclasses
     }
 
     /** Perform simulation-specific tasks */
