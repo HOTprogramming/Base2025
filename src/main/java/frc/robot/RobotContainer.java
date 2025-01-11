@@ -14,6 +14,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Elevator.ElevatorIOReal;
 import frc.robot.subsystems.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.Drivetrain.Drive;
+import frc.robot.subsystems.Drivetrain.DriveIO;
+import frc.robot.subsystems.Drivetrain.DriveKraken;
+import frc.robot.subsystems.Drivetrain.DriveSim;
 import frc.robot.subsystems.Elevator.Elevator;
 
 
@@ -28,9 +31,15 @@ public class RobotContainer {
 
   public RobotContainer() {
     switch (Constants.getRobot()) {
-      case COMPBOT -> {elevatorSubsystem = new Elevator(new ElevatorIOReal());}
+      case COMPBOT -> {
+        elevatorSubsystem = new Elevator(new ElevatorIOReal());   
+        drivetrain = new Drive(new DriveKraken());
+      }
       case DEVBOT -> {}
-      case SIMBOT -> {elevatorSubsystem = new Elevator(new ElevatorIOSim());}
+      case SIMBOT -> {
+        elevatorSubsystem = new Elevator(new ElevatorIOSim());
+        drivetrain = new Drive(new DriveSim());
+      }
     }
 
     configureBindings();
@@ -121,7 +130,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("New Auto");
+    return new PathPlannerAuto("Auto");
   }
 
 }
