@@ -68,13 +68,41 @@ public class Elevator extends SubsystemBase {
     });
   }
 
-  public FunctionalCommand testCommand(double position){
+  private FunctionalCommand elevatorCommand(double position){
     return new FunctionalCommand(
       () -> this.elevatorCommandedPos.setDouble(position),
       () -> io.setElevatorMotorControl(position),
       interrupted -> io.setElevatorMotorControl(position), 
       () -> checkRange(.1),
       this);
+  }
+
+  public Command goToL4(){
+    return elevatorCommand(ElevatorConstants.l4Height);
+  }
+
+  public Command goToL3(){
+    return elevatorCommand(ElevatorConstants.l3Height);
+  }
+
+  public Command goToL2(){
+    return elevatorCommand(ElevatorConstants.l2Height);
+  }
+
+  public Command goToL1(){
+    return elevatorCommand(ElevatorConstants.l1Height);
+  }
+
+  public Command goToNet(){
+    return elevatorCommand(ElevatorConstants.netHeight);
+  }
+
+  public Command goToIntakeCoral(){
+    return elevatorCommand(ElevatorConstants.intakeCoralHeight);
+  }
+
+  public Command goToIntakeAlgae(){
+    return elevatorCommand(ElevatorConstants.intakeAlgaeHeight);
   }
 
   public Command stop(){
