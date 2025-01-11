@@ -45,26 +45,25 @@ public class RobotContainer {
       }
     }
 
+    NamedCommands.registerCommand("Elevator Algae Intake",  elevatorSubsystem.goToIntakeAlgae());
+    NamedCommands.registerCommand("Elevator Coral Intake", elevatorSubsystem.goToIntakeCoral());
+    NamedCommands.registerCommand("Elevator Net", elevatorSubsystem.goToNet());
+    NamedCommands.registerCommand("Elevator L4", elevatorSubsystem.goToL4());
+    NamedCommands.registerCommand("Elevator L3", elevatorSubsystem.goToL3());
+    NamedCommands.registerCommand("Elevator L2", elevatorSubsystem.goToL2());
+    NamedCommands.registerCommand("Elevator L1", elevatorSubsystem.goToL1());
+
     configureBindings();
-    NamedCommands.registerCommand("Algae Intake",  elevatorSubsystem.testCommand(2.75));
-    NamedCommands.registerCommand("Net", elevatorSubsystem.testCommand(3));
-    NamedCommands.registerCommand("Coral Intake", elevatorSubsystem.testCommand(2.5));
-    NamedCommands.registerCommand("L4", elevatorSubsystem.testCommand(2));
-    NamedCommands.registerCommand("L3", elevatorSubsystem.testCommand(1.5));
-    NamedCommands.registerCommand("L2", elevatorSubsystem.testCommand(1));
-    NamedCommands.registerCommand("L1", elevatorSubsystem.testCommand(.5));
   }
 
-  private void configureBindings() {
-    elevatorSubsystem.setDefaultCommand(elevatorSubsystem.stop());
-    
-    driver.a().whileTrue(elevatorSubsystem.runToPosition(.5));
-    driver.x().whileTrue(elevatorSubsystem.runToPosition(1));
-    driver.y().whileTrue(elevatorSubsystem.runToPosition(1.5));
-    driver.b().whileTrue(elevatorSubsystem.runToPosition(2));
-    operator.a().whileTrue(elevatorSubsystem.runToPosition(2.5));
-    operator.b().whileTrue(elevatorSubsystem.runToPosition(3));
-    operator.x().whileTrue(elevatorSubsystem.runToPosition(2.75));
+  private void configureBindings() {    
+    operator.a().whileTrue(NamedCommands.getCommand("Elevator L4"));
+    operator.b().whileTrue(NamedCommands.getCommand("Elevator L3"));
+    operator.x().whileTrue(NamedCommands.getCommand("Elevator L2"));
+    operator.x().whileTrue(NamedCommands.getCommand("Elevator L1"));
+    operator.povUp().whileTrue(NamedCommands.getCommand("Elevator Net"));
+    operator.povRight().whileTrue(NamedCommands.getCommand("Elevator Coral Intake"));
+    operator.povLeft().whileTrue(NamedCommands.getCommand("Elevator Algae Intake"));
 
     drivetrain.setDefaultCommand
       (drivetrain.run(() -> {
