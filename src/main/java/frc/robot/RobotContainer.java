@@ -4,16 +4,22 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Elevator.ElevatorIOReal;
 import frc.robot.subsystems.Elevator.ElevatorIOSim;
+import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Elevator.Elevator;
 
 
 public class RobotContainer {
   private Elevator elevatorSubsystem = null;
+  public Drive drivetrain;
 
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
@@ -30,7 +36,6 @@ public class RobotContainer {
     configureBindings();
   }
 
-  /* Driver Controller */
   private void configureBindings() {
     elevatorSubsystem.setDefaultCommand(elevatorSubsystem.stop());
 
@@ -39,10 +44,84 @@ public class RobotContainer {
     driver.y().whileTrue(elevatorSubsystem.runToPosition(1.5));
     driver.b().whileTrue(elevatorSubsystem.runToPosition(2));
 
+    drivetrain.setDefaultCommand
+      (drivetrain.run(() -> {
+            drivetrain.headingControl(
+              Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0, 
+              Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0);
+          }
+      ));    
+
+      driver.rightBumper().whileTrue
+      (drivetrain.run(() -> {
+        drivetrain.robotCentricTeleopDrive(
+          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+          Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
+        }
+      ));
+
+      driver.axisLessThan(4, -0.15)
+        .or(driver.axisGreaterThan(4, 0.15))
+        .and(driver.rightBumper().negate())
+        .and(driver.leftBumper().negate())
+        .whileTrue
+      (drivetrain.run(() -> {
+        drivetrain.teleopDrive(
+          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+          Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
+        }
+      ));
+
+      driver.povLeft().whileTrue
+      (drivetrain.run(() -> {
+        drivetrain.lockRotation(
+          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+          Rotation2d.fromDegrees(90));
+        }
+      ));
+
+      driver.povRight().whileTrue
+      (drivetrain.run(() -> {
+        drivetrain.lockRotation(
+          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+          Rotation2d.fromDegrees(-90));
+        }
+      ));
+
+      driver.povUp().whileTrue
+      (drivetrain.run(() -> {
+        drivetrain.lockRotation(
+          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+          Rotation2d.fromDegrees(0));
+        }
+      ));
+
+      driver.povDown().whileTrue
+      (drivetrain.run(() -> {
+        drivetrain.lockRotation(
+          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+          Rotation2d.fromDegrees(179.9));
+        }
+      ));
+
+      driver.leftBumper().whileTrue
+      (drivetrain.run(() -> {
+        drivetrain.facePoint(
+          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+          new Pose2d(5, 5, new Rotation2d(0)));
+        }
+      ));
   }
 
   public Command getAutonomousCommand() {
-    return null;
+    return new PathPlannerAuto("New Auto");
   }
 
 }
