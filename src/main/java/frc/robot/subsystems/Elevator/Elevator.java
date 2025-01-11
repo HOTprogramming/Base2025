@@ -52,12 +52,9 @@ public class Elevator extends SubsystemBase {
   private GenericEntry shuffKS;
   private GenericEntry shuffKV;
   public GenericEntry elevatorPosition;
-  public GenericEntry detectedelevatorPos;
   public GenericEntry elevatorDirection;
   public double simelevatorPosition = 0.0;
   public double elevatorCommandedPos;
-  public double detectedPos;
-  public double getelevatorPos;
   
 
   public Elevator(ElevatorIO io) {
@@ -65,7 +62,7 @@ public class Elevator extends SubsystemBase {
 
     this.elevatorState = ElevatorState.ZERO;
 
-    this.stats = ElevatorIO.ioStats;
+    this.stats = ElevatorIO.stats;
 
     this.elevatorShuffleboard = Shuffleboard.getTab("Elevator");
 
@@ -82,61 +79,18 @@ public class Elevator extends SubsystemBase {
     sf_fusedSensorOutOfSync = this.elevatorShuffleboard.add("sf_fusedSensorOutOfSync", false).getEntry();
     f_remoteSensorInvalid = this.elevatorShuffleboard.add("f_remoteSensorInvalid", false).getEntry();
     sf_remoteSensorInvalid = this.elevatorShuffleboard.add("sf_remoteSensorInvalid", false).getEntry();
-
-    testCommand = new FunctionalCommand(
-      this::zero,
-      () -> io.reachGoal(1), 
-      interrupted -> this.zero(),
-      () -> this.checkInRange(.1),
-      this);
   }
-
 
   @Override
   public void periodic() {
-
-    
-    if(elevatorState == ElevatorState.ZERO){
-      zero();
-    } else if (elevatorState == ElevatorState.L1){
-      elevatorCommandedPos = .5;
-    } else if (elevatorState == ElevatorState.L2){
-      elevatorCommandedPos = 1;
-    } else if (elevatorState == ElevatorState.L3){
-      elevatorCommandedPos = 1.5;
-    } else if (elevatorState == ElevatorState.L4){
-      elevatorCommandedPos = 2;
-    } else {
-      zero();
-    }
-
-    if(elevatorState != ElevatorState.ZERO || elevatorState == null){
-      io.reachGoal(elevatorCommandedPos);
-    }
-
-    io.updateStats(stats);
-
-    SmartDashboard.putNumber("State", elevatorCommandedPos);
+    // io.updateStats(stats);
       
     UpdateTelemetry();
-  }
-
-  public boolean checkInRange(double deadband){
-    return (stats.elevatorPosition >= elevatorCommandedPos - deadband) && (stats.elevatorPosition <= elevatorCommandedPos + deadband);
-  }
-
-  public void setElevatorState(ElevatorState elevatorState){
-    this.elevatorState = elevatorState;
-  }
-
-  public void powerElevator(double power){
-    io.setElevatorMotorControl(power);
   }
 
   private void UpdateTelemetry() {
     elevatorVelocity.setDouble(stats.elevatorVelocity);
     elevatorPosition.setDouble(stats.elevatorPosition);
-    // detectedelevatorPos.setDouble(detectedPos);
     elevatorSupplyCurrent.setDouble(stats.SupplyCurrentAmps);
     elevatorStatorCurrent.setDouble(stats.TorqueCurrentAmps);
     elevatorTemp.setDouble(stats.TempCelsius);
@@ -150,9 +104,17 @@ public class Elevator extends SubsystemBase {
     sf_remoteSensorInvalid.setBoolean(stats.sf_remoteSensorInvalid);
   }
 
-  public void zero(){
-    io.setElevatorMotorControl(0);
+  public Command runToPosition(double position){
+    return run(() -> {
+        io.setElevatorMotorControl(position);
+    });
   }
+
+  public Command stop(){
+    return run(() -> {
+        io.stop();
+    });  
+}
 
   public Command setPID() {
     return runOnce(() -> {io.setPID(
@@ -163,6 +125,6 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    io.simStuff();
+    io.periodic();
   }
 }

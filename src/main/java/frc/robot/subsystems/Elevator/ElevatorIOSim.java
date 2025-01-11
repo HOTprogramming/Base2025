@@ -2,7 +2,9 @@ package frc.robot.subsystems.Elevator;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.sim.CANcoderSimState;
+import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
@@ -49,12 +51,11 @@ public class ElevatorIOSim extends ElevatorIO {
                 0,
                 0);
 
-    public ElevatorIOSim() {
-
-        super(ElevatorConstants.elevatorMotorID, ElevatorConstants.elevatorEncoderID, "SimulatedBus");
-        
+    public ElevatorIOSim() {        
         elevatorMotorSimState = elevator.getSimState();
         elevatorEncoderSimState = elevatorEncoder.getSimState();
+
+        elevatorEncoderSimState.Orientation = ChassisReference.CounterClockwise_Positive;
 
         elevatorSim = new ElevatorSim(
             DCMotor.getKrakenX60Foc(1),
@@ -73,10 +74,7 @@ public class ElevatorIOSim extends ElevatorIO {
         SmartDashboard.putData("Elevator Sim", m_mech2d);
     }
 
-    @Override
-    public void updateStats(ElevatorIOStats stats) {
 
-    }
 
     @Override
     public void setElevatorMotorControl(double power) {
@@ -84,17 +82,7 @@ public class ElevatorIOSim extends ElevatorIO {
     }
 
     @Override
-    public void reachGoal(double goal) {
-        m_controller.setGoal(goal);
-
-        // With the setpoint value we run PID control like normal
-        double pidOutput = m_controller.calculate(elevatorSim.getPositionMeters());
-        double feedforwardOutput = m_feedforward.calculate(m_controller.getSetpoint().velocity);
-        elevator.setVoltage(pidOutput + feedforwardOutput);
-    }
-
-    @Override
-    public void simStuff() {
+    public void periodic() {
         elevatorMotorSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
         elevatorEncoderSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
 
@@ -105,8 +93,8 @@ public class ElevatorIOSim extends ElevatorIO {
         elevatorMotorSimState.setRawRotorPosition(elevatorSim.getPositionMeters());
         elevatorMotorSimState.setRotorVelocity(elevatorSim.getVelocityMetersPerSecond());
 
-        ioStats.elevatorPosition = elevatorSim.getPositionMeters();
-        ioStats.elevatorVelocity = elevatorSim.getVelocityMetersPerSecond();
+        // stats.elevatorPosition = elevatorSim.getPositionMeters();
+        // stats.elevatorVelocity = elevatorSim.getVelocityMetersPerSecond();
 
         m_elevatorMech2d.setLength(elevatorSim.getPositionMeters());
     }
