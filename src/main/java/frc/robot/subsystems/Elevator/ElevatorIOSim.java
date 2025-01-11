@@ -31,7 +31,7 @@ public class ElevatorIOSim extends ElevatorIO {
             4, 
             Units.inchesToMeters(2.0),
             0,
-            2,
+            3,
             true,
             0);
 

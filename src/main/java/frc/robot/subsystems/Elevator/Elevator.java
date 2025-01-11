@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Elevator.ElevatorIO.ElevatorIOStats;
 
 public class Elevator extends SubsystemBase {
+  
+
   public FunctionalCommand testCommand;
 
   private final ElevatorIO io;
@@ -31,7 +33,6 @@ public class Elevator extends SubsystemBase {
   
   public Elevator(ElevatorIO io) {
     this.io = io; 
-
     this.stats = ElevatorIO.stats;
 
     this.elevatorShuffleboard = Shuffleboard.getTab("Elevator");
@@ -43,6 +44,7 @@ public class Elevator extends SubsystemBase {
     elevatorTemp = this.elevatorShuffleboard.add("Elevator Temp", 0.0).getEntry();
     elevatorCommandedPos = this.elevatorShuffleboard.add("Elevator Commanded Position", 0.0).getEntry();
   }
+
 
   @Override
   public void periodic() {
@@ -86,8 +88,8 @@ public class Elevator extends SubsystemBase {
       io.setElevatorMotorControl(elevatorCommandedPos.getDouble(0));
     });
   }
-
-  public boolean checkRange(double deadband){
+ 
+   public boolean checkRange(double deadband){
     return (stats.elevatorPosition >= elevatorCommandedPos.getDouble(0) - deadband) && 
            (stats.elevatorPosition <= elevatorCommandedPos.getDouble(0) + deadband);
   }
