@@ -1,13 +1,17 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
+import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Drivetrain.Drive;
@@ -15,13 +19,15 @@ import frc.robot.subsystems.Drivetrain.DriveSim;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
 import frc.robot.subsystems.Elevator.ElevatorIOReal;
 import frc.robot.subsystems.Elevator.ElevatorIOSim;
+import frc.robot.subsystems.Drivetrain.Drive;
+import frc.robot.subsystems.Drivetrain.DriveIO;
+import frc.robot.subsystems.Drivetrain.DriveKraken;
+import frc.robot.subsystems.Drivetrain.DriveSim;
 import frc.robot.subsystems.Elevator.Elevator;
 
-
 public class RobotContainer {
+  private Elevator elevatorSubsystem;
   public Drive drivetrain;
-
-  private Elevator elevatorSubsystem = null;
 
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
@@ -29,31 +35,37 @@ public class RobotContainer {
   public RobotContainer() {
     switch (Constants.getRobot()) {
       case COMPBOT -> {
-        this.drivetrain = new Drive(new DriveKraken());
-        this.elevatorSubsystem = new Elevator(new ElevatorIOReal());
+        elevatorSubsystem = new Elevator(new ElevatorIOReal());   
+        drivetrain = new Drive(new DriveKraken());
       }
       case DEVBOT -> {}
       case SIMBOT -> {
-        this.drivetrain = new Drive(new DriveSim());
         elevatorSubsystem = new Elevator(new ElevatorIOSim());
+        drivetrain = new Drive(new DriveSim());
       }
     }
 
-
     configureBindings();
-  }
-
-  private void configureSimpleBindings() {
-    drivetrain.setDefaultCommand(
-      drivetrain.run(() -> drivetrain.teleopDrive( 
-        Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
-        Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
-        Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0)
-      )
-    );
+    NamedCommands.registerCommand("Algae Intake",  elevatorSubsystem.testCommand(2.75));
+    NamedCommands.registerCommand("Net", elevatorSubsystem.testCommand(3));
+    NamedCommands.registerCommand("Coral Intake", elevatorSubsystem.testCommand(2.5));
+    NamedCommands.registerCommand("L4", elevatorSubsystem.testCommand(2));
+    NamedCommands.registerCommand("L3", elevatorSubsystem.testCommand(1.5));
+    NamedCommands.registerCommand("L2", elevatorSubsystem.testCommand(1));
+    NamedCommands.registerCommand("L1", elevatorSubsystem.testCommand(.5));
   }
 
   private void configureBindings() {
+    elevatorSubsystem.setDefaultCommand(elevatorSubsystem.stop());
+    
+    driver.a().whileTrue(elevatorSubsystem.runToPosition(.5));
+    driver.x().whileTrue(elevatorSubsystem.runToPosition(1));
+    driver.y().whileTrue(elevatorSubsystem.runToPosition(1.5));
+    driver.b().whileTrue(elevatorSubsystem.runToPosition(2));
+    operator.a().whileTrue(elevatorSubsystem.runToPosition(2.5));
+    operator.b().whileTrue(elevatorSubsystem.runToPosition(3));
+    operator.x().whileTrue(elevatorSubsystem.runToPosition(2.75));
+
     drivetrain.setDefaultCommand
       (drivetrain.run(() -> {
             drivetrain.headingControl(
