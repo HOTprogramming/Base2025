@@ -58,8 +58,7 @@ public class RobotContainer {
   private void configureBindings() {
     elevatorSubsystem.setDefaultCommand(elevatorSubsystem.stop());
     
-  
-   driver.a().whileTrue(elevatorSubsystem.runToPosition(.5));
+    driver.a().whileTrue(elevatorSubsystem.runToPosition(.5));
     driver.x().whileTrue(elevatorSubsystem.runToPosition(1));
     driver.y().whileTrue(elevatorSubsystem.runToPosition(1.5));
     driver.b().whileTrue(elevatorSubsystem.runToPosition(2));
