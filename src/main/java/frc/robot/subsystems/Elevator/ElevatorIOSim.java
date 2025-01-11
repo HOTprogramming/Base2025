@@ -44,6 +44,7 @@ public class ElevatorIOSim extends ElevatorIO {
 
     @Override
     public void periodic() {
+        // NOTE: There is some conversion here that I am missing, so it will not work like this on the real robot, I will look into this
         elevatorMotorSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
 
         elevatorSim.setInputVoltage(elevatorMotorSimState.getMotorVoltage());
