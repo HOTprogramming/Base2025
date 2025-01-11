@@ -60,7 +60,7 @@ public class RobotContainer {
     operator.a().whileTrue(NamedCommands.getCommand("Elevator L4"));
     operator.b().whileTrue(NamedCommands.getCommand("Elevator L3"));
     operator.x().whileTrue(NamedCommands.getCommand("Elevator L2"));
-    operator.x().whileTrue(NamedCommands.getCommand("Elevator L1"));
+    operator.y().whileTrue(NamedCommands.getCommand("Elevator L1"));
     operator.povUp().whileTrue(NamedCommands.getCommand("Elevator Net"));
     operator.povRight().whileTrue(NamedCommands.getCommand("Elevator Coral Intake"));
     operator.povLeft().whileTrue(NamedCommands.getCommand("Elevator Algae Intake"));
@@ -132,15 +132,6 @@ public class RobotContainer {
       ));
 
       driver.start().onTrue(drivetrain.resetPidgeon());
-
-
-      elevatorSubsystem.setDefaultCommand(elevatorSubsystem.stop());
-
-      driver.a().whileTrue(elevatorSubsystem.runToPosition(.5));
-      driver.x().whileTrue(elevatorSubsystem.runToPosition(1));
-      driver.y().whileTrue(elevatorSubsystem.runToPosition(1.5));
-      driver.b().whileTrue(elevatorSubsystem.runToPosition(2));
-
   }
 
   public Command getAutonomousCommand() {
