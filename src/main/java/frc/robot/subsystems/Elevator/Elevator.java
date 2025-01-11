@@ -23,7 +23,6 @@ public class Elevator extends SubsystemBase {
   }
 
   public FunctionalCommand testCommand;
-
   public ElevatorState elevatorState;
 
   private final ElevatorIO io;
@@ -36,18 +35,6 @@ public class Elevator extends SubsystemBase {
   private GenericEntry elevatorStatorCurrent;
   private GenericEntry elevatorTemp;
 
-  private GenericEntry velocityRpmCancoder;
-  private GenericEntry positionCancoder;
-
-  private GenericEntry goalPose;
-  private GenericEntry stateName;
-
-  private GenericEntry f_fusedSensorOutOfSync;
-  private GenericEntry sf_fusedSensorOutOfSync;
-  private GenericEntry f_remoteSensorInvalid;
-  private GenericEntry sf_remoteSensorInvalid;
-
-  
   private GenericEntry shuffKP;
   private GenericEntry shuffKS;
   private GenericEntry shuffKV;
@@ -71,19 +58,11 @@ public class Elevator extends SubsystemBase {
     elevatorSupplyCurrent = this.elevatorShuffleboard.add("Elevator Supply Current", 0.0).getEntry();
     elevatorStatorCurrent = this.elevatorShuffleboard.add("Elevator Stator Current", 0.0).getEntry();
     elevatorTemp = this.elevatorShuffleboard.add("Elevator Temp", 0.0).getEntry();
-
-    velocityRpmCancoder = this.elevatorShuffleboard.add("Elevator RPM Cancoder", 0.0).getEntry();
-    positionCancoder = this.elevatorShuffleboard.add("Elevator Pos Cancoder", 0.0).getEntry();
-
-    f_fusedSensorOutOfSync = this.elevatorShuffleboard.add("f_fusedSensorOutOfSync", false).getEntry();
-    sf_fusedSensorOutOfSync = this.elevatorShuffleboard.add("sf_fusedSensorOutOfSync", false).getEntry();
-    f_remoteSensorInvalid = this.elevatorShuffleboard.add("f_remoteSensorInvalid", false).getEntry();
-    sf_remoteSensorInvalid = this.elevatorShuffleboard.add("sf_remoteSensorInvalid", false).getEntry();
   }
 
   @Override
   public void periodic() {
-    // io.updateStats(stats);
+    io.updateStats();
       
     UpdateTelemetry();
   }
@@ -94,14 +73,6 @@ public class Elevator extends SubsystemBase {
     elevatorSupplyCurrent.setDouble(stats.SupplyCurrentAmps);
     elevatorStatorCurrent.setDouble(stats.TorqueCurrentAmps);
     elevatorTemp.setDouble(stats.TempCelsius);
-
-    velocityRpmCancoder.setDouble(stats.cancoderVelocity);
-    positionCancoder.setDouble(stats.cancoderPosition);
-
-    f_fusedSensorOutOfSync.setBoolean(stats.f_fusedSensorOutOfSync);
-    sf_fusedSensorOutOfSync.setBoolean(stats.sf_fusedSensorOutOfSync);
-    f_remoteSensorInvalid.setBoolean(stats.f_remoteSensorInvalid);
-    sf_remoteSensorInvalid.setBoolean(stats.sf_remoteSensorInvalid);
   }
 
   public Command runToPosition(double position){

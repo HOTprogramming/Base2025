@@ -28,7 +28,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 
 
-public class ElevatorIOKraken extends ElevatorIO {
+public class ElevatorIOReal extends ElevatorIO {
   @Override
   public void periodic() {
     

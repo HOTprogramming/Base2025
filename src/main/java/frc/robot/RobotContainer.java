@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.Elevator.ElevatorIOKraken;
+import frc.robot.subsystems.Elevator.ElevatorIOReal;
 import frc.robot.subsystems.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.Elevator.Elevator.ElevatorState;
 import frc.robot.subsystems.Elevator.ElevatorIO;
@@ -29,7 +29,7 @@ public class RobotContainer {
     switch (Constants.getRobot()) {
       case COMPBOT -> {
 
-        elevatorSubsystem = new Elevator(new ElevatorIOKraken());
+        elevatorSubsystem = new Elevator(new ElevatorIOReal());
         
       }
       case DEVBOT -> {}

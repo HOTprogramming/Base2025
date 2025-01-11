@@ -29,7 +29,6 @@ public class ElevatorIOSim extends ElevatorIO {
 
 
     public TalonFXSimState elevatorMotorSimState;
-    public CANcoderSimState elevatorEncoderSimState;
 
     public ElevatorSim elevatorSim;
 
@@ -38,24 +37,8 @@ public class ElevatorIOSim extends ElevatorIO {
     private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Elevator Root", 2.5, 0);
     private final MechanismLigament2d m_elevatorMech2d;
 
-    private final ProfiledPIDController m_controller =
-            new ProfiledPIDController(
-                15,
-                0,
-                0,
-                new TrapezoidProfile.Constraints(2.45, 2.45));
-        ElevatorFeedforward m_feedforward =
-            new ElevatorFeedforward(
-                0,
-                .5,
-                0,
-                0);
-
     public ElevatorIOSim() {        
         elevatorMotorSimState = elevator.getSimState();
-        elevatorEncoderSimState = elevatorEncoder.getSimState();
-
-        elevatorEncoderSimState.Orientation = ChassisReference.CounterClockwise_Positive;
 
         elevatorSim = new ElevatorSim(
             DCMotor.getKrakenX60Foc(1),
@@ -74,8 +57,6 @@ public class ElevatorIOSim extends ElevatorIO {
         SmartDashboard.putData("Elevator Sim", m_mech2d);
     }
 
-
-
     @Override
     public void setElevatorMotorControl(double power) {
         elevator.set(power);
@@ -84,7 +65,6 @@ public class ElevatorIOSim extends ElevatorIO {
     @Override
     public void periodic() {
         elevatorMotorSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
-        elevatorEncoderSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
 
         elevatorSim.setInputVoltage(elevatorMotorSimState.getMotorVoltage());
 
@@ -92,9 +72,6 @@ public class ElevatorIOSim extends ElevatorIO {
 
         elevatorMotorSimState.setRawRotorPosition(elevatorSim.getPositionMeters());
         elevatorMotorSimState.setRotorVelocity(elevatorSim.getVelocityMetersPerSecond());
-
-        // stats.elevatorPosition = elevatorSim.getPositionMeters();
-        // stats.elevatorVelocity = elevatorSim.getVelocityMetersPerSecond();
 
         m_elevatorMech2d.setLength(elevatorSim.getPositionMeters());
     }
