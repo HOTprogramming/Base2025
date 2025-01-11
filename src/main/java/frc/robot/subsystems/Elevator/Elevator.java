@@ -13,16 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Elevator.ElevatorIO.ElevatorIOStats;
 
 public class Elevator extends SubsystemBase {
-  public enum ElevatorState{
-    L4,
-    L3,
-    L2,
-    L1,
-    ZERO
-  }
-
   public FunctionalCommand testCommand;
-  public ElevatorState elevatorState;
 
   private final ElevatorIO io;
   public final ElevatorIOStats stats;
@@ -45,8 +36,6 @@ public class Elevator extends SubsystemBase {
 
   public Elevator(ElevatorIO io) {
     this.io = io; 
-
-    this.elevatorState = ElevatorState.ZERO;
 
     this.stats = ElevatorIO.stats;
 

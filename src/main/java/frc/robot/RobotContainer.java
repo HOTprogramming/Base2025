@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Elevator.ElevatorIOReal;
 import frc.robot.subsystems.Elevator.ElevatorIOSim;
-import frc.robot.subsystems.Elevator.Elevator.ElevatorState;
 import frc.robot.subsystems.Elevator.ElevatorIO;
 import frc.robot.subsystems.Elevator.Elevator;
 
@@ -27,15 +26,9 @@ public class RobotContainer {
 
   public RobotContainer() {
     switch (Constants.getRobot()) {
-      case COMPBOT -> {
-
-        elevatorSubsystem = new Elevator(new ElevatorIOReal());
-        
-      }
+      case COMPBOT -> {elevatorSubsystem = new Elevator(new ElevatorIOReal());}
       case DEVBOT -> {}
-      case SIMBOT -> {
-        elevatorSubsystem = new Elevator(new ElevatorIOSim());
-      }
+      case SIMBOT -> {elevatorSubsystem = new Elevator(new ElevatorIOSim());}
     }
 
     configureBindings();
@@ -45,7 +38,11 @@ public class RobotContainer {
   private void configureBindings() {
     elevatorSubsystem.setDefaultCommand(elevatorSubsystem.stop());
 
-    driver.a().whileTrue(elevatorSubsystem.runToPosition(1));
+    driver.a().whileTrue(elevatorSubsystem.runToPosition(.5));
+    driver.x().whileTrue(elevatorSubsystem.runToPosition(1));
+    driver.y().whileTrue(elevatorSubsystem.runToPosition(1.5));
+    driver.b().whileTrue(elevatorSubsystem.runToPosition(2));
+
   }
 
   public Command getAutonomousCommand() {
