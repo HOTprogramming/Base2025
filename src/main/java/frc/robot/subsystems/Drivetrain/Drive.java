@@ -127,7 +127,7 @@ public class Drive extends SubsystemBase {
     }
 
     public void lockReefManual(double driveX, double driveY, double rightX, double rightY) {
-        double joystickDeg = Math.toDegrees(Math.atan2(rightY, -rightX));
+        double joystickDeg = Math.toDegrees(Math.atan2(rightY, -rightX)) - 90;
         driveIO.setSwerveRequest(FIELD_CENTRIC
             .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY())
             .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
