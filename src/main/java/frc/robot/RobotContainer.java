@@ -62,17 +62,18 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    elevatorSubsystem.setDefaultCommand(elevatorSubsystem.stop());
+    // elevatorSubsystem.setDefaultCommand(elevatorSubsystem.stop());
 
     operator.a().whileTrue(armSubsystem.goToL4());
+    operator.b().whileTrue(armSubsystem.goToL3());
     
-    driver.a().whileTrue(elevatorSubsystem.runToPosition(.5));
-    driver.x().whileTrue(elevatorSubsystem.runToPosition(1));
-    driver.y().whileTrue(elevatorSubsystem.runToPosition(1.5));
-    driver.b().whileTrue(elevatorSubsystem.runToPosition(2));
-    operator.a().whileTrue(elevatorSubsystem.runToPosition(2.5));
-    operator.b().whileTrue(elevatorSubsystem.runToPosition(3));
-    operator.x().whileTrue(elevatorSubsystem.runToPosition(2.75));
+    // driver.a().whileTrue(elevatorSubsystem.runToPosition(.5));
+    // driver.x().whileTrue(elevatorSubsystem.runToPosition(1));
+    // driver.y().whileTrue(elevatorSubsystem.runToPosition(1.5));
+    // driver.b().whileTrue(elevatorSubsystem.runToPosition(2));
+    // operator.a().whileTrue(elevatorSubsystem.runToPosition(2.5));
+    // operator.b().whileTrue(elevatorSubsystem.runToPosition(3));
+    // operator.x().whileTrue(elevatorSubsystem.runToPosition(2.75));
 
     drivetrain.setDefaultCommand
       (drivetrain.run(() -> {
@@ -141,15 +142,6 @@ public class RobotContainer {
       ));
 
       driver.start().onTrue(drivetrain.resetPidgeon());
-
-
-      elevatorSubsystem.setDefaultCommand(elevatorSubsystem.stop());
-
-      driver.a().whileTrue(elevatorSubsystem.runToPosition(.5));
-      driver.x().whileTrue(elevatorSubsystem.runToPosition(1));
-      driver.y().whileTrue(elevatorSubsystem.runToPosition(1.5));
-      driver.b().whileTrue(elevatorSubsystem.runToPosition(2));
-
   }
 
   public Command getAutonomousCommand() {

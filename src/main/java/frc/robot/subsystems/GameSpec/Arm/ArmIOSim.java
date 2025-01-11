@@ -1,5 +1,6 @@
 package frc.robot.subsystems.GameSpec.Arm;
 
+import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -18,10 +19,6 @@ import frc.robot.Constants;
 import frc.robot.subsystems.GameSpec.Elevator.ElevatorIOSim;
 
 public class ArmIOSim extends ArmIO {
-
-
-  ElevatorIOSim elevatorSim = new ElevatorIOSim();
-
   public TalonFXSimState armSimState;
 
   public final SingleJointedArmSim armSim;
@@ -45,7 +42,7 @@ public class ArmIOSim extends ArmIO {
           );
         
        //m_armTower = m_armPivot.append(new MechanismLigament2d("ArmTower", 30, -90));
-       m_arm = elevatorSim.getElevatorLigament().append(
+       m_arm = ElevatorIOSim.getElevatorLigament().append(
         new MechanismLigament2d(
             "Arm",
             ArmConstants.simArmLength, // Length of the arm

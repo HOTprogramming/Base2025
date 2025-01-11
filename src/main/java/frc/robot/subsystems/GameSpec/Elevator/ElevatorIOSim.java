@@ -16,12 +16,12 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 public class ElevatorIOSim extends ElevatorIO {
     public TalonFXSimState elevatorMotorSimState;
 
-    public ElevatorSim elevatorSim;
+    public static ElevatorSim elevatorSim;
 
     // Additional simulation variables
-    private final Mechanism2d m_mech2d = new Mechanism2d(5, 5);
-    private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Elevator Root", 2.5, 0);
-    private final MechanismLigament2d m_elevatorMech2d;
+    private static Mechanism2d m_mech2d = new Mechanism2d(5, 5);
+    private static MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Elevator Root", 2.5, 0);
+    private static MechanismLigament2d m_elevatorMech2d;
 
     public ElevatorIOSim() {        
         elevatorMotorSimState = elevator.getSimState();
@@ -58,7 +58,7 @@ public class ElevatorIOSim extends ElevatorIO {
         m_elevatorMech2d.setLength(elevatorSim.getPositionMeters());
     }
 
-    public MechanismObject2d getElevatorLigament() {
-        return m_elevatorMech2d;
+    public static MechanismObject2d getElevatorLigament() {
+        return m_mech2dRoot;
     }
 }

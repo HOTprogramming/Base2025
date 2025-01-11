@@ -10,7 +10,7 @@ public class ArmConstants {
     public static final int armEncoderID = 51;
     public static final double kReduction = (1.0 / 2.0);
     public static final double kMaxAccelerationRpmPerSec = 9000.0; 
-    public static final MMGains armGains = new MMGains(200, 100, 200, 100, 0.0, 0.0, 100, 100);
+    public static final MMGains armGains = new MMGains(200, 100, 200, 100, 0.0, 0.0, 0, 0);
     public static final DCMotor simGearBox = DCMotor.getKrakenX60Foc(1);
     public static final double simGearing = 200;
     public static final double simInertia = SingleJointedArmSim.estimateMOI(Units.inchesToMeters(30), 8.0);

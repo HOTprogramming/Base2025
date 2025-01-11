@@ -75,19 +75,21 @@ public class Arm extends SubsystemBase {
       () -> this.armCommandedPos.setDouble(position),
       () -> io.setArmMotorControl(position),
       interrupted -> io.setArmMotorControl(position), 
-      () -> checkRange(.25),
+      () -> checkRange(.1),
       this);
   }
 
   public Command goToL4(){
-    return armCommand(1);
+    return armCommand(coral_Level4);
   }
 
+  public Command goToL3(){
+    return armCommand(coral_Level3);
+  }
 
   public boolean checkRange(double deadband){
-    // return (stats.armPosition >= armCommandedPos.getDouble(0) - deadband) && 
-    //        (stats.armPosition <= armCommandedPos.getDouble(0) + deadband);
-    return false;
+    return (stats.armPosition >= armCommandedPos.getDouble(0) - deadband) && 
+           (stats.armPosition <= armCommandedPos.getDouble(0) + deadband);
   }
 
   public Command runToPosition(double position){
