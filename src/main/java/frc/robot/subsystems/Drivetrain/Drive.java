@@ -117,9 +117,9 @@ public class Drive extends SubsystemBase {
 
      public void lockReef(double driveX, double driveY) {
         double degToReef = Math.toDegrees(Math.atan2(4 - iOdata.state.Pose.getY(), DriverStation.getAlliance().get() == Alliance.Blue ? 13 : 4.5 - iOdata.state.Pose.getX()));
-        driveIO.setSwerveRequest(FIELD_CENTRIC
-            .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY())
-            .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
+        driveIO.setSwerveRequest(ROBOT_CENTRIC
+            .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY() * 0.25)
+            .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY() * 0.25)
             .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(),
             Math.toRadians(60*Math.round(degToReef/60))))
         );        
@@ -128,24 +128,14 @@ public class Drive extends SubsystemBase {
 
     public void lockReefManual(double driveX, double driveY, double rightX, double rightY) {
         double joystickDeg = Math.toDegrees(Math.atan2(rightY, -rightX)) - 90;
-        driveIO.setSwerveRequest(FIELD_CENTRIC
-            .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY())
-            .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
+        driveIO.setSwerveRequest(ROBOT_CENTRIC
+            .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY() * 0.25)
+            .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY() * 0.25)
             .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(),
             Math.toRadians(60*Math.round(joystickDeg/60))))
         );        
         heading = new Rotation2d (Math.toRadians(60*Math.round(joystickDeg/60)));
     }
-
-    public void lockedRobotCentric(double driveY)  {
-        driveIO.setSwerveRequest(ROBOT_CENTRIC
-             .withVelocityX(0)
-             .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
-             .withRotationalRate(0)
-              );
-         heading = this.iOdata.state.Pose.getRotation();
-     }
-
 
     @Override
     public void periodic() {
