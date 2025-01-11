@@ -59,6 +59,6 @@ public class ElevatorIOSim extends ElevatorIO {
     }
 
     public static MechanismObject2d getElevatorLigament() {
-        return m_mech2dRoot;
+        return m_elevatorMech2d;
     }
 }

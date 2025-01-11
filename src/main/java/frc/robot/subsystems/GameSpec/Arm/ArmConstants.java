@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
 public class ArmConstants {
     
-    public static final int armMotorID = 32;
+    public static final int armMotorID = 31;
     public static final int armEncoderID = 51;
     public static final double kReduction = (1.0 / 2.0);
     public static final double kMaxAccelerationRpmPerSec = 9000.0; 

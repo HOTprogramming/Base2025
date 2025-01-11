@@ -122,6 +122,10 @@ public abstract class ArmIO {
         arm.setVoltage(0);
     }
 
+    public void runVolts(double volts){
+        arm.setVoltage(volts);
+    }
+
     /** Perform simulation-specific tasks */
     abstract public void periodic();
 }

@@ -53,20 +53,21 @@ public class ArmIOSim extends ArmIO {
 
     @Override
     public void periodic() {
+      // In this method, we update our simulation of what our arm is doing
+      // First, we set our "inputs" (voltages)
+      armSim.setInput(arm.get() * RobotController.getBatteryVoltage());
 
-    // In this method, we update our simulation of what our arm is doing
-    // First, we set our "inputs" (voltages)
-    armSim.setInput(arm.get() * RobotController.getBatteryVoltage());
+      // Next, we update it. The standard loop time is 20ms.
+      armSim.update(0.020);
 
-    // Next, we update it. The standard loop time is 20ms.
-    armSim.update(0.020);
+      // SimBattery estimates loaded battery voltages
+      RoboRioSim.setVInVoltage(
+          BatterySim.calculateDefaultBatteryLoadedVoltage(armSim.getCurrentDrawAmps()));
 
-    // SimBattery estimates loaded battery voltages
-    RoboRioSim.setVInVoltage(
-        BatterySim.calculateDefaultBatteryLoadedVoltage(armSim.getCurrentDrawAmps()));
+      armSimState.setRawRotorPosition(armSim.getAngleRads());
+      armSimState.setRotorVelocity(armSim.getVelocityRadPerSec());
 
-    // Update the Mechanism Arm angle based on the simulated arm angle
-    m_arm.setAngle(Units.radiansToDegrees(armSim.getAngleRads()));
-
+      // Update the Mechanism Arm angle based on the simulated arm angle
+      m_arm.setAngle(Units.radiansToDegrees(armSim.getAngleRads()));
     }
 }
