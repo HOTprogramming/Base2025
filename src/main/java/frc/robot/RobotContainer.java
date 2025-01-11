@@ -68,6 +68,7 @@ public class RobotContainer {
         .or(driver.axisGreaterThan(4, 0.15))
         .and(driver.rightBumper().negate())
         .and(driver.leftBumper().negate())
+        .and(driver.y().negate())
         .whileTrue
       (drivetrain.run(() -> {
         drivetrain.teleopDrive(
@@ -75,25 +76,12 @@ public class RobotContainer {
           Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
           Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
         }
-      ));
-
-      driver.povLeft().whileTrue
-      (drivetrain.run(() -> {
-        drivetrain.lockRotation(
+      )).onFalse(Commands.race(Commands.waitSeconds(0.2), drivetrain.run(() -> {
+        drivetrain.teleopDrive(
           Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
           Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
-          Rotation2d.fromDegrees(90));
-        }
-      ));
-
-      driver.povRight().whileTrue
-      (drivetrain.run(() -> {
-        drivetrain.lockRotation(
-          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
-          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
-          Rotation2d.fromDegrees(-90));
-        }
-      ));
+          Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
+        })));
 
       driver.povUp().whileTrue
       (drivetrain.run(() -> {
@@ -104,21 +92,24 @@ public class RobotContainer {
         }
       ));
 
-      driver.povDown().whileTrue
+      driver.b().whileTrue
       (drivetrain.run(() -> {
-        drivetrain.lockRotation(
+        drivetrain.lockReef(
           Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
-          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
-          Rotation2d.fromDegrees(179.9));
+          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0);
         }
       ));
 
-      driver.leftBumper().whileTrue
+      driver.y()
+      .and(driver.axisLessThan(4, -0.15).or(driver.axisGreaterThan(4, 0.15))
+      .or(driver.axisLessThan(5, -0.15)).or(driver.axisGreaterThan(5, 0.15)))
+      .whileTrue
       (drivetrain.run(() -> {
-        drivetrain.facePoint(
+        drivetrain.lockReefManual(
           Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
           Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
-          new Pose2d(5, 5, new Rotation2d(0)));
+          Math.abs(driver.getRightX()) >= 0.1 ? -driver.getRightX() : 0,
+          Math.abs(driver.getRightY()) >= 0.1 ? -driver.getRightY() : 0);
         }
       ));
   }

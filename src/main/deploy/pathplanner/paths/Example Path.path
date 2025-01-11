@@ -23,6 +23,22 @@
         "x": -1.2037909836065572,
         "y": 0.29082991803278685
       },
+      "nextControl": {
+        "x": 0.7962090163934423,
+        "y": 0.2908299180327866
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.531352459016393,
+        "y": 4.025
+      },
+      "prevControl": {
+        "x": 2.7177254098360653,
+        "y": 2.0859887295081965
+      },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null

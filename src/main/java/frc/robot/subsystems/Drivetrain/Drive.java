@@ -4,6 +4,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -80,7 +81,6 @@ public class Drive extends SubsystemBase {
              .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY())
              .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
              .withRotationalRate((driveTheta <= 0 ? -(driveTheta * driveTheta) : (driveTheta * driveTheta)) * DriveConfig.MAX_ANGULAR_VELOCITY())
-              //.withRotationalRate(0.0);
               );
  
          heading = this.iOdata.state.Pose.getRotation();
@@ -93,7 +93,6 @@ public class Drive extends SubsystemBase {
              .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
              .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(), heading.getRadians()))
          );
-         // System.out.println("head");
      }
  
  
@@ -115,6 +114,30 @@ public class Drive extends SubsystemBase {
          );        
          heading = this.iOdata.state.Pose.getRotation();
      }
+
+     public void lockReef(double driveX, double driveY) {
+        double degToReef = Math.toDegrees(Math.atan2(4 - iOdata.state.Pose.getY(), 4.5 - iOdata.state.Pose.getX()));
+        driveIO.setSwerveRequest(FIELD_CENTRIC
+            .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY())
+            .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
+            .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(),
+            Math.toRadians(60*Math.round(degToReef/60))))
+        );        
+        heading = new Rotation2d (Math.toRadians(60*Math.round(degToReef/60)));
+    }
+
+    public void lockReefManual(double driveX, double driveY, double rightX, double rightY) {
+        double joystickDeg = Math.toDegrees(Math.atan2(rightY, -rightX)) - 90;
+        driveIO.setSwerveRequest(FIELD_CENTRIC
+            .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY())
+            .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
+            .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(),
+            Math.toRadians(60*Math.round(joystickDeg/60))))
+        );        
+        heading = new Rotation2d (Math.toRadians(60*Math.round(joystickDeg/60)));
+        System.out.println("manual");
+    }
+
 
     @Override
     public void periodic() {
