@@ -112,14 +112,6 @@ public class RobotContainer {
           Math.abs(driver.getRightY()) >= 0.1 ? -driver.getRightY() : 0);
         }
       ));
-
-      driver.b().and(driver.rightBumper())
-      .whileTrue
-      (drivetrain.run(() -> {
-        drivetrain.lockedRobotCentric(
-          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0);
-        }
-      ));
   }
 
   public Command getAutonomousCommand() {
