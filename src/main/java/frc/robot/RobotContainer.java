@@ -16,18 +16,22 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
+import frc.robot.subsystems.GameSpec.Arm.Arm;
+import frc.robot.subsystems.GameSpec.Arm.ArmIOReal;
+import frc.robot.subsystems.GameSpec.Arm.ArmIOSim;
+import frc.robot.subsystems.GameSpec.Elevator.Elevator;
+import frc.robot.subsystems.GameSpec.Elevator.ElevatorIOReal;
+import frc.robot.subsystems.GameSpec.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
-import frc.robot.subsystems.Elevator.ElevatorIOReal;
-import frc.robot.subsystems.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveIO;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
 import frc.robot.subsystems.Drivetrain.DriveSim;
-import frc.robot.subsystems.Elevator.Elevator;
 
 public class RobotContainer {
   private Elevator elevatorSubsystem;
   public Drive drivetrain;
+  private Arm armSubsystem;
 
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
@@ -37,11 +41,13 @@ public class RobotContainer {
       case COMPBOT -> {
         elevatorSubsystem = new Elevator(new ElevatorIOReal());   
         drivetrain = new Drive(new DriveKraken());
+        armSubsystem = new Arm(new ArmIOReal());
       }
       case DEVBOT -> {}
       case SIMBOT -> {
         elevatorSubsystem = new Elevator(new ElevatorIOSim());
         drivetrain = new Drive(new DriveSim());
+        armSubsystem = new Arm(new ArmIOSim());
       }
     }
 
@@ -57,6 +63,8 @@ public class RobotContainer {
 
   private void configureBindings() {
     elevatorSubsystem.setDefaultCommand(elevatorSubsystem.stop());
+
+    operator.a().whileTrue(armSubsystem.goToL4());
     
     driver.a().whileTrue(elevatorSubsystem.runToPosition(.5));
     driver.x().whileTrue(elevatorSubsystem.runToPosition(1));

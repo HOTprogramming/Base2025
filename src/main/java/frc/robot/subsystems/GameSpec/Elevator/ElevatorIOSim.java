@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Elevator;
+package frc.robot.subsystems.GameSpec.Elevator;
 
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
@@ -55,5 +56,9 @@ public class ElevatorIOSim extends ElevatorIO {
         elevatorMotorSimState.setRotorVelocity(elevatorSim.getVelocityMetersPerSecond());
 
         m_elevatorMech2d.setLength(elevatorSim.getPositionMeters());
+    }
+
+    public MechanismObject2d getElevatorLigament() {
+        return m_elevatorMech2d;
     }
 }
