@@ -28,7 +28,6 @@ import frc.robot.subsystems.Elevator.Elevator;
 public class RobotContainer {
   private Elevator elevatorSubsystem;
   public Drive drivetrain;
-  public Drive drivetrain;
 
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
