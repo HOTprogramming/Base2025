@@ -62,7 +62,6 @@ public class RobotContainer {
     operator.a().whileTrue(elevatorSubsystem.runToPosition(2.5));
     operator.b().whileTrue(elevatorSubsystem.runToPosition(3));
     operator.x().whileTrue(elevatorSubsystem.runToPosition(2.75));
-    operator.y().whileTrue(elevatorSubsystem.runToPosition(3.5));
 
     drivetrain.setDefaultCommand
       (drivetrain.run(() -> {
