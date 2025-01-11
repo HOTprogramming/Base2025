@@ -5,33 +5,26 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.Elevator.ElevatorIOKraken;
+import frc.robot.subsystems.Elevator.ElevatorIOReal;
 import frc.robot.subsystems.Elevator.ElevatorIOSim;
-import frc.robot.subsystems.Elevator.ElevatorIO;
 import frc.robot.subsystems.Elevator.Elevator;
 
 
 public class RobotContainer {
-
-  private Elevator m_elevatorSubsystem = null;
-
+  private Elevator elevatorSubsystem = null;
 
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
 
+  FunctionalCommand highCommand;
+
   public RobotContainer() {
     switch (Constants.getRobot()) {
-      case COMPBOT -> {
-
-        m_elevatorSubsystem = new Elevator(new ElevatorIOKraken());
-        
-      }
+      case COMPBOT -> {elevatorSubsystem = new Elevator(new ElevatorIOReal());}
       case DEVBOT -> {}
-      case SIMBOT -> {
-        m_elevatorSubsystem = new Elevator(new ElevatorIOSim());
-      }
+      case SIMBOT -> {elevatorSubsystem = new Elevator(new ElevatorIOSim());}
     }
 
     configureBindings();
@@ -39,8 +32,17 @@ public class RobotContainer {
 
   /* Driver Controller */
   private void configureBindings() {
+    elevatorSubsystem.setDefaultCommand(elevatorSubsystem.stop());
 
+    driver.a().whileTrue(elevatorSubsystem.runToPosition(.5));
+    driver.x().whileTrue(elevatorSubsystem.runToPosition(1));
+    driver.y().whileTrue(elevatorSubsystem.runToPosition(1.5));
+    driver.b().whileTrue(elevatorSubsystem.runToPosition(2));
 
+  }
+
+  public Command getAutonomousCommand() {
+    return null;
   }
 
 }
