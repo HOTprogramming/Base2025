@@ -42,9 +42,9 @@ public class RobotContainer {
     }
 
     configureBindings();
-    NamedCommands.registerCommand("algae intake",  elevatorSubsystem.testCommand(2.75));
+    NamedCommands.registerCommand("Algae Intake",  elevatorSubsystem.testCommand(2.75));
     NamedCommands.registerCommand("Net", elevatorSubsystem.testCommand(3));
-    NamedCommands.registerCommand("Coral intake", elevatorSubsystem.testCommand(2.5));
+    NamedCommands.registerCommand("Coral Intake", elevatorSubsystem.testCommand(2.5));
     NamedCommands.registerCommand("L4", elevatorSubsystem.testCommand(2));
     NamedCommands.registerCommand("L3", elevatorSubsystem.testCommand(1.5));
     NamedCommands.registerCommand("L2", elevatorSubsystem.testCommand(1));
