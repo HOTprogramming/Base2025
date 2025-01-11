@@ -42,8 +42,9 @@ public class RobotContainer {
     }
 
     configureBindings();
-    NamedCommands.registerCommand("L6", elevatorSubsystem.testCommand(3));
-    NamedCommands.registerCommand("L5", elevatorSubsystem.testCommand(2.5));
+    NamedCommands.registerCommand("algae intake",  elevatorSubsystem.testCommand(2.75));
+    NamedCommands.registerCommand("Net", elevatorSubsystem.testCommand(3));
+    NamedCommands.registerCommand("Coral intake", elevatorSubsystem.testCommand(2.5));
     NamedCommands.registerCommand("L4", elevatorSubsystem.testCommand(2));
     NamedCommands.registerCommand("L3", elevatorSubsystem.testCommand(1.5));
     NamedCommands.registerCommand("L2", elevatorSubsystem.testCommand(1));
@@ -53,13 +54,16 @@ public class RobotContainer {
   private void configureBindings() {
     elevatorSubsystem.setDefaultCommand(elevatorSubsystem.stop());
     
-
+  
    driver.a().whileTrue(elevatorSubsystem.runToPosition(.5));
     driver.x().whileTrue(elevatorSubsystem.runToPosition(1));
     driver.y().whileTrue(elevatorSubsystem.runToPosition(1.5));
     driver.b().whileTrue(elevatorSubsystem.runToPosition(2));
     operator.a().whileTrue(elevatorSubsystem.runToPosition(2.5));
     operator.b().whileTrue(elevatorSubsystem.runToPosition(3));
+    operator.x().whileTrue(elevatorSubsystem.runToPosition(2.75));
+    operator.y().whileTrue(elevatorSubsystem.runToPosition(3.5));
+
     drivetrain.setDefaultCommand
       (drivetrain.run(() -> {
             drivetrain.headingControl(
