@@ -1,13 +1,15 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
+import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -19,15 +21,12 @@ import frc.robot.subsystems.Drivetrain.DriveKraken;
 import frc.robot.subsystems.Drivetrain.DriveSim;
 import frc.robot.subsystems.Elevator.Elevator;
 
-
 public class RobotContainer {
-  private Elevator elevatorSubsystem = null;
+  private Elevator elevatorSubsystem;
   public Drive drivetrain;
 
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
-
-  FunctionalCommand highCommand;
 
   public RobotContainer() {
     switch (Constants.getRobot()) {
@@ -43,9 +42,19 @@ public class RobotContainer {
     }
 
     configureBindings();
+
+    NamedCommands.registerCommand("L4", elevatorSubsystem.testCommand(2));
+    NamedCommands.registerCommand("L3", elevatorSubsystem.testCommand(1.5));
+    NamedCommands.registerCommand("L2", elevatorSubsystem.testCommand(1));
+    NamedCommands.registerCommand("L1", elevatorSubsystem.testCommand(.5));
   }
 
   private void configureBindings() {
+    // if(DriverStation.isAutonomous()){
+    // } else {
+    //   elevatorSubsystem.setDefaultCommand(elevatorSubsystem.stop());
+    // }
+
     elevatorSubsystem.setDefaultCommand(elevatorSubsystem.stop());
 
     driver.a().whileTrue(elevatorSubsystem.runToPosition(.5));

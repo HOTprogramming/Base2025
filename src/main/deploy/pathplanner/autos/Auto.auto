@@ -5,63 +5,128 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "path 1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "path 1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4"
+                }
+              }
+            ]
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 2.5
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "path 2"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "path 3"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "path 4"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "path 2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L3"
+                }
+              }
+            ]
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 2.5
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "path 5"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "path 3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L2"
+                }
+              }
+            ]
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 2.5
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "path 4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L2"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.5
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "path 5"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.5
           }
         }
       ]

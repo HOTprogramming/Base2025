@@ -27,7 +27,7 @@ public class Elevator extends SubsystemBase {
   private GenericEntry elevatorStatorCurrent;
   private GenericEntry elevatorTemp;
 
-  public double elevatorCommandedPos;
+  public double elevatorCommandedPos = 0;
   
   public Elevator(ElevatorIO io) {
     this.io = io; 
@@ -41,6 +41,8 @@ public class Elevator extends SubsystemBase {
     elevatorSupplyCurrent = this.elevatorShuffleboard.add("Elevator Supply Current", 0.0).getEntry();
     elevatorStatorCurrent = this.elevatorShuffleboard.add("Elevator Stator Current", 0.0).getEntry();
     elevatorTemp = this.elevatorShuffleboard.add("Elevator Temp", 0.0).getEntry();
+
+
   }
 
   @Override
@@ -59,15 +61,36 @@ public class Elevator extends SubsystemBase {
   }
 
   public Command runToPosition(double position){
+    this.elevatorCommandedPos = position;
+
     return run(() -> {
         io.setElevatorMotorControl(position);
     });
+  }
+
+  public FunctionalCommand testCommand(double position){
+    return new FunctionalCommand(
+      () -> this.stop(),
+      () -> io.setElevatorMotorControl(position),
+      interrupted -> io.setElevatorMotorControl(position), 
+      () -> checkRange(.1),
+      this);
   }
 
   public Command stop(){
     return run(() -> {
         io.stop();
     });  
+  }
+
+  public Command hold(){
+    return run(() -> {
+      io.setElevatorMotorControl(elevatorCommandedPos);
+    });
+  }
+
+  public boolean checkRange(double deadband){
+    return (stats.elevatorPosition >= elevatorCommandedPos - deadband) && (stats.elevatorPosition <= elevatorCommandedPos + deadband);
   }
 
   @Override
