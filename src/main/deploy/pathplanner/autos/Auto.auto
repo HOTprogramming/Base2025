@@ -17,7 +17,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "L4"
+                  "name": "Elevator L4"
                 }
               }
             ]
@@ -26,7 +26,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
+            "waitTime": 0.5
           }
         },
         {
@@ -42,7 +42,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "L3"
+                  "name": "Elevator Coral Intake"
                 }
               }
             ]
@@ -51,7 +51,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
+            "waitTime": 0.5
           }
         },
         {
@@ -67,7 +67,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "L2"
+                  "name": "Elevator L4"
                 }
               }
             ]
@@ -76,7 +76,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
+            "waitTime": 0.5
           }
         },
         {
@@ -92,7 +92,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "L1"
+                  "name": "Elevator Coral Intake"
                 }
               }
             ]
@@ -101,7 +101,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
+            "waitTime": 0.5
           }
         },
         {
@@ -117,7 +117,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "L4"
+                  "name": "Elevator L4"
                 }
               }
             ]
@@ -126,7 +126,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
+            "waitTime": 0.5
           }
         }
       ]
