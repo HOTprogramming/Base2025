@@ -16,18 +16,22 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
+import frc.robot.subsystems.GameSpec.Arm.Arm;
+import frc.robot.subsystems.GameSpec.Arm.ArmIOReal;
+import frc.robot.subsystems.GameSpec.Arm.ArmIOSim;
+import frc.robot.subsystems.GameSpec.Elevator.Elevator;
+import frc.robot.subsystems.GameSpec.Elevator.ElevatorIOReal;
+import frc.robot.subsystems.GameSpec.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
-import frc.robot.subsystems.Elevator.ElevatorIOReal;
-import frc.robot.subsystems.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveIO;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
 import frc.robot.subsystems.Drivetrain.DriveSim;
-import frc.robot.subsystems.Elevator.Elevator;
 
 public class RobotContainer {
   private Elevator elevatorSubsystem;
   public Drive drivetrain;
+  private Arm armSubsystem;
 
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
@@ -37,11 +41,13 @@ public class RobotContainer {
       case COMPBOT -> {
         elevatorSubsystem = new Elevator(new ElevatorIOReal());   
         drivetrain = new Drive(new DriveKraken());
+        armSubsystem = new Arm(new ArmIOReal());
       }
       case DEVBOT -> {}
       case SIMBOT -> {
         elevatorSubsystem = new Elevator(new ElevatorIOSim());
         drivetrain = new Drive(new DriveSim());
+        armSubsystem = new Arm(new ArmIOSim());
       }
     }
 
@@ -57,13 +63,25 @@ public class RobotContainer {
   }
 
   private void configureBindings() {    
-    operator.a().whileTrue(NamedCommands.getCommand("Elevator L4"));
-    operator.b().whileTrue(NamedCommands.getCommand("Elevator L3"));
-    operator.x().whileTrue(NamedCommands.getCommand("Elevator L2"));
-    operator.y().whileTrue(NamedCommands.getCommand("Elevator L1"));
-    operator.povUp().whileTrue(NamedCommands.getCommand("Elevator Net"));
-    operator.povRight().whileTrue(NamedCommands.getCommand("Elevator Coral Intake"));
-    operator.povLeft().whileTrue(NamedCommands.getCommand("Elevator Algae Intake"));
+//
+    operator.x().whileTrue(armSubsystem.goToPackage());
+    operator.rightBumper().whileTrue(armSubsystem.goToCFeederIntake());
+    operator.leftBumper().whileTrue(armSubsystem.goToCFloorIntake());
+    operator.povUp().whileTrue(armSubsystem.goToCL4());
+    operator.povRight().whileTrue(armSubsystem.goToCL3());
+    operator.povDown().whileTrue(armSubsystem.goToCL3());
+    operator.povDownLeft().whileTrue(armSubsystem.goToCL1());
+    operator.y().whileTrue(armSubsystem.goToAPlace());
+    operator.b().whileTrue(armSubsystem.goToAIntakeL3());
+    operator.a().whileTrue(armSubsystem.goToAIntakeL2());
+
+    driver.a().whileTrue(NamedCommands.getCommand("Elevator L4"));
+    driver.b().whileTrue(NamedCommands.getCommand("Elevator L3"));
+    driver.x().whileTrue(NamedCommands.getCommand("Elevator L2"));
+    driver.y().whileTrue(NamedCommands.getCommand("Elevator L1"));
+    driver.povUp().whileTrue(NamedCommands.getCommand("Elevator Net"));
+    driver.povRight().whileTrue(NamedCommands.getCommand("Elevator Coral Intake"));
+    driver.povLeft().whileTrue(NamedCommands.getCommand("Elevator Algae Intake"));
 
     drivetrain.setDefaultCommand
       (drivetrain.run(() -> {
@@ -135,7 +153,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("New Auto");
+    return new PathPlannerAuto("Auto");
   }
 
 }
