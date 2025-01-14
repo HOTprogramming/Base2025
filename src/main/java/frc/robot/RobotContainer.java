@@ -63,17 +63,25 @@ public class RobotContainer {
   }
 
   private void configureBindings() {    
+//
+    operator.x().whileTrue(armSubsystem.goToPackage());
+    operator.rightBumper().whileTrue(armSubsystem.goToCFeederIntake());
+    operator.leftBumper().whileTrue(armSubsystem.goToCFloorIntake());
+    operator.povUp().whileTrue(armSubsystem.goToCL4());
+    operator.povRight().whileTrue(armSubsystem.goToCL3());
+    operator.povDown().whileTrue(armSubsystem.goToCL3());
+    operator.povDownLeft().whileTrue(armSubsystem.goToCL1());
+    operator.y().whileTrue(armSubsystem.goToAPlace());
+    operator.b().whileTrue(armSubsystem.goToAIntakeL3());
+    operator.a().whileTrue(armSubsystem.goToAIntakeL2());
 
-    operator.a().whileTrue(armSubsystem.goToL4());
-    operator.b().whileTrue(armSubsystem.goToL3());
-
-    operator.a().whileTrue(NamedCommands.getCommand("Elevator L4"));
-    operator.b().whileTrue(NamedCommands.getCommand("Elevator L3"));
-    operator.x().whileTrue(NamedCommands.getCommand("Elevator L2"));
-    operator.y().whileTrue(NamedCommands.getCommand("Elevator L1"));
-    operator.povUp().whileTrue(NamedCommands.getCommand("Elevator Net"));
-    operator.povRight().whileTrue(NamedCommands.getCommand("Elevator Coral Intake"));
-    operator.povLeft().whileTrue(NamedCommands.getCommand("Elevator Algae Intake"));
+    driver.a().whileTrue(NamedCommands.getCommand("Elevator L4"));
+    driver.b().whileTrue(NamedCommands.getCommand("Elevator L3"));
+    driver.x().whileTrue(NamedCommands.getCommand("Elevator L2"));
+    driver.y().whileTrue(NamedCommands.getCommand("Elevator L1"));
+    driver.povUp().whileTrue(NamedCommands.getCommand("Elevator Net"));
+    driver.povRight().whileTrue(NamedCommands.getCommand("Elevator Coral Intake"));
+    driver.povLeft().whileTrue(NamedCommands.getCommand("Elevator Algae Intake"));
 
     drivetrain.setDefaultCommand
       (drivetrain.run(() -> {
