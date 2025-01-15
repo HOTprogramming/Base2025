@@ -1,10 +1,13 @@
 ---
-name: Custom issue template
-about: Describe this issue template's purpose here.
+name: Reefscape Issue Template
+about: Defualt Issue Template for Reefscape
 title: ''
 labels: ''
 assignees: ''
+Priority: ''
+Robot Type: ''
 
 ---
+
 
 
