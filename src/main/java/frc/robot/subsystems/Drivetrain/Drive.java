@@ -40,6 +40,7 @@ public class Drive extends SubsystemBase {
     private Rotation2d heading;
 
     private PathConstraints constraints;
+    private Pose2d pathTarget;
 
     private PIDController thetaController = new PIDController(10, 0, 0);
 
@@ -79,10 +80,26 @@ public class Drive extends SubsystemBase {
     public Command runPath() {
 
         switch ((int) heading.getDegrees()) {
+            case 0:
+                pathTarget = SIDE_0;
+                break;
             case 60:
-                
+                pathTarget = SIDE_60;
+                break;
+            case 120:
+                pathTarget = SIDE_120;
+                break;
+            case 180:
+                pathTarget = SIDE_180;
+                break;
+            case 240:
+                pathTarget = SIDE_240;
+                break;
+            case 300:
+                pathTarget = SIDE_300;
+                break;
         }
-        return AutoBuilder.pathfindToPose(SIDE_0, constraints);
+        return AutoBuilder.pathfindToPose(new Pose2d(0, pathTarget.getY(), pathTarget.getRotation()), constraints);
     }
 
     public void teleopDrive(double driveX, double driveY, double driveTheta)  {
