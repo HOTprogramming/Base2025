@@ -4,8 +4,9 @@ about: Defualt Issue Template for Reefscape
 title: ''
 labels: ''
 assignees: ''
-Priority: ''
-Robot Type: ''
+body:
+  Priority: ''
+  Robot Type: ''
 
 ---
 
