@@ -15,11 +15,17 @@ import frc.robot.subsystems.Drivetrain.DriveIO.DriveIOdata;
 
 import static frc.robot.subsystems.Drivetrain.DriveConstants.*;
 
+import java.util.List;
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
 
 
 
@@ -33,7 +39,7 @@ public class Drive extends SubsystemBase {
 
     private Rotation2d heading;
 
-
+    private PathConstraints constraints;
 
     private PIDController thetaController = new PIDController(10, 0, 0);
 
@@ -65,6 +71,18 @@ public class Drive extends SubsystemBase {
 
 
         configurePathPlanner();
+
+        constraints = PathConstraints.unlimitedConstraints(12.0);
+    }
+
+
+    public Command runPath() {
+
+        switch ((int) heading.getDegrees()) {
+            case 60:
+                
+        }
+        return AutoBuilder.pathfindToPose(SIDE_0, constraints);
     }
 
     public void teleopDrive(double driveX, double driveY, double driveTheta)  {
@@ -116,7 +134,7 @@ public class Drive extends SubsystemBase {
      }
 
      public void lockReef(double driveX, double driveY) {
-        double degToReef = Math.toDegrees(Math.atan2(4 - iOdata.state.Pose.getY(), DriverStation.getAlliance().get() == Alliance.Blue ? 13 : 4.5 - iOdata.state.Pose.getX()));
+        double degToReef = Math.toDegrees(Math.atan2(REEF_CENTER.getY() - iOdata.state.Pose.getY(), DriverStation.getAlliance().get() == Alliance.Blue ? REEF_CENTER.getX() + OFFSET_TO_RED : REEF_CENTER.getX() - iOdata.state.Pose.getX()));
         driveIO.setSwerveRequest(ROBOT_CENTRIC
             .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY() * 0.25)
             .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY() * 0.25)

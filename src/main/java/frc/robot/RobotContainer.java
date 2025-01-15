@@ -120,6 +120,8 @@ public class RobotContainer {
         }
       ));
 
+      driver.a().onTrue(drivetrain.runPath());
+
       driver.start().onTrue(drivetrain.resetPidgeon());
 
 
