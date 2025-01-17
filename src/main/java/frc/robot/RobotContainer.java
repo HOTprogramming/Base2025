@@ -3,6 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot;
 
+import java.security.PublicKey;
+
 import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -14,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.Camera.Camera;
 import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
 import frc.robot.subsystems.GameSpec.Arm.Arm;
@@ -30,8 +33,9 @@ import frc.robot.subsystems.Drivetrain.DriveSim;
 
 public class RobotContainer {
   private Elevator elevatorSubsystem;
-  public Drive drivetrain;
+  private Drive drivetrain;
   private Arm armSubsystem;
+  private Camera cameraSubsystem;
 
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
@@ -42,6 +46,7 @@ public class RobotContainer {
         elevatorSubsystem = new Elevator(new ElevatorIOReal());   
         drivetrain = new Drive(new DriveKraken());
         armSubsystem = new Arm(new ArmIOReal());
+        cameraSubsystem = new Camera(drivetrain);
       }
       case DEVBOT -> {}
       case SIMBOT -> {

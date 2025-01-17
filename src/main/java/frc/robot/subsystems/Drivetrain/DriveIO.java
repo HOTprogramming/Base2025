@@ -4,8 +4,10 @@ package frc.robot.subsystems.Drivetrain;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.numbers.*;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public interface DriveIO {
@@ -61,4 +63,6 @@ public interface DriveIO {
      * @apiNote if you have cameras, this should override odometry with the best input
      */
     default void seedFieldRelative(Pose2d seedling) {}
+
+    default void updateVision(Pose2d calculatedPose, double timestamp, Matrix<N3, N1> stDevs) {}
 }

@@ -13,9 +13,12 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.*;
 
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -110,5 +113,10 @@ public class DriveSim extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder>  impl
     @Override
     public void seedFieldRelative(Pose2d seedling) {
         resetPose(seedling);
+    }
+
+    @Override
+    public void updateVision(Pose2d calculatedPose, double timestamp, Matrix<N3, N1> stDevs) {
+        addVisionMeasurement(calculatedPose, timestamp, stDevs);
     }
 }
