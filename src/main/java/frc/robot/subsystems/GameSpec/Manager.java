@@ -31,9 +31,21 @@ public class Manager extends SubsystemBase{
       }
 
     public Command place(){
-        return runOnce(() -> {elevatorSubsystem.managerElevatorTest();
-            armSubsystem.managerArmTest();});
+      return run(() -> {
+          elevatorSubsystem.managerElevatorTest();
+          armSubsystem.managerArmTest();
+        });
     }
+
+    // public Command place(){
+    //     return run(() -> {
+    //         elevatorSubsystem.managerElevatorTest();
+
+    //         if(elevatorSubsystem.elevatorPosition.getDouble(0) > 1){
+    //           armSubsystem.managerArmTest();
+    //         }
+    //       }).until(() -> elevatorSubsystem.checkRange(.1) && armSubsystem.checkRange(.1));
+    // }
 
 }
 
