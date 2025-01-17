@@ -30,12 +30,6 @@ public class Manager extends SubsystemBase{
         }
       }
 
-    // public void place(){
-    // elevatorSubsystem.managerElevatorTest();
-    // armSubsystem.managerArmTest();
-    // System.out.println("Made it to Manager");
-    // }
-
     public Command place(){
         return runOnce(() -> {elevatorSubsystem.managerElevatorTest();
             armSubsystem.managerArmTest();});
