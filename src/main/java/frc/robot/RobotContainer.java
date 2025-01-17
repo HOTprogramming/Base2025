@@ -120,7 +120,8 @@ public class RobotContainer {
         }
       ));
 
-      driver.a().onTrue(drivetrain.runPath());
+      driver.povLeft().onTrue(drivetrain.run(() -> drivetrain.alignReefLeft()));
+      driver.povRight().onTrue(drivetrain.run(() -> drivetrain.alignReefRight()));
 
       driver.start().onTrue(drivetrain.resetPidgeon());
 
