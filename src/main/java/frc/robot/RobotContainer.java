@@ -150,7 +150,10 @@ public class RobotContainer {
       ));
 
       driver.start().onTrue(drivetrain.resetPidgeon());
+
+      operator.a().toggleOnTrue(gamespecManager.place());
   }
+
 
   public Command getAutonomousCommand() {
     return new PathPlannerAuto("Auto");
