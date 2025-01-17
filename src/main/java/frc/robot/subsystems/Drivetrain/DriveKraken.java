@@ -22,6 +22,7 @@ import com.ctre.phoenix6.swerve.*;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 
@@ -109,7 +110,12 @@ public class DriveKraken extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
 
     @Override
     public void updateVision(Pose2d calculatedPose, double timestamp, Matrix<N3, N1> stDevs) {
-        addVisionMeasurement(calculatedPose, timestamp, stDevs);
+        addVisionMeasurement(calculatedPose, Utils.fpgaToCurrentTime(timestamp), stDevs);
+        SmartDashboard.putNumberArray("CamerasAtKraken", new double[] {
+                                    calculatedPose.getX(),
+                                    calculatedPose.getY(), 
+                                    calculatedPose.getRotation().getRadians()
+                                });
         System.out.println("Visioning");
 
     }

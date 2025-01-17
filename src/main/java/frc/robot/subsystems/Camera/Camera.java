@@ -277,11 +277,7 @@ public class Camera extends SubsystemBase {
 
                     drivetrain.addVisionMeasurement(
                             est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
-                    SmartDashboard.putNumberArray(key.toString(), new double[] {
-                                    est.estimatedPose.toPose2d().getX(),
-                                    est.estimatedPose.toPose2d().getY(), 
-                                    est.estimatedPose.toPose2d().getRotation().getRadians()
-                                });
+                    
 
                 });
         });
