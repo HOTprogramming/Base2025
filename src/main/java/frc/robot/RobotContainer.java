@@ -47,9 +47,8 @@ public class RobotContainer {
       }
     }
 
-    configureBindings();
-
     gamespecManager = new Manager();
+    configureBindings();
   }
 
   private void configureBindings() {    
