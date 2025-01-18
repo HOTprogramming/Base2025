@@ -75,14 +75,6 @@ public class RobotContainer {
     operator.b().whileTrue(armSubsystem.goToAIntakeL3());
     operator.a().whileTrue(armSubsystem.goToAIntakeL2());
 
-    driver.a().whileTrue(NamedCommands.getCommand("Elevator L4"));
-    driver.b().whileTrue(NamedCommands.getCommand("Elevator L3"));
-    driver.x().whileTrue(NamedCommands.getCommand("Elevator L2"));
-    driver.y().whileTrue(NamedCommands.getCommand("Elevator L1"));
-    driver.povUp().whileTrue(NamedCommands.getCommand("Elevator Net"));
-    driver.povRight().whileTrue(NamedCommands.getCommand("Elevator Coral Intake"));
-    driver.povLeft().whileTrue(NamedCommands.getCommand("Elevator Algae Intake"));
-
     drivetrain.setDefaultCommand
       (drivetrain.run(() -> {
             drivetrain.headingControl(
