@@ -62,7 +62,7 @@ public class Manager extends SubsystemBase{
 
     public Command Barge(){
       System.out.println("Barge");
-        return Commands.parallel(elevatorSubsystem.goToL4());
+      return Commands.parallel(elevatorSubsystem.goToL4());
     }
 
     public Command Package(){
