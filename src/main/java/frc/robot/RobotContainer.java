@@ -26,6 +26,7 @@ import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
 import frc.robot.subsystems.GameSpec.Manager;
 import frc.robot.subsystems.GameSpec.Climber.Climber;
+import frc.robot.subsystems.Lights.Lights;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
 
 
@@ -36,6 +37,7 @@ public class RobotContainer {
   private Drive drivetrain;
   private Camera cameraSubsystem;
   private Manager gamespecManager;
+  private Lights m_Lights;
 
   private enum Mode {
     coral,
@@ -56,8 +58,10 @@ public class RobotContainer {
     if(!Utils.isSimulation()){
         drivetrain = new Drive(new DriveKraken());
         cameraSubsystem = new Camera(drivetrain);
+        m_Lights = new Lights();
     } else {
       drivetrain = new Drive(new DriveSim());
+      m_Lights = new Lights();
     }
 
     gamespecManager = new Manager();
@@ -198,5 +202,4 @@ public class RobotContainer {
     String autoName = chooser.getSelected();
     return new PathPlannerAuto(autoName).finallyDo(() -> System.out.println("ENDED AUTO COMMAND"));
   }
-
 }
