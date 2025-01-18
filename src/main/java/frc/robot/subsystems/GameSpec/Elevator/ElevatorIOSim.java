@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Elevator;
+package frc.robot.subsystems.GameSpec.Elevator;
 
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
@@ -15,12 +16,12 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 public class ElevatorIOSim extends ElevatorIO {
     public TalonFXSimState elevatorMotorSimState;
 
-    public ElevatorSim elevatorSim;
+    public static ElevatorSim elevatorSim;
 
     // Additional simulation variables
-    private final Mechanism2d m_mech2d = new Mechanism2d(5, 5);
-    private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Elevator Root", 2.5, 0);
-    private final MechanismLigament2d m_elevatorMech2d;
+    private static Mechanism2d m_mech2d = new Mechanism2d(5, 5);
+    private static MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Elevator Root", 2.5, 0);
+    private static MechanismLigament2d m_elevatorMech2d;
 
     public ElevatorIOSim() {        
         elevatorMotorSimState = elevator.getSimState();
@@ -31,13 +32,13 @@ public class ElevatorIOSim extends ElevatorIO {
             4, 
             Units.inchesToMeters(2.0),
             0,
-            2,
+            3,
             true,
             0);
 
         m_elevatorMech2d =
         m_mech2dRoot.append(
-            new MechanismLigament2d("Elevator", elevatorSim.getPositionMeters(), 90, 100, new Color8Bit(235, 137, 52)));
+            new MechanismLigament2d("Elevator", elevatorSim.getPositionMeters(), 90, 10, new Color8Bit(235, 137, 52)));
 
         SmartDashboard.putData("Elevator Sim", m_mech2d);
     }
@@ -55,5 +56,9 @@ public class ElevatorIOSim extends ElevatorIO {
         elevatorMotorSimState.setRotorVelocity(elevatorSim.getVelocityMetersPerSecond());
 
         m_elevatorMech2d.setLength(elevatorSim.getPositionMeters());
+    }
+
+    public static MechanismObject2d getElevatorLigament() {
+        return m_elevatorMech2d;
     }
 }

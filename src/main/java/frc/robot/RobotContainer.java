@@ -1,29 +1,29 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
+import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.subsystems.Camera.Camera;
 import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
+import frc.robot.subsystems.GameSpec.Manager;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
-import frc.robot.subsystems.Elevator.ElevatorIOReal;
-import frc.robot.subsystems.Elevator.ElevatorIOSim;
-import frc.robot.subsystems.Elevator.Elevator;
 
 
 public class RobotContainer {
-  public Drive drivetrain;
-
-  private Elevator elevatorSubsystem = null;
+  private Drive drivetrain;
+  private Camera cameraSubsystem;
+  private Manager gamespecManager;
 
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
@@ -31,31 +31,21 @@ public class RobotContainer {
   public RobotContainer() {
     switch (Constants.getRobot()) {
       case COMPBOT -> {
-        this.drivetrain = new Drive(new DriveKraken());
-        this.elevatorSubsystem = new Elevator(new ElevatorIOReal());
+        drivetrain = new Drive(new DriveKraken());
+        cameraSubsystem = new Camera(drivetrain);
       }
       case DEVBOT -> {}
       case SIMBOT -> {
-        this.drivetrain = new Drive(new DriveSim());
-        elevatorSubsystem = new Elevator(new ElevatorIOSim());
+        drivetrain = new Drive(new DriveSim());
       }
     }
 
-
+    gamespecManager = new Manager();
     configureBindings();
   }
 
-  private void configureSimpleBindings() {
-    drivetrain.setDefaultCommand(
-      drivetrain.run(() -> drivetrain.teleopDrive( 
-        Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
-        Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
-        Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0)
-      )
-    );
-  }
+  private void configureBindings() {    
 
-  private void configureBindings() {
     drivetrain.setDefaultCommand
       (drivetrain.run(() -> {
             drivetrain.headingControl(
@@ -129,17 +119,35 @@ public class RobotContainer {
       driver.start().onTrue(drivetrain.resetPidgeon());
 
 
-      elevatorSubsystem.setDefaultCommand(elevatorSubsystem.stop());
+//four positions (l1, l2, l3, l4), human player, Barge, package
 
-      driver.a().whileTrue(elevatorSubsystem.runToPosition(.5));
-      driver.x().whileTrue(elevatorSubsystem.runToPosition(1));
-      driver.y().whileTrue(elevatorSubsystem.runToPosition(1.5));
-      driver.b().whileTrue(elevatorSubsystem.runToPosition(2));
+
+      operator.leftTrigger().and(operator.a())
+      .whileTrue(gamespecManager.L1());
+
+      operator.leftTrigger().and(operator.b())
+      .whileTrue(gamespecManager.L2());
+
+      operator.leftTrigger().and(operator.y())
+      .whileTrue(gamespecManager.L3());
+
+      operator.leftTrigger().and(operator.x())
+      .whileTrue(gamespecManager.L4());
+
+      operator.leftTrigger().and(operator.rightBumper())
+      .whileTrue(gamespecManager.Barge());
+
+      operator.leftTrigger().and(operator.rightTrigger())
+      .whileTrue(gamespecManager.HP());
+
+      gamespecManager.setDefaultCommand(gamespecManager.Package());
+      
 
   }
 
+
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("New Auto");
+    return new PathPlannerAuto("Auto");
   }
 
 }

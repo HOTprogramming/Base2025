@@ -1,9 +1,12 @@
 package frc.robot.subsystems.Drivetrain;
 
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -266,6 +269,9 @@ public class Drive extends SubsystemBase {
         } 
     }
 
+    public void addVisionMeasurement(Pose2d calculatedPose, double timestamp, Matrix<N3, N1> stDevs) {
+        this.driveIO.updateVision(calculatedPose, timestamp, stDevs);
+    }
 
     public Command resetPidgeon() {
         return runOnce(() -> {driveIO.resetPidgeon();});
