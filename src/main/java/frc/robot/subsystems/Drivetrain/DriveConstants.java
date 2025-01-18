@@ -9,6 +9,8 @@ import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 import com.pathplanner.lib.config.PIDConstants;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.*;
 import frc.robot.Constants;
 
@@ -19,6 +21,15 @@ public class DriveConstants {
     private static final PIDConstants autoPidConstantsTranslation = new PIDConstants(10, 0, 0);
     private static final PIDConstants autoPidConstantsTheta = new PIDConstants (7, 0, 0); 
     private static final PIDConstants teleopPidConstantsTheta = new PIDConstants (10, 0, 0); 
+
+    public static final Pose2d SIDE_0 = new Pose2d(3.165, 4.025, Rotation2d.fromDegrees(0));
+    public static final Pose2d SIDE_60 = new Pose2d(3.836, 2.886, Rotation2d.fromDegrees(60));
+    public static final Pose2d SIDE_120 = new Pose2d(5.155, 2.886, Rotation2d.fromDegrees(120));
+    public static final Pose2d SIDE_180 = new Pose2d(5.790, 4.025, Rotation2d.fromDegrees(180));
+    public static final Pose2d SIDE_240 = new Pose2d(5.155, 5.140, Rotation2d.fromDegrees(-120));
+    public static final Pose2d SIDE_300 = new Pose2d(3.836, 5.140, Rotation2d.fromDegrees(-60));
+    public static final double OFFSET_TO_RED = 8.583;
+    public static final Pose2d REEF_CENTER = new Pose2d(4.483, 4.025, Rotation2d.fromDegrees(0));
 
 
 
