@@ -135,7 +135,7 @@ public class RobotContainer {
       .whileTrue(gamespecManager.L3());
 
       operator.leftTrigger().and(operator.x())
-      .whileTrue(gamespecManager.L4());
+      .onTrue(gamespecManager.L4());
 
       operator.leftTrigger().and(operator.rightBumper())
       .whileTrue(gamespecManager.Barge());

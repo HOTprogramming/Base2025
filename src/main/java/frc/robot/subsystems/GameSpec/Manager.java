@@ -52,7 +52,12 @@ public class Manager extends SubsystemBase{
 
     public Command L4(){
       System.out.println("L4");
-      return Commands.parallel(elevatorSubsystem.goToL4());
+
+      return Commands.parallel(elevatorSubsystem.goToL1(), armSubsystem.goToCL1())
+      .until(() -> (armSubsystem.armPosition(0.3, 0.01)))
+      .andThen(
+        Commands.parallel(elevatorSubsystem.goToL4(), armSubsystem.goToCL4())
+      );
     }
 
     public Command HP(){
