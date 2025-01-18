@@ -143,7 +143,7 @@ public class RobotContainer {
       operator.leftTrigger().and(operator.rightTrigger())
       .whileTrue(gamespecManager.HP());
 
-      gamespecManager.setDefaultCommand(gamespecManager.Package());
+      //gamespecManager.setDefaultCommand(gamespecManager.Package());
       
 
   }
