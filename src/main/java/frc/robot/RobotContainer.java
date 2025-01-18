@@ -7,30 +7,22 @@ import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.Camera.Camera;
 import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
 import frc.robot.subsystems.GameSpec.Manager;
-import frc.robot.subsystems.GameSpec.Arm.Arm;
-import frc.robot.subsystems.GameSpec.Arm.ArmIOReal;
-import frc.robot.subsystems.GameSpec.Arm.ArmIOSim;
-import frc.robot.subsystems.GameSpec.Elevator.Elevator;
-import frc.robot.subsystems.GameSpec.Elevator.ElevatorIOReal;
-import frc.robot.subsystems.GameSpec.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
-import frc.robot.subsystems.Drivetrain.Drive;
-import frc.robot.subsystems.Drivetrain.DriveIO;
-import frc.robot.subsystems.Drivetrain.DriveKraken;
-import frc.robot.subsystems.Drivetrain.DriveSim;
+
 
 public class RobotContainer {
-  public Drive drivetrain;
+  private Drive drivetrain;
+  private Camera cameraSubsystem;
   private Manager gamespecManager;
 
   private final CommandXboxController driver = new CommandXboxController(0);
@@ -40,14 +32,19 @@ public class RobotContainer {
     switch (Constants.getRobot()) {
       case COMPBOT -> {
         drivetrain = new Drive(new DriveKraken());
+        cameraSubsystem = new Camera(drivetrain);
       }
-      case DEVBOT -> {}
+      case DEVBOT -> {
+        drivetrain = new Drive(new DriveKraken());
+        cameraSubsystem = new Camera(drivetrain);
+      }
       case SIMBOT -> {
         drivetrain = new Drive(new DriveSim());
       }
     }
 
     gamespecManager = new Manager();
+
     configureBindings();
   }
 
@@ -119,32 +116,23 @@ public class RobotContainer {
         }
       ));
 
+      driver.povLeft().onTrue(drivetrain.run(() -> drivetrain.alignReefLeft()));
+      driver.povRight().onTrue(drivetrain.run(() -> drivetrain.alignReefRight()));
+      driver.povDown().onTrue(drivetrain.run(() -> drivetrain.chaseObject(new Pose2d (1, 3, Rotation2d.fromDegrees(120)))));    
+
       driver.start().onTrue(drivetrain.resetPidgeon());
 
+      //four positions (l1, l2, l3, l4), human player, Barge, package
 
-//four positions (l1, l2, l3, l4), human player, Barge, package
-
-
-      operator.leftTrigger().and(operator.a())
-      .whileTrue(gamespecManager.L1());
-
-      operator.leftTrigger().and(operator.b())
-      .whileTrue(gamespecManager.L2());
-
-      operator.leftTrigger().and(operator.y())
-      .whileTrue(gamespecManager.L3());
-
-      operator.leftTrigger().and(operator.x())
-      .onTrue(gamespecManager.L4());
-
-      operator.leftTrigger().and(operator.rightBumper())
-      .whileTrue(gamespecManager.Barge());
-
-      operator.leftTrigger().and(operator.rightTrigger())
-      .whileTrue(gamespecManager.HP());
-
-      //gamespecManager.setDefaultCommand(gamespecManager.Package());
+      operator.a().whileTrue(gamespecManager.L1());
+      operator.b().whileTrue(gamespecManager.L2());
+      operator.y().whileTrue(gamespecManager.L3());
+      operator.x().whileTrue(gamespecManager.L4());
+      operator.rightBumper().whileTrue(gamespecManager.Barge());
+      operator.rightTrigger().whileTrue(gamespecManager.HP());
       
+      //      operator.leftTrigger().and(operator.y())
+      //      .whileTrue(gamespecManager.L3());
 
   }
 

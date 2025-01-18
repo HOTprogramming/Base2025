@@ -3,6 +3,7 @@ package frc.robot.subsystems.GameSpec;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,25 +20,24 @@ public class Manager extends SubsystemBase{
     private Elevator elevatorSubsystem;
     
     public Manager() {
-        switch (Constants.getRobot()) {
-          case COMPBOT -> {
-            elevatorSubsystem = new Elevator(new ElevatorIOReal());   
-            armSubsystem = new Arm(new ArmIOReal());
-          }
-          case DEVBOT -> {}
-          case SIMBOT -> {    
-            elevatorSubsystem = new Elevator(new ElevatorIOSim());
-            armSubsystem = new Arm(new ArmIOSim());
-    
-          }
+      switch (Constants.getRobot()) {
+        case COMPBOT -> {
+          elevatorSubsystem = new Elevator(new ElevatorIOReal());   
+          armSubsystem = new Arm(new ArmIOReal());
+        }
+        case DEVBOT -> {}
+        case SIMBOT -> {    
+          elevatorSubsystem = new Elevator(new ElevatorIOSim());
+          armSubsystem = new Arm(new ArmIOSim());
         }
       }
-
-
+    }
 
     public Command L1(){
-      System.out.println("L1");
-      return Commands.parallel(elevatorSubsystem.goToL4());
+      return Commands.parallel(
+        elevatorSubsystem.goToL1(),
+        armSubsystem.goToCL1()
+      );
     }
 
     public Command L2(){
@@ -76,15 +76,14 @@ public class Manager extends SubsystemBase{
         
     }
 
-    // public Command place(){
-    //     return run(() -> {
-    //         elevatorSubsystem.managerElevatorTest();
-
-    //         if(elevatorSubsystem.elevatorPosition.getDouble(0) > 1){
-    //           armSubsystem.managerArmTest();
-    //         }
-    //       }).until(() -> elevatorSubsystem.checkRange(.1) && armSubsystem.checkRange(.1));
+    // public Command L1(){
+    //   return Commands.parallel(
+    //     elevatorSubsystem.goToL1(),
+    //     Commands.waitUntil(() -> elevatorSubsystem.checkRange(.1)).andThen(armSubsystem.goToCL1())
+    //   );
     // }
+    
+
 
 }
 
