@@ -112,9 +112,11 @@ public class RobotContainer {
         }
       ));
 
-      driver.povLeft().onTrue(drivetrain.run(() -> drivetrain.alignReefLeft()));
-      driver.povRight().onTrue(drivetrain.run(() -> drivetrain.alignReefRight()));
-      driver.povDown().onTrue(drivetrain.run(() -> drivetrain.chaseObject(new Pose2d (1, 3, Rotation2d.fromDegrees(120)))));    
+      // driver.povLeft().onTrue(drivetrain.run(() -> drivetrain.alignReefLeft()));
+      // driver.povRight().onTrue(drivetrain.run(() -> drivetrain.alignReefRight()));
+      // driver.povDown().onTrue(drivetrain.run(() -> drivetrain.chaseObject()));    
+      driver.povLeft().onTrue(drivetrain.run(() -> drivetrain.chaseObjectLeft()));  
+      driver.povRight().onTrue(drivetrain.run(() -> drivetrain.chaseObjectRight()));  
 
       driver.start().onTrue(drivetrain.resetPidgeon());
 
