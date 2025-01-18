@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.subsystems.Camera.Camera;
 import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
 import frc.robot.subsystems.GameSpec.Manager;
@@ -19,6 +20,7 @@ import frc.robot.subsystems.Drivetrain.DriveKraken;
 
 public class RobotContainer {
   private Drive drivetrain;
+  private Camera cameraSubsystem;
   private Manager gamespecManager;
 
   private final CommandXboxController driver = new CommandXboxController(0);
@@ -28,6 +30,7 @@ public class RobotContainer {
     switch (Constants.getRobot()) {
       case COMPBOT -> {
         drivetrain = new Drive(new DriveKraken());
+        cameraSubsystem = new Camera(drivetrain);
       }
       case DEVBOT -> {}
       case SIMBOT -> {
