@@ -84,11 +84,11 @@ public class Drive extends SubsystemBase {
         reefTarget = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
     }
 
-        public void chaseObject(Translation2d objectRelative) {
+        public void chaseObject(Pose2d objectRelative) {
             objectAbsolute = new Pose2d(
-                iOdata.state.Pose.getX() + (iOdata.state.Pose.getRotation().plus(objectRelative.getAngle()).getCos() * objectRelative.getNorm()),
-                iOdata.state.Pose.getY() + (iOdata.state.Pose.getRotation().plus(objectRelative.getAngle()).getSin() * objectRelative.getNorm()),
-                iOdata.state.Pose.getRotation()
+                iOdata.state.Pose.getX() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getCos() * objectRelative.getTranslation().getNorm()),
+                iOdata.state.Pose.getY() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getSin() * objectRelative.getTranslation().getNorm()),
+                iOdata.state.Pose.getRotation().plus(objectRelative.getRotation())
             );
             pathGoalPose = objectAbsolute;
             AutoBuilder.pathfindToPose(objectAbsolute, constraints).schedule();

@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -123,7 +124,7 @@ public class RobotContainer {
 
       driver.povLeft().onTrue(drivetrain.run(() -> drivetrain.alignReefLeft()));
       driver.povRight().onTrue(drivetrain.run(() -> drivetrain.alignReefRight()));
-      driver.povDown().onTrue(drivetrain.run(() -> drivetrain.chaseObject(new Translation2d(1, 3))));    
+      driver.povDown().onTrue(drivetrain.run(() -> drivetrain.chaseObject(new Pose2d (1, 3, Rotation2d.fromDegrees(120)))));    
 
       driver.start().onTrue(drivetrain.resetPidgeon());
 
