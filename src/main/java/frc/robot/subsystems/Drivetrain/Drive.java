@@ -58,7 +58,7 @@ public class Drive extends SubsystemBase {
         this.driveIO = driveIO;
         this.iOdata = driveIO.update();
 
-        heading = Rotation2d.fromDegrees(-120);
+        heading = Rotation2d.fromDegrees(0);
 
         driveTab = Shuffleboard.getTab("Drive");
         speedEntry = driveTab.add("Speed", 0.0).getEntry();
@@ -95,7 +95,11 @@ public class Drive extends SubsystemBase {
                     break;
                 case -180:
                     pathTarget = SIDE_180;
-                    heading = Rotation2d.fromDegrees(-180);
+                    heading = Rotation2d.fromDegrees(180);
+                    break;
+                case 180:
+                    pathTarget = SIDE_180;
+                    heading = Rotation2d.fromDegrees(180);
                     break;
                 case -120:
                     pathTarget = SIDE_240;
@@ -107,7 +111,7 @@ public class Drive extends SubsystemBase {
                     break;
             }
             pathTarget = new Pose2d(
-                (DriverStation.getAlliance().get() == Alliance.Blue ? pathTarget.getX(): pathTarget.getX() + OFFSET_TO_RED) - (pathTarget.getRotation().getSin() * 0.1524 * Math.sqrt(3)),
+                (DriverStation.getAlliance().get() == Alliance.Blue ? pathTarget.getX(): pathTarget.getX() + OFFSET_TO_RED) - (pathTarget.getRotation().getSin() * 0.1524),
                 pathTarget.getY() + (pathTarget.getRotation().getCos() * 0.1524),
                 pathTarget.getRotation()
             );
@@ -130,7 +134,11 @@ public class Drive extends SubsystemBase {
                     break;
                 case -180:
                     pathTarget = SIDE_180;
-                    heading = Rotation2d.fromDegrees(-180);
+                    heading = Rotation2d.fromDegrees(180);
+                    break;
+                case 180:
+                    pathTarget = SIDE_180;
+                    heading = Rotation2d.fromDegrees(180);
                     break;
                 case -120:
                     pathTarget = SIDE_240;
@@ -142,7 +150,7 @@ public class Drive extends SubsystemBase {
                     break;
             }
             pathTarget = new Pose2d(
-                (DriverStation.getAlliance().get() == Alliance.Blue ? pathTarget.getX(): pathTarget.getX() + OFFSET_TO_RED) + (pathTarget.getRotation().getSin() * 0.1524 * Math.sqrt(3)),
+                (DriverStation.getAlliance().get() == Alliance.Blue ? pathTarget.getX(): pathTarget.getX() + OFFSET_TO_RED) + (pathTarget.getRotation().getSin() * 0.1524),
                 pathTarget.getY() - (pathTarget.getRotation().getCos() * 0.1524),
                 pathTarget.getRotation()
             );

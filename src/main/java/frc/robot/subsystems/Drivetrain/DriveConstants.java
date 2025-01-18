@@ -26,8 +26,8 @@ public class DriveConstants {
     public static final Pose2d SIDE_60 = new Pose2d(3.836, 2.886, Rotation2d.fromDegrees(60));
     public static final Pose2d SIDE_120 = new Pose2d(5.155, 2.886, Rotation2d.fromDegrees(120));
     public static final Pose2d SIDE_180 = new Pose2d(5.790, 4.025, Rotation2d.fromDegrees(180));
-    public static final Pose2d SIDE_240 = new Pose2d(5.155, 5.140, Rotation2d.fromDegrees(240));
-    public static final Pose2d SIDE_300 = new Pose2d(3.836, 5.140, Rotation2d.fromDegrees(300));
+    public static final Pose2d SIDE_240 = new Pose2d(5.155, 5.140, Rotation2d.fromDegrees(-120));
+    public static final Pose2d SIDE_300 = new Pose2d(3.836, 5.140, Rotation2d.fromDegrees(-60));
     public static final double OFFSET_TO_RED = 8.583;
     public static final Pose2d REEF_CENTER = new Pose2d(4.483, 4.025, Rotation2d.fromDegrees(0));
 
