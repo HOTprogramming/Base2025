@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
+import frc.robot.subsystems.GameSpec.Manager;
 import frc.robot.subsystems.GameSpec.Arm.Arm;
 import frc.robot.subsystems.GameSpec.Arm.ArmIOReal;
 import frc.robot.subsystems.GameSpec.Arm.ArmIOSim;
@@ -29,9 +30,8 @@ import frc.robot.subsystems.Drivetrain.DriveKraken;
 import frc.robot.subsystems.Drivetrain.DriveSim;
 
 public class RobotContainer {
-  private Elevator elevatorSubsystem;
   public Drive drivetrain;
-  private Arm armSubsystem;
+  private Manager gamespecManager;
 
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
@@ -39,41 +39,19 @@ public class RobotContainer {
   public RobotContainer() {
     switch (Constants.getRobot()) {
       case COMPBOT -> {
-        elevatorSubsystem = new Elevator(new ElevatorIOReal());   
         drivetrain = new Drive(new DriveKraken());
-        armSubsystem = new Arm(new ArmIOReal());
       }
       case DEVBOT -> {}
       case SIMBOT -> {
-        elevatorSubsystem = new Elevator(new ElevatorIOSim());
         drivetrain = new Drive(new DriveSim());
-        armSubsystem = new Arm(new ArmIOSim());
       }
     }
 
-    NamedCommands.registerCommand("Elevator Algae Intake",  elevatorSubsystem.goToIntakeAlgae());
-    NamedCommands.registerCommand("Elevator Coral Intake", elevatorSubsystem.goToIntakeCoral());
-    NamedCommands.registerCommand("Elevator Net", elevatorSubsystem.goToNet());
-    NamedCommands.registerCommand("Elevator L4", elevatorSubsystem.goToL4());
-    NamedCommands.registerCommand("Elevator L3", elevatorSubsystem.goToL3());
-    NamedCommands.registerCommand("Elevator L2", elevatorSubsystem.goToL2());
-    NamedCommands.registerCommand("Elevator L1", elevatorSubsystem.goToL1());
-
+    gamespecManager = new Manager();
     configureBindings();
   }
 
   private void configureBindings() {    
-//
-    operator.x().whileTrue(armSubsystem.goToPackage());
-    operator.rightBumper().whileTrue(armSubsystem.goToCFeederIntake());
-    operator.leftBumper().whileTrue(armSubsystem.goToCFloorIntake());
-    operator.povUp().whileTrue(armSubsystem.goToCL4());
-    operator.povRight().whileTrue(armSubsystem.goToCL3());
-    operator.povDown().whileTrue(armSubsystem.goToCL3());
-    operator.povDownLeft().whileTrue(armSubsystem.goToCL1());
-    operator.y().whileTrue(armSubsystem.goToAPlace());
-    operator.b().whileTrue(armSubsystem.goToAIntakeL3());
-    operator.a().whileTrue(armSubsystem.goToAIntakeL2());
 
     drivetrain.setDefaultCommand
       (drivetrain.run(() -> {
@@ -142,7 +120,10 @@ public class RobotContainer {
       ));
 
       driver.start().onTrue(drivetrain.resetPidgeon());
+
+      operator.a().toggleOnTrue(gamespecManager.place());
   }
+
 
   public Command getAutonomousCommand() {
     return new PathPlannerAuto("Auto");

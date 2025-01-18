@@ -105,6 +105,11 @@ public class Elevator extends SubsystemBase {
     return elevatorCommand(ElevatorConstants.intakeAlgaeHeight);
   }
 
+  public Command managerElevatorTest(){
+    System.out.println("elevatorworks");
+    return runOnce(() -> {});
+  }
+
   public Command stop(){
     return run(() -> {
         io.stop();
