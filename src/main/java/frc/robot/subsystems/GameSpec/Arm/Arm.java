@@ -111,6 +111,11 @@ public class Arm extends SubsystemBase {
     return armCommand(algae_Place);
   }
 
+  public Command managerArmTest(){
+    System.out.println("armworks");
+    return runOnce(() -> {});
+  }
+
   public boolean checkRange(double deadband){
     return (stats.armPosition >= armCommandedPos.getDouble(0) - deadband) && 
            (stats.armPosition <= armCommandedPos.getDouble(0) + deadband);
