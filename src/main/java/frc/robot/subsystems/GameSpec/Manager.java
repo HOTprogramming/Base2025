@@ -17,18 +17,18 @@ public class Manager extends SubsystemBase{
     private Elevator elevatorSubsystem;
     
     public Manager() {
-        switch (Constants.getRobot()) {
-          case COMPBOT -> {
-            elevatorSubsystem = new Elevator(new ElevatorIOReal());   
-            armSubsystem = new Arm(new ArmIOReal());
-          }
-          case DEVBOT -> {}
-          case SIMBOT -> {    
-            elevatorSubsystem = new Elevator(new ElevatorIOSim());
-            armSubsystem = new Arm(new ArmIOSim());
-          }
+      switch (Constants.getRobot()) {
+        case COMPBOT -> {
+          elevatorSubsystem = new Elevator(new ElevatorIOReal());   
+          armSubsystem = new Arm(new ArmIOReal());
+        }
+        case DEVBOT -> {}
+        case SIMBOT -> {    
+          elevatorSubsystem = new Elevator(new ElevatorIOSim());
+          armSubsystem = new Arm(new ArmIOSim());
         }
       }
+    }
 
     public Command L1(){
       return Commands.parallel(
@@ -73,15 +73,14 @@ public class Manager extends SubsystemBase{
         });
     }
 
-    // public Command place(){
-    //     return run(() -> {
-    //         elevatorSubsystem.managerElevatorTest();
-
-    //         if(elevatorSubsystem.elevatorPosition.getDouble(0) > 1){
-    //           armSubsystem.managerArmTest();
-    //         }
-    //       }).until(() -> elevatorSubsystem.checkRange(.1) && armSubsystem.checkRange(.1));
+    // public Command L1(){
+    //   return Commands.parallel(
+    //     elevatorSubsystem.goToL1(),
+    //     Commands.waitUntil(() -> elevatorSubsystem.checkRange(.1)).andThen(armSubsystem.goToCL1())
+    //   );
     // }
+    
+
 
 }
 
