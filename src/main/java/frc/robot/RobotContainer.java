@@ -8,29 +8,19 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.Camera.Camera;
 import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
 import frc.robot.subsystems.GameSpec.Manager;
-import frc.robot.subsystems.GameSpec.Arm.Arm;
-import frc.robot.subsystems.GameSpec.Arm.ArmIOReal;
-import frc.robot.subsystems.GameSpec.Arm.ArmIOSim;
-import frc.robot.subsystems.GameSpec.Elevator.Elevator;
-import frc.robot.subsystems.GameSpec.Elevator.ElevatorIOReal;
-import frc.robot.subsystems.GameSpec.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
-import frc.robot.subsystems.Drivetrain.Drive;
-import frc.robot.subsystems.Drivetrain.DriveIO;
-import frc.robot.subsystems.Drivetrain.DriveKraken;
-import frc.robot.subsystems.Drivetrain.DriveSim;
+
 
 public class RobotContainer {
-  public Drive drivetrain;
+  private Drive drivetrain;
+  private Camera cameraSubsystem;
   private Manager gamespecManager;
 
   private final CommandXboxController driver = new CommandXboxController(0);
@@ -40,6 +30,7 @@ public class RobotContainer {
     switch (Constants.getRobot()) {
       case COMPBOT -> {
         drivetrain = new Drive(new DriveKraken());
+        cameraSubsystem = new Camera(drivetrain);
       }
       case DEVBOT -> {}
       case SIMBOT -> {
