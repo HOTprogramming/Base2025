@@ -3,40 +3,22 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot;
 
-import java.security.PublicKey;
-
 import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.Camera.Camera;
 import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
 import frc.robot.subsystems.GameSpec.Manager;
-import frc.robot.subsystems.GameSpec.Arm.Arm;
-import frc.robot.subsystems.GameSpec.Arm.ArmIOReal;
-import frc.robot.subsystems.GameSpec.Arm.ArmIOSim;
-import frc.robot.subsystems.GameSpec.Elevator.Elevator;
-import frc.robot.subsystems.GameSpec.Elevator.ElevatorIOReal;
-import frc.robot.subsystems.GameSpec.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
-import frc.robot.subsystems.Drivetrain.Drive;
-import frc.robot.subsystems.Drivetrain.DriveIO;
-import frc.robot.subsystems.Drivetrain.DriveKraken;
-import frc.robot.subsystems.Drivetrain.DriveSim;
+
 
 public class RobotContainer {
-  private Elevator elevatorSubsystem;
   private Drive drivetrain;
-  private Arm armSubsystem;
-  private Camera cameraSubsystem;
   private Manager gamespecManager;
 
   private final CommandXboxController driver = new CommandXboxController(0);
