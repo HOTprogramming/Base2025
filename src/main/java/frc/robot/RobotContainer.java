@@ -124,12 +124,12 @@ public class RobotContainer {
 
       //four positions (l1, l2, l3, l4), human player, Barge, package
 
-      operator.a().whileTrue(gamespecManager.L1());
-      operator.b().whileTrue(gamespecManager.L2());
-      operator.y().whileTrue(gamespecManager.L3());
-      operator.x().whileTrue(gamespecManager.L4());
-      operator.rightBumper().whileTrue(gamespecManager.Barge());
-      operator.rightTrigger().whileTrue(gamespecManager.HP());
+      operator.a().onTrue(gamespecManager.L1());
+      operator.b().onTrue(gamespecManager.L2());
+      operator.y().onTrue(gamespecManager.L3());
+      operator.x().onTrue(gamespecManager.L4());
+      operator.rightBumper().onTrue(gamespecManager.Barge());
+      operator.rightTrigger().onTrue(gamespecManager.HP());
       
       //      operator.leftTrigger().and(operator.y())
       //      .whileTrue(gamespecManager.L3());
