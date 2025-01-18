@@ -121,7 +121,31 @@ public class RobotContainer {
 
       driver.start().onTrue(drivetrain.resetPidgeon());
 
-      operator.a().toggleOnTrue(gamespecManager.place());
+
+//four positions (l1, l2, l3, l4), human player, Barge, package
+
+
+      operator.leftTrigger().and(operator.a())
+      .whileTrue(gamespecManager.L1());
+
+      operator.leftTrigger().and(operator.b())
+      .whileTrue(gamespecManager.L2());
+
+      operator.leftTrigger().and(operator.y())
+      .whileTrue(gamespecManager.L3());
+
+      operator.leftTrigger().and(operator.x())
+      .whileTrue(gamespecManager.L4());
+
+      operator.leftTrigger().and(operator.rightBumper())
+      .whileTrue(gamespecManager.Barge());
+
+      operator.leftTrigger().and(operator.rightTrigger())
+      .whileTrue(gamespecManager.HP());
+
+      gamespecManager.setDefaultCommand(gamespecManager.Package());
+      
+
   }
 
 

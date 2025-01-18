@@ -30,10 +30,47 @@ public class Manager extends SubsystemBase{
         }
       }
 
-    public Command place(){
+
+
+    public Command L1(){
       return run(() -> {
-          elevatorSubsystem.managerElevatorTest();
-          armSubsystem.managerArmTest();
+        System.out.println("L1");
+        });
+    }
+
+    public Command L2(){
+      return run(() -> {
+          System.out.println("L2");
+        });
+    }
+
+    public Command L3(){
+      return run(() -> {
+        System.out.println("L3");
+        });
+    }
+
+    public Command L4(){
+      return run(() -> {
+        System.out.println("L4");
+        });
+    }
+
+    public Command HP(){
+      return run(() -> {
+        System.out.println("HP");
+        });
+    }
+
+    public Command Barge(){
+      return run(() -> {
+        System.out.println("Barge");
+        });
+    }
+
+    public Command Package(){
+      return run(() -> {
+        System.out.println("Package");
         });
     }
 
