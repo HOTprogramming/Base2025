@@ -2,6 +2,7 @@ package frc.robot.subsystems.GameSpec;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.GameSpec.Arm.Arm;
@@ -25,17 +26,15 @@ public class Manager extends SubsystemBase{
           case SIMBOT -> {    
             elevatorSubsystem = new Elevator(new ElevatorIOSim());
             armSubsystem = new Arm(new ArmIOSim());
-    
           }
         }
       }
 
-
-
     public Command L1(){
-      return run(() -> {
-        System.out.println("L1");
-        });
+      return Commands.parallel(
+        elevatorSubsystem.goToL1(),
+        armSubsystem.goToCL1()
+      );
     }
 
     public Command L2(){

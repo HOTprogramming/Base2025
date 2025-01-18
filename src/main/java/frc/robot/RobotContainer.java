@@ -32,13 +32,17 @@ public class RobotContainer {
         drivetrain = new Drive(new DriveKraken());
         cameraSubsystem = new Camera(drivetrain);
       }
-      case DEVBOT -> {}
+      case DEVBOT -> {
+        drivetrain = new Drive(new DriveKraken());
+        cameraSubsystem = new Camera(drivetrain);
+      }
       case SIMBOT -> {
         drivetrain = new Drive(new DriveSim());
       }
     }
 
     gamespecManager = new Manager();
+
     configureBindings();
   }
 
@@ -112,30 +116,17 @@ public class RobotContainer {
 
       driver.start().onTrue(drivetrain.resetPidgeon());
 
+      //four positions (l1, l2, l3, l4), human player, Barge, package
 
-//four positions (l1, l2, l3, l4), human player, Barge, package
-
-
-      operator.leftTrigger().and(operator.a())
-      .whileTrue(gamespecManager.L1());
-
-      operator.leftTrigger().and(operator.b())
-      .whileTrue(gamespecManager.L2());
-
-      operator.leftTrigger().and(operator.y())
-      .whileTrue(gamespecManager.L3());
-
-      operator.leftTrigger().and(operator.x())
-      .whileTrue(gamespecManager.L4());
-
-      operator.leftTrigger().and(operator.rightBumper())
-      .whileTrue(gamespecManager.Barge());
-
-      operator.leftTrigger().and(operator.rightTrigger())
-      .whileTrue(gamespecManager.HP());
-
-      gamespecManager.setDefaultCommand(gamespecManager.Package());
+      operator.a().whileTrue(gamespecManager.L1());
+      operator.b().whileTrue(gamespecManager.L2());
+      operator.y().whileTrue(gamespecManager.L3());
+      operator.x().whileTrue(gamespecManager.L4());
+      operator.rightBumper().whileTrue(gamespecManager.Barge());
+      operator.rightTrigger().whileTrue(gamespecManager.HP());
       
+      //      operator.leftTrigger().and(operator.y())
+      //      .whileTrue(gamespecManager.L3());
 
   }
 
