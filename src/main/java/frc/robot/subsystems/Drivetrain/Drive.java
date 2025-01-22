@@ -290,7 +290,7 @@ public class Drive extends SubsystemBase {
                 pathGoalPose.getY(), 
                 pathGoalPose.getRotation().getRadians()});
         } 
-        if (DriverStation.isAutonomous()) {
+        if (!DriverStation.isTeleop()) {
             heading = iOdata.state.Pose.getRotation();
         }
     }
