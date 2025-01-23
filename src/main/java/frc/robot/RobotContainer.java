@@ -6,6 +6,7 @@ package frc.robot;
 import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -31,7 +32,6 @@ public class RobotContainer {
 
   public RobotContainer() {
     RobotController.setBrownoutVoltage(Constants.brownoutVoltage); // stops stuttering under high load when the battery is good.
-
     switch (Constants.getRobot()) {
       case COMPBOT -> {
         drivetrain = new Drive(new DriveKraken());

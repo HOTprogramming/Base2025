@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -21,17 +22,25 @@ import frc.robot.subsystems.Drivetrain.DriveIO.DriveIOdata;
 
 import static frc.robot.subsystems.Drivetrain.DriveConstants.*;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.stream.IntStream;
+
+import org.json.simple.parser.ParseException;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 
 
@@ -59,6 +68,9 @@ public class Drive extends SubsystemBase {
     .withDeadband(5.0 * 0.1).withRotationalDeadband(3.14 * 0.1);
     private final SwerveRequest.RobotCentric ROBOT_CENTRIC = new SwerveRequest.RobotCentric();
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
+
+    private int currentPathIndex;
+    private List<PathPlannerPath> pathGroup;
 
 
 
@@ -270,6 +282,18 @@ public class Drive extends SubsystemBase {
         heading = new Rotation2d (Math.toRadians(60*Math.round(joystickDeg/60)));
     }
 
+    public void setSelectedAutoName(String name) {
+        try {
+            this.pathGroup.addAll(PathPlannerAuto.getPathGroupFromAutoFile(name));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void periodic() {
         this.iOdata = driveIO.update();
@@ -293,6 +317,11 @@ public class Drive extends SubsystemBase {
         if (!DriverStation.isTeleop()) {
             heading = iOdata.state.Pose.getRotation();
         }
+
+        currentPathIndex = IntStream.range(0, pathGroup.size())
+            .filter(i -> pathGroup.get(i).name.equals(PathPlannerAuto.currentPathName))
+            .findFirst()
+            .orElse(-1);
     }
 
     public void addVisionMeasurement(Pose2d calculatedPose, double timestamp, Matrix<N3, N1> stDevs) {
