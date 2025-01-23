@@ -10,6 +10,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -29,6 +30,8 @@ public class RobotContainer {
   private final CommandXboxController operator = new CommandXboxController(1);
 
   public RobotContainer() {
+    RobotController.setBrownoutVoltage(Constants.brownoutVoltage); // stops stuttering under high load when the battery is good.
+
     switch (Constants.getRobot()) {
       case COMPBOT -> {
         drivetrain = new Drive(new DriveKraken());
