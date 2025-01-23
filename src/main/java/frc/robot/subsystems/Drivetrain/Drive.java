@@ -49,6 +49,7 @@ public class Drive extends SubsystemBase {
     private PathConstraints constraints;
     private Pose2d reefTarget;
     private Pose2d objectAbsolute;
+    private Pose2d objectRelative;
     private Pose2d pathGoalPose;
 
     private PIDController thetaController = new PIDController(10, 0, 0);
@@ -77,22 +78,44 @@ public class Drive extends SubsystemBase {
             driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
         }
 
-        
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
 
         configurePathPlanner();
 
         constraints = PathConstraints.unlimitedConstraints(12.0);
         reefTarget = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
+        objectRelative = new Pose2d(2, 0, Rotation2d.fromDegrees(0));
     }
 
-        public void chaseObject(Pose2d objectRelative) {
+        public void chaseObject() {
             objectAbsolute = new Pose2d(
                 iOdata.state.Pose.getX() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getCos() * objectRelative.getTranslation().getNorm()),
                 iOdata.state.Pose.getY() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getSin() * objectRelative.getTranslation().getNorm()),
                 iOdata.state.Pose.getRotation().plus(objectRelative.getRotation())
             );
+            heading = objectAbsolute.getRotation();
+            pathGoalPose = objectAbsolute;
+            AutoBuilder.pathfindToPose(objectAbsolute, constraints).schedule();
+        }
+
+        public void chaseObjectLeft() {
+            objectAbsolute = new Pose2d(
+                (iOdata.state.Pose.getX() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getCos() * objectRelative.getTranslation().getNorm())) - (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getSin() * 0.1524),
+                (iOdata.state.Pose.getY() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getSin() * objectRelative.getTranslation().getNorm())) + (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getCos() * 0.1524),
+                iOdata.state.Pose.getRotation().plus(objectRelative.getRotation())
+            );
+            heading = objectAbsolute.getRotation();
+            pathGoalPose = objectAbsolute;
+            AutoBuilder.pathfindToPose(objectAbsolute, constraints).schedule();
+        }
+
+        public void chaseObjectRight() {
+            objectAbsolute = new Pose2d(
+                (iOdata.state.Pose.getX() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getCos() * objectRelative.getTranslation().getNorm())) + (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getSin() * 0.1524),
+                (iOdata.state.Pose.getY() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getSin() * objectRelative.getTranslation().getNorm())) - (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getCos() * 0.1524),
+                iOdata.state.Pose.getRotation().plus(objectRelative.getRotation())
+            );
+            heading = objectAbsolute.getRotation();
             pathGoalPose = objectAbsolute;
             AutoBuilder.pathfindToPose(objectAbsolute, constraints).schedule();
         }
@@ -267,6 +290,9 @@ public class Drive extends SubsystemBase {
                 pathGoalPose.getY(), 
                 pathGoalPose.getRotation().getRadians()});
         } 
+        if (!DriverStation.isTeleop()) {
+            heading = iOdata.state.Pose.getRotation();
+        }
     }
 
     public void addVisionMeasurement(Pose2d calculatedPose, double timestamp, Matrix<N3, N1> stDevs) {
