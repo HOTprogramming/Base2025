@@ -23,6 +23,7 @@ import frc.robot.subsystems.Drivetrain.DriveIO.DriveIOdata;
 import static frc.robot.subsystems.Drivetrain.DriveConstants.*;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -51,11 +52,17 @@ public class Drive extends SubsystemBase {
     private ShuffleboardTab driveTab;
     private GenericEntry speedEntry;
     private GenericEntry poseEntry;
+    private GenericEntry pathXEntry;
+    private GenericEntry pathYEntry;
+    private GenericEntry pathRotEntry;
     private GenericEntry pathGoalPoseEntry;
 
     private Rotation2d heading;
 
     private PathConstraints constraints;
+    private List<Waypoint> waypoints;
+
+    private PathPlannerPath path;
     private Pose2d reefTarget;
     private Pose2d objectAbsolute;
     private Pose2d objectRelative;
@@ -83,6 +90,9 @@ public class Drive extends SubsystemBase {
         driveTab = Shuffleboard.getTab("Drive");
         speedEntry = driveTab.add("Speed", 0.0).getEntry();
         poseEntry = driveTab.add("Pose", new Double[] {0.0, 0.0, 0.0}).getEntry();
+        pathXEntry = driveTab.add("Path X", 0.0).getEntry();
+        pathYEntry = driveTab.add("Path Y", 0.0).getEntry();
+        pathRotEntry = driveTab.add("Path Rot", 0.0).getEntry();
         pathGoalPoseEntry = driveTab.add("pathGoal", new Double[] {0.0, 0.0, 0.0}).getEntry();
 
         double driveBaseRadius = 0;
@@ -97,7 +107,29 @@ public class Drive extends SubsystemBase {
         constraints = PathConstraints.unlimitedConstraints(12.0);
         reefTarget = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
         objectRelative = new Pose2d(2, 0, Rotation2d.fromDegrees(0));
+
+        waypoints = PathPlannerPath.waypointsFromPoses(
+            new Pose2d(1.0, 1.0, Rotation2d.fromDegrees(0)),
+            new Pose2d(3.0, 1.0, Rotation2d.fromDegrees(0)),
+            new Pose2d(5.0, 3.0, Rotation2d.fromDegrees(90))
+        );
     }
+
+        public void pathOnTheFly() {
+            
+            waypoints = PathPlannerPath.waypointsFromPoses(
+                new Pose2d(1.0, 1.0, Rotation2d.fromDegrees(0)),
+                new Pose2d(pathXEntry.getDouble(0), pathYEntry.getDouble(0), Rotation2d.fromDegrees(pathRotEntry.getDouble(0))),
+                new Pose2d(5.0, 3.0, Rotation2d.fromDegrees(90))
+            );
+            path = new PathPlannerPath(
+            waypoints,
+            constraints,
+            null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+            new GoalEndState(0.0, Rotation2d.fromDegrees(-90)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+        );
+            AutoBuilder.followPath(path).schedule();
+        }
 
         public void chaseObject() {
             objectAbsolute = new Pose2d(
