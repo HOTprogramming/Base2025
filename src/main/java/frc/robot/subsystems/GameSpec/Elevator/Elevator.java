@@ -48,6 +48,8 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
+    io.periodic();
+
     io.updateStats();
       
     UpdateTelemetry();
@@ -129,6 +131,5 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    io.periodic();
   }
 }

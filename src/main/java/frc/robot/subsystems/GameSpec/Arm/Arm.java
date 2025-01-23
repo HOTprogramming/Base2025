@@ -21,7 +21,7 @@ public class Arm extends SubsystemBase {
   private static final double coral_Level1 = Math.toRadians(25);
   private static final double coral_Level2 = Math.toRadians(35);
   private static final double coral_Level3 = Math.toRadians(40);
-  private static final double coral_Level4 = Math.toRadians(50);
+  private static final double coral_Level4 = Math.toRadians(-100);
   
   private static final double algae_Place = Math.toRadians(40);
   private static final double algae_Intake_Level2 = Math.toRadians(180);
@@ -119,6 +119,17 @@ public class Arm extends SubsystemBase {
   public boolean checkRange(double deadband){
     return (stats.armPosition >= armCommandedPos.getDouble(0) - deadband) && 
            (stats.armPosition <= armCommandedPos.getDouble(0) + deadband);
+  }
+
+  public boolean armPosition(double desiredPos, double threshHold){
+    if(stats.armPosition > desiredPos - Math.abs(threshHold)){
+      System.out.println(true);
+      return true;
+    }
+    else{
+      System.out.println(false);
+      return false;
+    }
   }
 
   public Command runToPosition(double position){

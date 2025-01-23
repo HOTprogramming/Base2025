@@ -1,7 +1,11 @@
 package frc.robot.subsystems.GameSpec;
 
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.GameSpec.Arm.Arm;
@@ -16,73 +20,70 @@ public class Manager extends SubsystemBase{
     private Elevator elevatorSubsystem;
     
     public Manager() {
-        switch (Constants.getRobot()) {
-          case COMPBOT -> {
-            elevatorSubsystem = new Elevator(new ElevatorIOReal());   
-            armSubsystem = new Arm(new ArmIOReal());
-          }
-          case DEVBOT -> {}
-          case SIMBOT -> {    
-            elevatorSubsystem = new Elevator(new ElevatorIOSim());
-            armSubsystem = new Arm(new ArmIOSim());
-    
-          }
+      switch (Constants.getRobot()) {
+        case COMPBOT -> {
+          elevatorSubsystem = new Elevator(new ElevatorIOReal());   
+          armSubsystem = new Arm(new ArmIOReal());
+        }
+        case DEVBOT -> {}
+        case SIMBOT -> {    
+          elevatorSubsystem = new Elevator(new ElevatorIOSim());
+          armSubsystem = new Arm(new ArmIOSim());
         }
       }
-
-
+    }
 
     public Command L1(){
-      return run(() -> {
-        System.out.println("L1");
-        });
+      return Commands.parallel(
+        elevatorSubsystem.goToL1(),
+        armSubsystem.goToCL1()
+      );
     }
 
     public Command L2(){
-      return run(() -> {
-          System.out.println("L2");
-        });
+      System.out.println("L2");
+      return Commands.parallel(elevatorSubsystem.goToL4());
     }
 
     public Command L3(){
-      return run(() -> {
-        System.out.println("L3");
-        });
+      System.out.println("L3");
+      return Commands.parallel(elevatorSubsystem.goToL4());
     }
 
     public Command L4(){
-      return run(() -> {
-        System.out.println("L4");
-        });
+      System.out.println("L4");
+
+      return Commands.parallel(elevatorSubsystem.goToL1(), armSubsystem.goToCL1())
+      .until(() -> (armSubsystem.armPosition(0.3, 0.01)))
+      .andThen(
+        Commands.parallel(elevatorSubsystem.goToL4(), armSubsystem.goToCL4())
+      );
     }
 
     public Command HP(){
-      return run(() -> {
-        System.out.println("HP");
-        });
+      System.out.println("HP");
+      return Commands.parallel(elevatorSubsystem.goToL4());
     }
 
     public Command Barge(){
-      return run(() -> {
-        System.out.println("Barge");
-        });
+      System.out.println("Barge");
+      return Commands.parallel(elevatorSubsystem.goToL4());
     }
 
     public Command Package(){
-      return run(() -> {
         System.out.println("Package");
-        });
+        return Commands.parallel(elevatorSubsystem.goToL4());
+        
     }
 
-    // public Command place(){
-    //     return run(() -> {
-    //         elevatorSubsystem.managerElevatorTest();
-
-    //         if(elevatorSubsystem.elevatorPosition.getDouble(0) > 1){
-    //           armSubsystem.managerArmTest();
-    //         }
-    //       }).until(() -> elevatorSubsystem.checkRange(.1) && armSubsystem.checkRange(.1));
+    // public Command L1(){
+    //   return Commands.parallel(
+    //     elevatorSubsystem.goToL1(),
+    //     Commands.waitUntil(() -> elevatorSubsystem.checkRange(.1)).andThen(armSubsystem.goToCL1())
+    //   );
     // }
+    
+
 
 }
 
