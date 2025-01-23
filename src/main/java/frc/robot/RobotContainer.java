@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot;
 
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -32,18 +33,11 @@ public class RobotContainer {
   public RobotContainer() {
     RobotController.setBrownoutVoltage(Constants.brownoutVoltage); // stops stuttering under high load when the battery is good.
 
-    switch (Constants.getRobot()) {
-      case COMPBOT -> {
+    if(!Utils.isSimulation()){
         drivetrain = new Drive(new DriveKraken());
         cameraSubsystem = new Camera(drivetrain);
-      }
-      case DEVBOT -> {
-        drivetrain = new Drive(new DriveKraken());
-        cameraSubsystem = new Camera(drivetrain);
-      }
-      case SIMBOT -> {
-        drivetrain = new Drive(new DriveSim());
-      }
+    } else {
+      drivetrain = new Drive(new DriveSim());
     }
 
     gamespecManager = new Manager();

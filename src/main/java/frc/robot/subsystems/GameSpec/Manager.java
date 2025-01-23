@@ -1,5 +1,7 @@
 package frc.robot.subsystems.GameSpec;
 
+import com.ctre.phoenix6.Utils;
+
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -20,16 +22,12 @@ public class Manager extends SubsystemBase{
     private Elevator elevatorSubsystem;
     
     public Manager() {
-      switch (Constants.getRobot()) {
-        case COMPBOT -> {
-          elevatorSubsystem = new Elevator(new ElevatorIOReal());   
-          armSubsystem = new Arm(new ArmIOReal());
-        }
-        case DEVBOT -> {}
-        case SIMBOT -> {    
-          elevatorSubsystem = new Elevator(new ElevatorIOSim());
-          armSubsystem = new Arm(new ArmIOSim());
-        }
+      if (!Utils.isSimulation()){
+        elevatorSubsystem = new Elevator(new ElevatorIOReal());   
+        armSubsystem = new Arm(new ArmIOReal());
+      } else {
+        elevatorSubsystem = new Elevator(new ElevatorIOSim());
+        armSubsystem = new Arm(new ArmIOSim());
       }
     }
 
