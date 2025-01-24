@@ -123,7 +123,9 @@ public class RobotContainer {
       // driver.povRight().onTrue(drivetrain.run(() -> drivetrain.alignReefRight()));
       // driver.povDown().onTrue(drivetrain.run(() -> drivetrain.chaseObject()));    
       driver.povLeft().onTrue(drivetrain.run(() -> drivetrain.chaseObjectLeft()));  
-      driver.povRight().onTrue(drivetrain.run(() -> drivetrain.chaseObjectRight()));  
+      driver.povRight().onTrue(drivetrain.run(() -> drivetrain.chaseObjectRight())); 
+      
+      driver.povDown().onTrue(drivetrain.run(() -> drivetrain.pathOnTheFly()));
 
       driver.start().onTrue(drivetrain.resetPidgeon());
 
