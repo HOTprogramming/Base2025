@@ -24,6 +24,7 @@ import static frc.robot.subsystems.Drivetrain.DriveConstants.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -36,6 +37,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.IdealStartingState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
@@ -102,147 +104,157 @@ public class Drive extends SubsystemBase {
 
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
+        pathGroup = new ArrayList<PathPlannerPath>();
+
         configurePathPlanner();
 
         constraints = PathConstraints.unlimitedConstraints(12.0);
         reefTarget = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
         objectRelative = new Pose2d(2, 0, Rotation2d.fromDegrees(0));
 
-        waypoints = PathPlannerPath.waypointsFromPoses(
-            new Pose2d(1.0, 1.0, Rotation2d.fromDegrees(0)),
-            new Pose2d(3.0, 1.0, Rotation2d.fromDegrees(0)),
-            new Pose2d(5.0, 3.0, Rotation2d.fromDegrees(90))
-        );
+        try {
+            this.pathGroup.addAll(PathPlannerAuto.getPathGroupFromAutoFile("OTF_TESTING"));
+        } catch (IOException e) {
+            System.out.println("Auto String Invalid");
+        } catch (ParseException e) {
+            System.out.println("Auto Data Invalid");
+        }
     }
 
-        public void pathOnTheFly() {
-            
-            waypoints = PathPlannerPath.waypointsFromPoses(
-                new Pose2d(1.0, 1.0, Rotation2d.fromDegrees(0)),
-                new Pose2d(pathXEntry.getDouble(0), pathYEntry.getDouble(0), Rotation2d.fromDegrees(pathRotEntry.getDouble(0))),
-                new Pose2d(5.0, 3.0, Rotation2d.fromDegrees(90))
-            );
-            path = new PathPlannerPath(
-            waypoints,
-            constraints,
-            null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-            new GoalEndState(0.0, Rotation2d.fromDegrees(-90)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+    public void generateOnTheFly() {
+        System.err.println("Start Gen");
+        List<Pose2d> currentPathPoses = pathGroup.get(currentPathIndex).getPathPoses();
+        PathPlannerPath nextPath = pathGroup.get(currentPathIndex + 1);
+        waypoints = PathPlannerPath.waypointsFromPoses(
+            currentPathPoses.get(currentPathPoses.size() - 1),
+            new Pose2d(pathXEntry.getDouble(0), pathYEntry.getDouble(0), Rotation2d.fromDegrees(pathRotEntry.getDouble(0))),
+            nextPath.getPathPoses().get(0)
         );
-            AutoBuilder.followPath(path).schedule();
-        }
+        path = new PathPlannerPath(
+        waypoints,
+        constraints,
+        null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+        new GoalEndState(nextPath.getIdealStartingState().velocityMPS(), nextPath.getInitialHeading()) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+        );
+        System.err.println("Finish Gen");
+    }
 
-        public void chaseObject() {
-            objectAbsolute = new Pose2d(
-                iOdata.state.Pose.getX() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getCos() * objectRelative.getTranslation().getNorm()),
-                iOdata.state.Pose.getY() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getSin() * objectRelative.getTranslation().getNorm()),
-                iOdata.state.Pose.getRotation().plus(objectRelative.getRotation())
-            );
-            heading = objectAbsolute.getRotation();
-            pathGoalPose = objectAbsolute;
-            AutoBuilder.pathfindToPose(objectAbsolute, constraints).schedule();
-        }
+    public void runOnTheFly() {
+        AutoBuilder.followPath(path).schedule();
+    }
 
-        public void chaseObjectLeft() {
-            objectAbsolute = new Pose2d(
-                (iOdata.state.Pose.getX() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getCos() * objectRelative.getTranslation().getNorm())) - (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getSin() * 0.1524),
-                (iOdata.state.Pose.getY() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getSin() * objectRelative.getTranslation().getNorm())) + (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getCos() * 0.1524),
-                iOdata.state.Pose.getRotation().plus(objectRelative.getRotation())
-            );
-            heading = objectAbsolute.getRotation();
-            pathGoalPose = objectAbsolute;
-            AutoBuilder.pathfindToPose(objectAbsolute, constraints).schedule();
-        }
+    public void chaseObject() {
+        objectAbsolute = new Pose2d(
+            iOdata.state.Pose.getX() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getCos() * objectRelative.getTranslation().getNorm()),
+            iOdata.state.Pose.getY() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getSin() * objectRelative.getTranslation().getNorm()),
+            iOdata.state.Pose.getRotation().plus(objectRelative.getRotation())
+        );
+        heading = objectAbsolute.getRotation();
+        pathGoalPose = objectAbsolute;
+        AutoBuilder.pathfindToPose(objectAbsolute, constraints).schedule();
+    }
 
-        public void chaseObjectRight() {
-            objectAbsolute = new Pose2d(
-                (iOdata.state.Pose.getX() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getCos() * objectRelative.getTranslation().getNorm())) + (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getSin() * 0.1524),
-                (iOdata.state.Pose.getY() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getSin() * objectRelative.getTranslation().getNorm())) - (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getCos() * 0.1524),
-                iOdata.state.Pose.getRotation().plus(objectRelative.getRotation())
-            );
-            heading = objectAbsolute.getRotation();
-            pathGoalPose = objectAbsolute;
-            AutoBuilder.pathfindToPose(objectAbsolute, constraints).schedule();
-        }
+    public void chaseObjectLeft() {
+        objectAbsolute = new Pose2d(
+            (iOdata.state.Pose.getX() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getCos() * objectRelative.getTranslation().getNorm())) - (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getSin() * 0.1524),
+            (iOdata.state.Pose.getY() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getSin() * objectRelative.getTranslation().getNorm())) + (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getCos() * 0.1524),
+            iOdata.state.Pose.getRotation().plus(objectRelative.getRotation())
+        );
+        heading = objectAbsolute.getRotation();
+        pathGoalPose = objectAbsolute;
+        AutoBuilder.pathfindToPose(objectAbsolute, constraints).schedule();
+    }
 
-        public void alignReefLeft() {
-            switch ((int) (60*Math.round(Math.toDegrees(Math.atan2(REEF_CENTER.getY() - iOdata.state.Pose.getY(), (DriverStation.getAlliance().get() == Alliance.Blue ? REEF_CENTER.getX(): REEF_CENTER.getX() + OFFSET_TO_RED) - iOdata.state.Pose.getX()))/60))) {
-                case 0:
-                    reefTarget = SIDE_0;
-                    heading = Rotation2d.fromDegrees(0);
-                    break;
-                case 60:
-                    reefTarget = SIDE_60;
-                    heading = Rotation2d.fromDegrees(60);
-                    break;
-                case 120:
-                    reefTarget = SIDE_120;
-                    heading = Rotation2d.fromDegrees(120);
-                    break;
-                case -180:
-                    reefTarget = SIDE_180;
-                    heading = Rotation2d.fromDegrees(180);
-                    break;
-                case 180:
-                    reefTarget = SIDE_180;
-                    heading = Rotation2d.fromDegrees(180);
-                    break;
-                case -120:
-                    reefTarget = SIDE_240;
-                    heading = Rotation2d.fromDegrees(-120);
-                    break;
-                case -60:
-                    reefTarget = SIDE_300;
-                    heading = Rotation2d.fromDegrees(-60);
-                    break;
-            }
-            reefTarget = new Pose2d(
-                (DriverStation.getAlliance().get() == Alliance.Blue ? reefTarget.getX(): reefTarget.getX() + OFFSET_TO_RED) - (reefTarget.getRotation().getSin() * 0.1524),
-                reefTarget.getY() + (reefTarget.getRotation().getCos() * 0.1524),
-                reefTarget.getRotation()
-            );
-            pathGoalPose = reefTarget;
-            AutoBuilder.pathfindToPose(reefTarget, constraints).schedule();
-        }
+    public void chaseObjectRight() {
+        objectAbsolute = new Pose2d(
+            (iOdata.state.Pose.getX() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getCos() * objectRelative.getTranslation().getNorm())) + (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getSin() * 0.1524),
+            (iOdata.state.Pose.getY() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getSin() * objectRelative.getTranslation().getNorm())) - (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getCos() * 0.1524),
+            iOdata.state.Pose.getRotation().plus(objectRelative.getRotation())
+        );
+        heading = objectAbsolute.getRotation();
+        pathGoalPose = objectAbsolute;
+        AutoBuilder.pathfindToPose(objectAbsolute, constraints).schedule();
+    }
 
-        public void alignReefRight() {
-            switch ((int) (60*Math.round(Math.toDegrees(Math.atan2(REEF_CENTER.getY() - iOdata.state.Pose.getY(), (DriverStation.getAlliance().get() == Alliance.Blue ? REEF_CENTER.getX(): REEF_CENTER.getX() + OFFSET_TO_RED) - iOdata.state.Pose.getX()))/60))) {
-                case 0:
-                    reefTarget = SIDE_0;
-                    heading = Rotation2d.fromDegrees(0);
-                    break;
-                case 60:
-                    reefTarget = SIDE_60;
-                    heading = Rotation2d.fromDegrees(60);
-                    break;
-                case 120:
-                    reefTarget = SIDE_120;
-                    heading = Rotation2d.fromDegrees(120);
-                    break;
-                case -180:
-                    reefTarget = SIDE_180;
-                    heading = Rotation2d.fromDegrees(180);
-                    break;
-                case 180:
-                    reefTarget = SIDE_180;
-                    heading = Rotation2d.fromDegrees(180);
-                    break;
-                case -120:
-                    reefTarget = SIDE_240;
-                    heading = Rotation2d.fromDegrees(-120);
-                    break;
-                case -60:
-                    reefTarget = SIDE_300;
-                    heading = Rotation2d.fromDegrees(-60);
-                    break;
-            }
-            reefTarget = new Pose2d(
-                (DriverStation.getAlliance().get() == Alliance.Blue ? reefTarget.getX(): reefTarget.getX() + OFFSET_TO_RED) + (reefTarget.getRotation().getSin() * 0.1524),
-                reefTarget.getY() - (reefTarget.getRotation().getCos() * 0.1524),
-                reefTarget.getRotation()
-            );
-            pathGoalPose = reefTarget;
-            AutoBuilder.pathfindToPose(reefTarget, constraints).schedule();
+    public void alignReefLeft() {
+        switch ((int) (60*Math.round(Math.toDegrees(Math.atan2(REEF_CENTER.getY() - iOdata.state.Pose.getY(), (DriverStation.getAlliance().get() == Alliance.Blue ? REEF_CENTER.getX(): REEF_CENTER.getX() + OFFSET_TO_RED) - iOdata.state.Pose.getX()))/60))) {
+            case 0:
+                reefTarget = SIDE_0;
+                heading = Rotation2d.fromDegrees(0);
+                break;
+            case 60:
+                reefTarget = SIDE_60;
+                heading = Rotation2d.fromDegrees(60);
+                break;
+            case 120:
+                reefTarget = SIDE_120;
+                heading = Rotation2d.fromDegrees(120);
+                break;
+            case -180:
+                reefTarget = SIDE_180;
+                heading = Rotation2d.fromDegrees(180);
+                break;
+            case 180:
+                reefTarget = SIDE_180;
+                heading = Rotation2d.fromDegrees(180);
+                break;
+            case -120:
+                reefTarget = SIDE_240;
+                heading = Rotation2d.fromDegrees(-120);
+                break;
+            case -60:
+                reefTarget = SIDE_300;
+                heading = Rotation2d.fromDegrees(-60);
+                break;
         }
+        reefTarget = new Pose2d(
+            (DriverStation.getAlliance().get() == Alliance.Blue ? reefTarget.getX(): reefTarget.getX() + OFFSET_TO_RED) - (reefTarget.getRotation().getSin() * 0.1524),
+            reefTarget.getY() + (reefTarget.getRotation().getCos() * 0.1524),
+            reefTarget.getRotation()
+        );
+        pathGoalPose = reefTarget;
+        AutoBuilder.pathfindToPose(reefTarget, constraints).schedule();
+    }
+
+    public void alignReefRight() {
+        switch ((int) (60*Math.round(Math.toDegrees(Math.atan2(REEF_CENTER.getY() - iOdata.state.Pose.getY(), (DriverStation.getAlliance().get() == Alliance.Blue ? REEF_CENTER.getX(): REEF_CENTER.getX() + OFFSET_TO_RED) - iOdata.state.Pose.getX()))/60))) {
+            case 0:
+                reefTarget = SIDE_0;
+                heading = Rotation2d.fromDegrees(0);
+                break;
+            case 60:
+                reefTarget = SIDE_60;
+                heading = Rotation2d.fromDegrees(60);
+                break;
+            case 120:
+                reefTarget = SIDE_120;
+                heading = Rotation2d.fromDegrees(120);
+                break;
+            case -180:
+                reefTarget = SIDE_180;
+                heading = Rotation2d.fromDegrees(180);
+                break;
+            case 180:
+                reefTarget = SIDE_180;
+                heading = Rotation2d.fromDegrees(180);
+                break;
+            case -120:
+                reefTarget = SIDE_240;
+                heading = Rotation2d.fromDegrees(-120);
+                break;
+            case -60:
+                reefTarget = SIDE_300;
+                heading = Rotation2d.fromDegrees(-60);
+                break;
+        }
+        reefTarget = new Pose2d(
+            (DriverStation.getAlliance().get() == Alliance.Blue ? reefTarget.getX(): reefTarget.getX() + OFFSET_TO_RED) + (reefTarget.getRotation().getSin() * 0.1524),
+            reefTarget.getY() - (reefTarget.getRotation().getCos() * 0.1524),
+            reefTarget.getRotation()
+        );
+        pathGoalPose = reefTarget;
+        AutoBuilder.pathfindToPose(reefTarget, constraints).schedule();
+    }
 
     public void teleopDrive(double driveX, double driveY, double driveTheta)  {
        driveIO.setSwerveRequest(FIELD_CENTRIC
@@ -316,13 +328,11 @@ public class Drive extends SubsystemBase {
 
     public void setSelectedAutoName(String name) {
         try {
-            this.pathGroup.addAll(PathPlannerAuto.getPathGroupFromAutoFile(name));
+            this.pathGroup.addAll(PathPlannerAuto.getPathGroupFromAutoFile("OTF_TESTING"));
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.println("Auto String Invalid");
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.println("Auto Data Invalid");
         }
     }
 
@@ -350,10 +360,12 @@ public class Drive extends SubsystemBase {
             heading = iOdata.state.Pose.getRotation();
         }
 
-        currentPathIndex = IntStream.range(0, pathGroup.size())
+        if (pathGroup != null) {
+            currentPathIndex = IntStream.range(0, pathGroup.size())
             .filter(i -> pathGroup.get(i).name.equals(PathPlannerAuto.currentPathName))
             .findFirst()
-            .orElse(-1);
+            .orElse(0);
+        }
     }
 
     public void addVisionMeasurement(Pose2d calculatedPose, double timestamp, Matrix<N3, N1> stDevs) {

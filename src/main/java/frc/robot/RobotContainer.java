@@ -125,7 +125,10 @@ public class RobotContainer {
       driver.povLeft().onTrue(drivetrain.run(() -> drivetrain.chaseObjectLeft()));  
       driver.povRight().onTrue(drivetrain.run(() -> drivetrain.chaseObjectRight())); 
       
-      driver.povDown().onTrue(drivetrain.run(() -> drivetrain.pathOnTheFly()));
+      driver.povDown().onTrue(drivetrain.run(() -> {
+        drivetrain.generateOnTheFly();
+        drivetrain.runOnTheFly();
+        }));
 
       driver.start().onTrue(drivetrain.resetPidgeon());
 
@@ -141,11 +144,16 @@ public class RobotContainer {
       //      operator.leftTrigger().and(operator.y())
       //      .whileTrue(gamespecManager.L3());
 
+      NamedCommands.registerCommand("OTF", drivetrain.runOnce(() -> drivetrain.generateOnTheFly()));
+      NamedCommands.registerCommand("R_OTF", drivetrain.run(() -> drivetrain.runOnTheFly()));
+
+
   }
 
 
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("Auto");
+    String autoName = "OTF_TESTING";
+    return new PathPlannerAuto(autoName);
   }
 
 }
