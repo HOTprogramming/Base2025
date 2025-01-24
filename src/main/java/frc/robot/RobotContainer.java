@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot;
 
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -10,6 +11,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -29,18 +31,13 @@ public class RobotContainer {
   private final CommandXboxController operator = new CommandXboxController(1);
 
   public RobotContainer() {
-    switch (Constants.getRobot()) {
-      case COMPBOT -> {
+    RobotController.setBrownoutVoltage(Constants.brownoutVoltage); // stops stuttering under high load when the battery is good.
+
+    if(!Utils.isSimulation()){
         drivetrain = new Drive(new DriveKraken());
         cameraSubsystem = new Camera(drivetrain);
-      }
-      case DEVBOT -> {
-        drivetrain = new Drive(new DriveKraken());
-        cameraSubsystem = new Camera(drivetrain);
-      }
-      case SIMBOT -> {
-        drivetrain = new Drive(new DriveSim());
-      }
+    } else {
+      drivetrain = new Drive(new DriveSim());
     }
 
     gamespecManager = new Manager();
@@ -116,9 +113,11 @@ public class RobotContainer {
         }
       ));
 
-      driver.povLeft().onTrue(drivetrain.run(() -> drivetrain.alignReefLeft()));
-      driver.povRight().onTrue(drivetrain.run(() -> drivetrain.alignReefRight()));
-      driver.povDown().onTrue(drivetrain.run(() -> drivetrain.chaseObject(new Pose2d (1, 3, Rotation2d.fromDegrees(120)))));    
+      // driver.povLeft().onTrue(drivetrain.run(() -> drivetrain.alignReefLeft()));
+      // driver.povRight().onTrue(drivetrain.run(() -> drivetrain.alignReefRight()));
+      // driver.povDown().onTrue(drivetrain.run(() -> drivetrain.chaseObject()));    
+      driver.povLeft().onTrue(drivetrain.run(() -> drivetrain.chaseObjectLeft()));  
+      driver.povRight().onTrue(drivetrain.run(() -> drivetrain.chaseObjectRight()));  
 
       driver.start().onTrue(drivetrain.resetPidgeon());
 

@@ -18,6 +18,8 @@
     private static RobotType robotType = RobotType.SIMBOT;
     public static final boolean tuningMode = false;
 
+    public static final double brownoutVoltage = 5.5;
+
     public static RobotType getRobot() {
       return robotType;
     }
