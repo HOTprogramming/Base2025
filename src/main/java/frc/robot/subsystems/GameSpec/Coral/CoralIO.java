@@ -1,4 +1,4 @@
-package frc.robot.subsystems.GameSpec.CoralHand;
+package frc.robot.subsystems.GameSpec.Coral;
     
 import java.io.ObjectInputFilter.Status;
 
@@ -19,54 +19,54 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.wpilibj.DigitalInput;
-public class CoralHandIO {
+public class CoralIO {
     
     
         // Protected TalonFX object accessible to subclasses
-        protected TalonFX coralHand;
-        protected MotionMagicVoltage coralHandMagic;
+        protected TalonFX coral;
+        protected MotionMagicVoltage coralMagic;
         protected DigitalInput coralBeamBreak;
         protected CANdi coralCandi;
     
-        public static class CoralHandIOStats {
-            public boolean coralHandMotorConnected = true;
-            public double coralHandPosition = 0.0;
-            public double coralHandVelocity = 0.0;
-            public double coralHandAppliedVolts = 0.0;
-            public double coralHandCurrentAmps = 0.0;
+        public static class CoralIOStats {
+            public boolean coralMotorConnected = true;
+            public double coralPosition = 0.0;
+            public double coralVelocity = 0.0;
+            public double coralAppliedVolts = 0.0;
+            public double coralCurrentAmps = 0.0;
             public double supplyCurrentAmps = 0.0;
             public double torqueCurrentAmps = 0.0;
             public double tempCelsius = 0.0;
         }
     
-        protected static CoralHandIOStats stats = new CoralHandIOStats();
+        protected static CoralIOStats stats = new CoralIOStats();
     
-        private final StatusSignal<Angle> CoralHandPosition;
-        private final StatusSignal<AngularVelocity> CoralHandVelocity;
+        private final StatusSignal<Angle> CoralPosition;
+        private final StatusSignal<AngularVelocity> CoralVelocity;
         private final StatusSignal<Current> SupplyCurrent;
         private final StatusSignal<Current> TorqueCurrent;
         private final StatusSignal<Temperature> TempCelsius;
     
         /** Constructor to initialize the TalonFX */
-        public CoralHandIO() {
-            this.coralHand = new TalonFX(CoralHandConstants.coralHandMotorID, "CamBot");
-            this.coralBeamBreak = new DigitalInput(CoralHandConstants.coralBeamBreakID);
-            this.coralCandi = new CANdi(CoralHandConstants.coralCandiID);
+        public CoralIO() {
+            this.coral = new TalonFX(CoralConstants.coralMotorID, "CamBot");
+            this.coralBeamBreak = new DigitalInput(CoralConstants.coralBeamBreakID);
+            this.coralCandi = new CANdi(CoralConstants.coralCandiID);
     
-            coralHandMagic = new MotionMagicVoltage(0);
+            coralMagic = new MotionMagicVoltage(0);
             TalonFXConfiguration cfg = new TalonFXConfiguration();
     
             MotionMagicConfigs mm = cfg.MotionMagic;
-            mm.MotionMagicCruiseVelocity = CoralHandConstants.coralHandGains.CruiseVelocity(); //rps
-            mm.MotionMagicAcceleration = CoralHandConstants.coralHandGains.Acceleration();
-            mm.MotionMagicJerk = CoralHandConstants.coralHandGains.Jerk();
+            mm.MotionMagicCruiseVelocity = CoralConstants.coralGains.CruiseVelocity(); //rps
+            mm.MotionMagicAcceleration = CoralConstants.coralGains.Acceleration();
+            mm.MotionMagicJerk = CoralConstants.coralGains.Jerk();
     
             Slot0Configs slot0 = cfg.Slot0;
-            slot0.kP = CoralHandConstants.coralHandGains.kP();
-            slot0.kI = CoralHandConstants.coralHandGains.kI();
-            slot0.kD = CoralHandConstants.coralHandGains.kD();
-            slot0.kV = CoralHandConstants.coralHandGains.kV();
-            slot0.kS = CoralHandConstants.coralHandGains.kS();
+            slot0.kP = CoralConstants.coralGains.kP();
+            slot0.kI = CoralConstants.coralGains.kI();
+            slot0.kD = CoralConstants.coralGains.kD();
+            slot0.kV = CoralConstants.coralGains.kV();
+            slot0.kS = CoralConstants.coralGains.kS();
     
             FeedbackConfigs fdb = cfg.Feedback;
             fdb.SensorToMechanismRatio = 1;
@@ -77,24 +77,24 @@ public class CoralHandIO {
             cfg.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
             cfg.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
     
-            StatusCode CoralHandStatus = StatusCode.StatusCodeNotInitialized;
+            StatusCode CoralStatus = StatusCode.StatusCodeNotInitialized;
             for(int i = 0; i < 5; ++i) {
-                CoralHandStatus = coralHand.getConfigurator().apply(cfg);
-            if (CoralHandStatus.isOK()) break;}
-            if (!CoralHandStatus.isOK()) {
-                System.out.println("Could not configure device. Error: " + CoralHandStatus.toString());
+                CoralStatus = coral.getConfigurator().apply(cfg);
+            if (CoralStatus.isOK()) break;}
+            if (!CoralStatus.isOK()) {
+                System.out.println("Could not configure device. Error: " + CoralStatus.toString());
             }
     
-            CoralHandPosition = coralHand.getPosition();
-            CoralHandVelocity = coralHand.getVelocity();
-            SupplyCurrent = coralHand.getSupplyCurrent();
-            TorqueCurrent = coralHand.getTorqueCurrent();
-            TempCelsius = coralHand.getDeviceTemp();
+            CoralPosition = coral.getPosition();
+            CoralVelocity = coral.getVelocity();
+            SupplyCurrent = coral.getSupplyCurrent();
+            TorqueCurrent = coral.getTorqueCurrent();
+            TempCelsius = coral.getDeviceTemp();
         
             BaseStatusSignal.setUpdateFrequencyForAll(
                 100.0,
-                CoralHandPosition,
-                CoralHandVelocity,
+                CoralPosition,
+                CoralVelocity,
                 SupplyCurrent,
                 TorqueCurrent,
                 TempCelsius
@@ -105,17 +105,17 @@ public class CoralHandIO {
     
         /** Update stats */
         public void updateStats() {
-            stats.coralHandMotorConnected =
+            stats.coralMotorConnected =
             BaseStatusSignal.refreshAll(
-                CoralHandPosition,
-                CoralHandVelocity,
+                CoralPosition,
+                CoralVelocity,
               SupplyCurrent,
               TorqueCurrent,
               TempCelsius)
                 .isOK();
     
-            stats.coralHandPosition = CoralHandPosition.getValueAsDouble();
-            stats.coralHandVelocity = CoralHandVelocity.getValueAsDouble();
+            stats.coralPosition = CoralPosition.getValueAsDouble();
+            stats.coralVelocity = CoralVelocity.getValueAsDouble();
             stats.supplyCurrentAmps = SupplyCurrent.getValueAsDouble();
             stats.torqueCurrentAmps = TorqueCurrent.getValueAsDouble();
             stats.tempCelsius = TempCelsius.getValueAsDouble();
@@ -123,8 +123,8 @@ public class CoralHandIO {
     
     
         /** Apply motion magic control mode */
-        public void setCoralHandMotorControl(double commandedPosition) {
-            coralHand.setControl(coralHandMagic.withPosition(commandedPosition).withSlot(0));
+        public void setCoralMotorControl(double commandedPosition) {
+            coral.setControl(coralMagic.withPosition(commandedPosition).withSlot(0));
         }
 
         public boolean coralBeamBreakTriggered(){
@@ -138,7 +138,7 @@ public class CoralHandIO {
     
         /** Stop motor */
         public void stop() {
-            coralHand.setVoltage(0);
+            coral.setVoltage(0);
         }
     
         /** Perform simulation-specific tasks */

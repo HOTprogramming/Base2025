@@ -1,4 +1,4 @@
-package frc.robot.subsystems.GameSpec.CoralHand;
+package frc.robot.subsystems.GameSpec.Coral;
 
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
@@ -18,7 +18,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.GameSpec.Arm.Arm;
 import frc.robot.subsystems.GameSpec.Elevator.ElevatorIOSim;
 
-public class CoralHandIOSim extends CoralHandIO {
+public class CoralIOSim extends CoralIO {
 
     ElevatorIOSim elevatorSim = new ElevatorIOSim();
 
@@ -33,8 +33,8 @@ public class CoralHandIOSim extends CoralHandIO {
   public MechanismLigament2d m_arm;
 
 
-  public CoralHandIOSim(){
-    armSimState = coralHand.getSimState();
+  public CoralIOSim(){
+    armSimState = coral.getSimState();
 
     armSim = new SingleJointedArmSim(
         DCMotor.getKrakenX60Foc(1),
@@ -66,7 +66,7 @@ public class CoralHandIOSim extends CoralHandIO {
 
             // In this method, we update our simulation of what our arm is doing
     // First, we set our "inputs" (voltages)
-    armSim.setInput(coralHand.get() * RobotController.getBatteryVoltage());
+    armSim.setInput(coral.get() * RobotController.getBatteryVoltage());
 
     // Next, we update it. The standard loop time is 20ms.
     armSim.update(0.020);
