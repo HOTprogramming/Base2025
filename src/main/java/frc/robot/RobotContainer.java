@@ -153,20 +153,21 @@ public class RobotContainer {
       //      .whileTrue(gamespecManager.L3());
 
       trajectoryGenerator.print();
-      NamedCommands.registerCommand("OTF", trajectoryGenerator.runOnce(() -> drivetrain.generateOnTheFly()));
-      NamedCommands.registerCommand("R_OTF", drivetrain.run(() -> drivetrain.runOnTheFly()));
+      NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
+      NamedCommands.registerCommand("R_OTF", drivetrain.runOnTheFly());
 
       NamedCommands.registerCommand("phelp", Commands.print("AJGHKSFGHJK"));
+      
 
 
-      new EventTrigger("OTF").onTrue(trajectoryGenerator.runOnce(() -> drivetrain.generateOnTheFly()));
+      new EventTrigger("OTF").onTrue(Commands.runOnce(() -> drivetrain.generateOnTheFly()));
 
   }
 
 
   public Command getAutonomousCommand() {
     String autoName = "OTF_TESTING";
-    return new PathPlannerAuto(autoName);
+    return new PathPlannerAuto(autoName).finallyDo(() -> System.out.println("ENDED AUTO COMMAND"));
   }
 
 }

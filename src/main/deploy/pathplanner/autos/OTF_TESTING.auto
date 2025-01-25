@@ -5,16 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Path 1"
-                }
-              }
-            ]
+            "pathName": "Path 1"
           }
         },
         {
@@ -24,28 +17,15 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "path 3"
+            "name": "phelp"
           }
         },
         {
-          "type": "sequential",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "OTF"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "phelp"
-                }
-              }
-            ]
+            "pathName": "path 3"
           }
         }
       ]

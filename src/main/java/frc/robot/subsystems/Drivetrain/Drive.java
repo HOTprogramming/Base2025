@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import org.json.simple.parser.ParseException;
@@ -118,6 +120,26 @@ public class Drive extends SubsystemBase {
         } catch (ParseException e) {
             System.out.println("Auto Data Invalid");
         }
+
+        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+            new Pose2d(13.0, 1.0, Rotation2d.fromDegrees(0)),
+            new Pose2d(16.0, 1.0, Rotation2d.fromDegrees(0)),
+            new Pose2d(15.0, 3.0, Rotation2d.fromDegrees(90))
+        );
+
+        PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // The constraints for this path.
+        // PathConstraints constraints = PathConstraints.unlimitedConstraints(12.0); // You can also use unlimited constraints, only limited by motor torque and nominal battery voltage
+
+        // Create the path using the waypoints created above
+        path = new PathPlannerPath(
+                waypoints,
+                constraints,
+                null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+                new GoalEndState(0.0, Rotation2d.fromDegrees(-90)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+        );
+
+        // Prevent the path from being flipped if the coordinates are already correct
+        path.preventFlipping = true;
     }
 
     public boolean drivetrainAtTarget() {
@@ -131,29 +153,33 @@ public class Drive extends SubsystemBase {
         return false;
     }
 
-    public void generateOnTheFly() {
-        SmartDashboard.putBoolean("Path Generated", true);
+    public Command generateOnTheFly() {
+        return runOnce(() -> {
+            SmartDashboard.putBoolean("Path Generated", true);
 
-        System.err.println("Start Gen");
-        List<Pose2d> currentPathPoses = pathGroup.get(currentPathIndex).getPathPoses();
-        PathPlannerPath nextPath = pathGroup.get(currentPathIndex + 1);
-        waypoints = PathPlannerPath.waypointsFromPoses(
-            currentPathPoses.get(currentPathPoses.size() - 1),
-            new Pose2d(pathXEntry.getDouble(0), pathYEntry.getDouble(0), Rotation2d.fromDegrees(pathRotEntry.getDouble(0))),
-            nextPath.getPathPoses().get(0)
-        );
-        path = new PathPlannerPath(
-        waypoints,
-        constraints,
-        null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-        new GoalEndState(nextPath.getIdealStartingState().velocityMPS(), nextPath.getInitialHeading()) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-        );
-        System.err.println("Finish Gen");
-        runOnTheFly();
+            System.err.println("Start Gen");
+            List<Pose2d> currentPathPoses = pathGroup.get(currentPathIndex).getPathPoses();
+            PathPlannerPath nextPath = pathGroup.get(currentPathIndex + 1);
+            waypoints = PathPlannerPath.waypointsFromPoses(
+                currentPathPoses.get(currentPathPoses.size() - 1),
+                new Pose2d(pathXEntry.getDouble(0), pathYEntry.getDouble(0), Rotation2d.fromDegrees(pathRotEntry.getDouble(0))),
+                nextPath.getPathPoses().get(0)
+            );
+            path = new PathPlannerPath(
+            waypoints,
+            constraints,
+            null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+            new GoalEndState(nextPath.getIdealStartingState().velocityMPS(), nextPath.getInitialHeading()) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+            );
+            System.err.println("Finish Gen");
+            AutoBuilder.followPath(path).unless(this::drivetrainAtTarget).schedule();
+        });
     }
 
-    public void runOnTheFly() {
-        AutoBuilder.followPath(path).unless(this::drivetrainAtTarget).schedule();
+    public Command runOnTheFly() {
+        return Commands.sequence(
+            generateOnTheFly(),
+            AutoBuilder.followPath(path).unless(this::drivetrainAtTarget));
     }
 
     public void chaseObject() {
