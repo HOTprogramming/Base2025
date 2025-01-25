@@ -9,9 +9,11 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.Angle;
@@ -27,6 +29,7 @@ public class CoralIO {
         protected MotionMagicVoltage coralMagic;
         protected DigitalInput coralBeamBreak;
         protected CANdi coralCandi;
+        protected TalonFXS coralWrist;
     
         public static class CoralIOStats {
             public boolean coralMotorConnected = true;
@@ -52,9 +55,11 @@ public class CoralIO {
             this.coral = new TalonFX(CoralConstants.coralMotorID, "CamBot");
             this.coralBeamBreak = new DigitalInput(CoralConstants.coralBeamBreakID);
             this.coralCandi = new CANdi(CoralConstants.coralCandiID);
+            this.coralWrist = new TalonFXS(0,"Cambot");
     
             coralMagic = new MotionMagicVoltage(0);
             TalonFXConfiguration cfg = new TalonFXConfiguration();
+            TalonFXSConfiguration cFXS = new TalonFXSConfiguration();
     
             MotionMagicConfigs mm = cfg.MotionMagic;
             mm.MotionMagicCruiseVelocity = CoralConstants.coralGains.CruiseVelocity(); //rps
@@ -83,6 +88,14 @@ public class CoralIO {
             if (CoralStatus.isOK()) break;}
             if (!CoralStatus.isOK()) {
                 System.out.println("Could not configure device. Error: " + CoralStatus.toString());
+            }
+
+            StatusCode CoralStatus2 = StatusCode.StatusCodeNotInitialized;
+            for(int i = 0; i < 5; ++i) {
+                CoralStatus2 = coralWrist.getConfigurator().apply(cFXS);
+            if (CoralStatus2.isOK()) break;}
+            if (!CoralStatus2.isOK()) {
+                System.out.println("Could not configure device. Error: " + CoralStatus2.toString());
             }
     
             CoralPosition = coral.getPosition();

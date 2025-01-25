@@ -7,8 +7,11 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -17,13 +20,17 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
+import edu.wpi.first.wpilibj.DigitalInput;
+import frc.robot.subsystems.GameSpec.Coral.CoralConstants;
 
 public abstract class AlgaeIO {
 
     // Protected TalonFX object accessible to subclasses
-    protected TalonFX algae;
-    protected TalonFX algae2;
+    protected TalonFXS algaeArm;
+    protected TalonFX algaeRoller;
     protected MotionMagicVoltage algaeMagic;
+    protected DigitalInput algaeBeamBreak;
+    protected CANdi algaeCandi;
 
     public static class AlgaeIOStats {
         public boolean algaeMotorConnected = true;
@@ -43,6 +50,7 @@ public abstract class AlgaeIO {
         public double SupplyCurrentAmps2 = 0.0;
         public double TorqueCurrentAmps2 = 0.0;
         public double TempCelsius2 = 0.0;
+
     }
 
     protected static AlgaeIOStats stats = new AlgaeIOStats();
@@ -61,11 +69,14 @@ public abstract class AlgaeIO {
 
     /** Constructor to initialize the TalonFX */
     public AlgaeIO() {
-        this.algae = new TalonFX(AlgaeConstants.algaeMotorID, "CamBot");
-        this.algae2 = new TalonFX(AlgaeConstants.algaeMotor2ID, "CamBot");
+        this.algaeArm = new TalonFXS(AlgaeConstants.algaeMotorID, "CamBot");
+        this.algaeRoller = new TalonFX(AlgaeConstants.algaeMotor2ID, "CamBot");
+        this.algaeBeamBreak = new DigitalInput(0);
+        this.algaeCandi = new CANdi(0);
 
         algaeMagic = new MotionMagicVoltage(0);
         TalonFXConfiguration cfg = new TalonFXConfiguration();
+        TalonFXSConfiguration cFXS = new TalonFXSConfiguration();
 
         MotionMagicConfigs mm = cfg.MotionMagic;
         mm.MotionMagicCruiseVelocity = AlgaeConstants.algaeGains.CruiseVelocity(); //rps
@@ -90,7 +101,7 @@ public abstract class AlgaeIO {
 
         StatusCode algaeStatus = StatusCode.StatusCodeNotInitialized;
         for(int i = 0; i < 5; ++i) {
-            algaeStatus = algae.getConfigurator().apply(cfg);
+            algaeStatus = algaeArm.getConfigurator().apply(cFXS);
         if (algaeStatus.isOK()) break;}
         if (!algaeStatus.isOK()) {
             System.out.println("Could not configure device. Error: " + algaeStatus.toString());
@@ -98,23 +109,23 @@ public abstract class AlgaeIO {
 
         StatusCode algaeStatus2 = StatusCode.StatusCodeNotInitialized;
         for(int i = 0; i < 5; ++i) {
-            algaeStatus2 = algae2.getConfigurator().apply(cfg);
+            algaeStatus2 = algaeRoller.getConfigurator().apply(cfg);
         if (algaeStatus2.isOK()) break;}
         if (!algaeStatus2.isOK()) {
             System.out.println("Could not configure device. Error: " + algaeStatus.toString());
         }
 
-        algaePosition = algae.getPosition();
-        algaeVelocity = algae.getVelocity();
-        SupplyCurrent = algae.getSupplyCurrent();
-        TorqueCurrent = algae.getTorqueCurrent();
-        TempCelsius = algae.getDeviceTemp();
+        algaePosition = algaeArm.getPosition();
+        algaeVelocity = algaeArm.getVelocity();
+        SupplyCurrent = algaeArm.getSupplyCurrent();
+        TorqueCurrent = algaeArm.getTorqueCurrent();
+        TempCelsius = algaeArm.getDeviceTemp();
 
-        algaePosition2 = algae2.getPosition();
-        algaeVelocity2 = algae2.getVelocity();
-        SupplyCurrent2 = algae2.getSupplyCurrent();
-        TorqueCurrent2 = algae2.getTorqueCurrent();
-        TempCelsius2 = algae2.getDeviceTemp();
+        algaePosition2 = algaeRoller.getPosition();
+        algaeVelocity2 = algaeRoller.getVelocity();
+        SupplyCurrent2 = algaeRoller.getSupplyCurrent();
+        TorqueCurrent2 = algaeRoller.getTorqueCurrent();
+        TempCelsius2 = algaeRoller.getDeviceTemp();
     
         BaseStatusSignal.setUpdateFrequencyForAll(
             100.0,
@@ -165,13 +176,21 @@ public abstract class AlgaeIO {
 
     /** Apply motion magic control mode */
     public void setAlgaeMotorControl(double commandedPosition) {
-        algae.setControl(algaeMagic.withPosition(commandedPosition).withSlot(0));
-        algae2.setControl(new Follower(algae.getDeviceID(), false));
+        
+    }
+
+    public boolean algaeBeamBreakTriggered(){
+        algaeCandi.getPWM1Position();
+        return algaeBeamBreak.get();
+    }
+
+    public StatusSignal<Angle> algaeBeamBreakCandiPosition(){
+        return algaeCandi.getPWM1Position();
     }
 
     /** Stop motor */
     public void stop() {
-        algae.setVoltage(0);
+        algaeRoller.setVoltage(0);
     }
 
     /** Perform simulation-specific tasks */

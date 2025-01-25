@@ -77,31 +77,6 @@ public class Climber extends SubsystemBase {
       this);
   }
 
-  public Command goToL4(){
-    return climberCommand(ClimberConstants.l4Height);
-  }
-
-  public Command goToL3(){
-    return climberCommand(ClimberConstants.l3Height);
-  }
-
-  public Command goToL2(){
-    return climberCommand(ClimberConstants.l2Height);
-  }
-
-  public Command goToL1(){
-    return climberCommand(ClimberConstants.l1Height);
-  }
-
-  public Command goToNet(){
-    return climberCommand(ClimberConstants.netHeight);
-  }
-
-  public Command goToIntakeCoral(){
-    return climberCommand(ClimberConstants.intakeCoralHeight);
-  }
-
-
 
   public Command stop(){
     return run(() -> {

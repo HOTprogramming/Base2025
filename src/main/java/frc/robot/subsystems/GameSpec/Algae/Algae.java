@@ -77,34 +77,6 @@ public class Algae extends SubsystemBase {
       this);
   }
 
-  public Command goToL4(){
-    return algaeCommand(AlgaeConstants.l4Height);
-  }
-
-  public Command goToL3(){
-    return algaeCommand(AlgaeConstants.l3Height);
-  }
-
-  public Command goToL2(){
-    return algaeCommand(AlgaeConstants.l2Height);
-  }
-
-  public Command goToL1(){
-    return algaeCommand(AlgaeConstants.l1Height);
-  }
-
-  public Command goToNet(){
-    return algaeCommand(AlgaeConstants.netHeight);
-  }
-
-  public Command goToIntakeCoral(){
-    return algaeCommand(AlgaeConstants.intakeCoralHeight);
-  }
-
-  public Command goToIntakeAlgae(){
-    return algaeCommand(AlgaeConstants.intakeAlgaeHeight);
-  }
-
   public Command stop(){
     return run(() -> {
         io.stop();
