@@ -1,5 +1,7 @@
 package frc.robot.subsystems.GameSpec.CoralHand;
     
+import java.io.ObjectInputFilter.Status;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
@@ -8,6 +10,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -23,6 +26,7 @@ public class CoralHandIO {
         protected TalonFX coralHand;
         protected MotionMagicVoltage coralHandMagic;
         protected DigitalInput coralBeamBreak;
+        protected CANdi coralCandi;
     
         public static class CoralHandIOStats {
             public boolean coralHandMotorConnected = true;
@@ -46,7 +50,8 @@ public class CoralHandIO {
         /** Constructor to initialize the TalonFX */
         public CoralHandIO() {
             this.coralHand = new TalonFX(CoralHandConstants.coralHandMotorID, "CamBot");
-            this.coralBeamBreak = new DigitalInput(0);
+            this.coralBeamBreak = new DigitalInput(CoralHandConstants.coralBeamBreakID);
+            this.coralCandi = new CANdi(CoralHandConstants.coralCandiID);
     
             coralHandMagic = new MotionMagicVoltage(0);
             TalonFXConfiguration cfg = new TalonFXConfiguration();
@@ -94,6 +99,8 @@ public class CoralHandIO {
                 TorqueCurrent,
                 TempCelsius
               );
+
+              
         }
     
         /** Update stats */
@@ -121,7 +128,12 @@ public class CoralHandIO {
         }
 
         public boolean coralBeamBreakTriggered(){
+            coralCandi.getPWM1Position();
             return coralBeamBreak.get();
+        }
+
+        public StatusSignal<Angle> coralBeamBreakCandiPosition(){
+            return coralCandi.getPWM1Position();
         }
     
         /** Stop motor */

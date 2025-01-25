@@ -9,6 +9,8 @@ public class CoralHandConstants {
     
     public static final int coralHandMotorID = 32;
     public static final int coralHandEncoderID = 51;
+    public static final int coralCandiID = 0;
+    public static final int coralBeamBreakID = 0;
     public static final double kReduction = (1.0 / 2.0);
     public static final double kMaxAccelerationRpmPerSec = 9000.0; 
     public static final MMGains coralHandGains = new MMGains(200, 100, 200, 15, 0.0, 0.0, 0, 0);
