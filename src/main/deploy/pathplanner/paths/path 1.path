@@ -24,7 +24,7 @@
         "y": 6.8481045081967205
       },
       "nextControl": {
-        "x": 2.0019467213114748,
+        "x": 2.0019467213114743,
         "y": 6.944006147540984
       },
       "isLocked": false,
@@ -144,12 +144,12 @@
     },
     {
       "anchor": {
-        "x": 4.718999999999999,
-        "y": 6.49175
+        "x": 3.848053278688525,
+        "y": 7.4594774590163935
       },
       "prevControl": {
-        "x": 4.901114465932378,
-        "y": 6.764887671298668
+        "x": 4.411475409836065,
+        "y": 6.991956967213114
       },
       "nextControl": null,
       "isLocked": false,
@@ -159,14 +159,7 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "OTF",
-      "waypointRelativePos": 0.4499999999999992,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 5.0,
     "maxAcceleration": 4.0,
@@ -176,8 +169,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 3.0,
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "New Folder",

@@ -6,6 +6,7 @@ package frc.robot;
 import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -151,10 +152,15 @@ public class RobotContainer {
       //      operator.leftTrigger().and(operator.y())
       //      .whileTrue(gamespecManager.L3());
 
+      trajectoryGenerator.print();
+      NamedCommands.registerCommand("OTF", trajectoryGenerator.runOnce(() -> drivetrain.generateOnTheFly()));
+      NamedCommands.registerCommand("R_OTF", drivetrain.run(() -> drivetrain.runOnTheFly()));
 
-      
-    NamedCommands.registerCommand("OTF", trajectoryGenerator.runOnce(() -> trajectoryGenerator.print()));
-    NamedCommands.registerCommand("R_OTF", drivetrain.run(() -> drivetrain.runOnTheFly()));
+      NamedCommands.registerCommand("phelp", Commands.print("AJGHKSFGHJK"));
+
+
+      new EventTrigger("OTF").onTrue(trajectoryGenerator.runOnce(() -> drivetrain.generateOnTheFly()));
+
   }
 
 

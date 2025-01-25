@@ -120,6 +120,17 @@ public class Drive extends SubsystemBase {
         }
     }
 
+    public boolean drivetrainAtTarget() {
+        if (path != null) {
+            
+            return Math.abs(
+                this.iOdata.state.Pose.getTranslation().getDistance(
+                    path.getPathPoses().get(path.getPathPoses().size() - 1).getTranslation())) 
+                    < OTF_end_tolerance;
+        }
+        return false;
+    }
+
     public void generateOnTheFly() {
         SmartDashboard.putBoolean("Path Generated", true);
 
@@ -138,10 +149,11 @@ public class Drive extends SubsystemBase {
         new GoalEndState(nextPath.getIdealStartingState().velocityMPS(), nextPath.getInitialHeading()) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
         );
         System.err.println("Finish Gen");
+        runOnTheFly();
     }
 
     public void runOnTheFly() {
-        AutoBuilder.followPath(path).schedule();
+        AutoBuilder.followPath(path).unless(this::drivetrainAtTarget).schedule();
     }
 
     public void chaseObject() {

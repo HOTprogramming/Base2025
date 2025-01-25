@@ -18,6 +18,8 @@ public class DriveConstants {
     private static final boolean seedpose_auton_sim = true;
     private static final boolean seedpose_auton_real = true;
 
+    public static final double OTF_end_tolerance = 0.2;
+
     private static final PIDConstants autoPidConstantsTranslation = new PIDConstants(10, 0, 0);
     private static final PIDConstants autoPidConstantsTheta = new PIDConstants (7, 0, 0); 
     private static final PIDConstants teleopPidConstantsTheta = new PIDConstants (10, 0, 0); 
