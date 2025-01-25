@@ -7,6 +7,7 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -60,6 +61,7 @@ public abstract class ElevatorIO {
     /** Constructor to initialize the TalonFX */
     public ElevatorIO() {
         this.elevator = new TalonFX(ElevatorConstants.elevatorMotorID, "CamBot");
+        this.elevator2 = new TalonFX(ElevatorConstants.elevatorMotor2ID, "CamBot");
 
         elevatorMagic = new MotionMagicVoltage(0);
         TalonFXConfiguration cfg = new TalonFXConfiguration();
@@ -93,6 +95,14 @@ public abstract class ElevatorIO {
             System.out.println("Could not configure device. Error: " + elevatorStatus.toString());
         }
 
+        StatusCode elevatorStatus2 = StatusCode.StatusCodeNotInitialized;
+        for(int i = 0; i < 5; ++i) {
+            elevatorStatus2 = elevator2.getConfigurator().apply(cfg);
+        if (elevatorStatus2.isOK()) break;}
+        if (!elevatorStatus2.isOK()) {
+            System.out.println("Could not configure device. Error: " + elevatorStatus.toString());
+        }
+
         elevatorPosition = elevator.getPosition();
         elevatorVelocity = elevator.getVelocity();
         SupplyCurrent = elevator.getSupplyCurrent();
@@ -119,6 +129,8 @@ public abstract class ElevatorIO {
             TempCelsius2
           );
     }
+
+
 
     /** Update stats */
     public void updateStats() {
@@ -153,6 +165,7 @@ public abstract class ElevatorIO {
     /** Apply motion magic control mode */
     public void setElevatorMotorControl(double commandedPosition) {
         elevator.setControl(elevatorMagic.withPosition(commandedPosition).withSlot(0));
+        elevator2.setControl(new Follower(elevator.getDeviceID(), false));
     }
 
     /** Stop motor */

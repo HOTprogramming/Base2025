@@ -34,7 +34,7 @@ public class CoralHandIOSim extends CoralHandIO {
 
 
   public CoralHandIOSim(){
-    armSimState = CoralHand.getSimState();
+    armSimState = coralHand.getSimState();
 
     armSim = new SingleJointedArmSim(
         DCMotor.getKrakenX60Foc(1),
@@ -66,7 +66,7 @@ public class CoralHandIOSim extends CoralHandIO {
 
             // In this method, we update our simulation of what our arm is doing
     // First, we set our "inputs" (voltages)
-    armSim.setInput(CoralHand.get() * RobotController.getBatteryVoltage());
+    armSim.setInput(coralHand.get() * RobotController.getBatteryVoltage());
 
     // Next, we update it. The standard loop time is 20ms.
     armSim.update(0.020);
