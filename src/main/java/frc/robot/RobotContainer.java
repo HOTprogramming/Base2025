@@ -48,6 +48,10 @@ public class RobotContainer {
 
     gamespecManager = new Manager();
 
+    NamedCommands.registerCommand("OTF", drivetrain.runOnce(() -> drivetrain.generateOnTheFly()));
+    NamedCommands.registerCommand("R_OTF", drivetrain.run(() -> drivetrain.runOnTheFly()));
+
+
     configureBindings();
   }
 
@@ -143,9 +147,6 @@ public class RobotContainer {
       
       //      operator.leftTrigger().and(operator.y())
       //      .whileTrue(gamespecManager.L3());
-
-      NamedCommands.registerCommand("OTF", drivetrain.runOnce(() -> drivetrain.generateOnTheFly()));
-      NamedCommands.registerCommand("R_OTF", drivetrain.run(() -> drivetrain.runOnTheFly()));
 
 
   }

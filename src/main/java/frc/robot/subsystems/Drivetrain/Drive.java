@@ -82,7 +82,6 @@ public class Drive extends SubsystemBase {
     private List<PathPlannerPath> pathGroup;
 
 
-
     public Drive(DriveIO driveIO) { 
         this.driveIO = driveIO;
         this.iOdata = driveIO.update();
@@ -122,6 +121,8 @@ public class Drive extends SubsystemBase {
     }
 
     public void generateOnTheFly() {
+        SmartDashboard.putBoolean("Path Generated", true);
+
         System.err.println("Start Gen");
         List<Pose2d> currentPathPoses = pathGroup.get(currentPathIndex).getPathPoses();
         PathPlannerPath nextPath = pathGroup.get(currentPathIndex + 1);
