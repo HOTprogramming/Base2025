@@ -19,6 +19,7 @@ import frc.robot.subsystems.Camera.Camera;
 import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
 import frc.robot.subsystems.GameSpec.Manager;
+import frc.robot.subsystems.TrajectoryGenerator.TrajectoryGenerator;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
 
 
@@ -26,6 +27,7 @@ public class RobotContainer {
   private Drive drivetrain;
   private Camera cameraSubsystem;
   private Manager gamespecManager;
+  private TrajectoryGenerator trajectoryGenerator;
 
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
@@ -36,20 +38,21 @@ public class RobotContainer {
       case COMPBOT -> {
         drivetrain = new Drive(new DriveKraken());
         cameraSubsystem = new Camera(drivetrain);
+        trajectoryGenerator = new TrajectoryGenerator();
       }
       case DEVBOT -> {
         drivetrain = new Drive(new DriveKraken());
         cameraSubsystem = new Camera(drivetrain);
+        trajectoryGenerator = new TrajectoryGenerator();
       }
       case SIMBOT -> {
         drivetrain = new Drive(new DriveSim());
+        trajectoryGenerator = new TrajectoryGenerator();
       }
     }
 
     gamespecManager = new Manager();
 
-    NamedCommands.registerCommand("OTF", drivetrain.runOnce(() -> drivetrain.generateOnTheFly()));
-    NamedCommands.registerCommand("R_OTF", drivetrain.run(() -> drivetrain.runOnTheFly()));
 
 
     configureBindings();
@@ -149,6 +152,9 @@ public class RobotContainer {
       //      .whileTrue(gamespecManager.L3());
 
 
+      
+    NamedCommands.registerCommand("OTF", trajectoryGenerator.runOnce(() -> trajectoryGenerator.print()));
+    NamedCommands.registerCommand("R_OTF", drivetrain.run(() -> drivetrain.runOnTheFly()));
   }
 
 
