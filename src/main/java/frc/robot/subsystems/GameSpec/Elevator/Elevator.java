@@ -14,8 +14,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.GameSpec.Elevator.ElevatorIO.ElevatorIOStats;
 
 public class Elevator extends SubsystemBase {
-  
-
   public FunctionalCommand testCommand;
 
   private final ElevatorIO io;
