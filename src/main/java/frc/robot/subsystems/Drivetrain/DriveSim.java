@@ -119,4 +119,9 @@ public class DriveSim extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder>  impl
     public void updateVision(Pose2d calculatedPose, double timestamp, Matrix<N3, N1> stDevs) {
         addVisionMeasurement(calculatedPose, timestamp, stDevs);
     }
+
+    @Override
+    public void setOperatorPerspective(Rotation2d rotation2d) {
+        setOperatorPerspectiveForward(rotation2d);
+    }
 }

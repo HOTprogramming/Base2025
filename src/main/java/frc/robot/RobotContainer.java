@@ -92,7 +92,7 @@ public class RobotContainer {
         }
       ));
 
-      driver.b().whileTrue
+      driver.leftTrigger().whileTrue
       (drivetrain.run(() -> {
         drivetrain.lockReef(
           Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
