@@ -60,6 +60,9 @@ public class Drive extends SubsystemBase {
     private GenericEntry pathYEntry;
     private GenericEntry pathRotEntry;
     private GenericEntry pathGoalPoseEntry;
+    private GenericEntry matchTimeEntry;
+
+    private double matchTime;
 
     private Rotation2d heading;
 
@@ -97,6 +100,7 @@ public class Drive extends SubsystemBase {
         pathYEntry = driveTab.add("Path Y", 0.0).getEntry();
         pathRotEntry = driveTab.add("Path Rot", 0.0).getEntry();
         pathGoalPoseEntry = driveTab.add("pathGoal", new Double[] {0.0, 0.0, 0.0}).getEntry();
+        matchTimeEntry = driveTab.add("Match time",0.0).getEntry();
 
         double driveBaseRadius = 0;
         for (var moduleLocation : this.iOdata.m_moduleLocations) {
@@ -315,6 +319,8 @@ public class Drive extends SubsystemBase {
 
     @Override
     public void periodic() {
+        matchTime = DriverStation.getMatchTime();
+        matchTimeEntry.setDouble(matchTime);
         this.iOdata = driveIO.update();
         if (this.iOdata.state.Speeds != null) {
             speedEntry.setDouble(Math.hypot(
@@ -333,6 +339,7 @@ public class Drive extends SubsystemBase {
                 pathGoalPose.getY(), 
                 pathGoalPose.getRotation().getRadians()});
         } 
+
         if (!DriverStation.isTeleop()) {
             heading = iOdata.state.Pose.getRotation();
         }
