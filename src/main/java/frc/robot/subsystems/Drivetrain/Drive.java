@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Drivetrain;
 
+import edu.wpi.first.hal.simulation.RoboRioDataJNI;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -61,8 +62,10 @@ public class Drive extends SubsystemBase {
     private GenericEntry pathRotEntry;
     private GenericEntry pathGoalPoseEntry;
     private GenericEntry matchTimeEntry;
+    private GenericEntry voltsEntry;
 
     private double matchTime;
+    private double volts;
 
     private Rotation2d heading;
 
@@ -90,6 +93,7 @@ public class Drive extends SubsystemBase {
     public Drive(DriveIO driveIO) { 
         this.driveIO = driveIO;
         this.iOdata = driveIO.update();
+        RoboRioDataJNI.getVInVoltage();
 
         heading = Rotation2d.fromDegrees(0);
 
@@ -101,6 +105,7 @@ public class Drive extends SubsystemBase {
         pathRotEntry = driveTab.add("Path Rot", 0.0).getEntry();
         pathGoalPoseEntry = driveTab.add("pathGoal", new Double[] {0.0, 0.0, 0.0}).getEntry();
         matchTimeEntry = driveTab.add("Match time",0.0).getEntry();
+        voltsEntry = driveTab.add("Volts",0.0).getEntry();
 
         double driveBaseRadius = 0;
         for (var moduleLocation : this.iOdata.m_moduleLocations) {
@@ -321,6 +326,8 @@ public class Drive extends SubsystemBase {
     public void periodic() {
         matchTime = DriverStation.getMatchTime();
         matchTimeEntry.setDouble(matchTime);
+        volts = RoboRioDataJNI.getVInVoltage();
+        voltsEntry.setDouble(volts);
         this.iOdata = driveIO.update();
         if (this.iOdata.state.Speeds != null) {
             speedEntry.setDouble(Math.hypot(
