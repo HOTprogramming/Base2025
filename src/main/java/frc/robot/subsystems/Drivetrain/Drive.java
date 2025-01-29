@@ -108,6 +108,7 @@ public class Drive extends SubsystemBase {
         pathGoalPoseEntry = driveTab.add("pathGoal", new Double[] {0.0, 0.0, 0.0}).getEntry();
         matchTimeEntry = driveTab.add("Match time",0.0).getEntry();
         voltsEntry = driveTab.add("Volts",0.0).getEntry();
+        ampsEntry = driveTab.add("Amps",0.0).getEntry();
 
         double driveBaseRadius = 0;
         for (var moduleLocation : this.iOdata.m_moduleLocations) {
