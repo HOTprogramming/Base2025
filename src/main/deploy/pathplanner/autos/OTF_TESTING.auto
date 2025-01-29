@@ -7,19 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Path 1"
+            "pathName": "path 1"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "OTF"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "phelp"
           }
         },
         {

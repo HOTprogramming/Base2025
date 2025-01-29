@@ -99,7 +99,6 @@ public class Drive extends SubsystemBase {
     public Drive(DriveIO driveIO) { 
         this.driveIO = driveIO;
         this.iOdata = driveIO.update();
-        RoboRioDataJNI.getVInVoltage();
 
         heading = Rotation2d.fromDegrees(0);
 
