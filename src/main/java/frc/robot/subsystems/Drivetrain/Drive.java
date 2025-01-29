@@ -10,7 +10,9 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -79,6 +81,8 @@ public class Drive extends SubsystemBase {
     private Pose2d objectAbsolute;
     private Pose2d objectRelative;
     private Pose2d pathGoalPose;
+
+    private Alert alert;
 
     private PIDController thetaController = new PIDController(10, 0, 0);
 
@@ -152,6 +156,8 @@ public class Drive extends SubsystemBase {
 
         // Prevent the path from being flipped if the coordinates are already correct
         path.preventFlipping = true;
+
+        alert = new Alert("test alert", AlertType.kWarning);
     }
 
     public boolean drivetrainAtTarget() {
@@ -363,6 +369,8 @@ public class Drive extends SubsystemBase {
             .findFirst()
             .orElse(0);
         }
+
+        alert.set(true);
     }
 
     public void addVisionMeasurement(Pose2d calculatedPose, double timestamp, Matrix<N3, N1> stDevs) {
