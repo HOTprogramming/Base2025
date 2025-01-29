@@ -333,7 +333,6 @@ public class Drive extends SubsystemBase {
         amps = RoboRioDataJNI.getVInCurrent();
         ampsEntry.setDouble(amps);
 
-        voltsEntry.setDouble(volts);
         this.iOdata = driveIO.update();
         if (this.iOdata.state.Speeds != null) {
             speedEntry.setDouble(Math.hypot(
