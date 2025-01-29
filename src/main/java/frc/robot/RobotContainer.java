@@ -59,8 +59,9 @@ public class RobotContainer {
 
     gamespecManager = new Manager();
 
-    chooser.setDefaultOption("Simple Auto", "m_simpleAuto");
-    chooser.addOption("Complex Auto", "m_complexAuto");
+    chooser.setDefaultOption("Auto", "Auto");
+    // chooser.addOption("Complex Auto", "m_complexAuto");
+    
     SmartDashboard.putData(chooser);
 
     configureBindings();
@@ -168,7 +169,6 @@ public class RobotContainer {
 
 
       new EventTrigger("OTF").onTrue(Commands.runOnce(() -> drivetrain.generateOnTheFly()));
-
   }
 
 
