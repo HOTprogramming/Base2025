@@ -13,6 +13,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -25,6 +27,9 @@ import frc.robot.subsystems.Drivetrain.DriveKraken;
 
 
 public class RobotContainer {
+
+  private SendableChooser<String> chooser = new SendableChooser<>();
+
   private Drive drivetrain;
   private Camera cameraSubsystem;
   private Manager gamespecManager;
@@ -54,7 +59,9 @@ public class RobotContainer {
 
     gamespecManager = new Manager();
 
-
+    chooser.setDefaultOption("Simple Auto", "m_simpleAuto");
+    chooser.addOption("Complex Auto", "m_complexAuto");
+    SmartDashboard.putData(chooser);
 
     configureBindings();
   }
@@ -166,7 +173,7 @@ public class RobotContainer {
 
 
   public Command getAutonomousCommand() {
-    String autoName = "OTF_TESTING";
+    String autoName = chooser.getSelected();
     return new PathPlannerAuto(autoName).finallyDo(() -> System.out.println("ENDED AUTO COMMAND"));
   }
 
