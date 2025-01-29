@@ -135,11 +135,10 @@ public class RobotContainer {
         }
       ));
 
-      // driver.povLeft().onTrue(drivetrain.run(() -> drivetrain.alignReefLeft()));
-      // driver.povRight().onTrue(drivetrain.run(() -> drivetrain.alignReefRight()));
-      // driver.povDown().onTrue(drivetrain.run(() -> drivetrain.chaseObject()));    
-      driver.povLeft().onTrue(drivetrain.run(() -> drivetrain.chaseObjectLeft()));  
-      driver.povRight().onTrue(drivetrain.run(() -> drivetrain.chaseObjectRight())); 
+
+      // driver.povDown().onTrue(drivetrain.run(() -> drivetrain.chaseObject(0)));    
+      driver.povLeft().onTrue(drivetrain.run(() -> drivetrain.chaseObject(1)));  
+      driver.povRight().onTrue(drivetrain.run(() -> drivetrain.chaseObject(-1))); 
       
       driver.povDown().onTrue(drivetrain.run(() -> {
         drivetrain.generateOnTheFly();
@@ -165,8 +164,6 @@ public class RobotContainer {
       NamedCommands.registerCommand("R_OTF", drivetrain.runOnTheFly());
 
       NamedCommands.registerCommand("phelp", Commands.print("AJGHKSFGHJK"));
-      
-
 
       new EventTrigger("OTF").onTrue(Commands.runOnce(() -> drivetrain.generateOnTheFly()));
   }
