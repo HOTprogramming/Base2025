@@ -27,7 +27,8 @@ public class Intake extends SubsystemBase {
   private GenericEntry intakeSupplyCurrent;
   private GenericEntry intakeStatorCurrent;
   private GenericEntry intakeTemp;
-  private GenericEntry intakeCommandedPos;
+  private GenericEntry intakeRotationPos;
+  private GenericEntry intakeRollerSpeed;
   
   public Intake(IntakeIO io) {
     this.io = io; 
@@ -61,18 +62,11 @@ public class Intake extends SubsystemBase {
     intakeTemp.setDouble(stats.TempCelsius);
   }
 
-  public Command runToPosition(double position){
-    return run(() -> {
-        this.intakeCommandedPos.setDouble(position);
-        io.setIntakeMotorControl(position);
-    });
-  }
-
-  private FunctionalCommand intakeCommand(double position){
+  private FunctionalCommand intakeCommand(double position, double speed){
     return new FunctionalCommand(
       () -> this.intakeCommandedPos.setDouble(position),
-      () -> io.setIntakeMotorControl(position),
-      interrupted -> io.setIntakeMotorControl(position), 
+      () -> io.setIntakeMotorControl(position, speed),
+      interrupted -> io.setIntakeMotorControl(position, speed), 
       () -> checkRange(.1),
       this);
   }

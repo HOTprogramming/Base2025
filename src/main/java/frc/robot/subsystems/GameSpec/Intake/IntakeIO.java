@@ -9,6 +9,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -21,9 +22,10 @@ import edu.wpi.first.units.measure.Temperature;
 public abstract class IntakeIO {
 
     // Protected TalonFX object accessible to subclasses
-    protected TalonFX intake;
-    protected TalonFX intake2;
+    protected TalonFX intakeRoller;
+    protected TalonFX intakeRotation;
     protected MotionMagicVoltage intakeMagic;
+    protected VelocityTorqueCurrentFOC velocityControl;
 
     public static class IntakeIOStats {
         public boolean intakeMotorConnected = true;
@@ -61,11 +63,13 @@ public abstract class IntakeIO {
 
     /** Constructor to initialize the TalonFX */
     public IntakeIO() {
-        this.intake = new TalonFX(IntakeConstants.intakeMotorID, "CamBot");
-        this.intake2 = new TalonFX(IntakeConstants.intakeMotor2ID, "CamBot");
+        this.intakeRoller = new TalonFX(IntakeConstants.intakeMotorID, "CamBot");
+        this.intakeRotation = new TalonFX(IntakeConstants.intakeMotor2ID, "CamBot");
 
         intakeMagic = new MotionMagicVoltage(0);
         TalonFXConfiguration cfg = new TalonFXConfiguration();
+
+        velocityControl = new VelocityTorqueCurrentFOC(0).withUpdateFreqHz(0.0);
 
         MotionMagicConfigs mm = cfg.MotionMagic;
         mm.MotionMagicCruiseVelocity = IntakeConstants.intakeGains.CruiseVelocity(); //rps
@@ -90,7 +94,7 @@ public abstract class IntakeIO {
 
         StatusCode intakeStatus = StatusCode.StatusCodeNotInitialized;
         for(int i = 0; i < 5; ++i) {
-            intakeStatus = intake.getConfigurator().apply(cfg);
+            intakeStatus = intakeRoller.getConfigurator().apply(cfg);
         if (intakeStatus.isOK()) break;}
         if (!intakeStatus.isOK()) {
             System.out.println("Could not configure device. Error: " + intakeStatus.toString());
@@ -98,23 +102,23 @@ public abstract class IntakeIO {
 
         StatusCode intakeStatus2 = StatusCode.StatusCodeNotInitialized;
         for(int i = 0; i < 5; ++i) {
-            intakeStatus2 = intake2.getConfigurator().apply(cfg);
+            intakeStatus2 = intakeRotation.getConfigurator().apply(cfg);
         if (intakeStatus2.isOK()) break;}
         if (!intakeStatus2.isOK()) {
             System.out.println("Could not configure device. Error: " + intakeStatus.toString());
         }
 
-        intakePosition = intake.getPosition();
-        intakeVelocity = intake.getVelocity();
-        SupplyCurrent = intake.getSupplyCurrent();
-        TorqueCurrent = intake.getTorqueCurrent();
-        TempCelsius = intake.getDeviceTemp();
+        intakePosition = intakeRoller.getPosition();
+        intakeVelocity = intakeRoller.getVelocity();
+        SupplyCurrent = intakeRoller.getSupplyCurrent();
+        TorqueCurrent = intakeRoller.getTorqueCurrent();
+        TempCelsius = intakeRoller.getDeviceTemp();
 
-        intakePosition2 = intake2.getPosition();
-        intakeVelocity2 = intake2.getVelocity();
-        SupplyCurrent2 = intake2.getSupplyCurrent();
-        TorqueCurrent2 = intake2.getTorqueCurrent();
-        TempCelsius2 = intake2.getDeviceTemp();
+        intakePosition2 = intakeRotation.getPosition();
+        intakeVelocity2 = intakeRotation.getVelocity();
+        SupplyCurrent2 = intakeRotation.getSupplyCurrent();
+        TorqueCurrent2 = intakeRotation.getTorqueCurrent();
+        TempCelsius2 = intakeRotation.getDeviceTemp();
     
         BaseStatusSignal.setUpdateFrequencyForAll(
             100.0,
@@ -164,14 +168,14 @@ public abstract class IntakeIO {
 
 
     /** Apply motion magic control mode */
-    public void setIntakeMotorControl(double commandedPosition) {
-        intake.setControl(intakeMagic.withPosition(commandedPosition).withSlot(0));
-        intake2.setControl(new Follower(intake.getDeviceID(), false));
+    public void setIntakeMotorControl(double rotationPosition, double rollerSpeedRPM) {
+        intakeRoller.setControl(velocityControl.withVelocity(rollerSpeedRPM / 60.0));
+        intakeRotation.setControl(intakeMagic.withPosition(rotationPosition).withSlot(0));
     }
 
     /** Stop motor */
     public void stop() {
-        intake.setVoltage(0);
+        intakeRoller.setVoltage(0);
     }
 
     /** Perform simulation-specific tasks */
