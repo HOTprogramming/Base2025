@@ -37,15 +37,15 @@ public class Manager extends SubsystemBase{
       if (!Utils.isSimulation()){
         elevatorSubsystem = new Elevator(new ElevatorIOReal());   
         armSubsystem = new Arm(new ArmIOReal());
-        coralSubsystem = new Coral(new CoralIOReal());
-        algaeSubsystem = new Algae(new AlgaeIOReal());
-        climberSubsystem = new Climber(new ClimberIOReal());
+        // coralSubsystem = new Coral(new CoralIOReal());
+        // algaeSubsystem = new Algae(new AlgaeIOReal());
+        // climberSubsystem = new Climber(new ClimberIOReal());
       } else {
         elevatorSubsystem = new Elevator(new ElevatorIOSim());
         armSubsystem = new Arm(new ArmIOSim());
-        coralSubsystem = new Coral(new CoralIOSim());
-        algaeSubsystem = new Algae(new AlgaeIOSim());
-        climberSubsystem = new Climber(new ClimberIOSim());
+        // coralSubsystem = new Coral(new CoralIOSim());
+        // algaeSubsystem = new Algae(new AlgaeIOSim());
+        // climberSubsystem = new Climber(new ClimberIOSim());
       }
     }
 
