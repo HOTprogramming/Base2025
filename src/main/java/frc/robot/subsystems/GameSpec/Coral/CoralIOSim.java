@@ -28,7 +28,7 @@ public class CoralIOSim extends CoralIO {
 
       // Create a Mechanism2d display of an Arm with a fixed ArmTower and moving Arm.
   private final Mechanism2d m_mech2d = new Mechanism2d(60, 60);
-  private final MechanismRoot2d m_armPivot = m_mech2d.getRoot("ArmPivot", 30, 30);
+  private final MechanismRoot2d m_armPivot = m_mech2d.getRoot("Coral", 30, 30);
   //private final MechanismLigament2d m_armTower;
   public MechanismLigament2d m_arm;
 
