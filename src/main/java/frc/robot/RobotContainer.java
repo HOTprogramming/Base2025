@@ -23,7 +23,6 @@ import frc.robot.subsystems.Camera.Camera;
 import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
 import frc.robot.subsystems.GameSpec.Manager;
-import frc.robot.subsystems.TrajectoryGenerator.TrajectoryGenerator;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
 
 
@@ -34,7 +33,6 @@ public class RobotContainer {
   private Drive drivetrain;
   private Camera cameraSubsystem;
   private Manager gamespecManager;
-  private TrajectoryGenerator trajectoryGenerator;
 
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
@@ -146,11 +144,9 @@ public class RobotContainer {
       //      operator.leftTrigger().and(operator.y())
       //      .whileTrue(gamespecManager.L3());
 
-      trajectoryGenerator.print();
       NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
       NamedCommands.registerCommand("R_OTF", drivetrain.runOnTheFly());
 
-      NamedCommands.registerCommand("phelp", Commands.print("AJGHKSFGHJK"));
 
       new EventTrigger("OTF").onTrue(Commands.runOnce(() -> drivetrain.generateOnTheFly()));
   }
