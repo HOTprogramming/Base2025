@@ -41,7 +41,8 @@ public class Intake extends SubsystemBase {
     intakeSupplyCurrent = this.intakeShuffleboard.add("Intake Supply Current", 0.0).getEntry();
     intakeStatorCurrent = this.intakeShuffleboard.add("Intake Stator Current", 0.0).getEntry();
     intakeTemp = this.intakeShuffleboard.add("Intake Temp", 0.0).getEntry();
-    intakeCommandedPos = this.intakeShuffleboard.add("Intake Commanded Position", 0.0).getEntry();
+    intakeRotationPos = this.intakeShuffleboard.add("Intake Rotation Position", 0.0).getEntry();
+    intakeRollerSpeed = this.intakeShuffleboard.add("Intake Roller Speed", 0.0).getEntry();
   }
 
 
@@ -62,46 +63,20 @@ public class Intake extends SubsystemBase {
     intakeTemp.setDouble(stats.TempCelsius);
   }
 
-  private FunctionalCommand intakeCommand(double position, double speed){
+  private FunctionalCommand intakeCommand(double rotation, double speed){
     return new FunctionalCommand(
-      () -> this.intakeCommandedPos.setDouble(position),
-      () -> io.setIntakeMotorControl(position, speed),
-      interrupted -> io.setIntakeMotorControl(position, speed), 
+      () -> {
+         this.intakeRotationPos.setDouble(rotation);
+         this.intakeRollerSpeed.setDouble(speed);
+        },
+      () -> io.setIntakeMotorControl(rotation, speed),
+      interrupted -> io.setIntakeMotorControl(rotation, speed), 
       () -> checkRange(.1),
       this);
   }
 
-  public Command goToL4(){
-    return intakeCommand(IntakeConstants.l4Height);
-  }
-
-  public Command goToL3(){
-    return intakeCommand(IntakeConstants.l3Height);
-  }
-
-  public Command goToL2(){
-    return intakeCommand(IntakeConstants.l2Height);
-  }
-
-  public Command goToL1(){
-    return intakeCommand(IntakeConstants.l1Height);
-  }
-
-  public Command goToNet(){
-    return intakeCommand(IntakeConstants.netHeight);
-  }
-
-  public Command goToIntakeCoral(){
-    return intakeCommand(IntakeConstants.intakeCoralHeight);
-  }
-
-  public Command goToIntakeAlgae(){
-    return intakeCommand(IntakeConstants.intakeAlgaeHeight);
-  }
-
-  public Command managerIntakeTest(){
-    System.out.println("intakeworks");
-    return runOnce(() -> {});
+  public Command intakeCoralGround(){
+    return intakeCommand(0, 0);
   }
 
   public Command stop(){
@@ -110,15 +85,9 @@ public class Intake extends SubsystemBase {
     });  
   }
 
-  public Command hold(){
-    return run(() -> {
-      io.setIntakeMotorControl(intakeCommandedPos.getDouble(0));
-    });
-  }
- 
   public boolean checkRange(double deadband){
-    return (stats.intakePosition >= intakeCommandedPos.getDouble(0) - deadband) && 
-           (stats.intakePosition <= intakeCommandedPos.getDouble(0) + deadband);
+    return (stats.intakePosition >= intakeRotationPos.getDouble(0) - deadband) && 
+           (stats.intakePosition <= intakeRotationPos.getDouble(0) + deadband);
   }
 
   @Override

@@ -25,6 +25,9 @@ import frc.robot.subsystems.GameSpec.Coral.CoralIOSim;
 import frc.robot.subsystems.GameSpec.Elevator.Elevator;
 import frc.robot.subsystems.GameSpec.Elevator.ElevatorIOReal;
 import frc.robot.subsystems.GameSpec.Elevator.ElevatorIOSim;
+import frc.robot.subsystems.GameSpec.Intake.Intake;
+import frc.robot.subsystems.GameSpec.Intake.IntakeIOReal;
+import frc.robot.subsystems.GameSpec.Intake.IntakeIOSim;
 
 public class Manager extends SubsystemBase{
     private Arm armSubsystem;
@@ -32,6 +35,7 @@ public class Manager extends SubsystemBase{
     private Coral coralSubsystem;
     private Algae algaeSubsystem;
     private Climber climberSubsystem;
+    private Intake intakeSubsystem;
     
     public Manager() {
       if (!Utils.isSimulation()){
@@ -40,12 +44,13 @@ public class Manager extends SubsystemBase{
         coralSubsystem = new Coral(new CoralIOReal());
         algaeSubsystem = new Algae(new AlgaeIOReal());
         climberSubsystem = new Climber(new ClimberIOReal());
+        intakeSubsystem = new Intake(new IntakeIOReal());
       } else {
         elevatorSubsystem = new Elevator(new ElevatorIOSim());
         armSubsystem = new Arm(new ArmIOSim());
-        coralSubsystem = new Coral(new CoralIOSim());
-        algaeSubsystem = new Algae(new AlgaeIOSim());
-        climberSubsystem = new Climber(new ClimberIOSim());
+        // coralSubsystem = new Coral(new CoralIOSim());
+        // algaeSubsystem = new Algae(new AlgaeIOSim());
+        // climberSubsystem = new Climber(new ClimberIOSim());
       }
     }
 
