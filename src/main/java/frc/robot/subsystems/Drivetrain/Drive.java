@@ -63,13 +63,6 @@ public class Drive extends SubsystemBase {
     private GenericEntry pathYEntry;
     private GenericEntry pathRotEntry;
     private GenericEntry pathGoalPoseEntry;
-    private GenericEntry matchTimeEntry;
-    private GenericEntry voltsEntry;
-    private GenericEntry ampsEntry;
-
-    private double matchTime;
-    private double volts;
-    private double amps;
 
     private Rotation2d heading;
 
@@ -109,9 +102,6 @@ public class Drive extends SubsystemBase {
         pathYEntry = driveTab.add("Path Y", 0.0).getEntry();
         pathRotEntry = driveTab.add("Path Rot", 0.0).getEntry();
         pathGoalPoseEntry = driveTab.add("pathGoal", new Double[] {0.0, 0.0, 0.0}).getEntry();
-        matchTimeEntry = driveTab.add("Match time",0.0).getEntry();
-        voltsEntry = driveTab.add("Volts",0.0).getEntry();
-        ampsEntry = driveTab.add("Amps",0.0).getEntry();
 
         double driveBaseRadius = 0;
         for (var moduleLocation : this.iOdata.m_moduleLocations) {
@@ -332,12 +322,6 @@ public class Drive extends SubsystemBase {
 
     @Override
     public void periodic() {
-        matchTime = DriverStation.getMatchTime();
-        matchTimeEntry.setDouble(matchTime);
-        volts = RoboRioDataJNI.getVInVoltage();
-        voltsEntry.setDouble(volts);
-        amps = RoboRioDataJNI.getVInCurrent();
-        ampsEntry.setDouble(amps);
 
         this.iOdata = driveIO.update();
         if (this.iOdata.state.Speeds != null) {
