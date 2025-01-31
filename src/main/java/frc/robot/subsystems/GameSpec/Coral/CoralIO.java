@@ -11,9 +11,11 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.Angle;
@@ -30,6 +32,7 @@ public class CoralIO {
         protected DigitalInput coralBeamBreak;
         protected CANdi coralCandi;
         protected TalonFXS coralWrist;
+        protected CANcoder coralCancoder;
     
         public static class CoralIOStats {
             public boolean coralMotorConnected = true;
@@ -40,6 +43,8 @@ public class CoralIO {
             public double supplyCurrentAmps = 0.0;
             public double torqueCurrentAmps = 0.0;
             public double tempCelsius = 0.0;
+            public double coralCancoderPosition = 0.0;
+            public double coralCancoderVelocity = 0.0;
         }
     
         protected static CoralIOStats stats = new CoralIOStats();
@@ -49,6 +54,8 @@ public class CoralIO {
         private final StatusSignal<Current> SupplyCurrent;
         private final StatusSignal<Current> TorqueCurrent;
         private final StatusSignal<Temperature> TempCelsius;
+        private final StatusSignal<Angle> coralCancoderPosition;
+        private final StatusSignal<AngularVelocity> coralCancoderVelocity;
     
         /** Constructor to initialize the TalonFX */
         public CoralIO() {
@@ -56,6 +63,7 @@ public class CoralIO {
             this.coralBeamBreak = new DigitalInput(CoralConstants.coralBeamBreakID);
             this.coralCandi = new CANdi(CoralConstants.coralCandiID);
             this.coralWrist = new TalonFXS(0,"Cambot");
+            this.coralCancoder = new CANcoder(CoralConstants.coralEncoderID, "CamBot");
     
             coralMagic = new MotionMagicVoltage(0);
             TalonFXConfiguration cfg = new TalonFXConfiguration();
@@ -76,6 +84,10 @@ public class CoralIO {
             FeedbackConfigs fdb = cfg.Feedback;
             fdb.SensorToMechanismRatio = 1;
     
+            cfg.Feedback.FeedbackRemoteSensorID = coralCancoder.getDeviceID();
+            cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+            cfg.Feedback.SensorToMechanismRatio = 1; //changes what the cancoder and fx encoder ratio is
+            cfg.Feedback.RotorToSensorRatio = 1; //12.8;
             cfg.MotorOutput.NeutralMode = NeutralModeValue.Coast;
             cfg.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
             cfg.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
@@ -103,6 +115,8 @@ public class CoralIO {
             SupplyCurrent = coral.getSupplyCurrent();
             TorqueCurrent = coral.getTorqueCurrent();
             TempCelsius = coral.getDeviceTemp();
+            coralCancoderPosition = coralCancoder.getPosition();
+            coralCancoderVelocity = coralCancoder.getVelocity();
         
             BaseStatusSignal.setUpdateFrequencyForAll(
                 100.0,
@@ -110,7 +124,9 @@ public class CoralIO {
                 CoralVelocity,
                 SupplyCurrent,
                 TorqueCurrent,
-                TempCelsius
+                TempCelsius,
+                coralCancoderPosition,
+                coralCancoderVelocity
               );
 
               
@@ -120,11 +136,13 @@ public class CoralIO {
         public void updateStats() {
             stats.coralMotorConnected =
             BaseStatusSignal.refreshAll(
-                CoralPosition,
-                CoralVelocity,
+              CoralPosition,
+              CoralVelocity,
               SupplyCurrent,
               TorqueCurrent,
-              TempCelsius)
+              TempCelsius,
+              coralCancoderPosition,
+              coralCancoderVelocity)
                 .isOK();
     
             stats.coralPosition = CoralPosition.getValueAsDouble();
@@ -132,6 +150,8 @@ public class CoralIO {
             stats.supplyCurrentAmps = SupplyCurrent.getValueAsDouble();
             stats.torqueCurrentAmps = TorqueCurrent.getValueAsDouble();
             stats.tempCelsius = TempCelsius.getValueAsDouble();
+            stats.coralCancoderPosition = coralCancoderPosition.getValueAsDouble();
+            stats.coralCancoderVelocity = coralCancoderVelocity.getValueAsDouble();
         }
     
     
