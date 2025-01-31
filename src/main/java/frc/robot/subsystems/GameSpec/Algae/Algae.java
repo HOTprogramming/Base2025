@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.GameSpec.Algae;
 
+import com.ctre.phoenix6.hardware.CANcoder;
+
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -19,6 +21,7 @@ public class Algae extends SubsystemBase {
   private final AlgaeIO io;
   public final AlgaeIOStats stats;
   private final ShuffleboardTab algaeShuffleboard;
+  protected CANcoder algaeCancoder; //algae extend
 
   /* Shuffleboard entrys */
   public GenericEntry algaePosition;
