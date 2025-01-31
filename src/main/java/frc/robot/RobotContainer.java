@@ -136,7 +136,7 @@ public class RobotContainer {
       ));
 
 
-      // driver.povDown().onTrue(drivetrain.run(() -> drivetrain.chaseObject(0)));    
+      driver.povUp().onTrue(drivetrain.run(() -> drivetrain.alignReef(0)));    
       driver.povLeft().onTrue(drivetrain.run(() -> drivetrain.alignReef(1)));  
       driver.povRight().onTrue(drivetrain.run(() -> drivetrain.alignReef(-1))); 
 
