@@ -7,8 +7,10 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.Angle;
@@ -20,6 +22,7 @@ public abstract class ElevatorIO {
 
     // Protected TalonFX object accessible to subclasses
     protected TalonFX elevator;
+    protected TalonFX elevator2;
     protected MotionMagicVoltage elevatorMagic;
 
     public static class ElevatorIOStats {
@@ -31,6 +34,15 @@ public abstract class ElevatorIO {
         public double SupplyCurrentAmps = 0.0;
         public double TorqueCurrentAmps = 0.0;
         public double TempCelsius = 0.0;
+
+        public boolean elevatorMotorConnected2 = true;
+        public double elevatorPosition2 = 0.0;
+        public double elevatorVelocity2 = 0.0;
+        public double elevatorAppliedVolts2 = 0.0;
+        public double elevatorCurrentAmps2 = 0.0;
+        public double SupplyCurrentAmps2 = 0.0;
+        public double TorqueCurrentAmps2 = 0.0;
+        public double TempCelsius2 = 0.0;
     }
 
     protected static ElevatorIOStats stats = new ElevatorIOStats();
@@ -41,9 +53,16 @@ public abstract class ElevatorIO {
     private final StatusSignal<Current> TorqueCurrent;
     private final StatusSignal<Temperature> TempCelsius;
 
+    private final StatusSignal<Angle> elevatorPosition2;
+    private final StatusSignal<AngularVelocity> elevatorVelocity2;
+    private final StatusSignal<Current> SupplyCurrent2;
+    private final StatusSignal<Current> TorqueCurrent2;
+    private final StatusSignal<Temperature> TempCelsius2;
+
     /** Constructor to initialize the TalonFX */
     public ElevatorIO() {
         this.elevator = new TalonFX(ElevatorConstants.elevatorMotorID, "CamBot");
+        this.elevator2 = new TalonFX(ElevatorConstants.elevatorMotor2ID, "CamBot");
 
         elevatorMagic = new MotionMagicVoltage(0);
         TalonFXConfiguration cfg = new TalonFXConfiguration();
@@ -77,11 +96,25 @@ public abstract class ElevatorIO {
             System.out.println("Could not configure device. Error: " + elevatorStatus.toString());
         }
 
+        StatusCode elevatorStatus2 = StatusCode.StatusCodeNotInitialized;
+        for(int i = 0; i < 5; ++i) {
+            elevatorStatus2 = elevator2.getConfigurator().apply(cfg);
+        if (elevatorStatus2.isOK()) break;}
+        if (!elevatorStatus2.isOK()) {
+            System.out.println("Could not configure device. Error: " + elevatorStatus.toString());
+        }
+
         elevatorPosition = elevator.getPosition();
         elevatorVelocity = elevator.getVelocity();
         SupplyCurrent = elevator.getSupplyCurrent();
         TorqueCurrent = elevator.getTorqueCurrent();
         TempCelsius = elevator.getDeviceTemp();
+
+        elevatorPosition2 = elevator2.getPosition();
+        elevatorVelocity2 = elevator2.getVelocity();
+        SupplyCurrent2 = elevator2.getSupplyCurrent();
+        TorqueCurrent2 = elevator2.getTorqueCurrent();
+        TempCelsius2 = elevator2.getDeviceTemp();
     
         BaseStatusSignal.setUpdateFrequencyForAll(
             100.0,
@@ -89,9 +122,16 @@ public abstract class ElevatorIO {
             elevatorVelocity,
             SupplyCurrent,
             TorqueCurrent,
-            TempCelsius
+            TempCelsius,
+            elevatorPosition2,
+            elevatorVelocity2,
+            SupplyCurrent2,
+            TorqueCurrent2,
+            TempCelsius2
           );
     }
+
+
 
     /** Update stats */
     public void updateStats() {
@@ -101,7 +141,12 @@ public abstract class ElevatorIO {
           elevatorVelocity,
           SupplyCurrent,
           TorqueCurrent,
-          TempCelsius)
+          TempCelsius,
+          elevatorPosition2,
+          elevatorVelocity2,
+          SupplyCurrent2,
+          TorqueCurrent2,
+          TempCelsius2)
             .isOK();
 
         stats.elevatorPosition = elevatorPosition.getValueAsDouble();
@@ -109,12 +154,19 @@ public abstract class ElevatorIO {
         stats.SupplyCurrentAmps = SupplyCurrent.getValueAsDouble();
         stats.TorqueCurrentAmps = TorqueCurrent.getValueAsDouble();
         stats.TempCelsius = TempCelsius.getValueAsDouble();
+
+        stats.elevatorPosition2 = elevatorPosition2.getValueAsDouble();
+        stats.elevatorVelocity2 = elevatorVelocity2.getValueAsDouble();
+        stats.SupplyCurrentAmps2 = SupplyCurrent2.getValueAsDouble();
+        stats.TorqueCurrentAmps2 = TorqueCurrent2.getValueAsDouble();
+        stats.TempCelsius2 = TempCelsius2.getValueAsDouble();
     }
 
 
     /** Apply motion magic control mode */
     public void setElevatorMotorControl(double commandedPosition) {
         elevator.setControl(elevatorMagic.withPosition(commandedPosition).withSlot(0));
+        elevator2.setControl(new Follower(elevator.getDeviceID(), false));
     }
 
     /** Stop motor */

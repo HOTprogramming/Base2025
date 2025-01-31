@@ -88,6 +88,13 @@ public class Drive extends SubsystemBase {
     private int currentPathIndex;
     private List<PathPlannerPath> pathGroup;
 
+    /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
+    private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
+    /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
+    private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
+    /* Keep track if we've ever applied the operator perspective before or not */
+
+
 
     public Drive(DriveIO driveIO) { 
         this.driveIO = driveIO;
@@ -290,9 +297,9 @@ public class Drive extends SubsystemBase {
 
      public void lockReef(double driveX, double driveY) {
         double degToReef = Math.toDegrees(Math.atan2(REEF_CENTER.getY() - iOdata.state.Pose.getY(), (DriverStation.getAlliance().get() == Alliance.Blue ? REEF_CENTER.getX(): REEF_CENTER.getX() + OFFSET_TO_RED) - iOdata.state.Pose.getX()));
-        driveIO.setSwerveRequest(ROBOT_CENTRIC
-            .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY() * 0.25)
-            .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY() * 0.25)
+        driveIO.setSwerveRequest(FIELD_CENTRIC
+            .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY() * 0.69)
+            .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY() * 0.69)
             .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(),
             Math.toRadians(60*Math.round(degToReef/60))))
         );        
@@ -301,7 +308,7 @@ public class Drive extends SubsystemBase {
 
     public void lockReefManual(double driveX, double driveY, double rightX, double rightY) {
         double joystickDeg = Math.toDegrees(Math.atan2(rightY, -rightX)) - 90;
-        driveIO.setSwerveRequest(ROBOT_CENTRIC
+        driveIO.setSwerveRequest(FIELD_CENTRIC
             .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY() * 0.25)
             .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY() * 0.25)
             .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(),
@@ -323,6 +330,17 @@ public class Drive extends SubsystemBase {
     @Override
     public void periodic() {
 
+        if (DriverStation.isDisabled()) {
+            DriverStation.getAlliance().ifPresent(allianceColor -> {
+                this.driveIO.setOperatorPerspective(
+                    allianceColor == Alliance.Red
+                        ? kRedAlliancePerspectiveRotation
+                        : kBlueAlliancePerspectiveRotation
+                );
+                
+            });
+        }
+		
         this.iOdata = driveIO.update();
         if (this.iOdata.state.Speeds != null) {
             speedEntry.setDouble(Math.hypot(

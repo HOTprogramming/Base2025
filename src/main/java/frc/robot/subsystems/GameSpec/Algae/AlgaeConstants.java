@@ -1,13 +1,13 @@
-package frc.robot.subsystems.GameSpec.Elevator;
+package frc.robot.subsystems.GameSpec.Algae;
 
-public class ElevatorConstants {
+public class AlgaeConstants {
     
-    public static final int elevatorMotorID = 32;
-    public static final int elevatorMotor2ID = 32;
-    public static final int elevatorEncoderID = 51;
+    public static final int algaeMotorID = 32;
+    public static final int algaeMotor2ID = 32;
+    public static final int algaeEncoderID = 51;
     public static final double kReduction = (1.0 / 2.0);
     public static final double kMaxAccelerationRpmPerSec = 9000.0; 
-    public static final MMGains elevatorGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
+    public static final MMGains algaeGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
     
     public static final double l4Height = 2;
     public static final double l3Height = 1.5;

@@ -1,13 +1,13 @@
-package frc.robot.subsystems.GameSpec.Elevator;
+package frc.robot.subsystems.GameSpec.Climber;
 
-public class ElevatorConstants {
+public class ClimberConstants {
     
-    public static final int elevatorMotorID = 32;
-    public static final int elevatorMotor2ID = 32;
-    public static final int elevatorEncoderID = 51;
+    public static final int climberMotorID = 32;
+    public static final int climberMotor2ID = 32;
+    public static final int climberEncoderID = 51;
     public static final double kReduction = (1.0 / 2.0);
     public static final double kMaxAccelerationRpmPerSec = 9000.0; 
-    public static final MMGains elevatorGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
+    public static final MMGains climberGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
     
     public static final double l4Height = 2;
     public static final double l3Height = 1.5;
