@@ -72,9 +72,9 @@ public abstract class ElevatorIO {
 
     /** Constructor to initialize the TalonFX */
     public ElevatorIO() {
-        this.elevator = new TalonFX(ElevatorConstants.elevatorMotorID, "CamBot");
-        this.elevator2 = new TalonFX(ElevatorConstants.elevatorMotor2ID, "CamBot");
-        this.elevatorCancoder = new CANcoder(ElevatorConstants.elevatorEncoderID, "CamBot");
+        this.elevator = new TalonFX(ElevatorConstants.elevatorMotorID, "robot");
+        this.elevator2 = new TalonFX(ElevatorConstants.elevatorMotor2ID, "robot");
+        this.elevatorCancoder = new CANcoder(ElevatorConstants.elevatorEncoderID, "robot");
 
         elevatorMagic = new MotionMagicVoltage(0);
         cfg = new TalonFXConfiguration();

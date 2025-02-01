@@ -63,8 +63,8 @@ public abstract class IntakeIO {
 
     /** Constructor to initialize the TalonFX */
     public IntakeIO() {
-        this.intakeRoller = new TalonFX(IntakeConstants.intakeRollerID, "CamBot");
-        this.intakeRotation = new TalonFX(IntakeConstants.intakeRotationID, "CamBot");
+        this.intakeRoller = new TalonFX(IntakeConstants.intakeRollerID, "robot");
+        this.intakeRotation = new TalonFX(IntakeConstants.intakeRotationID, "robot");
 
         intakeMagic = new MotionMagicVoltage(0);
         TalonFXConfiguration cfg = new TalonFXConfiguration();

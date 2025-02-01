@@ -116,14 +116,14 @@ public abstract class ManipulatorIO {
     
         /** Constructor to initialize the TalonFX */
         public ManipulatorIO() {
-            this.coral = new TalonFX(ManipulatorConstants.coralMotorID, "rio");
-            this.coralCandi = new CANdi(ManipulatorConstants.coralCandiID, "rio");
-            this.coralWrist = new TalonFXS(ManipulatorConstants.coralWristID,"rio");
-            this.coralCancoder = new CANcoder(ManipulatorConstants.coralEncoderID, "rio");
+            this.coral = new TalonFX(ManipulatorConstants.coralMotorID, "robot");
+            this.coralCandi = new CANdi(ManipulatorConstants.coralCandiID, "robot");
+            this.coralWrist = new TalonFXS(ManipulatorConstants.coralWristID,"robot");
+            this.coralCancoder = new CANcoder(ManipulatorConstants.coralEncoderID, "robot");
 
-            this.algaeArm = new TalonFXS(ManipulatorConstants.algaeArmID, "rio");
-            this.algaeRoller = new TalonFX(ManipulatorConstants.algaeRollerID, "rio");
-            this.algaeCancoder = new CANcoder(ManipulatorConstants.algaeEncoderID, "rio");
+            this.algaeArm = new TalonFXS(ManipulatorConstants.algaeArmID, "robot");
+            this.algaeRoller = new TalonFX(ManipulatorConstants.algaeRollerID, "robot");
+            this.algaeCancoder = new CANcoder(ManipulatorConstants.algaeEncoderID, "robot");
     
             algaeMagic = new MotionMagicVoltage(0);
             coralWristMagic = new MotionMagicVoltage(0);

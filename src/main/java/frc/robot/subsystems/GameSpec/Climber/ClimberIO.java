@@ -61,8 +61,8 @@ public abstract class ClimberIO {
 
     /** Constructor to initialize the TalonFX */
     public ClimberIO() {
-        this.climber = new TalonFX(ClimberConstants.climberMotorID, "CamBot");
-        this.climber2 = new TalonFX(ClimberConstants.climberMotor2ID, "CamBot");
+        this.climber = new TalonFX(ClimberConstants.climberMotorID, "robot");
+        this.climber2 = new TalonFX(ClimberConstants.climberMotor2ID, "robot");
 
         climberMagic = new MotionMagicVoltage(0);
         TalonFXConfiguration cfg = new TalonFXConfiguration();
