@@ -2,9 +2,9 @@ package frc.robot.subsystems.GameSpec.Intake;
 
 public class IntakeConstants {
     
-    public static final int intakeMotorID = 32;
-    public static final int intakeMotor2ID = 32;
-    public static final int intakeEncoderID = 51;
+    public static final int intakeRollerID = 18;
+    public static final int intakeRotationID = 19;
+    public static final int intakeEncoderID = 46;
     public static final double kReduction = (1.0 / 2.0);
     public static final double kMaxAccelerationRpmPerSec = 9000.0; 
     public static final MMGains intakeGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);

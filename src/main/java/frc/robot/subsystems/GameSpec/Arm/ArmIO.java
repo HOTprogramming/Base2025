@@ -54,8 +54,8 @@ public abstract class ArmIO {
 
     /** Constructor to initialize the TalonFX */
     public ArmIO() {
-        this.arm = new TalonFX(ArmConstants.armMotorID, "CamBot");
-        this.armCancoder = new CANcoder(ArmConstants.armEncoderID, "CamBot");
+        this.arm = new TalonFX(ArmConstants.armMotorID, "robot");
+        this.armCancoder = new CANcoder(ArmConstants.armEncoderID, "robot");
 
         armMagic = new MotionMagicVoltage(0);
         cfg = new TalonFXConfiguration();

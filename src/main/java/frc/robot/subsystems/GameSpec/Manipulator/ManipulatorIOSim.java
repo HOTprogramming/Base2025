@@ -1,4 +1,4 @@
-package frc.robot.subsystems.GameSpec.Coral;
+package frc.robot.subsystems.GameSpec.Manipulator;
 
 import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSSimState;
@@ -25,7 +25,7 @@ import frc.robot.subsystems.GameSpec.Arm.Arm;
 import frc.robot.subsystems.GameSpec.Arm.ArmConstants;
 import frc.robot.subsystems.GameSpec.Elevator.ElevatorIOSim;
 
-public class CoralIOSim extends CoralIO {
+public class ManipulatorIOSim extends ManipulatorIO {
   
   TalonFXSimState coralSimState;
   TalonFXSSimState coralWristSimState;
@@ -38,7 +38,7 @@ public class CoralIOSim extends CoralIO {
   private static MechanismRoot2d root = mech.getRoot("Coral", .5, .5);
   private static MechanismLigament2d coralLig;
 
-  public CoralIOSim(){
+  public ManipulatorIOSim(){
     coralSimState = coral.getSimState();
     coralWristSimState = coralWrist.getSimState();
     encoderSimState = coralCancoder.getSimState();
