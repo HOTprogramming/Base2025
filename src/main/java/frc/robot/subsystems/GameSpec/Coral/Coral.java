@@ -23,7 +23,6 @@ public class Coral extends SubsystemBase {
     private GenericEntry coralTemp;
     private GenericEntry coralCommandedPos;
     
-
     public Coral(CoralIO io) {
         this.io = io;
         this.stats = CoralIO.stats;
@@ -55,34 +54,34 @@ public class Coral extends SubsystemBase {
     }
 
     private FunctionalCommand coralCommand(double position){
-    return new FunctionalCommand(
-      () -> this.coralCommandedPos.setDouble(position),
-      () -> io.setCoralMotorControl(position),
-      interrupted -> io.setCoralMotorControl(position), 
-      () -> checkCoralRange(.1),
-      this);
+        return new FunctionalCommand(
+            () -> this.coralCommandedPos.setDouble(position),
+            () -> io.setCoralAngleMotorControl(position),
+            interrupted -> io.setCoralAngleMotorControl(position), 
+            () -> checkCoralRange(5),
+            this
+        );
     }
 
-      public  Command intakeCommand() {
+    public Command shoot() {
+        return run(() -> io.setCoralAngleMotorControl(2));
+    }
+
+    public Command intake() {
+        return run(() -> io.setCoralAngleMotorControl(-2));
+    }
+
+    public  Command goHorizontal() {
         return coralCommand(0);
     }
 
-    public   Command shootCommand() {
+    public  Command goVertical() {
         return coralCommand(0);
     }
 
-    public  Command degree45RotationCommand() {
-        return coralCommand(0);
+    public Command zero(){
+        return run(() -> io.stop());
     }
-
-    public  Command degree90RotationCommand() {
-        return coralCommand(0);
-    }
-
-    public  Command packageCommand() {
-        return coralCommand(0);
-    }
-
 
     public boolean checkCoralRange(double deadband){
         return (stats.coralPosition >= coralCommandedPos.getDouble(0) - deadband) && 

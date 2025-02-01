@@ -63,7 +63,7 @@ public class Arm extends SubsystemBase {
       () -> this.armCommandedPos.setDouble(position),
       () -> io.setArmMotorControl(position),
       interrupted -> io.setArmMotorControl(position), 
-      () -> checkRange(.1),
+      () -> checkRange(5),
       this);
   }
 

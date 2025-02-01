@@ -5,12 +5,14 @@ import java.io.ObjectInputFilter.Status;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -27,7 +29,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 public abstract class CoralIO {
     // Protected TalonFX object accessible to subclasses
     protected TalonFX coral;
-    protected MotionMagicVoltage coralMagic;
+    protected MotionMagicVoltage coralWristMagic;
+    protected VelocityVoltage coralSpinController;
     protected DigitalInput coralBeamBreak;
     protected CANdi coralCandi;
     protected TalonFXS coralWrist;
@@ -56,6 +59,10 @@ public abstract class CoralIO {
     private final StatusSignal<Angle> coralCancoderPosition;
     private final StatusSignal<AngularVelocity> coralCancoderVelocity;
 
+    TalonFXConfiguration cfg;
+    TalonFXSConfiguration cFXS;
+    CANcoderConfiguration eCfg;
+
     /** Constructor to initialize the TalonFX */
     public CoralIO() {
         this.coral = new TalonFX(CoralConstants.coralMotorID, "CamBot");
@@ -64,28 +71,34 @@ public abstract class CoralIO {
         this.coralWrist = new TalonFXS(0,"Cambot");
         this.coralCancoder = new CANcoder(CoralConstants.coralEncoderID, "CamBot");
 
-        coralMagic = new MotionMagicVoltage(0);
-        TalonFXConfiguration cfg = new TalonFXConfiguration();
-        TalonFXSConfiguration cFXS = new TalonFXSConfiguration();
-
+        coralWristMagic = new MotionMagicVoltage(0);
+        coralSpinController = new VelocityVoltage(0);
+        cfg = new TalonFXConfiguration();
+        cFXS = new TalonFXSConfiguration();
+        eCfg = new CANcoderConfiguration();
+    
         MotionMagicConfigs mm = cfg.MotionMagic;
-        mm.MotionMagicCruiseVelocity = CoralConstants.coralGains.CruiseVelocity(); //rps
-        mm.MotionMagicAcceleration = CoralConstants.coralGains.Acceleration();
-        mm.MotionMagicJerk = CoralConstants.coralGains.Jerk();
+        mm.MotionMagicCruiseVelocity = CoralConstants.coralWristGains.CruiseVelocity(); //rps
+        mm.MotionMagicAcceleration = CoralConstants.coralWristGains.Acceleration();
+        mm.MotionMagicJerk = CoralConstants.coralWristGains.Jerk();
 
-        Slot0Configs slot0 = cfg.Slot0;
-        slot0.kP = CoralConstants.coralGains.kP();
-        slot0.kI = CoralConstants.coralGains.kI();
-        slot0.kD = CoralConstants.coralGains.kD();
-        slot0.kV = CoralConstants.coralGains.kV();
-        slot0.kS = CoralConstants.coralGains.kS();
+        Slot0Configs slot0Wrist = cfg.Slot0;
+        slot0Wrist.kP = CoralConstants.coralWristGains.kP();
+        slot0Wrist.kI = CoralConstants.coralWristGains.kI();
+        slot0Wrist.kD = CoralConstants.coralWristGains.kD();
+        slot0Wrist.kV = CoralConstants.coralWristGains.kV();
+        slot0Wrist.kS = CoralConstants.coralWristGains.kS();
 
-        FeedbackConfigs fdb = cfg.Feedback;
-        fdb.SensorToMechanismRatio = 1;
+        Slot0Configs slot0Spin = cFXS.Slot0;
+        slot0Spin.kP = CoralConstants.coralSpinGains.kP();
+        slot0Spin.kI = CoralConstants.coralSpinGains.kI();
+        slot0Spin.kD = CoralConstants.coralSpinGains.kD();
+        slot0Spin.kV = CoralConstants.coralSpinGains.kV();
+        slot0Spin.kS = CoralConstants.coralSpinGains.kS();
 
         cfg.Feedback.FeedbackRemoteSensorID = coralCancoder.getDeviceID();
         cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-        cfg.Feedback.SensorToMechanismRatio = 1; //changes what the cancoder and fx encoder ratio is
+        cfg.Feedback.SensorToMechanismRatio = 1/360.0; //changes what the cancoder and fx encoder ratio is
         cfg.Feedback.RotorToSensorRatio = 1; //12.8;
         cfg.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         cfg.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
@@ -93,21 +106,7 @@ public abstract class CoralIO {
         cfg.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
         cfg.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
 
-        StatusCode CoralStatus = StatusCode.StatusCodeNotInitialized;
-        for(int i = 0; i < 5; ++i) {
-            CoralStatus = coral.getConfigurator().apply(cfg);
-        if (CoralStatus.isOK()) break;}
-        if (!CoralStatus.isOK()) {
-            System.out.println("Could not configure device. Error: " + CoralStatus.toString());
-        }
-
-        StatusCode CoralStatus2 = StatusCode.StatusCodeNotInitialized;
-        for(int i = 0; i < 5; ++i) {
-            CoralStatus2 = coralWrist.getConfigurator().apply(cFXS);
-        if (CoralStatus2.isOK()) break;}
-        if (!CoralStatus2.isOK()) {
-            System.out.println("Could not configure device. Error: " + CoralStatus2.toString());
-        }
+        setConfig();
 
         CoralPosition = coral.getPosition();
         CoralVelocity = coral.getVelocity();
@@ -127,8 +126,6 @@ public abstract class CoralIO {
             coralCancoderPosition,
             coralCancoderVelocity
             );
-
-            
     }
 
     /** Update stats */
@@ -153,11 +150,42 @@ public abstract class CoralIO {
         stats.coralCancoderVelocity = coralCancoderVelocity.getValueAsDouble();
     }
 
+    public void setConfig(){
+        StatusCode CoralStatus = StatusCode.StatusCodeNotInitialized;
+        for(int i = 0; i < 5; ++i) {
+            CoralStatus = coral.getConfigurator().apply(cfg);
+        if (CoralStatus.isOK()) break;}
+        if (!CoralStatus.isOK()) {
+            System.out.println("Could not configure device. Error: " + CoralStatus.toString());
+        }
+
+        StatusCode CoralStatus2 = StatusCode.StatusCodeNotInitialized;
+        for(int i = 0; i < 5; ++i) {
+            CoralStatus2 = coralWrist.getConfigurator().apply(cFXS);
+        if (CoralStatus2.isOK()) break;}
+        if (!CoralStatus2.isOK()) {
+            System.out.println("Could not configure device. Error: " + CoralStatus2.toString());
+        }
+
+        StatusCode CoralEncoder = StatusCode.StatusCodeNotInitialized;
+        for(int i = 0; i < 5; ++i) {
+            CoralEncoder = coralCancoder.getConfigurator().apply(eCfg);
+        if (CoralEncoder.isOK()) break;}
+        if (!CoralEncoder.isOK()) {
+            System.out.println("Could not configure device. Error: " + CoralEncoder.toString());
+        }
+    }
+
 
     /** Apply motion magic control mode */
-    public void setCoralMotorControl(double commandedPosition) {
-        coral.setControl(coralMagic.withPosition(commandedPosition).withSlot(0));
+    public void setCoralAngleMotorControl(double commandedVelocity) {
+        coral.setControl(coralSpinController.withVelocity(commandedVelocity).withSlot(0));
     }
+
+    public void setCoralSpinMotorControl(double commandedPosition) {
+        coralWrist.setControl(coralWristMagic.withPosition(commandedPosition).withSlot(0));
+    }
+
 
     public boolean coralBeamBreakTriggered(){
         coralCandi.getPWM1Position();

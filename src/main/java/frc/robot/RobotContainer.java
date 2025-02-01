@@ -58,6 +58,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("L4", gamespecManager.goToL4());
     NamedCommands.registerCommand("Package", gamespecManager.goToPackage());
     NamedCommands.registerCommand("Feeder", gamespecManager.goToFeeder());
+    NamedCommands.registerCommand("Coral Intake", gamespecManager.coralIntake());
+    NamedCommands.registerCommand("Coral Shoot", gamespecManager.coralShoot());
+    NamedCommands.registerCommand("Coral Zero", gamespecManager.coralZero());
 
     SmartDashboard.putData(chooser);
 
@@ -139,13 +142,16 @@ public class RobotContainer {
 
       driver.start().onTrue(drivetrain.resetPidgeon());
 
+      gamespecManager.setDefaultCommand(gamespecManager.run(() -> NamedCommands.getCommand("Coral Zero")));
+
       operator.a().onTrue(NamedCommands.getCommand("L1"));
       operator.b().onTrue(NamedCommands.getCommand("L2"));
       operator.x().onTrue(NamedCommands.getCommand("L3"));
       operator.y().onTrue(NamedCommands.getCommand("L4"));
       operator.leftBumper().onTrue(NamedCommands.getCommand("Package"));
       operator.rightBumper().onTrue(NamedCommands.getCommand("Feeder"));
-
+      operator.leftTrigger().whileTrue(NamedCommands.getCommand("Coral Intake"));
+      operator.rightTrigger().whileTrue(NamedCommands.getCommand("Coral Shoot"));
 
       NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
       NamedCommands.registerCommand("R_OTF", drivetrain.runOnTheFly());

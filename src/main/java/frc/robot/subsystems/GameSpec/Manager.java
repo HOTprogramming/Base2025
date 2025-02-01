@@ -56,8 +56,8 @@ public class Manager extends SubsystemBase{
 
     public Command goToPackage(){
       return Commands.sequence(
-        elevatorSubsystem.goToPackage(),
-        armSubsystem.goToPackage()
+        armSubsystem.goToPackage(),
+        elevatorSubsystem.goToPackage()
       );
     }
 
@@ -96,14 +96,16 @@ public class Manager extends SubsystemBase{
       );
     }
 
-    // public Command L1(){
-    //   return Commands.parallel(
-    //     elevatorSubsystem.goToL1(),
-    //     Commands.waitUntil(() -> elevatorSubsystem.checkRange(.1)).andThen(armSubsystem.goToCL1())
-    //   );
-    // }
-    
+    public Command coralIntake(){
+      return coralSubsystem.intake();
+    }
 
+    public Command coralShoot(){
+      return coralSubsystem.shoot();
+    }
 
+    public Command coralZero(){
+      return coralSubsystem.zero();
+    }
 }
 
