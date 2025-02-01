@@ -25,18 +25,17 @@ import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.subsystems.GameSpec.Coral.Coral;
 import frc.robot.subsystems.GameSpec.Coral.CoralConstants;
+import frc.robot.subsystems.GameSpec.Coral.CoralIO;
 import frc.robot.subsystems.GameSpec.Coral.CoralIOReal;
 
-public abstract class AlgaeIO {
 
-    private Coral coralSubsystem;
+public abstract class AlgaeIO {
 
     // Protected TalonFX object accessible to subclasses
     protected TalonFXS algaeArm;
     protected TalonFX algaeRoller;
     protected MotionMagicVoltage algaeMagic;
     protected DigitalInput algaeBeamBreak;
-    protected CANdi algaeCandi;
     protected CANcoder algaeCancoder;
 
     public static class AlgaeIOStats {
@@ -86,11 +85,9 @@ public abstract class AlgaeIO {
     /** Constructor to initialize the TalonFX */
     public AlgaeIO() {
 
-        coralSubsystem = new Coral(new CoralIOReal());
 
         this.algaeArm = new TalonFXS(AlgaeConstants.algaeArmID, "CamBot");
         this.algaeRoller = new TalonFX(AlgaeConstants.algaeRollerID, "CamBot");
-        this.algaeBeamBreak = new DigitalInput(0);
         this.algaeCancoder = new CANcoder(AlgaeConstants.algaeEncoderID, "CamBot");
 
         algaeMagic = new MotionMagicVoltage(0);
@@ -153,8 +150,8 @@ public abstract class AlgaeIO {
         algaeCancoderPosition = algaeCancoder.getPosition();
         algaeCancoderVelocity = algaeCancoder.getVelocity();
 
-        CANdiPWM2 = coralSubsystem.coralCandi.getS2Closed();
-    
+        CANdiPWM2 = CoralIO.coralCandi.getS2Closed();
+
         BaseStatusSignal.setUpdateFrequencyForAll(
             100.0,
             algaePosition,
@@ -168,7 +165,8 @@ public abstract class AlgaeIO {
             TorqueCurrent2,
             TempCelsius2,
             algaeCancoderPosition,
-            algaeCancoderVelocity
+            algaeCancoderVelocity,
+            CANdiPWM2
           );
     }
 
@@ -189,7 +187,8 @@ public abstract class AlgaeIO {
           TorqueCurrent2,
           TempCelsius2,
           algaeCancoderPosition,
-          algaeCancoderVelocity)
+          algaeCancoderVelocity,
+          CANdiPWM2)
             .isOK();
 
         stats.algaePosition = algaePosition.getValueAsDouble();
@@ -206,21 +205,14 @@ public abstract class AlgaeIO {
 
         stats.algaeCancoderPosition = algaeCancoderPosition.getValueAsDouble();
         stats.algaeCancoderVelocity = algaeCancoderVelocity.getValueAsDouble();
+
+        stats.candiPWM2 = CANdiPWM2.getValue();
     }
 
 
     /** Apply motion magic control mode */
     public void setAlgaeMotorControl(double commandedPosition) {
         
-    }
-
-    public boolean algaeBeamBreakTriggered(){
-        algaeCandi.getPWM1Position();
-        return algaeBeamBreak.get();
-    }
-
-    public StatusSignal<Angle> algaeBeamBreakCandiPosition(){
-        return algaeCandi.getPWM1Position();
     }
 
     /** Stop motor */

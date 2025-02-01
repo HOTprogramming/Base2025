@@ -1,5 +1,7 @@
 package frc.robot.subsystems.GameSpec.Coral;
 
+import com.ctre.phoenix6.StatusSignal;
+
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -48,8 +50,6 @@ public class Coral extends SubsystemBase {
         io.updateStats();
           
         UpdateTelemetry();
-
-        io.coralBeamBreakCandiForAlgae();
     }
 
     private void UpdateTelemetry() {

@@ -35,9 +35,9 @@ public abstract class CoralIO {
     protected MotionMagicVoltage coralWristMagic;
     protected VelocityVoltage coralSpinController;
     protected DigitalInput coralBeamBreak;
-    protected static CANdi coralCandi;
-        protected TalonFXS coralWrist;
-        protected CANcoder coralCancoder;
+    protected CANdi coralCandi;
+    protected TalonFXS coralWrist;
+    protected CANcoder coralCancoder;
     
         public static class CoralIOStats {
             public boolean coralMotorConnected = true;
@@ -187,19 +187,16 @@ public abstract class CoralIO {
         }
     
     
-        /** Apply motion magic control mode */
-        public void setCoralSpinMotorControl(double commandedVelocity) {
-            coral.setControl(coralSpinController.withVelocity(commandedVelocity).withSlot(0));
-        }
-    
-        public void setCoralAngleMotorControl(double commandedPosition) {
-            // System.out.println(commandedPosition);
-            coralWrist.setControl(coralWristMagic.withPosition(commandedPosition).withSlot(0));
-        }
-    
-        public StatusSignal<Boolean> coralBeamBreakCandiForAlgae(){
-            return coralCandi.getS2Closed();
+    /** Apply motion magic control mode */
+    public void setCoralSpinMotorControl(double commandedVelocity) {
+        coral.setControl(coralSpinController.withVelocity(commandedVelocity).withSlot(0));
     }
+
+    public void setCoralAngleMotorControl(double commandedPosition) {
+        // System.out.println(commandedPosition);
+        coralWrist.setControl(coralWristMagic.withPosition(commandedPosition).withSlot(0));
+    }
+    
 
     /** Stop motor */
     public void stop() {

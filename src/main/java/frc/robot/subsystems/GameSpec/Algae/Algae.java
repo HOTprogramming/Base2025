@@ -31,6 +31,7 @@ public class Algae extends SubsystemBase {
   private GenericEntry algaeStatorCurrent;
   private GenericEntry algaeTemp;
   private GenericEntry algaeCommandedPos;
+  private GenericEntry CANdiPWM2;
   
   public Algae(AlgaeIO io) {
     this.io = io; 
@@ -44,6 +45,7 @@ public class Algae extends SubsystemBase {
     algaeStatorCurrent = this.algaeShuffleboard.add("Algae Stator Current", 0.0).getEntry();
     algaeTemp = this.algaeShuffleboard.add("Algae Temp", 0.0).getEntry();
     algaeCommandedPos = this.algaeShuffleboard.add("Algae Commanded Position", 0.0).getEntry();
+    CANdiPWM2 = this.algaeShuffleboard.add("CANdi Algae Beambreak",false).getEntry();//false when there is no object, true when it detects object
   }
 
 
@@ -62,6 +64,7 @@ public class Algae extends SubsystemBase {
     algaeSupplyCurrent.setDouble(stats.SupplyCurrentAmps);
     algaeStatorCurrent.setDouble(stats.TorqueCurrentAmps);
     algaeTemp.setDouble(stats.TempCelsius);
+    CANdiPWM2.setBoolean(stats.candiPWM2);
   }
 
   public Command runToPosition(double position){
@@ -80,17 +83,17 @@ public class Algae extends SubsystemBase {
       this);
   }
 
-  public Command stop(){
-    return run(() -> {
-        io.stop();
-    });  
-  }
+    // public Command stop(){
+    //   return run(() -> {
+    //       io.stop();
+    //   });  
+    // }
 
-  public Command hold(){
-    return run(() -> {
-      io.setAlgaeMotorControl(algaeCommandedPos.getDouble(0));
-    });
-  }
+    // public Command hold(){
+    //   return run(() -> {
+    //     io.setAlgaeMotorControl(algaeCommandedPos.getDouble(0));
+    //   });
+    // }
  
   public boolean checkRange(double deadband){
     return (stats.algaePosition >= algaeCommandedPos.getDouble(0) - deadband) && 
