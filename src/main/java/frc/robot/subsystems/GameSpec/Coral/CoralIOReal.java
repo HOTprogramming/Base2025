@@ -1,9 +1,9 @@
-package frc.robot.subsystems.GameSpec.Coral;
+// package frc.robot.subsystems.GameSpec.Coral;
 
-public class CoralIOReal extends CoralIO {
-  @Override
-  public void periodic() {
+// public class CoralIOReal extends CoralIO {
+//   @Override
+//   public void periodic() {
     
-  }
+//   }
 
-}
+// }

@@ -1,27 +1,27 @@
-package frc.robot.subsystems.GameSpec.Algae;
+// package frc.robot.subsystems.GameSpec.Algae;
 
-import com.ctre.phoenix6.sim.TalonFXSimState;
+// import com.ctre.phoenix6.sim.TalonFXSimState;
 
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.simulation.ElevatorSim;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismObject2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color8Bit;
+// import edu.wpi.first.math.system.plant.DCMotor;
+// import edu.wpi.first.math.util.Units;
+// import edu.wpi.first.wpilibj.RobotController;
+// import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+// import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+// import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+// import edu.wpi.first.wpilibj.smartdashboard.MechanismObject2d;
+// import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj.util.Color8Bit;
 
-public class AlgaeIOSim extends AlgaeIO {
+// public class AlgaeIOSim extends AlgaeIO {
 
-    public AlgaeIOSim() {        
+//     public AlgaeIOSim() {        
     
-}
+// }
 
-    @Override
-    public void periodic() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'periodic'");
-    }
-}
+//     @Override
+//     public void periodic() {
+//         // TODO Auto-generated method stub
+//         throw new UnsupportedOperationException("Unimplemented method 'periodic'");
+//     }
+// }
