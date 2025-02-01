@@ -10,7 +10,7 @@ public class ManipulatorConstants {
     public static final double kReduction = (1.0 / 2.0);
     public static final double kMaxAccelerationRpmPerSec = 9000.0; 
     public static final MMGains coralWristGains = new MMGains(200, 100, 200, 1, 0.0, 0.0, 0, 0);
-    public static final VVGains coralSpinGains = new VVGains(10.0, 0.0, 0.0, 0, 0);
+    public static final VVGains coralSpinGains = new VVGains(10.0, 0.0, 0.0, 0, 1);
 
     public static final int algaeArmID = 17;
     public static final int algaeRollerID = 25;

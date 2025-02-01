@@ -87,16 +87,16 @@ public class Manager extends SubsystemBase{
       );
     }
 
-    // public Command coralIntake(){
-    //   return manipulatorSubsystem.intake();
-    // }
+    public Command coralIntake(){
+      return manipulatorSubsystem.intake();
+    }
 
-    // public Command coralShoot(){
-    //   return manipulatorSubsystem.shoot();
-    // }
+    public Command coralShoot(){
+      return manipulatorSubsystem.shoot();
+    }
 
-    // public Command coralZero(){
-    //   return manipulatorSubsystem.zero();
-    // }
+    public Command coralZero(){
+      return manipulatorSubsystem.zero();
+    }
 }
 
