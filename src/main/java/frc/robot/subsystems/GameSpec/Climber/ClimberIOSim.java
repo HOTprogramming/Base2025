@@ -17,11 +17,10 @@ public class ClimberIOSim extends ClimberIO {
 
     public ClimberIOSim() {        
     
-}
+    }
 
     @Override
     public void periodic() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'periodic'");
+
     }
 }

@@ -23,163 +23,160 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.wpilibj.DigitalInput;
-public class CoralIO {
-    
-    
-        // Protected TalonFX object accessible to subclasses
-        protected TalonFX coral;
-        protected MotionMagicVoltage coralMagic;
-        protected DigitalInput coralBeamBreak;
-        protected CANdi coralCandi;
-        protected TalonFXS coralWrist;
-        protected CANcoder coralCancoder;
-    
-        public static class CoralIOStats {
-            public boolean coralMotorConnected = true;
-            public double coralPosition = 0.0;
-            public double coralVelocity = 0.0;
-            public double coralAppliedVolts = 0.0;
-            public double coralCurrentAmps = 0.0;
-            public double supplyCurrentAmps = 0.0;
-            public double torqueCurrentAmps = 0.0;
-            public double tempCelsius = 0.0;
-            public double coralCancoderPosition = 0.0;
-            public double coralCancoderVelocity = 0.0;
-        }
-    
-        protected static CoralIOStats stats = new CoralIOStats();
-    
-        private final StatusSignal<Angle> CoralPosition;
-        private final StatusSignal<AngularVelocity> CoralVelocity;
-        private final StatusSignal<Current> SupplyCurrent;
-        private final StatusSignal<Current> TorqueCurrent;
-        private final StatusSignal<Temperature> TempCelsius;
-        private final StatusSignal<Angle> coralCancoderPosition;
-        private final StatusSignal<AngularVelocity> coralCancoderVelocity;
-    
-        /** Constructor to initialize the TalonFX */
-        public CoralIO() {
-            this.coral = new TalonFX(CoralConstants.coralMotorID, "CamBot");
-            this.coralBeamBreak = new DigitalInput(CoralConstants.coralBeamBreakID);
-            this.coralCandi = new CANdi(CoralConstants.coralCandiID);
-            this.coralWrist = new TalonFXS(0,"Cambot");
-            this.coralCancoder = new CANcoder(CoralConstants.coralEncoderID, "CamBot");
-    
-            coralMagic = new MotionMagicVoltage(0);
-            TalonFXConfiguration cfg = new TalonFXConfiguration();
-            TalonFXSConfiguration cFXS = new TalonFXSConfiguration();
-    
-            MotionMagicConfigs mm = cfg.MotionMagic;
-            mm.MotionMagicCruiseVelocity = CoralConstants.coralGains.CruiseVelocity(); //rps
-            mm.MotionMagicAcceleration = CoralConstants.coralGains.Acceleration();
-            mm.MotionMagicJerk = CoralConstants.coralGains.Jerk();
-    
-            Slot0Configs slot0 = cfg.Slot0;
-            slot0.kP = CoralConstants.coralGains.kP();
-            slot0.kI = CoralConstants.coralGains.kI();
-            slot0.kD = CoralConstants.coralGains.kD();
-            slot0.kV = CoralConstants.coralGains.kV();
-            slot0.kS = CoralConstants.coralGains.kS();
-    
-            FeedbackConfigs fdb = cfg.Feedback;
-            fdb.SensorToMechanismRatio = 1;
-    
-            cfg.Feedback.FeedbackRemoteSensorID = coralCancoder.getDeviceID();
-            cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-            cfg.Feedback.SensorToMechanismRatio = 1; //changes what the cancoder and fx encoder ratio is
-            cfg.Feedback.RotorToSensorRatio = 1; //12.8;
-            cfg.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-            cfg.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
-            cfg.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
-            cfg.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
-            cfg.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
-    
-            StatusCode CoralStatus = StatusCode.StatusCodeNotInitialized;
-            for(int i = 0; i < 5; ++i) {
-                CoralStatus = coral.getConfigurator().apply(cfg);
-            if (CoralStatus.isOK()) break;}
-            if (!CoralStatus.isOK()) {
-                System.out.println("Could not configure device. Error: " + CoralStatus.toString());
-            }
 
-            StatusCode CoralStatus2 = StatusCode.StatusCodeNotInitialized;
-            for(int i = 0; i < 5; ++i) {
-                CoralStatus2 = coralWrist.getConfigurator().apply(cFXS);
-            if (CoralStatus2.isOK()) break;}
-            if (!CoralStatus2.isOK()) {
-                System.out.println("Could not configure device. Error: " + CoralStatus2.toString());
-            }
-    
-            CoralPosition = coral.getPosition();
-            CoralVelocity = coral.getVelocity();
-            SupplyCurrent = coral.getSupplyCurrent();
-            TorqueCurrent = coral.getTorqueCurrent();
-            TempCelsius = coral.getDeviceTemp();
-            coralCancoderPosition = coralCancoder.getPosition();
-            coralCancoderVelocity = coralCancoder.getVelocity();
-        
-            BaseStatusSignal.setUpdateFrequencyForAll(
-                100.0,
-                CoralPosition,
-                CoralVelocity,
-                SupplyCurrent,
-                TorqueCurrent,
-                TempCelsius,
-                coralCancoderPosition,
-                coralCancoderVelocity
-              );
+public abstract class CoralIO {
+    // Protected TalonFX object accessible to subclasses
+    protected TalonFX coral;
+    protected MotionMagicVoltage coralMagic;
+    protected DigitalInput coralBeamBreak;
+    protected CANdi coralCandi;
+    protected TalonFXS coralWrist;
+    protected CANcoder coralCancoder;
 
-              
-        }
-    
-        /** Update stats */
-        public void updateStats() {
-            stats.coralMotorConnected =
-            BaseStatusSignal.refreshAll(
-              CoralPosition,
-              CoralVelocity,
-              SupplyCurrent,
-              TorqueCurrent,
-              TempCelsius,
-              coralCancoderPosition,
-              coralCancoderVelocity)
-                .isOK();
-    
-            stats.coralPosition = CoralPosition.getValueAsDouble();
-            stats.coralVelocity = CoralVelocity.getValueAsDouble();
-            stats.supplyCurrentAmps = SupplyCurrent.getValueAsDouble();
-            stats.torqueCurrentAmps = TorqueCurrent.getValueAsDouble();
-            stats.tempCelsius = TempCelsius.getValueAsDouble();
-            stats.coralCancoderPosition = coralCancoderPosition.getValueAsDouble();
-            stats.coralCancoderVelocity = coralCancoderVelocity.getValueAsDouble();
-        }
-    
-    
-        /** Apply motion magic control mode */
-        public void setCoralMotorControl(double commandedPosition) {
-            coral.setControl(coralMagic.withPosition(commandedPosition).withSlot(0));
-        }
-
-        public boolean coralBeamBreakTriggered(){
-            coralCandi.getPWM1Position();
-            return coralBeamBreak.get();
-        }
-
-        public StatusSignal<Angle> coralBeamBreakCandiPosition(){
-            return coralCandi.getPWM1Position();
-        }
-    
-        /** Stop motor */
-        public void stop() {
-            coral.setVoltage(0);
-        }
-    
-        /** Perform simulation-specific tasks */
-        public void periodic() {
-        }
-
-        public void runVelocity(double rPM, int i) {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'runVelocity'");
-        }
+    public static class CoralIOStats {
+        public boolean coralMotorConnected = true;
+        public double coralPosition = 0.0;
+        public double coralVelocity = 0.0;
+        public double coralAppliedVolts = 0.0;
+        public double coralCurrentAmps = 0.0;
+        public double supplyCurrentAmps = 0.0;
+        public double torqueCurrentAmps = 0.0;
+        public double tempCelsius = 0.0;
+        public double coralCancoderPosition = 0.0;
+        public double coralCancoderVelocity = 0.0;
     }
+
+    protected static CoralIOStats stats = new CoralIOStats();
+
+    private final StatusSignal<Angle> CoralPosition;
+    private final StatusSignal<AngularVelocity> CoralVelocity;
+    private final StatusSignal<Current> SupplyCurrent;
+    private final StatusSignal<Current> TorqueCurrent;
+    private final StatusSignal<Temperature> TempCelsius;
+    private final StatusSignal<Angle> coralCancoderPosition;
+    private final StatusSignal<AngularVelocity> coralCancoderVelocity;
+
+    /** Constructor to initialize the TalonFX */
+    public CoralIO() {
+        this.coral = new TalonFX(CoralConstants.coralMotorID, "CamBot");
+        this.coralBeamBreak = new DigitalInput(CoralConstants.coralBeamBreakID);
+        this.coralCandi = new CANdi(CoralConstants.coralCandiID);
+        this.coralWrist = new TalonFXS(0,"Cambot");
+        this.coralCancoder = new CANcoder(CoralConstants.coralEncoderID, "CamBot");
+
+        coralMagic = new MotionMagicVoltage(0);
+        TalonFXConfiguration cfg = new TalonFXConfiguration();
+        TalonFXSConfiguration cFXS = new TalonFXSConfiguration();
+
+        MotionMagicConfigs mm = cfg.MotionMagic;
+        mm.MotionMagicCruiseVelocity = CoralConstants.coralGains.CruiseVelocity(); //rps
+        mm.MotionMagicAcceleration = CoralConstants.coralGains.Acceleration();
+        mm.MotionMagicJerk = CoralConstants.coralGains.Jerk();
+
+        Slot0Configs slot0 = cfg.Slot0;
+        slot0.kP = CoralConstants.coralGains.kP();
+        slot0.kI = CoralConstants.coralGains.kI();
+        slot0.kD = CoralConstants.coralGains.kD();
+        slot0.kV = CoralConstants.coralGains.kV();
+        slot0.kS = CoralConstants.coralGains.kS();
+
+        FeedbackConfigs fdb = cfg.Feedback;
+        fdb.SensorToMechanismRatio = 1;
+
+        cfg.Feedback.FeedbackRemoteSensorID = coralCancoder.getDeviceID();
+        cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+        cfg.Feedback.SensorToMechanismRatio = 1; //changes what the cancoder and fx encoder ratio is
+        cfg.Feedback.RotorToSensorRatio = 1; //12.8;
+        cfg.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        cfg.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
+        cfg.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
+        cfg.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
+        cfg.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
+
+        StatusCode CoralStatus = StatusCode.StatusCodeNotInitialized;
+        for(int i = 0; i < 5; ++i) {
+            CoralStatus = coral.getConfigurator().apply(cfg);
+        if (CoralStatus.isOK()) break;}
+        if (!CoralStatus.isOK()) {
+            System.out.println("Could not configure device. Error: " + CoralStatus.toString());
+        }
+
+        StatusCode CoralStatus2 = StatusCode.StatusCodeNotInitialized;
+        for(int i = 0; i < 5; ++i) {
+            CoralStatus2 = coralWrist.getConfigurator().apply(cFXS);
+        if (CoralStatus2.isOK()) break;}
+        if (!CoralStatus2.isOK()) {
+            System.out.println("Could not configure device. Error: " + CoralStatus2.toString());
+        }
+
+        CoralPosition = coral.getPosition();
+        CoralVelocity = coral.getVelocity();
+        SupplyCurrent = coral.getSupplyCurrent();
+        TorqueCurrent = coral.getTorqueCurrent();
+        TempCelsius = coral.getDeviceTemp();
+        coralCancoderPosition = coralCancoder.getPosition();
+        coralCancoderVelocity = coralCancoder.getVelocity();
+    
+        BaseStatusSignal.setUpdateFrequencyForAll(
+            100.0,
+            CoralPosition,
+            CoralVelocity,
+            SupplyCurrent,
+            TorqueCurrent,
+            TempCelsius,
+            coralCancoderPosition,
+            coralCancoderVelocity
+            );
+
+            
+    }
+
+    /** Update stats */
+    public void updateStats() {
+        stats.coralMotorConnected =
+        BaseStatusSignal.refreshAll(
+            CoralPosition,
+            CoralVelocity,
+            SupplyCurrent,
+            TorqueCurrent,
+            TempCelsius,
+            coralCancoderPosition,
+            coralCancoderVelocity)
+            .isOK();
+
+        stats.coralPosition = CoralPosition.getValueAsDouble();
+        stats.coralVelocity = CoralVelocity.getValueAsDouble();
+        stats.supplyCurrentAmps = SupplyCurrent.getValueAsDouble();
+        stats.torqueCurrentAmps = TorqueCurrent.getValueAsDouble();
+        stats.tempCelsius = TempCelsius.getValueAsDouble();
+        stats.coralCancoderPosition = coralCancoderPosition.getValueAsDouble();
+        stats.coralCancoderVelocity = coralCancoderVelocity.getValueAsDouble();
+    }
+
+
+    /** Apply motion magic control mode */
+    public void setCoralMotorControl(double commandedPosition) {
+        coral.setControl(coralMagic.withPosition(commandedPosition).withSlot(0));
+    }
+
+    public boolean coralBeamBreakTriggered(){
+        coralCandi.getPWM1Position();
+        return coralBeamBreak.get();
+    }
+
+    public StatusSignal<Angle> coralBeamBreakCandiPosition(){
+        return coralCandi.getPWM1Position();
+    }
+
+    /** Stop motor */
+    public void stop() {
+        coral.setVoltage(0);
+    }
+
+    public abstract void periodic();
+
+    public void runVelocity(double rPM, int i) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'runVelocity'");
+    }
+}
