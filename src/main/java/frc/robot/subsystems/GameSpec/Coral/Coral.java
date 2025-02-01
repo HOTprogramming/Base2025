@@ -23,6 +23,7 @@ public class Coral extends SubsystemBase {
     private GenericEntry coralTemp;
     private GenericEntry coralCommandedPos;
     private GenericEntry coralCommandedSpeed;
+    private GenericEntry CANdiPWM1;
     
     public Coral(CoralIO io) {
         this.io = io;
@@ -37,6 +38,7 @@ public class Coral extends SubsystemBase {
         coralTemp = this.coralShuffleboard.add("Coral Temp", 0.0).getEntry();
         coralCommandedPos = this.coralShuffleboard.add("Coral Commanded Position", 0.0).getEntry();
         coralCommandedSpeed = this.coralShuffleboard.add("Coral Commanded Speed", 0.0).getEntry();
+        CANdiPWM1 = this.coralShuffleboard.add("CANdi PWM 1",false).getEntry();
     }
 
     @Override
@@ -54,6 +56,7 @@ public class Coral extends SubsystemBase {
         coralSupplyCurrent.setDouble(stats.supplyCurrentAmps);
         coralStatorCurrent.setDouble(stats.torqueCurrentAmps);
         coralTemp.setDouble(stats.tempCelsius);
+        CANdiPWM1.setBoolean(stats.candiPWM1);
     }
 
     private FunctionalCommand coralCommand(double position){

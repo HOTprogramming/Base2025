@@ -25,6 +25,8 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
+import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public abstract class CoralIO {
@@ -48,6 +50,7 @@ public abstract class CoralIO {
         public double tempCelsius = 0.0;
         public double coralCancoderPosition = 0.0;
         public double coralCancoderVelocity = 0.0;
+        public boolean candiPWM1;
     }
 
     protected static CoralIOStats stats = new CoralIOStats();
@@ -59,6 +62,7 @@ public abstract class CoralIO {
     private final StatusSignal<Temperature> TempCelsius;
     private final StatusSignal<Angle> coralCancoderPosition;
     private final StatusSignal<AngularVelocity> coralCancoderVelocity;
+    private final StatusSignal<Boolean> CANdiPWM1;
 
     TalonFXConfiguration cfg;
     TalonFXSConfiguration cFXS;
@@ -66,11 +70,11 @@ public abstract class CoralIO {
 
     /** Constructor to initialize the TalonFX */
     public CoralIO() {
-        this.coral = new TalonFX(CoralConstants.coralMotorID, "CamBot");
+        this.coral = new TalonFX(CoralConstants.coralMotorID, "rio");
         this.coralBeamBreak = new DigitalInput(CoralConstants.coralBeamBreakID);
-        this.coralCandi = new CANdi(CoralConstants.coralCandiID);
-        this.coralWrist = new TalonFXS(0,"Cambot");
-        this.coralCancoder = new CANcoder(CoralConstants.coralEncoderID, "CamBot");
+        this.coralCandi = new CANdi(CoralConstants.coralCandiID, "rio");
+        this.coralWrist = new TalonFXS(0,"rio");
+        this.coralCancoder = new CANcoder(CoralConstants.coralEncoderID, "rio");
 
         coralWristMagic = new MotionMagicVoltage(0);
         coralSpinController = new VelocityVoltage(0);
@@ -116,6 +120,9 @@ public abstract class CoralIO {
         TempCelsius = coral.getDeviceTemp();
         coralCancoderPosition = coralCancoder.getPosition();
         coralCancoderVelocity = coralCancoder.getVelocity();
+
+        //getPWM1Position, getRisetoRise
+        CANdiPWM1 = coralCandi.getS1Closed();
     
         BaseStatusSignal.setUpdateFrequencyForAll(
             100.0,
@@ -125,7 +132,8 @@ public abstract class CoralIO {
             TorqueCurrent,
             TempCelsius,
             coralCancoderPosition,
-            coralCancoderVelocity
+            coralCancoderVelocity,
+            CANdiPWM1
             );
     }
 
@@ -139,7 +147,8 @@ public abstract class CoralIO {
             TorqueCurrent,
             TempCelsius,
             coralCancoderPosition,
-            coralCancoderVelocity)
+            coralCancoderVelocity,
+            CANdiPWM1)
             .isOK();
 
         stats.coralPosition = CoralPosition.getValueAsDouble();
@@ -149,6 +158,7 @@ public abstract class CoralIO {
         stats.tempCelsius = TempCelsius.getValueAsDouble();
         stats.coralCancoderPosition = coralCancoderPosition.getValueAsDouble();
         stats.coralCancoderVelocity = coralCancoderVelocity.getValueAsDouble();
+        stats.candiPWM1 = CANdiPWM1.getValue();
     }
 
     public void setConfig(){
@@ -188,9 +198,8 @@ public abstract class CoralIO {
         coralWrist.setControl(coralWristMagic.withPosition(commandedPosition).withSlot(0));
     }
 
-
     public boolean coralBeamBreakTriggered(){
-        coralCandi.getPWM1Position();
+        //coralCandi.getPWM1Position();
         return coralBeamBreak.get();
     }
 

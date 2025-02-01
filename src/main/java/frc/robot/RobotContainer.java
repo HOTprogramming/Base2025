@@ -40,123 +40,125 @@ public class RobotContainer {
   public RobotContainer() {
     RobotController.setBrownoutVoltage(Constants.brownoutVoltage); // stops stuttering under high load when the battery is good.
 
-    if(!Utils.isSimulation()){
-        drivetrain = new Drive(new DriveKraken());
-        cameraSubsystem = new Camera(drivetrain);
-    } else {
-      drivetrain = new Drive(new DriveSim());
-    }
+    // if(!Utils.isSimulation()){
+    //     drivetrain = new Drive(new DriveKraken());
+    //     cameraSubsystem = new Camera(drivetrain);
+    // } else {
+    //   drivetrain = new Drive(new DriveSim());
+    // }
 
     gamespecManager = new Manager();
 
-    chooser.setDefaultOption("Auto", "Auto");
-    // chooser.addOption("Complex Auto", "m_complexAuto");
+    // chooser.setDefaultOption("Auto", "Auto");
+    // // chooser.addOption("Complex Auto", "m_complexAuto");
     
-    NamedCommands.registerCommand("L1", gamespecManager.goToL1());
-    NamedCommands.registerCommand("L2", gamespecManager.goToL2());
-    NamedCommands.registerCommand("L3", gamespecManager.goToL3());
-    NamedCommands.registerCommand("L4", gamespecManager.goToL4());
-    NamedCommands.registerCommand("Package", gamespecManager.goToPackage());
-    NamedCommands.registerCommand("Feeder", gamespecManager.goToFeeder());
-    NamedCommands.registerCommand("Coral Intake", gamespecManager.coralIntake());
-    NamedCommands.registerCommand("Coral Shoot", gamespecManager.coralShoot());
-    NamedCommands.registerCommand("Coral Zero", gamespecManager.coralZero());
+    // NamedCommands.registerCommand("L1", gamespecManager.goToL1());
+    // NamedCommands.registerCommand("L2", gamespecManager.goToL2());
+    // NamedCommands.registerCommand("L3", gamespecManager.goToL3());
+    // NamedCommands.registerCommand("L4", gamespecManager.goToL4());
+    // NamedCommands.registerCommand("Package", gamespecManager.goToPackage());
+    // NamedCommands.registerCommand("Feeder", gamespecManager.goToFeeder());
+    // NamedCommands.registerCommand("Coral Intake", gamespecManager.coralIntake());
+    // NamedCommands.registerCommand("Coral Shoot", gamespecManager.coralShoot());
+    // NamedCommands.registerCommand("Coral Zero", gamespecManager.coralZero());
 
-    SmartDashboard.putData(chooser);
+    // SmartDashboard.putData(chooser);
 
     configureBindings();
   }
 
   private void configureBindings() {    
 
-    drivetrain.setDefaultCommand
-      (drivetrain.run(() -> {
-            drivetrain.headingControl(
-              Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0, 
-              Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0);
-          }
-      ));    
+    // drivetrain.setDefaultCommand
+    //   (drivetrain.run(() -> {
+    //         drivetrain.headingControl(
+    //           Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0, 
+    //           Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0);
+    //       }
+    //   ));    
 
-      driver.rightBumper().whileTrue
-      (drivetrain.run(() -> {
-        drivetrain.robotCentricTeleopDrive(
-          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
-          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
-          Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
-        }
-      ));
+    //   driver.rightBumper().whileTrue
+    //   (drivetrain.run(() -> {
+    //     drivetrain.robotCentricTeleopDrive(
+    //       Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+    //       Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+    //       Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
+    //     }
+    //   ));
 
-      driver.axisLessThan(4, -0.15)
-        .or(driver.axisGreaterThan(4, 0.15))
-        .and(driver.rightBumper().negate())
-        .and(driver.leftBumper().negate())
-        .and(driver.y().negate())
-        .whileTrue
-      (drivetrain.run(() -> {
-        drivetrain.teleopDrive(
-          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
-          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
-          Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
-        }
-      )).onFalse(Commands.race(Commands.waitSeconds(0.2), drivetrain.run(() -> {
-        drivetrain.teleopDrive(
-          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
-          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
-          Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
-        })));
+    //   driver.axisLessThan(4, -0.15)
+    //     .or(driver.axisGreaterThan(4, 0.15))
+    //     .and(driver.rightBumper().negate())
+    //     .and(driver.leftBumper().negate())
+    //     .and(driver.y().negate())
+    //     .whileTrue
+    //   (drivetrain.run(() -> {
+    //     drivetrain.teleopDrive(
+    //       Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+    //       Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+    //       Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
+    //     }
+    //   )).onFalse(Commands.race(Commands.waitSeconds(0.2), drivetrain.run(() -> {
+    //     drivetrain.teleopDrive(
+    //       Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+    //       Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+    //       Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
+    //     })));
 
-      driver.povUp().whileTrue
-      (drivetrain.run(() -> {
-        drivetrain.lockRotation(
-          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
-          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
-          Rotation2d.fromDegrees(0));
-        }
-      ));
+    //   driver.povUp().whileTrue
+    //   (drivetrain.run(() -> {
+    //     drivetrain.lockRotation(
+    //       Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+    //       Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+    //       Rotation2d.fromDegrees(0));
+    //     }
+    //   ));
 
-      driver.leftTrigger().whileTrue
-      (drivetrain.run(() -> {
-        drivetrain.lockReef(
-          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
-          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0);
-        }
-      ));
+    //   driver.leftTrigger().whileTrue
+    //   (drivetrain.run(() -> {
+    //     drivetrain.lockReef(
+    //       Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+    //       Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0);
+    //     }
+    //   ));
 
-      driver.y()
-      .and(driver.axisLessThan(4, -0.15).or(driver.axisGreaterThan(4, 0.15))
-      .or(driver.axisLessThan(5, -0.15)).or(driver.axisGreaterThan(5, 0.15)))
-      .whileTrue
-      (drivetrain.run(() -> {
-        drivetrain.lockReefManual(
-          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
-          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
-          Math.abs(driver.getRightX()) >= 0.1 ? -driver.getRightX() : 0,
-          Math.abs(driver.getRightY()) >= 0.1 ? -driver.getRightY() : 0);
-        }
-      ));
-
-
-      driver.povUp().onTrue(drivetrain.run(() -> drivetrain.alignReef(0)));    
-      driver.povLeft().onTrue(drivetrain.run(() -> drivetrain.alignReef(1)));  
-      driver.povRight().onTrue(drivetrain.run(() -> drivetrain.alignReef(-1))); 
-
-      driver.start().onTrue(drivetrain.resetPidgeon());
-
-      operator.a().onTrue(NamedCommands.getCommand("L1"));
-      operator.b().onTrue(NamedCommands.getCommand("L2"));
-      operator.x().onTrue(NamedCommands.getCommand("L3"));
-      operator.y().onTrue(NamedCommands.getCommand("L4"));
-      operator.leftBumper().onTrue(NamedCommands.getCommand("Package"));
-      operator.rightBumper().onTrue(NamedCommands.getCommand("Feeder"));
-      operator.leftTrigger().whileTrue(NamedCommands.getCommand("Coral Intake"));
-      operator.rightTrigger().whileTrue(NamedCommands.getCommand("Coral Shoot"));
-      operator.leftTrigger().or(operator.rightTrigger()).onFalse(NamedCommands.getCommand("Coral Zero"));
-
-      NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
-      NamedCommands.registerCommand("R_OTF", drivetrain.runOnTheFly());
+    //   driver.y()
+    //   .and(driver.axisLessThan(4, -0.15).or(driver.axisGreaterThan(4, 0.15))
+    //   .or(driver.axisLessThan(5, -0.15)).or(driver.axisGreaterThan(5, 0.15)))
+    //   .whileTrue
+    //   (drivetrain.run(() -> {
+    //     drivetrain.lockReefManual(
+    //       Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+    //       Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+    //       Math.abs(driver.getRightX()) >= 0.1 ? -driver.getRightX() : 0,
+    //       Math.abs(driver.getRightY()) >= 0.1 ? -driver.getRightY() : 0);
+    //     }
+    //   ));
 
 
-      new EventTrigger("OTF").onTrue(Commands.runOnce(() -> drivetrain.generateOnTheFly()));
+    //   driver.povUp().onTrue(drivetrain.run(() -> drivetrain.alignReef(0)));    
+    //   driver.povLeft().onTrue(drivetrain.run(() -> drivetrain.alignReef(1)));  
+    //   driver.povRight().onTrue(drivetrain.run(() -> drivetrain.alignReef(-1))); 
+
+    //   driver.start().onTrue(drivetrain.resetPidgeon());
+
+    //   operator.a().onTrue(NamedCommands.getCommand("L1"));
+    //   operator.b().onTrue(NamedCommands.getCommand("L2"));
+    //   operator.x().onTrue(NamedCommands.getCommand("L3"));
+    //   operator.y().onTrue(NamedCommands.getCommand("L4"));
+    //   operator.leftBumper().onTrue(NamedCommands.getCommand("Package"));
+    //   operator.rightBumper().onTrue(NamedCommands.getCommand("Feeder"));
+    //   operator.leftTrigger().whileTrue(NamedCommands.getCommand("Coral Intake"));
+    //   operator.rightTrigger().whileTrue(NamedCommands.getCommand("Coral Shoot"));
+    //   operator.leftTrigger().or(operator.rightTrigger()).onFalse(NamedCommands.getCommand("Coral Zero"));
+
+    //   NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
+    //   NamedCommands.registerCommand("R_OTF", drivetrain.runOnTheFly());
+
+
+    //   new EventTrigger("OTF").onTrue(Commands.runOnce(() -> drivetrain.generateOnTheFly()));
+
+
   }
 
         //      operator.leftTrigger().and(operator.y())
