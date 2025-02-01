@@ -43,14 +43,14 @@ public class Manager extends SubsystemBase{
         armSubsystem = new Arm(new ArmIOReal());
         coralSubsystem = new Coral(new CoralIOReal());
         // algaeSubsystem = new Algae(new AlgaeIOReal());
-        climberSubsystem = new Climber(new ClimberIOReal());
-        intakeSubsystem = new Intake(new IntakeIOReal());
+        // climberSubsystem = new Climber(new ClimberIOReal());
+        // intakeSubsystem = new Intake(new IntakeIOReal());
       } else {
         elevatorSubsystem = new Elevator(new ElevatorIOSim());
         armSubsystem = new Arm(new ArmIOSim());
         coralSubsystem = new Coral(new CoralIOSim());
         // algaeSubsystem = new Algae(new AlgaeIOSim());
-        climberSubsystem = new Climber(new ClimberIOSim());
+        // climberSubsystem = new Climber(new ClimberIOSim());
       }
     }
 
