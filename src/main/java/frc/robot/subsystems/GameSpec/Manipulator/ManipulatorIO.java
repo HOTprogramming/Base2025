@@ -59,8 +59,6 @@ public abstract class ManipulatorIO {
             public boolean candiPWM1;
 
 
-
-
             public boolean algaeMotorConnected = true;
             public double algaePosition = 0.0;
             public double algaeVelocity = 0.0;

@@ -193,7 +193,7 @@ public abstract class ElevatorIO {
     /** Apply motion magic control mode */
     public void setElevatorMotorControl(double commandedPosition) {
         elevator.setControl(elevatorMagic.withPosition(commandedPosition).withSlot(0));
-        elevator2.setControl(new Follower(elevator.getDeviceID(), false));
+        elevator2.setControl(new Follower(elevator.getDeviceID(), true));
     }
 
     /** Stop motor */

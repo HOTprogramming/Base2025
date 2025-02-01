@@ -5,7 +5,7 @@ public class ManipulatorConstants {
     
     public static final int coralMotorID = 16;
     public static final int coralEncoderID = 45;
-    public static final int coralCandiID = 53;//sweetbox 6
+    public static final int coralCandiID = 6;//sweetbox 6
     public static final int coralWristID = 13;
     public static final double kReduction = (1.0 / 2.0);
     public static final double kMaxAccelerationRpmPerSec = 9000.0; 

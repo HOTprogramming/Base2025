@@ -16,7 +16,6 @@ public class Manipulator extends SubsystemBase {
     private final ManipulatorIO io;
     public final ManipulatorIOStats stats;
     private final ShuffleboardTab coralShuffleboard;
-    private final ShuffleboardTab algaeShuffleboard;
 
     /* Shuffleboard entries */
     private GenericEntry coralVelocity;
@@ -51,16 +50,14 @@ public class Manipulator extends SubsystemBase {
         coralCommandedPos = this.coralShuffleboard.add("Coral Commanded Position", 0.0).getEntry();
         coralCommandedSpeed = this.coralShuffleboard.add("Coral Commanded Speed", 0.0).getEntry();
         CANdiPWM1 = this.coralShuffleboard.add("CANdi Coral Beambreak",false).getEntry();//false when there is no object, true when it detects object
-    
-        this.algaeShuffleboard = Shuffleboard.getTab("Algae");
 
-        algaeVelocity = this.algaeShuffleboard.add("Algae RPM", 0.0).getEntry();
-        algaePosition = this.algaeShuffleboard.add("Algae Position", 0.0).getEntry();;
-        algaeSupplyCurrent = this.algaeShuffleboard.add("Algae Supply Current", 0.0).getEntry();
-        algaeStatorCurrent = this.algaeShuffleboard.add("Algae Stator Current", 0.0).getEntry();
-        algaeTemp = this.algaeShuffleboard.add("Algae Temp", 0.0).getEntry();
-        algaeCommandedPos = this.algaeShuffleboard.add("Algae Commanded Position", 0.0).getEntry();
-        CANdiPWM2 = this.algaeShuffleboard.add("CANdi Algae Beambreak",false).getEntry();//false when there is no object, true when it detects object
+        algaeVelocity = this.coralShuffleboard.add("Algae RPM", 0.0).getEntry();
+        algaePosition = this.coralShuffleboard.add("Algae Position", 0.0).getEntry();;
+        algaeSupplyCurrent = this.coralShuffleboard.add("Algae Supply Current", 0.0).getEntry();
+        algaeStatorCurrent = this.coralShuffleboard.add("Algae Stator Current", 0.0).getEntry();
+        algaeTemp = this.coralShuffleboard.add("Algae Temp", 0.0).getEntry();
+        algaeCommandedPos = this.coralShuffleboard.add("Algae Commanded Position", 0.0).getEntry();
+        CANdiPWM2 = this.coralShuffleboard.add("CANdi Algae Beambreak",false).getEntry();//false when there is no object, true when it detects object
   
     }
 
