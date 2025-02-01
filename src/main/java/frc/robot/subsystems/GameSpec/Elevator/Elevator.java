@@ -78,32 +78,29 @@ public class Elevator extends SubsystemBase {
   }
 
   public Command goToL4(){
-    return elevatorCommand(ElevatorConstants.l4Height);
+    return elevatorCommand(ElevatorConstants.L4Height);
   }
 
   public Command goToL3(){
-    return elevatorCommand(ElevatorConstants.l3Height);
+    return elevatorCommand(ElevatorConstants.L3Height);
   }
 
   public Command goToL2(){
-    return elevatorCommand(ElevatorConstants.l2Height);
+    return elevatorCommand(ElevatorConstants.L2Height);
   }
 
   public Command goToL1(){
-    return elevatorCommand(ElevatorConstants.l1Height);
+    return elevatorCommand(ElevatorConstants.L1Height);
   }
 
-  public Command goToNet(){
-    return elevatorCommand(ElevatorConstants.netHeight);
+  public Command goToFeeder(){
+    return elevatorCommand(ElevatorConstants.FeederHeight);
   }
 
-  public Command goToIntakeCoral(){
-    return elevatorCommand(ElevatorConstants.intakeCoralHeight);
+  public Command goToPackage(){
+    return elevatorCommand(ElevatorConstants.PackageHeight);
   }
 
-  public Command goToIntakeAlgae(){
-    return elevatorCommand(ElevatorConstants.intakeAlgaeHeight);
-  }
 
   public Command managerElevatorTest(){
     System.out.println("elevatorworks");

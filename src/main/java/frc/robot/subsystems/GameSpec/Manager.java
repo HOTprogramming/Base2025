@@ -54,47 +54,46 @@ public class Manager extends SubsystemBase{
       }
     }
 
-    public Command L1(){
-      return Commands.parallel(
+    public Command goToPackage(){
+      return Commands.sequence(
+        elevatorSubsystem.goToPackage(),
+        armSubsystem.goToPackage()
+      );
+    }
+
+    public Command goToL1(){
+      return Commands.sequence(
         elevatorSubsystem.goToL1(),
-        armSubsystem.goToCL1()
+        armSubsystem.goToL1()
       );
     }
 
-    public Command L2(){
-      System.out.println("L2");
-      return Commands.parallel(elevatorSubsystem.goToL4());
-    }
-
-    public Command L3(){
-      System.out.println("L3");
-      return Commands.parallel(elevatorSubsystem.goToL4());
-    }
-
-    public Command L4(){
-      System.out.println("L4");
-
-      return Commands.parallel(elevatorSubsystem.goToL1(), armSubsystem.goToCL1())
-      .until(() -> (armSubsystem.armPosition(0.3, 0.01)))
-      .andThen(
-        Commands.parallel(elevatorSubsystem.goToL4(), armSubsystem.goToCL4())
+    public Command goToL2(){
+      return Commands.sequence(
+        elevatorSubsystem.goToL2(),
+        armSubsystem.goToL2()
       );
     }
 
-    public Command HP(){
-      System.out.println("HP");
-      return Commands.parallel(elevatorSubsystem.goToL4());
+    public Command goToL3(){
+      return Commands.sequence(
+        elevatorSubsystem.goToL3(),
+        armSubsystem.goToL3()
+      );
     }
 
-    public Command Barge(){
-      System.out.println("Barge");
-      return Commands.parallel(elevatorSubsystem.goToL4());
+    public Command goToL4(){
+      return Commands.sequence(
+        elevatorSubsystem.goToL4(),
+        armSubsystem.goToL4()
+      );
     }
 
-    public Command Package(){
-        System.out.println("Package");
-        return Commands.parallel(elevatorSubsystem.goToL4());
-        
+    public Command goToFeeder(){
+      return Commands.sequence(
+        elevatorSubsystem.goToFeeder(),
+        armSubsystem.goToFeeder()
+      );
     }
 
     // public Command L1(){

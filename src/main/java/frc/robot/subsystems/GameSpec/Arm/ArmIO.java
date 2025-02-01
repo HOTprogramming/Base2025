@@ -48,13 +48,15 @@ public abstract class ArmIO {
     private final StatusSignal<Angle> armCancoderPosition;
     private final StatusSignal<AngularVelocity> armCancoderVelocity;
 
+    public TalonFXConfiguration cfg;
+
     /** Constructor to initialize the TalonFX */
     public ArmIO() {
         this.arm = new TalonFX(ArmConstants.armMotorID, "CamBot");
         this.armCancoder = new CANcoder(ArmConstants.armEncoderID, "CamBot");
 
         armMagic = new MotionMagicVoltage(0);
-        TalonFXConfiguration cfg = new TalonFXConfiguration();
+        cfg = new TalonFXConfiguration();
 
         MotionMagicConfigs mm = cfg.MotionMagic;
         mm.MotionMagicCruiseVelocity = ArmConstants.armGains.CruiseVelocity(); //rps
@@ -68,9 +70,6 @@ public abstract class ArmIO {
         slot0.kV = ArmConstants.armGains.kV();
         slot0.kS = ArmConstants.armGains.kS();
 
-        FeedbackConfigs fdb = cfg.Feedback;
-        fdb.SensorToMechanismRatio = 1;
-        
         cfg.Feedback.FeedbackRemoteSensorID = armCancoder.getDeviceID();
         cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
         cfg.Feedback.SensorToMechanismRatio = 1; //changes what the cancoder and fx encoder ratio is

@@ -52,6 +52,13 @@ public class RobotContainer {
     chooser.setDefaultOption("Auto", "Auto");
     // chooser.addOption("Complex Auto", "m_complexAuto");
     
+    NamedCommands.registerCommand("L1", gamespecManager.goToL1());
+    NamedCommands.registerCommand("L2", gamespecManager.goToL2());
+    NamedCommands.registerCommand("L3", gamespecManager.goToL3());
+    NamedCommands.registerCommand("L4", gamespecManager.goToL4());
+    NamedCommands.registerCommand("Package", gamespecManager.goToPackage());
+    NamedCommands.registerCommand("Feeder", gamespecManager.goToFeeder());
+
     SmartDashboard.putData(chooser);
 
     configureBindings();
@@ -132,17 +139,13 @@ public class RobotContainer {
 
       driver.start().onTrue(drivetrain.resetPidgeon());
 
-      //four positions (l1, l2, l3, l4), human player, Barge, package
+      operator.a().onTrue(NamedCommands.getCommand("L1"));
+      operator.b().onTrue(NamedCommands.getCommand("L2"));
+      operator.x().onTrue(NamedCommands.getCommand("L3"));
+      operator.y().onTrue(NamedCommands.getCommand("L4"));
+      operator.leftBumper().onTrue(NamedCommands.getCommand("Package"));
+      operator.rightBumper().onTrue(NamedCommands.getCommand("Feeder"));
 
-      operator.a().onTrue(gamespecManager.L1());
-      operator.b().onTrue(gamespecManager.L2());
-      operator.y().onTrue(gamespecManager.L3());
-      operator.x().onTrue(gamespecManager.L4());
-      operator.rightBumper().onTrue(gamespecManager.Barge());
-      operator.rightTrigger().onTrue(gamespecManager.HP());
-      
-      //      operator.leftTrigger().and(operator.y())
-      //      .whileTrue(gamespecManager.L3());
 
       NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
       NamedCommands.registerCommand("R_OTF", drivetrain.runOnTheFly());

@@ -14,19 +14,6 @@ import frc.robot.subsystems.GameSpec.Arm.ArmIO.ArmIOStats;
 
 public class Arm extends SubsystemBase {
   //arm range 150 to -150
-  private static final double Package = Math.toRadians(0);
-
-  private static final double coral_Feader_Intake = Math.toRadians(50);
-  private static final double coral_Floor_Intake = Math.toRadians(20);
-  private static final double coral_Level1 = Math.toRadians(25);
-  private static final double coral_Level2 = Math.toRadians(35);
-  private static final double coral_Level3 = Math.toRadians(40);
-  private static final double coral_Level4 = Math.toRadians(-100);
-  
-  private static final double algae_Place = Math.toRadians(40);
-  private static final double algae_Intake_Level2 = Math.toRadians(180);
-  private static final double algea_Intake_Level3 = Math.toRadians(-180);
-
   public FunctionalCommand testCommand;
   private final ArmIO io;
   public final ArmIOStats stats;
@@ -79,41 +66,29 @@ public class Arm extends SubsystemBase {
       () -> checkRange(.1),
       this);
   }
-//
+
   public Command goToPackage(){
-    return armCommand(Package);
-  }
-  public Command goToCFeederIntake(){
-    return armCommand(coral_Feader_Intake);
-  }
-  public Command goToCFloorIntake(){
-    return armCommand(coral_Floor_Intake);
-  }
-  public Command goToCL4(){
-    return armCommand(coral_Level4);
-  }
-  public Command goToCL3(){
-    return armCommand(coral_Level3);
-  }
-  public Command goToCL2(){
-    return armCommand(coral_Level2);
-  }
-  public Command goToCL1(){
-    return armCommand(coral_Level1);
-  }
-  public Command goToAIntakeL2(){
-    return armCommand(algae_Intake_Level2);
-  }
-  public Command goToAIntakeL3(){
-    return armCommand(algea_Intake_Level3);
-  }
-  public Command goToAPlace(){
-    return armCommand(algae_Place);
+    return armCommand(ArmConstants.PackageAngle);
   }
 
-  public Command managerArmTest(){
-    System.out.println("armworks");
-    return runOnce(() -> {});
+  public Command goToL1(){
+    return armCommand(ArmConstants.L1Angle);
+  }
+  
+  public Command goToL2(){
+    return armCommand(ArmConstants.L2Angle);
+  }
+
+  public Command goToL3(){
+    return armCommand(ArmConstants.L3Angle);
+  }
+
+  public Command goToL4(){
+    return armCommand(ArmConstants.L4Angle);
+  }
+
+  public Command goToFeeder(){
+    return armCommand(ArmConstants.FeederAngle);
   }
 
   public boolean checkRange(double deadband){

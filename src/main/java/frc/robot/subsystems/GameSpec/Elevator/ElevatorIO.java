@@ -68,6 +68,8 @@ public abstract class ElevatorIO {
     private final StatusSignal<Angle> elevatorCancoderPosition;
     private final StatusSignal<AngularVelocity> elevatorCancoderVelocity;
 
+    TalonFXConfiguration cfg;
+
     /** Constructor to initialize the TalonFX */
     public ElevatorIO() {
         this.elevator = new TalonFX(ElevatorConstants.elevatorMotorID, "CamBot");
@@ -75,7 +77,7 @@ public abstract class ElevatorIO {
         this.elevatorCancoder = new CANcoder(ElevatorConstants.elevatorEncoderID, "CamBot");
 
         elevatorMagic = new MotionMagicVoltage(0);
-        TalonFXConfiguration cfg = new TalonFXConfiguration();
+        cfg = new TalonFXConfiguration();
 
         MotionMagicConfigs mm = cfg.MotionMagic;
         mm.MotionMagicCruiseVelocity = ElevatorConstants.elevatorGains.CruiseVelocity(); //rps
@@ -89,12 +91,9 @@ public abstract class ElevatorIO {
         slot0.kV = ElevatorConstants.elevatorGains.kV();
         slot0.kS = ElevatorConstants.elevatorGains.kS();
 
-        FeedbackConfigs fdb = cfg.Feedback;
-        fdb.SensorToMechanismRatio = 1;
-
         cfg.Feedback.FeedbackRemoteSensorID = elevatorCancoder.getDeviceID();
         cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-        cfg.Feedback.SensorToMechanismRatio = 1; //changes what the cancoder and fx encoder ratio is
+        cfg.Feedback.SensorToMechanismRatio = 1/3.0; //changes what the cancoder and fx encoder ratio is
         cfg.Feedback.RotorToSensorRatio = 1; //12.8;
         cfg.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         cfg.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;

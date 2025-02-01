@@ -7,8 +7,8 @@ public class CoralConstants {
 
 
     
-    public static final int coralMotorID = 32;
-    public static final int coralEncoderID = 51;
+    public static final int coralMotorID = 43;
+    public static final int coralEncoderID = 44;
     public static final int coralCandiID = 0;
     public static final int coralBeamBreakID = 0;
     public static final double kReduction = (1.0 / 2.0);
