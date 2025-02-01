@@ -11,9 +11,11 @@ import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.Angle;
@@ -31,6 +33,7 @@ public abstract class AlgaeIO {
     protected MotionMagicVoltage algaeMagic;
     protected DigitalInput algaeBeamBreak;
     protected CANdi algaeCandi;
+    protected CANcoder algaeCancoder;
 
     public static class AlgaeIOStats {
         public boolean algaeMotorConnected = true;
@@ -51,6 +54,9 @@ public abstract class AlgaeIO {
         public double TorqueCurrentAmps2 = 0.0;
         public double TempCelsius2 = 0.0;
 
+        public double algaeCancoderPosition = 0.0;
+        public double algaeCancoderVelocity = 0.0;
+
     }
 
     protected static AlgaeIOStats stats = new AlgaeIOStats();
@@ -67,12 +73,16 @@ public abstract class AlgaeIO {
     private final StatusSignal<Current> TorqueCurrent2;
     private final StatusSignal<Temperature> TempCelsius2;
 
+    private final StatusSignal<Angle> algaeCancoderPosition;
+    private final StatusSignal<AngularVelocity> algaeCancoderVelocity;
+
     /** Constructor to initialize the TalonFX */
     public AlgaeIO() {
         this.algaeArm = new TalonFXS(AlgaeConstants.algaeMotorID, "CamBot");
         this.algaeRoller = new TalonFX(AlgaeConstants.algaeMotor2ID, "CamBot");
         this.algaeBeamBreak = new DigitalInput(0);
         this.algaeCandi = new CANdi(0);
+        this.algaeCancoder = new CANcoder(AlgaeConstants.algaeEncoderID, "CamBot");
 
         algaeMagic = new MotionMagicVoltage(0);
         TalonFXConfiguration cfg = new TalonFXConfiguration();
@@ -93,6 +103,10 @@ public abstract class AlgaeIO {
         FeedbackConfigs fdb = cfg.Feedback;
         fdb.SensorToMechanismRatio = 1;
 
+        cfg.Feedback.FeedbackRemoteSensorID = algaeCancoder.getDeviceID();
+        cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+        cfg.Feedback.SensorToMechanismRatio = 1; //changes what the cancoder and fx encoder ratio is
+        cfg.Feedback.RotorToSensorRatio = 1; //12.8;
         cfg.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         cfg.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
         cfg.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
@@ -126,6 +140,9 @@ public abstract class AlgaeIO {
         SupplyCurrent2 = algaeRoller.getSupplyCurrent();
         TorqueCurrent2 = algaeRoller.getTorqueCurrent();
         TempCelsius2 = algaeRoller.getDeviceTemp();
+
+        algaeCancoderPosition = algaeCancoder.getPosition();
+        algaeCancoderVelocity = algaeCancoder.getVelocity();
     
         BaseStatusSignal.setUpdateFrequencyForAll(
             100.0,
@@ -138,7 +155,9 @@ public abstract class AlgaeIO {
             algaeVelocity2,
             SupplyCurrent2,
             TorqueCurrent2,
-            TempCelsius2
+            TempCelsius2,
+            algaeCancoderPosition,
+            algaeCancoderVelocity
           );
     }
 
@@ -157,7 +176,9 @@ public abstract class AlgaeIO {
           algaeVelocity2,
           SupplyCurrent2,
           TorqueCurrent2,
-          TempCelsius2)
+          TempCelsius2,
+          algaeCancoderPosition,
+          algaeCancoderVelocity)
             .isOK();
 
         stats.algaePosition = algaePosition.getValueAsDouble();
@@ -171,6 +192,9 @@ public abstract class AlgaeIO {
         stats.SupplyCurrentAmps2 = SupplyCurrent2.getValueAsDouble();
         stats.TorqueCurrentAmps2 = TorqueCurrent2.getValueAsDouble();
         stats.TempCelsius2 = TempCelsius2.getValueAsDouble();
+
+        stats.algaeCancoderPosition = algaeCancoderPosition.getValueAsDouble();
+        stats.algaeCancoderVelocity = algaeCancoderVelocity.getValueAsDouble();
     }
 
 
