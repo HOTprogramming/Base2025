@@ -142,8 +142,6 @@ public class RobotContainer {
 
       driver.start().onTrue(drivetrain.resetPidgeon());
 
-      gamespecManager.setDefaultCommand(gamespecManager.run(() -> NamedCommands.getCommand("Coral Zero")));
-
       operator.a().onTrue(NamedCommands.getCommand("L1"));
       operator.b().onTrue(NamedCommands.getCommand("L2"));
       operator.x().onTrue(NamedCommands.getCommand("L3"));
@@ -152,6 +150,7 @@ public class RobotContainer {
       operator.rightBumper().onTrue(NamedCommands.getCommand("Feeder"));
       operator.leftTrigger().whileTrue(NamedCommands.getCommand("Coral Intake"));
       operator.rightTrigger().whileTrue(NamedCommands.getCommand("Coral Shoot"));
+      operator.leftTrigger().or(operator.rightTrigger()).onFalse(NamedCommands.getCommand("Coral Zero"));
 
       NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
       NamedCommands.registerCommand("R_OTF", drivetrain.runOnTheFly());
@@ -159,6 +158,9 @@ public class RobotContainer {
 
       new EventTrigger("OTF").onTrue(Commands.runOnce(() -> drivetrain.generateOnTheFly()));
   }
+
+        //      operator.leftTrigger().and(operator.y())
+      //      .whileTrue(gamespecManager.L3());
 
 
   public Command getAutonomousCommand() {

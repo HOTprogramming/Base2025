@@ -57,42 +57,48 @@ public class Manager extends SubsystemBase{
     public Command goToPackage(){
       return Commands.sequence(
         armSubsystem.goToPackage(),
-        elevatorSubsystem.goToPackage()
+        elevatorSubsystem.goToPackage(),
+        coralSubsystem.goHorizontal()
       );
     }
 
     public Command goToL1(){
       return Commands.sequence(
         elevatorSubsystem.goToL1(),
-        armSubsystem.goToL1()
+        armSubsystem.goToL1(),
+        coralSubsystem.goHorizontal()
       );
     }
 
     public Command goToL2(){
       return Commands.sequence(
         elevatorSubsystem.goToL2(),
-        armSubsystem.goToL2()
+        armSubsystem.goToL2(),
+        coralSubsystem.goHorizontal()
       );
     }
 
     public Command goToL3(){
       return Commands.sequence(
         elevatorSubsystem.goToL3(),
-        armSubsystem.goToL3()
+        armSubsystem.goToL3(),
+        coralSubsystem.goHorizontal()
       );
     }
 
     public Command goToL4(){
       return Commands.sequence(
         elevatorSubsystem.goToL4(),
-        armSubsystem.goToL4()
+        armSubsystem.goToL4(),
+        coralSubsystem.goHorizontal()
       );
     }
 
     public Command goToFeeder(){
       return Commands.sequence(
         elevatorSubsystem.goToFeeder(),
-        armSubsystem.goToFeeder()
+        armSubsystem.goToFeeder(),
+        coralSubsystem.goVertical()
       );
     }
 

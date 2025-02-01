@@ -22,6 +22,7 @@ public class Coral extends SubsystemBase {
     private GenericEntry coralStatorCurrent;
     private GenericEntry coralTemp;
     private GenericEntry coralCommandedPos;
+    private GenericEntry coralCommandedSpeed;
     
     public Coral(CoralIO io) {
         this.io = io;
@@ -34,6 +35,8 @@ public class Coral extends SubsystemBase {
         coralSupplyCurrent = this.coralShuffleboard.add("Coral Supply Current", 0.0).getEntry();
         coralStatorCurrent = this.coralShuffleboard.add("Coral Stator Current", 0.0).getEntry();
         coralTemp = this.coralShuffleboard.add("Coral Temp", 0.0).getEntry();
+        coralCommandedPos = this.coralShuffleboard.add("Coral Commanded Position", 0.0).getEntry();
+        coralCommandedSpeed = this.coralShuffleboard.add("Coral Commanded Speed", 0.0).getEntry();
     }
 
     @Override
@@ -46,8 +49,8 @@ public class Coral extends SubsystemBase {
     }
 
     private void UpdateTelemetry() {
-        coralVelocity.setDouble(stats.coralVelocity);
-        coralPosition.setDouble(stats.coralPosition);
+        coralVelocity.setDouble(io.coral.getVelocity().getValueAsDouble());
+        coralPosition.setDouble(io.coralWrist.getPosition().getValueAsDouble());
         coralSupplyCurrent.setDouble(stats.supplyCurrentAmps);
         coralStatorCurrent.setDouble(stats.torqueCurrentAmps);
         coralTemp.setDouble(stats.tempCelsius);
@@ -58,17 +61,23 @@ public class Coral extends SubsystemBase {
             () -> this.coralCommandedPos.setDouble(position),
             () -> io.setCoralAngleMotorControl(position),
             interrupted -> io.setCoralAngleMotorControl(position), 
-            () -> checkCoralRange(5),
+            () -> false,
             this
         );
     }
 
     public Command shoot() {
-        return run(() -> io.setCoralAngleMotorControl(2));
+        return runOnce(() -> {
+            coralCommandedSpeed.setDouble(2);
+            io.setCoralSpinMotorControl(2);
+        });
     }
 
     public Command intake() {
-        return run(() -> io.setCoralAngleMotorControl(-2));
+        return runOnce(() -> {
+            coralCommandedSpeed.setDouble(-2);
+            io.setCoralSpinMotorControl(-2);
+        });    
     }
 
     public  Command goHorizontal() {
@@ -76,7 +85,7 @@ public class Coral extends SubsystemBase {
     }
 
     public  Command goVertical() {
-        return coralCommand(0);
+        return coralCommand(90);
     }
 
     public Command zero(){

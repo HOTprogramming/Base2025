@@ -17,6 +17,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.signals.ExternalFeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -77,34 +78,34 @@ public abstract class CoralIO {
         cFXS = new TalonFXSConfiguration();
         eCfg = new CANcoderConfiguration();
     
-        MotionMagicConfigs mm = cfg.MotionMagic;
+        MotionMagicConfigs mm = cFXS.MotionMagic;
         mm.MotionMagicCruiseVelocity = CoralConstants.coralWristGains.CruiseVelocity(); //rps
         mm.MotionMagicAcceleration = CoralConstants.coralWristGains.Acceleration();
         mm.MotionMagicJerk = CoralConstants.coralWristGains.Jerk();
 
-        Slot0Configs slot0Wrist = cfg.Slot0;
+        Slot0Configs slot0Wrist = cFXS.Slot0;
         slot0Wrist.kP = CoralConstants.coralWristGains.kP();
         slot0Wrist.kI = CoralConstants.coralWristGains.kI();
         slot0Wrist.kD = CoralConstants.coralWristGains.kD();
         slot0Wrist.kV = CoralConstants.coralWristGains.kV();
         slot0Wrist.kS = CoralConstants.coralWristGains.kS();
 
-        Slot0Configs slot0Spin = cFXS.Slot0;
+        Slot0Configs slot0Spin = cfg.Slot0;
         slot0Spin.kP = CoralConstants.coralSpinGains.kP();
         slot0Spin.kI = CoralConstants.coralSpinGains.kI();
         slot0Spin.kD = CoralConstants.coralSpinGains.kD();
         slot0Spin.kV = CoralConstants.coralSpinGains.kV();
         slot0Spin.kS = CoralConstants.coralSpinGains.kS();
 
-        cfg.Feedback.FeedbackRemoteSensorID = coralCancoder.getDeviceID();
-        cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-        cfg.Feedback.SensorToMechanismRatio = 1/360.0; //changes what the cancoder and fx encoder ratio is
-        cfg.Feedback.RotorToSensorRatio = 1; //12.8;
-        cfg.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-        cfg.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
-        cfg.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
-        cfg.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
-        cfg.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
+        cFXS.ExternalFeedback.FeedbackRemoteSensorID = coralCancoder.getDeviceID();
+        cFXS.ExternalFeedback.ExternalFeedbackSensorSource = ExternalFeedbackSensorSourceValue.RemoteCANcoder;
+        cFXS.ExternalFeedback.SensorToMechanismRatio = 1/360.0; //changes what the cancoder and fx encoder ratio is
+        cFXS.ExternalFeedback.RotorToSensorRatio = 1; //12.8;
+        cFXS.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        cFXS.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
+        cFXS.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
+        cFXS.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
+        cFXS.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
 
         setConfig();
 
@@ -178,11 +179,12 @@ public abstract class CoralIO {
 
 
     /** Apply motion magic control mode */
-    public void setCoralAngleMotorControl(double commandedVelocity) {
+    public void setCoralSpinMotorControl(double commandedVelocity) {
         coral.setControl(coralSpinController.withVelocity(commandedVelocity).withSlot(0));
     }
 
-    public void setCoralSpinMotorControl(double commandedPosition) {
+    public void setCoralAngleMotorControl(double commandedPosition) {
+        // System.out.println(commandedPosition);
         coralWrist.setControl(coralWristMagic.withPosition(commandedPosition).withSlot(0));
     }
 
