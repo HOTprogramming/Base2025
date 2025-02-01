@@ -73,7 +73,7 @@ public class Elevator extends SubsystemBase {
       () -> this.elevatorCommandedPos.setDouble(position),
       () -> io.setElevatorMotorControl(position),
       interrupted -> io.setElevatorMotorControl(position), 
-      () -> checkRange(.1),
+      () -> checkRange(1.0),
       this);
   }
 

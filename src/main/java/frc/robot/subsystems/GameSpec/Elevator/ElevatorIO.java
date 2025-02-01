@@ -3,6 +3,7 @@ package frc.robot.subsystems.GameSpec.Elevator;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -13,7 +14,9 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -68,7 +71,8 @@ public abstract class ElevatorIO {
     private final StatusSignal<Angle> elevatorCancoderPosition;
     private final StatusSignal<AngularVelocity> elevatorCancoderVelocity;
 
-    TalonFXConfiguration cfg;
+    private TalonFXConfiguration cfg;
+    private CANcoderConfiguration encoderCfg;
 
     /** Constructor to initialize the TalonFX */
     public ElevatorIO() {
@@ -78,6 +82,7 @@ public abstract class ElevatorIO {
 
         elevatorMagic = new MotionMagicVoltage(0);
         cfg = new TalonFXConfiguration();
+        encoderCfg = new CANcoderConfiguration();
 
         MotionMagicConfigs mm = cfg.MotionMagic;
         mm.MotionMagicCruiseVelocity = ElevatorConstants.elevatorGains.CruiseVelocity(); //rps
@@ -93,13 +98,23 @@ public abstract class ElevatorIO {
 
         cfg.Feedback.FeedbackRemoteSensorID = elevatorCancoder.getDeviceID();
         cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-        cfg.Feedback.SensorToMechanismRatio = 1/3.0; //changes what the cancoder and fx encoder ratio is
+        cfg.Feedback.SensorToMechanismRatio = 0.208/24.75; //changes what the cancoder and fx encoder ratio is
         cfg.Feedback.RotorToSensorRatio = 1; //12.8;
-        cfg.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        cfg.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         cfg.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
         cfg.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
         cfg.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
         cfg.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
+
+        cfg.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+        encoderCfg.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        encoderCfg.MagnetSensor.MagnetOffset = 0.4953;
+
+        //11.25 start
+        //36 in 0.208
+
+        //package: 17.9
 
         applyConfig();
 
@@ -186,6 +201,14 @@ public abstract class ElevatorIO {
         if (elevatorStatus2.isOK()) break;}
         if (!elevatorStatus2.isOK()) {
             System.out.println("Could not configure device. Error: " + elevatorStatus.toString());
+        }
+
+        StatusCode encoderStatus = StatusCode.StatusCodeNotInitialized;
+        for(int i = 0; i < 5; ++i) {
+            encoderStatus = elevatorCancoder.getConfigurator().apply(encoderCfg);
+        if (encoderStatus.isOK()) break;}
+        if (!encoderStatus.isOK()) {
+            System.out.println("Could not configure device. Error: " + encoderStatus.toString());
         }
     }
 

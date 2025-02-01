@@ -12,7 +12,9 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -49,8 +51,8 @@ public abstract class ArmIO {
     private final StatusSignal<Angle> armCancoderPosition;
     private final StatusSignal<AngularVelocity> armCancoderVelocity;
 
-    public TalonFXConfiguration cfg;
-    public CANcoderConfiguration encoderCfg;
+    private TalonFXConfiguration cfg;
+    private CANcoderConfiguration encoderCfg;
 
     /** Constructor to initialize the TalonFX */
     public ArmIO() {
@@ -75,13 +77,18 @@ public abstract class ArmIO {
 
         cfg.Feedback.FeedbackRemoteSensorID = armCancoder.getDeviceID();
         cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-        cfg.Feedback.SensorToMechanismRatio = 1/360.0; //changes what the cancoder and fx encoder ratio is
+        cfg.Feedback.SensorToMechanismRatio = 1/360.0;//changes what the cancoder and fx encoder ratio is
         cfg.Feedback.RotorToSensorRatio = 1; //12.8;
         cfg.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         cfg.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
         cfg.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
         cfg.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
         cfg.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
+
+        cfg.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+        encoderCfg.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        encoderCfg.MagnetSensor.MagnetOffset = -0.1977;
 
         setConfig();
 
