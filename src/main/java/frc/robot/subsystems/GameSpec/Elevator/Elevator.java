@@ -55,7 +55,7 @@ public class Elevator extends SubsystemBase {
 
   private void UpdateTelemetry() {
     elevatorVelocity.setDouble(stats.elevatorVelocity);
-    elevatorPosition.setDouble(stats.elevatorPosition);
+    elevatorPosition.setDouble(io.elevator.getPosition().getValueAsDouble());
     elevatorSupplyCurrent.setDouble(stats.SupplyCurrentAmps);
     elevatorStatorCurrent.setDouble(stats.TorqueCurrentAmps);
     elevatorTemp.setDouble(stats.TempCelsius);

@@ -68,10 +68,10 @@ public class ArmIOSim extends ArmIO {
       RoboRioSim.setVInVoltage(
           BatterySim.calculateDefaultBatteryLoadedVoltage(armSim.getCurrentDrawAmps()));
 
-      encoderSimState.setRawPosition(armSim.getAngleRads());
-      encoderSimState.setVelocity(armSim.getVelocityRadPerSec());
+      encoderSimState.setRawPosition(armSim.getAngleRads()/6.28319);
+      // encoderSimState.setVelocity(armSim.getVelocityRadPerSec());
 
       // Update the Mechanism Arm angle based on the simulated arm angle
-      m_arm.setAngle(Units.radiansToDegrees(armSim.getAngleRads()));
+      m_arm.setAngle(arm.getPosition().getValueAsDouble());
     }
 }

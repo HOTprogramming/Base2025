@@ -101,21 +101,7 @@ public abstract class ElevatorIO {
         cfg.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
         cfg.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
 
-        StatusCode elevatorStatus = StatusCode.StatusCodeNotInitialized;
-        for(int i = 0; i < 5; ++i) {
-            elevatorStatus = elevator.getConfigurator().apply(cfg);
-        if (elevatorStatus.isOK()) break;}
-        if (!elevatorStatus.isOK()) {
-            System.out.println("Could not configure device. Error: " + elevatorStatus.toString());
-        }
-
-        StatusCode elevatorStatus2 = StatusCode.StatusCodeNotInitialized;
-        for(int i = 0; i < 5; ++i) {
-            elevatorStatus2 = elevator2.getConfigurator().apply(cfg);
-        if (elevatorStatus2.isOK()) break;}
-        if (!elevatorStatus2.isOK()) {
-            System.out.println("Could not configure device. Error: " + elevatorStatus.toString());
-        }
+        applyConfig();
 
         elevatorPosition = elevator.getPosition();
         elevatorVelocity = elevator.getVelocity();
@@ -183,6 +169,24 @@ public abstract class ElevatorIO {
 
         stats.elevatorCancoderPosition = elevatorCancoderPosition.getValueAsDouble();
         stats.elevatorCancoderVelocity = elevatorCancoderVelocity.getValueAsDouble();
+    }
+
+    public void applyConfig(){
+        StatusCode elevatorStatus = StatusCode.StatusCodeNotInitialized;
+        for(int i = 0; i < 5; ++i) {
+            elevatorStatus = elevator.getConfigurator().apply(cfg);
+        if (elevatorStatus.isOK()) break;}
+        if (!elevatorStatus.isOK()) {
+            System.out.println("Could not configure device. Error: " + elevatorStatus.toString());
+        }
+
+        StatusCode elevatorStatus2 = StatusCode.StatusCodeNotInitialized;
+        for(int i = 0; i < 5; ++i) {
+            elevatorStatus2 = elevator2.getConfigurator().apply(cfg);
+        if (elevatorStatus2.isOK()) break;}
+        if (!elevatorStatus2.isOK()) {
+            System.out.println("Could not configure device. Error: " + elevatorStatus.toString());
+        }
     }
 
 

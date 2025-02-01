@@ -3,6 +3,7 @@ package frc.robot.subsystems.GameSpec.Arm;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -49,6 +50,7 @@ public abstract class ArmIO {
     private final StatusSignal<AngularVelocity> armCancoderVelocity;
 
     public TalonFXConfiguration cfg;
+    public CANcoderConfiguration encoderCfg;
 
     /** Constructor to initialize the TalonFX */
     public ArmIO() {
@@ -57,6 +59,7 @@ public abstract class ArmIO {
 
         armMagic = new MotionMagicVoltage(0);
         cfg = new TalonFXConfiguration();
+        encoderCfg = new CANcoderConfiguration();
 
         MotionMagicConfigs mm = cfg.MotionMagic;
         mm.MotionMagicCruiseVelocity = ArmConstants.armGains.CruiseVelocity(); //rps
@@ -72,7 +75,7 @@ public abstract class ArmIO {
 
         cfg.Feedback.FeedbackRemoteSensorID = armCancoder.getDeviceID();
         cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-        cfg.Feedback.SensorToMechanismRatio = 1; //changes what the cancoder and fx encoder ratio is
+        cfg.Feedback.SensorToMechanismRatio = 1/360.0; //changes what the cancoder and fx encoder ratio is
         cfg.Feedback.RotorToSensorRatio = 1; //12.8;
         cfg.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         cfg.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
@@ -80,13 +83,7 @@ public abstract class ArmIO {
         cfg.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
         cfg.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
 
-        StatusCode armStatus = StatusCode.StatusCodeNotInitialized;
-        for(int i = 0; i < 5; ++i) {
-            armStatus = arm.getConfigurator().apply(cfg);
-        if (armStatus.isOK()) break;}
-        if (!armStatus.isOK()) {
-            System.out.println("Could not configure device. Error: " + armStatus.toString());
-        }
+        setConfig();
 
         armPosition = arm.getPosition();
         armVelocity = arm.getVelocity();
@@ -130,6 +127,25 @@ public abstract class ArmIO {
         stats.armCancoderVelocity = armCancoderVelocity.getValueAsDouble();
     }
 
+
+    public void setConfig(){
+        StatusCode armStatus = StatusCode.StatusCodeNotInitialized;
+        for(int i = 0; i < 5; ++i) {
+            armStatus = arm.getConfigurator().apply(cfg);
+        if (armStatus.isOK()) break;}
+        if (!armStatus.isOK()) {
+            System.out.println("Could not configure device. Error: " + armStatus.toString());
+        }
+
+        StatusCode encoderStatus = StatusCode.StatusCodeNotInitialized;
+        for(int i = 0; i < 5; ++i) {
+            encoderStatus = armCancoder.getConfigurator().apply(encoderCfg);
+        if (encoderStatus.isOK()) break;}
+        if (!encoderStatus.isOK()) {
+            System.out.println("Could not configure device. Error: " + encoderStatus.toString());
+        }
+
+    }
 
     /** Apply motion magic control mode */
     public void setArmMotorControl(double commandedPosition) {

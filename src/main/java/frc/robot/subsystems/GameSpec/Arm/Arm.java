@@ -52,7 +52,7 @@ public class Arm extends SubsystemBase {
 
   private void UpdateTelemetry() {
     armVelocity.setDouble(stats.armVelocity);
-    armPosition.setDouble(stats.armPosition);
+    armPosition.setDouble(io.arm.getPosition().getValueAsDouble());
     armSupplyCurrent.setDouble(stats.SupplyCurrentAmps);
     armStatorCurrent.setDouble(stats.TorqueCurrentAmps);
     armTemp.setDouble(stats.TempCelsius);
