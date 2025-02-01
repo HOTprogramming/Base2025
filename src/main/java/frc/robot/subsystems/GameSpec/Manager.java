@@ -68,6 +68,7 @@ public class Manager extends SubsystemBase{
 
     public Command goToL3(){
       return Commands.sequence(
+        elevatorSubsystem.goToL1(),
         armSubsystem.goToL3()
       );
     }

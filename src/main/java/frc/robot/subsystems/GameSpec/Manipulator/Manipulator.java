@@ -98,15 +98,15 @@ public class Manipulator extends SubsystemBase {
 
     public Command shoot() {
         return runOnce(() -> {
-            coralCommandedSpeed.setDouble(2);
-            io.setCoralSpinMotorControl(2);
+            coralCommandedSpeed.setDouble(5);
+            io.setCoralSpinMotorControl(5);
         });
     }
 
     public Command intake() {
         return runOnce(() -> {
-            coralCommandedSpeed.setDouble(-2);
-            io.setCoralSpinMotorControl(-2);
+            coralCommandedSpeed.setDouble(-5);
+            io.setCoralSpinMotorControl(-5);
         });    
     }
 
