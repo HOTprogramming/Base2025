@@ -4,7 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.hal.simulation.RoboRioDataJNI;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -13,13 +18,29 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
 
+  private ShuffleboardTab tab;
+
+  private GenericEntry matchTimeEntry;
+  private GenericEntry voltsEntry;
+  private GenericEntry ampsEntry;
+
+
   public Robot() {
     m_robotContainer = new RobotContainer();
+
+    tab = Shuffleboard.getTab("tab");
+    matchTimeEntry = tab.add("Match time",0.0).getEntry();
+    voltsEntry = tab.add("Volts",0.0).getEntry();
+    ampsEntry = tab.add("Amps",0.0).getEntry();
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+
+    matchTimeEntry.setDouble(DriverStation.getMatchTime());
+    voltsEntry.setDouble(RoboRioDataJNI.getVInVoltage());
+    ampsEntry.setDouble(RoboRioDataJNI.getVInCurrent());
   }
 
   @Override

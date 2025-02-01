@@ -7,11 +7,15 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.events.EventTrigger;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -23,6 +27,9 @@ import frc.robot.subsystems.Drivetrain.DriveKraken;
 
 
 public class RobotContainer {
+
+  private SendableChooser<String> chooser = new SendableChooser<>();
+
   private Drive drivetrain;
   private Camera cameraSubsystem;
   private Manager gamespecManager;
@@ -41,6 +48,11 @@ public class RobotContainer {
     }
 
     gamespecManager = new Manager();
+
+    chooser.setDefaultOption("Auto", "Auto");
+    // chooser.addOption("Complex Auto", "m_complexAuto");
+    
+    SmartDashboard.putData(chooser);
 
     configureBindings();
   }
@@ -113,11 +125,10 @@ public class RobotContainer {
         }
       ));
 
-      // driver.povLeft().onTrue(drivetrain.run(() -> drivetrain.alignReefLeft()));
-      // driver.povRight().onTrue(drivetrain.run(() -> drivetrain.alignReefRight()));
-      // driver.povDown().onTrue(drivetrain.run(() -> drivetrain.chaseObject()));    
-      driver.povLeft().onTrue(drivetrain.run(() -> drivetrain.chaseObjectLeft()));  
-      driver.povRight().onTrue(drivetrain.run(() -> drivetrain.chaseObjectRight()));  
+
+      driver.povUp().onTrue(drivetrain.run(() -> drivetrain.alignReef(0)));    
+      driver.povLeft().onTrue(drivetrain.run(() -> drivetrain.alignReef(1)));  
+      driver.povRight().onTrue(drivetrain.run(() -> drivetrain.alignReef(-1))); 
 
       driver.start().onTrue(drivetrain.resetPidgeon());
 
@@ -133,11 +144,17 @@ public class RobotContainer {
       //      operator.leftTrigger().and(operator.y())
       //      .whileTrue(gamespecManager.L3());
 
+      NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
+      NamedCommands.registerCommand("R_OTF", drivetrain.runOnTheFly());
+
+
+      new EventTrigger("OTF").onTrue(Commands.runOnce(() -> drivetrain.generateOnTheFly()));
   }
 
 
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("Auto");
+    String autoName = chooser.getSelected();
+    return new PathPlannerAuto(autoName).finallyDo(() -> System.out.println("ENDED AUTO COMMAND"));
   }
 
 }
