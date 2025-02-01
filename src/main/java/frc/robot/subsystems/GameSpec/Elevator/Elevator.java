@@ -93,6 +93,10 @@ public class Elevator extends SubsystemBase {
     return elevatorCommand(ElevatorConstants.L1Height);
   }
 
+  public Command L4Score(){
+    return elevatorCommand(ElevatorConstants.L4ScoreHeight);
+  }
+
   public Command goToFeeder(){
     return elevatorCommand(ElevatorConstants.FeederHeight);
   }

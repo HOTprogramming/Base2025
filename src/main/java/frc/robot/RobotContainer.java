@@ -145,6 +145,7 @@ public class RobotContainer {
       operator.a().onTrue(gamespecManager.goToPackage());
       operator.b().onTrue(gamespecManager.goToL4());
       operator.x().onTrue(gamespecManager.goToL3());
+      operator.y().onTrue(gamespecManager.L4Score());
       operator.leftTrigger().whileTrue(gamespecManager.coralIntake());
       operator.rightTrigger().whileTrue(gamespecManager.coralShoot());
 

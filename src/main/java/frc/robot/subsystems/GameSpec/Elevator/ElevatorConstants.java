@@ -16,6 +16,7 @@ public class ElevatorConstants {
     public static final double L2Height = 23;
     public static final double L1Height = 20;
     public static final double FeederHeight = 1.25;
+    public static final double L4ScoreHeight = 40.0;
 
     public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
 }
