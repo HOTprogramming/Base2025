@@ -34,18 +34,22 @@ public class CoralIOSim extends CoralIO {
   SingleJointedArmSim coralWristSim;
   DCMotorSim coralSim;
 
+  private static Mechanism2d mech = new Mechanism2d(1, 1);
+  private static MechanismRoot2d root = mech.getRoot("Coral", .5, .5);
+  private static MechanismLigament2d coralLig;
+
   public CoralIOSim(){
     coralSimState = coral.getSimState();
     coralWristSimState = coralWrist.getSimState();
     encoderSimState = coralCancoder.getSimState();
 
     coralWristSim = new SingleJointedArmSim(
-      DCMotor.getKrakenX60(1),
+      DCMotor.getBag(1),
       10,
       SingleJointedArmSim.estimateMOI(Units.inchesToMeters(1), 1),
       Units.inchesToMeters(1),
-      Units.degreesToRadians(-90),
-      Units.degreesToRadians(90),
+      Units.degreesToRadians(-180),
+      Units.degreesToRadians(180),
       false,
       Units.degreesToRadians(0)
     );
@@ -57,6 +61,13 @@ public class CoralIOSim extends CoralIO {
       DCMotor.getKrakenX60(1),
       ms
       );
+
+      coralLig =
+      root.append(
+          new MechanismLigament2d("Elevator", coralWristSim.getAngleRads(), 90, 10, new Color8Bit(235, 137, 52)));
+      coralLig.setLength(.5);
+
+      SmartDashboard.putData("Coral Sim", mech);
   }
 
   @Override
@@ -75,5 +86,6 @@ public class CoralIOSim extends CoralIO {
       coralSimState.setRotorVelocity(coralSim.getAngularVelocity());
       // encoderSimState.setVelocity(armSim.getVelocityRadPerSec());
 
+      coralLig.setAngle(coralWrist.getPosition().getValueAsDouble());
   }
 }

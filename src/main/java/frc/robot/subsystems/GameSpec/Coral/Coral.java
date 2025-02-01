@@ -61,7 +61,7 @@ public class Coral extends SubsystemBase {
             () -> this.coralCommandedPos.setDouble(position),
             () -> io.setCoralAngleMotorControl(position),
             interrupted -> io.setCoralAngleMotorControl(position), 
-            () -> false,
+            () -> true,
             this
         );
     }

@@ -13,7 +13,7 @@ public class CoralConstants {
     public static final int coralBeamBreakID = 0;
     public static final double kReduction = (1.0 / 2.0);
     public static final double kMaxAccelerationRpmPerSec = 9000.0; 
-    public static final MMGains coralWristGains = new MMGains(200, 100, 200, 15, 0.0, 0.0, 0, 0);
+    public static final MMGains coralWristGains = new MMGains(200, 100, 200, 1, 0.0, 0.0, 0, 0);
     public static final VVGains coralSpinGains = new VVGains(10.0, 0.0, 0.0, 0, 0);
 
     public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
