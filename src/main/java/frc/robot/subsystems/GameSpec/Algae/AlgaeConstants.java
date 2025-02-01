@@ -2,9 +2,9 @@ package frc.robot.subsystems.GameSpec.Algae;
 
 public class AlgaeConstants {
     
-    public static final int algaeMotorID = 37;
-    public static final int algaeMotor2ID = 38;
-    public static final int algaeEncoderID = 39;
+    public static final int algaeArmID = 17;
+    public static final int algaeRollerID = 25;
+    public static final int algaeEncoderID = 52;
     public static final double kReduction = (1.0 / 2.0);
     public static final double kMaxAccelerationRpmPerSec = 9000.0; 
     public static final MMGains algaeGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);

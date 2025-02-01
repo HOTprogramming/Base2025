@@ -23,9 +23,13 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.wpilibj.DigitalInput;
+import frc.robot.subsystems.GameSpec.Coral.Coral;
 import frc.robot.subsystems.GameSpec.Coral.CoralConstants;
+import frc.robot.subsystems.GameSpec.Coral.CoralIOReal;
 
 public abstract class AlgaeIO {
+
+    private Coral coralSubsystem;
 
     // Protected TalonFX object accessible to subclasses
     protected TalonFXS algaeArm;
@@ -57,6 +61,8 @@ public abstract class AlgaeIO {
         public double algaeCancoderPosition = 0.0;
         public double algaeCancoderVelocity = 0.0;
 
+        public boolean candiPWM2;
+
     }
 
     protected static AlgaeIOStats stats = new AlgaeIOStats();
@@ -75,13 +81,16 @@ public abstract class AlgaeIO {
 
     private final StatusSignal<Angle> algaeCancoderPosition;
     private final StatusSignal<AngularVelocity> algaeCancoderVelocity;
+    private final StatusSignal<Boolean> CANdiPWM2;
 
     /** Constructor to initialize the TalonFX */
     public AlgaeIO() {
-        this.algaeArm = new TalonFXS(AlgaeConstants.algaeMotorID, "CamBot");
-        this.algaeRoller = new TalonFX(AlgaeConstants.algaeMotor2ID, "CamBot");
+
+        coralSubsystem = new Coral(new CoralIOReal());
+
+        this.algaeArm = new TalonFXS(AlgaeConstants.algaeArmID, "CamBot");
+        this.algaeRoller = new TalonFX(AlgaeConstants.algaeRollerID, "CamBot");
         this.algaeBeamBreak = new DigitalInput(0);
-        this.algaeCandi = new CANdi(0);
         this.algaeCancoder = new CANcoder(AlgaeConstants.algaeEncoderID, "CamBot");
 
         algaeMagic = new MotionMagicVoltage(0);
@@ -143,6 +152,8 @@ public abstract class AlgaeIO {
 
         algaeCancoderPosition = algaeCancoder.getPosition();
         algaeCancoderVelocity = algaeCancoder.getVelocity();
+
+        CANdiPWM2 = coralSubsystem.coralCandi.getS2Closed();
     
         BaseStatusSignal.setUpdateFrequencyForAll(
             100.0,

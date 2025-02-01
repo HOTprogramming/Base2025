@@ -33,7 +33,7 @@ public class Manager extends SubsystemBase{
     private Arm armSubsystem;
     private Elevator elevatorSubsystem;
     private Coral coralSubsystem;
-    // private Algae algaeSubsystem;
+    private Algae algaeSubsystem;
     private Climber climberSubsystem;
     private Intake intakeSubsystem;
     
@@ -42,7 +42,7 @@ public class Manager extends SubsystemBase{
         // elevatorSubsystem = new Elevator(new ElevatorIOReal());   
         // armSubsystem = new Arm(new ArmIOReal());
         coralSubsystem = new Coral(new CoralIOReal());
-        // algaeSubsystem = new Algae(new AlgaeIOReal());
+        algaeSubsystem = new Algae(new AlgaeIOReal());
         // climberSubsystem = new Climber(new ClimberIOReal());
         // intakeSubsystem = new Intake(new IntakeIOReal());
       } else {

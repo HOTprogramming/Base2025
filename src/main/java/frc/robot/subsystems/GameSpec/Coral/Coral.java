@@ -38,7 +38,7 @@ public class Coral extends SubsystemBase {
         coralTemp = this.coralShuffleboard.add("Coral Temp", 0.0).getEntry();
         coralCommandedPos = this.coralShuffleboard.add("Coral Commanded Position", 0.0).getEntry();
         coralCommandedSpeed = this.coralShuffleboard.add("Coral Commanded Speed", 0.0).getEntry();
-        CANdiPWM1 = this.coralShuffleboard.add("CANdi PWM 1",false).getEntry();//false when there is no object, true when it detects object
+        CANdiPWM1 = this.coralShuffleboard.add("CANdi Coral Beambreak",false).getEntry();//false when there is no object, true when it detects object
     }
 
     @Override
@@ -48,6 +48,8 @@ public class Coral extends SubsystemBase {
         io.updateStats();
           
         UpdateTelemetry();
+
+        io.coralBeamBreakCandiForAlgae();
     }
 
     private void UpdateTelemetry() {
