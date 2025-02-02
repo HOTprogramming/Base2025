@@ -2,7 +2,7 @@ package frc.robot.subsystems.GameSpec.Manipulator;
 
 public class ManipulatorConstants {
 
-    
+    // CORAL AND ALGEA IDS ARE WRONG
     public static final int coralMotorID = 15;//flipped
     public static final int coralEncoderID = 45;
     public static final int coralCandiID = 53;//sweetbox 6
