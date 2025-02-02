@@ -51,8 +51,8 @@ public abstract class ArmIO {
     private final StatusSignal<Angle> armCancoderPosition;
     private final StatusSignal<AngularVelocity> armCancoderVelocity;
 
-    private TalonFXConfiguration cfg;
-    private CANcoderConfiguration encoderCfg;
+    public TalonFXConfiguration cfg;
+    public CANcoderConfiguration encoderCfg;
 
     /** Constructor to initialize the TalonFX */
     public ArmIO() {

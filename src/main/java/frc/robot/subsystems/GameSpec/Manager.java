@@ -24,6 +24,7 @@ import frc.robot.subsystems.GameSpec.Intake.IntakeIOReal;
 import frc.robot.subsystems.GameSpec.Intake.IntakeIOSim;
 import frc.robot.subsystems.GameSpec.Manipulator.Manipulator;
 import frc.robot.subsystems.GameSpec.Manipulator.ManipulatorIOReal;
+import frc.robot.subsystems.GameSpec.Manipulator.ManipulatorIOSim;
 
 public class Manager extends SubsystemBase{
     private Arm armSubsystem;
@@ -42,6 +43,7 @@ public class Manager extends SubsystemBase{
       } else {
         elevatorSubsystem = new Elevator(new ElevatorIOSim());
         armSubsystem = new Arm(new ArmIOSim());
+        manipulatorSubsystem = new Manipulator(new ManipulatorIOSim());
       }
     }
 
