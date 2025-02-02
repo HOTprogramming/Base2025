@@ -47,8 +47,8 @@ public class Manager extends SubsystemBase{
 
     public Command goToPackage(){
       return Commands.sequence(
-        armSubsystem.goToPackage(),
-        elevatorSubsystem.goToPackage()
+        elevatorSubsystem.goToPackage(),
+        armSubsystem.goToPackage()
       );
     }
 
@@ -68,7 +68,7 @@ public class Manager extends SubsystemBase{
 
     public Command goToL3(){
       return Commands.sequence(
-        elevatorSubsystem.goToL3(),
+        elevatorSubsystem.goToL1(),
         armSubsystem.goToL3()
       );
     }
@@ -77,6 +77,13 @@ public class Manager extends SubsystemBase{
       return Commands.sequence(
         elevatorSubsystem.goToL4(),
         armSubsystem.goToL4()
+      );
+    }
+
+    public Command L4Score(){
+      return Commands.sequence(
+        armSubsystem.L4Score(),
+        elevatorSubsystem.L4Score()
       );
     }
 

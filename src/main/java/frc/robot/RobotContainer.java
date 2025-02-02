@@ -51,16 +51,9 @@ public class RobotContainer {
 
     chooser.setDefaultOption("Auto", "Auto");
     // chooser.addOption("Complex Auto", "m_complexAuto");
-    
-    NamedCommands.registerCommand("L1", gamespecManager.goToL1());
-    NamedCommands.registerCommand("L2", gamespecManager.goToL2());
-    NamedCommands.registerCommand("L3", gamespecManager.goToL3());
-    NamedCommands.registerCommand("L4", gamespecManager.goToL4());
-    NamedCommands.registerCommand("Package", gamespecManager.goToPackage());
-    NamedCommands.registerCommand("Feeder", gamespecManager.goToFeeder());
-    NamedCommands.registerCommand("Coral Intake", gamespecManager.coralIntake());
-    NamedCommands.registerCommand("Coral Shoot", gamespecManager.coralShoot());
-    NamedCommands.registerCommand("Coral Zero", gamespecManager.coralZero());
+    // NamedCommands.registerCommand("Coral Intake", gamespecManager.coralIntake());
+    // NamedCommands.registerCommand("Coral Shoot", gamespecManager.coralShoot());
+    // NamedCommands.registerCommand("Coral Zero", gamespecManager.coralZero());
 
     SmartDashboard.putData(chooser);
 
@@ -142,15 +135,19 @@ public class RobotContainer {
 
       driver.start().onTrue(drivetrain.resetPidgeon());
 
-      operator.a().onTrue(NamedCommands.getCommand("L1"));
-      operator.b().onTrue(NamedCommands.getCommand("L2"));
-      operator.x().onTrue(NamedCommands.getCommand("L3"));
-      operator.y().onTrue(NamedCommands.getCommand("L4"));
-      operator.leftBumper().onTrue(NamedCommands.getCommand("Package"));
-      operator.rightBumper().onTrue(NamedCommands.getCommand("Feeder"));
-      operator.leftTrigger().whileTrue(NamedCommands.getCommand("Coral Intake"));
-      operator.rightTrigger().whileTrue(NamedCommands.getCommand("Coral Shoot"));
-      operator.leftTrigger().or(operator.rightTrigger()).onFalse(NamedCommands.getCommand("Coral Zero"));
+      // operator.a().onTrue(NamedCommands.getCommand("L1"));
+      // operator.b().onTrue(NamedCommands.getCommand("L2"));
+      // operator.x().onTrue(NamedCommands.getCommand("L3"));
+      // operator.y().onTrue(NamedCommands.getCommand("L4"));
+      // operator.leftBumper().onTrue(NamedCommands.getCommand("Package"));
+      // operator.rightBumper().onTrue(NamedCommands.getCommand("Feeder"));
+      operator.leftTrigger().or(operator.rightTrigger()).onFalse(gamespecManager.coralZero());
+      operator.a().onTrue(gamespecManager.goToPackage());
+      operator.b().onTrue(gamespecManager.goToL4());
+      operator.x().onTrue(gamespecManager.goToL3());
+      operator.y().onTrue(gamespecManager.L4Score());
+      operator.leftTrigger().whileTrue(gamespecManager.coralIntake());
+      operator.rightTrigger().whileTrue(gamespecManager.coralShoot());
 
       NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
       NamedCommands.registerCommand("R_OTF", drivetrain.runOnTheFly());
