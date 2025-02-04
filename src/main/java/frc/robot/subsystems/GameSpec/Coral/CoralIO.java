@@ -177,7 +177,6 @@ public abstract class CoralIO {
         }
     }
 
-
     /** Apply motion magic control mode */
     public void setCoralSpinMotorControl(double commandedVelocity) {
         coral.setControl(coralSpinController.withVelocity(commandedVelocity).withSlot(0));
