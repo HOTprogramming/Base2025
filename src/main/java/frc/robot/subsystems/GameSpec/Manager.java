@@ -32,7 +32,7 @@ public class Manager extends SubsystemBase{
     private Climber climberSubsystem;
     private Intake intakeSubsystem;
     private Manipulator manipulatorSubsystem;
-    
+  
     public Manager() {
       if (!Utils.isSimulation()){
         elevatorSubsystem = new Elevator(new ElevatorIOReal());   
@@ -44,6 +44,7 @@ public class Manager extends SubsystemBase{
         elevatorSubsystem = new Elevator(new ElevatorIOSim());
         armSubsystem = new Arm(new ArmIOSim());
         manipulatorSubsystem = new Manipulator(new ManipulatorIOSim());
+        climberSubsystem = new Climber(new ClimberIOSim());
       }
     }
 
@@ -107,5 +108,15 @@ public class Manager extends SubsystemBase{
     public Command coralZero(){
       return manipulatorSubsystem.zero();
     }
+    public Command Unwind(){
+      return climberSubsystem.Unwind();
+    }
+    
+    public Command Pull(){
+      return climberSubsystem.Pull();
+    } 
+    public Command ServoClamp(){
+      return climberSubsystem.ServoClamp();
+    } 
 }
 

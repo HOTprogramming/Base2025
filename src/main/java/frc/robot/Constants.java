@@ -15,9 +15,9 @@
    */
   public final class Constants {
     public static final double loopPeriodSecs = 0.02;
-    private static RobotType robotType = RobotType.COMPBOT;
+    private static RobotType robotType = RobotType.SIMBOT;
     public static final boolean tuningMode = false;
-    public static final String canName = "rio";
+    public static final String canName = "Sim";
 
     public static final double brownoutVoltage = 5.5;
 

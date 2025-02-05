@@ -28,19 +28,22 @@ public class Climber extends SubsystemBase {
   private GenericEntry climberStatorCurrent;
   private GenericEntry climberTemp;
   private GenericEntry climberCommandedPos;
-  
+  private GenericEntry servoVelocity;
+  private GenericEntry servoClampCommandedPos;
   public Climber(ClimberIO io) {
     this.io = io; 
     this.stats = ClimberIO.stats;
 
     this.climberShuffleboard = Shuffleboard.getTab("climber");
-
+    
     climberVelocity = this.climberShuffleboard.add("climber RPM", 0.0).getEntry();
-    climberPosition = this.climberShuffleboard.add("climber Position", 0.0).getEntry();;
+    climberPosition = this.climberShuffleboard.add("climber Position", 0.0).getEntry();
     climberSupplyCurrent = this.climberShuffleboard.add("climber Supply Current", 0.0).getEntry();
     climberStatorCurrent = this.climberShuffleboard.add("climber Stator Current", 0.0).getEntry();
     climberTemp = this.climberShuffleboard.add("climber Temp", 0.0).getEntry();
     climberCommandedPos = this.climberShuffleboard.add("climber Commanded Position", 0.0).getEntry();
+    servoVelocity = this.climberShuffleboard.add("servo Velocity", 0.0).getEntry();
+    servoClampCommandedPos = this.climberShuffleboard.add("servo Commanded Position", 0.0).getEntry();
   }
 
 
@@ -59,8 +62,19 @@ public class Climber extends SubsystemBase {
     climberSupplyCurrent.setDouble(stats.SupplyCurrentAmps);
     climberStatorCurrent.setDouble(stats.TorqueCurrentAmps);
     climberTemp.setDouble(stats.TempCelsius);
+    servoVelocity.setDouble(stats.climberVelocity);
+    servoClampCommandedPos.setDouble(stats.servoVelocity);
   }
-
+  // public boolean climberPosition(double desiredPos, double threshHold){
+  //   if(stats.climberPosition > desiredPos - Math.abs(threshHold)){
+  //     System.out.println(true);
+  //     return true;
+  //   }
+  //   else{
+  //     System.out.println(false);
+  //     return false;
+  //   }
+  // }
   public Command runToPosition(double position){
     return run(() -> {
         this.climberCommandedPos.setDouble(position);
@@ -76,7 +90,20 @@ public class Climber extends SubsystemBase {
       () -> checkRange(.1),
       this);
   }
-
+  public Command runToPositionClimber(double position){
+    return run(() -> {
+        this.climberCommandedPos.setDouble(position);
+        io.setClimberMotorControl(position);
+    });
+  }
+  private FunctionalCommand ServoClampCommand(double position){
+    return new FunctionalCommand(
+      () -> this.servoClampCommandedPos.setDouble(position),
+      () -> io.setServoMotorControl(position),
+      interrupted -> io.setServoMotorControl(position), 
+      () -> checkRange(.1),
+      this);
+  }
 
   public Command stop(){
     return run(() -> {
@@ -89,7 +116,20 @@ public class Climber extends SubsystemBase {
       io.setClimberMotorControl(climberCommandedPos.getDouble(0));
     });
   }
- 
+    public Command servohold(){
+      return run(() -> {
+        io.setServoMotorControl(servoClampCommandedPos.getDouble(0));
+      });
+  }
+  public Command Unwind(){
+    return climberCommand(ClimberConstants.UnspoolDistance);
+  }
+  public Command Pull(){
+    return climberCommand(ClimberConstants.SpoolDistance);
+  }
+   public Command ServoClamp(){
+      return ServoClampCommand (ClimberConstants.ServoClampDistance);
+  }
   public boolean checkRange(double deadband){
     return (stats.climberPosition >= climberCommandedPos.getDouble(0) - deadband) && 
            (stats.climberPosition <= climberCommandedPos.getDouble(0) + deadband);

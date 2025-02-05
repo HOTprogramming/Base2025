@@ -12,7 +12,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -21,6 +21,7 @@ import edu.wpi.first.units.measure.Temperature;
 public abstract class ClimberIO {
 
     // Protected TalonFX object accessible to subclasses
+    protected Servo climberServo;
     protected TalonFX climber;
     protected TalonFX climber2;
     protected MotionMagicVoltage climberMagic;
@@ -43,6 +44,7 @@ public abstract class ClimberIO {
         public double SupplyCurrentAmps2 = 0.0;
         public double TorqueCurrentAmps2 = 0.0;
         public double TempCelsius2 = 0.0;
+        public double servoVelocity = 0.0;
     }
 
     protected static ClimberIOStats stats = new ClimberIOStats();
@@ -58,12 +60,13 @@ public abstract class ClimberIO {
     private final StatusSignal<Current> SupplyCurrent2;
     private final StatusSignal<Current> TorqueCurrent2;
     private final StatusSignal<Temperature> TempCelsius2;
+    private final StatusSignal<AngularVelocity> servoVelocity;
 
     /** Constructor to initialize the TalonFX */
     public ClimberIO() {
         this.climber = new TalonFX(ClimberConstants.climberMotorID, "robot");
         this.climber2 = new TalonFX(ClimberConstants.climberMotor2ID, "robot");
-
+        this.climberServo = new Servo(ClimberConstants.ServoID);
         climberMagic = new MotionMagicVoltage(0);
         TalonFXConfiguration cfg = new TalonFXConfiguration();
 
@@ -109,7 +112,7 @@ public abstract class ClimberIO {
         SupplyCurrent = climber.getSupplyCurrent();
         TorqueCurrent = climber.getTorqueCurrent();
         TempCelsius = climber.getDeviceTemp();
-
+        servoVelocity = climber.getVelocity();
         climberPosition2 = climber2.getPosition();
         climberVelocity2 = climber2.getVelocity();
         SupplyCurrent2 = climber2.getSupplyCurrent();
@@ -127,7 +130,8 @@ public abstract class ClimberIO {
             climberVelocity2,
             SupplyCurrent2,
             TorqueCurrent2,
-            TempCelsius2
+            TempCelsius2,
+            servoVelocity
           );
     }
 
@@ -137,6 +141,7 @@ public abstract class ClimberIO {
     public void updateStats() {
         stats.climberMotorConnected =
         BaseStatusSignal.refreshAll(
+            servoVelocity,
           climberPosition,
           climberVelocity,
           SupplyCurrent,
@@ -160,15 +165,25 @@ public abstract class ClimberIO {
         stats.SupplyCurrentAmps2 = SupplyCurrent2.getValueAsDouble();
         stats.TorqueCurrentAmps2 = TorqueCurrent2.getValueAsDouble();
         stats.TempCelsius2 = TempCelsius2.getValueAsDouble();
+        stats.servoVelocity = servoVelocity.getValueAsDouble();
+        
     }
 
 
     /** Apply motion magic control mode */
     public void setClimberMotorControl(double commandedPosition) {
-        climber.setControl(climberMagic.withPosition(commandedPosition).withSlot(0));
+      climber.setVoltage(6);
+        // climber.setControl(climberMagic.withPosition(commandedPosition).withSlot(0));
         climber2.setControl(new Follower(climber.getDeviceID(), false));
     }
-
+    public void setNegClimberMotorControl(double commandedPosition) {
+        climber.setVoltage(-6);
+        // climber.setControl(climberMagic.withPosition(commandedPosition).withSlot(0));
+        climber2.setControl(new Follower(climber.getDeviceID(), false));
+    }
+    public void setServoMotorControl(double commandedPosition) {
+        climberServo.set(commandedPosition);
+    }
     /** Stop motor */
     public void stop() {
         climber.setVoltage(0);
