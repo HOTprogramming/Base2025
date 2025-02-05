@@ -72,9 +72,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("Coral Shoot", gamespecManager.coralShoot());
     NamedCommands.registerCommand("Coral Zero", gamespecManager.coralZero());
 
-    SmartDashboard.putData(chooser);
 
     mode = Mode.coral;
+    SmartDashboard.putString("operator mode", mode.toString());
+
+    SmartDashboard.putData(chooser);
 
     configureBindings();
   }
@@ -136,7 +138,7 @@ public class RobotContainer {
       driver.start().onTrue(drivetrain.resetPidgeon());
 
       operator.leftBumper().onTrue(gamespecManager.runOnce(() -> mode = Mode.coral));
-      operator.rightBumper().onTrue(gamespecManager.runOnce(() -> mode = Mode.algae));      
+      operator.rightBumper().onTrue(gamespecManager.runOnce(() -> mode = Mode.algae));
 
       operator.start().onTrue(gamespecManager.runOnce(() -> mode = Mode.climb));
       operator.back().onTrue(gamespecManager.runOnce(() -> mode = Mode.climb));
@@ -178,7 +180,6 @@ public class RobotContainer {
 
         //      operator.leftTrigger().and(operator.y())
       //      .whileTrue(gamespecManager.L3());
-
 
   public Command getAutonomousCommand() {
     String autoName = chooser.getSelected();
