@@ -3,6 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot;
 
+import java.util.Map;
+
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -34,6 +36,14 @@ public class RobotContainer {
   private Camera cameraSubsystem;
   private Manager gamespecManager;
 
+  private enum Mode {
+    coral,
+    algae,
+    climb
+  }
+
+  private Mode mode;
+
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
 
@@ -64,6 +74,8 @@ public class RobotContainer {
 
     SmartDashboard.putData(chooser);
 
+    mode = Mode.coral;
+
     configureBindings();
   }
 
@@ -77,19 +89,8 @@ public class RobotContainer {
           }
       ));    
 
-      driver.rightBumper().whileTrue
-      (drivetrain.run(() -> {
-        drivetrain.robotCentricTeleopDrive(
-          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
-          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
-          Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
-        }
-      ));
-
       driver.axisLessThan(4, -0.15)
         .or(driver.axisGreaterThan(4, 0.15))
-        .and(driver.rightBumper().negate())
-        .and(driver.leftBumper().negate())
         .and(driver.y().negate())
         .whileTrue
       (drivetrain.run(() -> {
@@ -98,23 +99,14 @@ public class RobotContainer {
           Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
           Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
         }
-      )).onFalse(Commands.race(Commands.waitSeconds(0.2), drivetrain.run(() -> {
+      )).onFalse(Commands.race(Commands.waitSeconds(0.15), drivetrain.run(() -> {
         drivetrain.teleopDrive(
           Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
           Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
           Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
         })));
 
-      driver.povUp().whileTrue
-      (drivetrain.run(() -> {
-        drivetrain.lockRotation(
-          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
-          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
-          Rotation2d.fromDegrees(0));
-        }
-      ));
-
-      driver.leftTrigger().whileTrue
+      driver.a().whileTrue
       (drivetrain.run(() -> {
         drivetrain.lockReef(
           Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
@@ -134,29 +126,54 @@ public class RobotContainer {
           Math.abs(driver.getRightY()) >= 0.1 ? -driver.getRightY() : 0);
         }
       ));
-
-
-      driver.povUp().onTrue(drivetrain.run(() -> drivetrain.alignReef(0)));    
-      driver.povLeft().onTrue(drivetrain.run(() -> drivetrain.alignReef(1)));  
-      driver.povRight().onTrue(drivetrain.run(() -> drivetrain.alignReef(-1))); 
+  
+      driver.leftBumper().onTrue(drivetrain.run(() -> drivetrain.alignReef(1)));  
+      driver.rightBumper().onTrue(drivetrain.run(() -> drivetrain.alignReef(-1))); 
+      driver.b().onTrue(NamedCommands.getCommand("expel"));
+      driver.rightTrigger().onTrue(NamedCommands.getCommand("shoot"));
+      driver.leftTrigger().onTrue(NamedCommands.getCommand("intake"));
 
       driver.start().onTrue(drivetrain.resetPidgeon());
 
-      operator.a().onTrue(NamedCommands.getCommand("L1"));
-      operator.b().onTrue(NamedCommands.getCommand("L2"));
-      operator.x().onTrue(NamedCommands.getCommand("L3"));
-      operator.y().onTrue(NamedCommands.getCommand("L4"));
-      operator.leftBumper().onTrue(NamedCommands.getCommand("Package"));
-      operator.rightBumper().onTrue(NamedCommands.getCommand("Feeder"));
-      operator.leftTrigger().whileTrue(NamedCommands.getCommand("Coral Intake"));
-      operator.rightTrigger().whileTrue(NamedCommands.getCommand("Coral Shoot"));
+      operator.leftBumper().onTrue(gamespecManager.runOnce(() -> mode = Mode.coral));
+      operator.rightBumper().onTrue(gamespecManager.runOnce(() -> mode = Mode.algae));      
+
+      operator.start().onTrue(gamespecManager.runOnce(() -> mode = Mode.climb));
+      operator.back().onTrue(gamespecManager.runOnce(() -> mode = Mode.climb));
+
+      operator.a().and(this::isCoral).onTrue(NamedCommands.getCommand("L2"));
+      operator.b().and(this::isCoral).onTrue(NamedCommands.getCommand("L3"));
+      operator.x().and(this::isCoral).onTrue(NamedCommands.getCommand("L1"));
+      operator.y().and(this::isCoral).onTrue(NamedCommands.getCommand("L4"));
+      operator.leftTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align floor intake")); 
+      operator.rightTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align station intake"));
+
+      operator.a().and(this::isAlgae).onTrue(NamedCommands.getCommand("L2"));
+      operator.b().and(this::isAlgae).onTrue(NamedCommands.getCommand("L3"));
+      operator.x().and(this::isAlgae).onTrue(NamedCommands.getCommand("processer"));
+      operator.y().and(this::isAlgae).onTrue(NamedCommands.getCommand("barge"));
+      operator.leftTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("align floor intake"));
+      operator.rightTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("align processor"));
+
+      operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
+      operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));      
+
       operator.leftTrigger().or(operator.rightTrigger()).onFalse(NamedCommands.getCommand("Coral Zero"));
 
       NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
       NamedCommands.registerCommand("R_OTF", drivetrain.runOnTheFly());
 
-
       new EventTrigger("OTF").onTrue(Commands.runOnce(() -> drivetrain.generateOnTheFly()));
+  }
+
+  public boolean isCoral() {
+    return mode == Mode.coral;
+  }
+  public boolean isAlgae() {
+    return mode == Mode.algae;
+  }
+  public boolean isClimb() {
+    return mode == Mode.climb;
   }
 
         //      operator.leftTrigger().and(operator.y())
