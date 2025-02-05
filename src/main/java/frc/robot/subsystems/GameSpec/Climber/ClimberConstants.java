@@ -2,9 +2,8 @@ package frc.robot.subsystems.GameSpec.Climber;
 
 public class ClimberConstants {
     
-    public static final int climberMotorID = 40;
-    public static final int climberMotor2ID = 41;
-    public static final int climberEncoderID = 42;
+    public static final int climberMotorID = 11;
+    public static final int climberMotor2ID = 12;
     public static final double kReduction = (1.0 / 2.0);
     public static final double kMaxAccelerationRpmPerSec = 9000.0; 
     public static final MMGains climberGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);

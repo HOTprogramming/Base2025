@@ -87,6 +87,10 @@ public class Arm extends SubsystemBase {
     return armCommand(ArmConstants.L4Angle);
   }
 
+  public Command L4Score(){
+    return armCommand(ArmConstants.L4Score);
+  }
+
   public Command goToFeeder(){
     return armCommand(ArmConstants.FeederAngle);
   }

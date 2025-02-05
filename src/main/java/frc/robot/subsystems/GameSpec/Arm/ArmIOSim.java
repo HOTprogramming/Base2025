@@ -1,6 +1,8 @@
 package frc.robot.subsystems.GameSpec.Arm;
 
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
@@ -29,6 +31,12 @@ public class ArmIOSim extends ArmIO {
   public MechanismLigament2d m_arm;
 
   public ArmIOSim(){
+    encoderCfg.MagnetSensor.MagnetOffset = 0;
+    cfg.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    encoderCfg.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+
+    setConfig();
+
     armSimState = arm.getSimState();
     encoderSimState = armCancoder.getSimState();
 
