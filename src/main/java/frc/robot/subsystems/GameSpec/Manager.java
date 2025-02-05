@@ -70,15 +70,19 @@ public class Manager extends SubsystemBase{
 
     public Command goToL3(){
       return Commands.sequence(
-        elevatorSubsystem.goToL1(),
-        armSubsystem.goToL3()
+        // elevatorSubsystem.goToL1(),
+        // armSubsystem.goToL3()
+        elevatorSubsystem.goToPackage(),
+        armSubsystem.positiveTest()
       );
     }
 
     public Command goToL4(){
       return Commands.sequence(
-        elevatorSubsystem.goToL4(),
-        armSubsystem.goToL4()
+        // elevatorSubsystem.goToL4(),
+        // armSubsystem.goToL4()
+        elevatorSubsystem.goToPackage(),
+        armSubsystem.negativeTest()
       );
     }
 

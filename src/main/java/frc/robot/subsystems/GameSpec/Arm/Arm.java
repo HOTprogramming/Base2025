@@ -95,6 +95,14 @@ public class Arm extends SubsystemBase {
     return armCommand(ArmConstants.FeederAngle);
   }
 
+  public Command positiveTest(){
+    return armCommand(80.0);
+  }
+
+  public Command negativeTest(){
+    return armCommand(-80.0);
+  }
+
   public boolean checkRange(double deadband){
     return (stats.armPosition >= armCommandedPos.getDouble(0) - deadband) && 
            (stats.armPosition <= armCommandedPos.getDouble(0) + deadband);
