@@ -50,10 +50,7 @@ public class Manager extends SubsystemBase{
     }
 
     public Command goToPackage(){
-      return Commands.sequence(
-        elevatorSubsystem.goToPackage(),
-        armSubsystem.goToPackage()
-      );
+      return Commands.parallel(elevatorSubsystem.goToPackage().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0))), armSubsystem.goToPackage());
     }
 
     public Command goToL1(){
@@ -82,7 +79,7 @@ public class Manager extends SubsystemBase{
     public Command goToL4(){
       return Commands.parallel(elevatorSubsystem.goToL4().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0))), armSubsystem.goToPackage())
       .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-10.0,2.0)))
-      .andThen(null);
+      .andThen(Commands.parallel(elevatorSubsystem.goToL4(), armSubsystem.goToL4()));
     }
 
     public Command L4Score(){
