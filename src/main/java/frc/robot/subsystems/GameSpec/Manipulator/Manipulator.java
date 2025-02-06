@@ -110,12 +110,16 @@ public class Manipulator extends SubsystemBase {
         });    
     }
 
-    public  Command goHorizontal() {
-        return coralCommand(0);
+    public  Command goHP() {
+        return coralCommand(ManipulatorConstants.coralWristHP);
+    }
+
+    public  Command goScore() {
+        return coralCommand(ManipulatorConstants.coralWristScore);
     }
 
     public  Command goVertical() {
-        return coralCommand(90);
+        return coralCommand(ManipulatorConstants.coralWristVertical);
     }
 
     public Command zero(){

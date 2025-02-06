@@ -17,13 +17,9 @@ public class ManipulatorConstants {
     public static final int algaeEncoderID = 52;
     public static final MMGains algaeGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
     
-    public static final double l4Height = 2;
-    public static final double l3Height = 1.5;
-    public static final double l2Height = 1;
-    public static final double l1Height = .5;
-    public static final double netHeight = 3;
-    public static final double intakeCoralHeight = 1.25;
-    public static final double intakeAlgaeHeight = .75;
+    public static final double coralWristHP = 0;
+    public static final double coralWristScore = 0;
+    public static final double coralWristVertical = 90;
 
     public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
     public record VVGains(double kP, double kI, double kD, double kV, double kS) {} 

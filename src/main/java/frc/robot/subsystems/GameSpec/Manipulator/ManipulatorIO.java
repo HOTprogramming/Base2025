@@ -359,9 +359,9 @@ public abstract class ManipulatorIO {
         algaeRoller.setVoltage(0);
     }
 
-        /** Apply motion magic control mode */
-        public void setAlgaeMotorControl(double commandedPosition) {
-        }
+    /** Apply motion magic control mode */
+    public void setAlgaeMotorControl(double commandedPosition) {
+    }
 
 
     public abstract void periodic(); 

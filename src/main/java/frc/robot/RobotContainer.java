@@ -141,7 +141,7 @@ public class RobotContainer {
       // operator.y().onTrue(NamedCommands.getCommand("L4"));
       // operator.leftBumper().onTrue(NamedCommands.getCommand("Package"));
       // operator.rightBumper().onTrue(NamedCommands.getCommand("Feeder"));
-      operator.leftTrigger().or(operator.rightTrigger()).onFalse(gamespecManager.coralZero());
+      operator.leftTrigger().or(operator.rightTrigger()).onFalse(gamespecManager.coralGoVertical());
       operator.a().onTrue(gamespecManager.goToPackage());
       operator.b().onTrue(gamespecManager.goToL4());
       operator.x().onTrue(gamespecManager.goToL3());
