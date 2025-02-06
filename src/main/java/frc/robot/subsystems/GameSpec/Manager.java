@@ -78,10 +78,8 @@ public class Manager extends SubsystemBase{
     }
 
     public Command goToL4(){
-      return Commands.parallel(
-      elevatorSubsystem.goToL4(),
-      armSubsystem.goToL4().unless(elevatorSubsystem.elevatorPosition(1,1)).
-      );
+      return Commands.parallel(elevatorSubsystem.goToL4().unless(() -> (armSubsystem.armPosition(40, 2.0))), armSubsystem.goToPackage())
+      .unless(() -> (armSubsystem.armPosition(40, 2.0)))
     }
 
     public Command L4Score(){
