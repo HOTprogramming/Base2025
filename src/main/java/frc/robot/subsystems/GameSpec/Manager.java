@@ -78,11 +78,9 @@ public class Manager extends SubsystemBase{
     }
 
     public Command goToL4(){
-      return Commands.sequence(
-        // elevatorSubsystem.goToL4(),
-        // armSubsystem.goToL4()
-        elevatorSubsystem.goToPackage(),
-        armSubsystem.negativeTest()
+      return Commands.parallel(
+      elevatorSubsystem.goToL4(),
+      armSubsystem.goToL4().unless(elevatorSubsystem.elevatorPosition(1,1)).
       );
     }
 

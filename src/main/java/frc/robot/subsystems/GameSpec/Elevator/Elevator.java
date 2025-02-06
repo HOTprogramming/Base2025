@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.GameSpec.Elevator;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -126,6 +128,17 @@ public class Elevator extends SubsystemBase {
   public boolean checkRange(double deadband){
     return (stats.elevatorPosition >= elevatorCommandedPos.getDouble(0) - deadband) && 
            (stats.elevatorPosition <= elevatorCommandedPos.getDouble(0) + deadband);
+  }
+
+  public boolean elevatorPosition(double desiredPos, double threshHold){
+    if(stats.elevatorPosition > desiredPos - Math.abs(threshHold)){
+      System.out.println(true);
+      return true;
+    }
+    else{
+      System.out.println(false);
+      return false;
+    }
   }
 
   @Override
