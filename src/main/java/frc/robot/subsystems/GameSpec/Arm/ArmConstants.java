@@ -31,6 +31,7 @@ public class ArmConstants {
     public static final double L4Angle = -45;
     public static final double L4Score = -55;
     public static final double Horizontal = 90;
+    public static final double Intermediate = 20.0;
 
     
     public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 

@@ -130,7 +130,7 @@ public class Elevator extends SubsystemBase {
            (stats.elevatorPosition <= elevatorCommandedPos.getDouble(0) + deadband);
   }
 
-  public boolean elevatorPosition(double desiredPos, double threshHold){
+  public boolean elevatorGreaterThan(double desiredPos, double threshHold){
     if(stats.elevatorPosition > desiredPos - Math.abs(threshHold)){
       System.out.println(true);
       return true;

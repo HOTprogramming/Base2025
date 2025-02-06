@@ -11,12 +11,14 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.GameSpec.Arm.Arm;
+import frc.robot.subsystems.GameSpec.Arm.ArmConstants;
 import frc.robot.subsystems.GameSpec.Arm.ArmIOReal;
 import frc.robot.subsystems.GameSpec.Arm.ArmIOSim;
 import frc.robot.subsystems.GameSpec.Climber.Climber;
 import frc.robot.subsystems.GameSpec.Climber.ClimberIOReal;
 import frc.robot.subsystems.GameSpec.Climber.ClimberIOSim;
 import frc.robot.subsystems.GameSpec.Elevator.Elevator;
+import frc.robot.subsystems.GameSpec.Elevator.ElevatorConstants;
 import frc.robot.subsystems.GameSpec.Elevator.ElevatorIOReal;
 import frc.robot.subsystems.GameSpec.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.GameSpec.Intake.Intake;
@@ -78,8 +80,9 @@ public class Manager extends SubsystemBase{
     }
 
     public Command goToL4(){
-      return Commands.parallel(elevatorSubsystem.goToL4().unless(() -> (armSubsystem.armPosition(40, 2.0))), armSubsystem.goToPackage())
-      .unless(() -> (armSubsystem.armPosition(40, 2.0)))
+      return Commands.parallel(elevatorSubsystem.goToL4().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0))), armSubsystem.goToPackage())
+      .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-10.0,2.0)))
+      .andThen(null);
     }
 
     public Command L4Score(){

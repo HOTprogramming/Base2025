@@ -108,7 +108,7 @@ public class Arm extends SubsystemBase {
            (stats.armPosition <= armCommandedPos.getDouble(0) + deadband);
   }
 
-  public boolean armPosition(double desiredPos, double threshHold){
+  public boolean armGreaterThan(double desiredPos, double threshHold){
     if(stats.armPosition > desiredPos - Math.abs(threshHold)){
       System.out.println(true);
       return true;
@@ -117,6 +117,16 @@ public class Arm extends SubsystemBase {
       System.out.println(false);
       return false;
     }
+  }
+
+  public boolean armLessThan(double desiredPos, double threshHold){
+    if(stats.armPosition < desiredPos - Math.abs(threshHold)){
+      return true;
+    }
+    else{
+      return false;
+    }
+
   }
 
   public Command runToPosition(double position){
