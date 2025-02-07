@@ -50,7 +50,7 @@ public class Manager extends SubsystemBase{
     }
 
     public Command goToPackage(){
-      return Commands.parallel(armSubsystem.goToPackage());
+      return Commands.parallel(elevatorSubsystem.goToPackage());
       //return Commands.parallel(elevatorSubsystem.goToPackage().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0))), armSubsystem.goToPackage());
     }
 
@@ -90,10 +90,11 @@ public class Manager extends SubsystemBase{
     }
 
     public Command L4Score(){
-      return Commands.sequence(
-        armSubsystem.L4Score(),
-        elevatorSubsystem.L4Score()
-      );
+      return Commands.parallel(elevatorSubsystem.goToL4());
+      // return Commands.sequence(
+      //   armSubsystem.L4Score(),
+      //   elevatorSubsystem.L4Score()
+      // );
     }
 
     public Command goToFeeder(){

@@ -7,7 +7,7 @@ public class ElevatorConstants {
     public static final int elevatorEncoderID = 52;
     public static final double kReduction = (1.0 / 2.0);
     public static final double kMaxAccelerationRpmPerSec = 9000.0; 
-    public static final MMGains elevatorGains = new MMGains(400, 200, 300, 2.5 , 0, 0.0, 0, 0);
+    public static final MMGains elevatorGains = new MMGains(1000, 1500, 4500, 2.5 , 0, 0.0, 0.025, 0.3);
     
     public static final double PackageHeight = 17.9;
 
