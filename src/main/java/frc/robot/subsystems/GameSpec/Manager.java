@@ -50,28 +50,35 @@ public class Manager extends SubsystemBase{
     }
 
     public Command goToPackage(){
-      return Commands.parallel(elevatorSubsystem.goToPackage().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0))), armSubsystem.goToPackage());
+      return Commands.parallel(armSubsystem.goToPackage());
+      //return Commands.parallel(elevatorSubsystem.goToPackage().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0))), armSubsystem.goToPackage());
     }
 
     public Command goToL1(){
-      return Commands.sequence(
-        elevatorSubsystem.goToL1(),
-        armSubsystem.goToL1()
-      );
+
+      return Commands.parallel(armSubsystem.goToL1());
+
+      // return Commands.sequence(
+      //   elevatorSubsystem.goToL1(),
+      //   armSubsystem.goToL1()
+      // );
     }
 
     public Command goToL2(){
-      return Commands.sequence(
-        elevatorSubsystem.goToL2(),
-        armSubsystem.goToL2()
-      );
+
+      return Commands.parallel(armSubsystem.goToL2());
+
+      // return Commands.sequence(
+      //   elevatorSubsystem.goToL2(),
+      //   armSubsystem.goToL2()
+      // );
     }
 
     public Command goToL3(){
       return Commands.sequence(
         // elevatorSubsystem.goToL1(),
         // armSubsystem.goToL3()
-        elevatorSubsystem.goToPackage(),
+        //elevatorSubsystem.goToPackage(),
         armSubsystem.positiveTest()
       );
     }
