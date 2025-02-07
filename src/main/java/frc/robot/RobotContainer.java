@@ -141,18 +141,20 @@ public class RobotContainer {
       // operator.y().onTrue(NamedCommands.getCommand("L4"));
       // operator.leftBumper().onTrue(NamedCommands.getCommand("Package"));
       // operator.rightBumper().onTrue(NamedCommands.getCommand("Feeder"));
-      operator.leftTrigger().or(operator.rightTrigger()).onFalse(gamespecManager.coralZero());
-      operator.a().onTrue(gamespecManager.goToPackage());
-      operator.b().onTrue(gamespecManager.goToL4());
-      operator.x().onTrue(gamespecManager.goToL3());
-      operator.y().onTrue(gamespecManager.L4Score());
-      operator.leftTrigger().whileTrue(gamespecManager.coralIntake());
-      operator.rightTrigger().whileTrue(gamespecManager.coralShoot());
+      // operator.leftTrigger().or(operator.rightTrigger()).onFalse(gamespecManager.coralZero());
+      //  operator.a().onTrue(gamespecManager.goToPackage());
+      //  operator.b().onTrue(gamespecManager.goToL4());
+      //  operator.x().onTrue(gamespecManager.goToL3());
+      //  operator.y().onTrue(gamespecManager.L4Score());
+      //  operator.leftTrigger().whileTrue(gamespecManager.coralIntake());
+      //  operator.rightTrigger().whileTrue(gamespecManager.coralShoot());
 
-      NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
-      NamedCommands.registerCommand("R_OTF", drivetrain.runOnTheFly());
-
-
+      // NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
+      // NamedCommands.registerCommand("R_OTF", drivetrain.runOnTheFly());
+         operator.a().onTrue(gamespecManager.Intake());
+         operator.b().onTrue(gamespecManager.goToHorizontal());
+        operator.y().whileTrue(gamespecManager.setBeamBreakTrue());
+       
       new EventTrigger("OTF").onTrue(Commands.runOnce(() -> drivetrain.generateOnTheFly()));
   }
 

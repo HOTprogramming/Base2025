@@ -351,7 +351,9 @@ public abstract class ManipulatorIO {
         // System.out.println(commandedPosition);
         coralWrist.setControl(coralWristMagic.withPosition(commandedPosition).withSlot(0));
     }
-    
+    public Boolean setCoralBeamBreakTrue(boolean CANdiPWM2 ){
+        return stats.candiPWM1 = true; 
+    }
 
     /** Stop motor */
     public void stop() {
@@ -367,8 +369,4 @@ public abstract class ManipulatorIO {
     public abstract void periodic(); 
     
 
-    public void runVelocity(double rPM, int i) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'runVelocity'");
-    }
 }

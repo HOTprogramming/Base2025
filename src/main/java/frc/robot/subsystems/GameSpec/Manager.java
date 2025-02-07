@@ -107,5 +107,17 @@ public class Manager extends SubsystemBase{
     public Command coralZero(){
       return manipulatorSubsystem.zero();
     }
+    public Command setBeamBreakTrue(){
+      return manipulatorSubsystem.setBeamBreakTrue();
+    }
+    public Command goToVertical(){
+      return manipulatorSubsystem.goVertical();
+    }
+    public Command goToHorizontal(){
+      return manipulatorSubsystem.goHorizontal();
+    }
+    public Command Intake(){
+      return manipulatorSubsystem.intake();
 }
 
+}
