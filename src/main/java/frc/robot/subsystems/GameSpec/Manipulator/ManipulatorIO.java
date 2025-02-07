@@ -111,9 +111,10 @@ public abstract class ManipulatorIO {
         private final StatusSignal<AngularVelocity> AlgaeCancoderVelocity;
         private final StatusSignal<Boolean> CANdiPWM2;
     
-        TalonFXConfiguration cfg;
-        TalonFXSConfiguration cFXS;
-        CANcoderConfiguration eCfg;
+        private TalonFXConfiguration cfg;
+        private TalonFXSConfiguration cFXS;
+        private CANcoderConfiguration eCfg;
+        
     
         /** Constructor to initialize the TalonFX */
         public ManipulatorIO() {
@@ -179,13 +180,18 @@ public abstract class ManipulatorIO {
     
             cFXS.ExternalFeedback.FeedbackRemoteSensorID = coralCancoder.getDeviceID();
             cFXS.ExternalFeedback.ExternalFeedbackSensorSource = ExternalFeedbackSensorSourceValue.RemoteCANcoder;
-            cFXS.ExternalFeedback.SensorToMechanismRatio = 1/360.0; //changes what the cancoder and fx encoder ratio is
+            cFXS.ExternalFeedback.SensorToMechanismRatio = 1; //changes what the cancoder and fx encoder ratio is
             cFXS.ExternalFeedback.RotorToSensorRatio = 1; //12.8;
             cFXS.MotorOutput.NeutralMode = NeutralModeValue.Coast;
             cFXS.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
             cFXS.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
             cFXS.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
             cFXS.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
+
+            eCfg.MagnetSensor.MagnetOffset = -0.291;
+            //score -0.246
+
+
     
             setConfig();
     

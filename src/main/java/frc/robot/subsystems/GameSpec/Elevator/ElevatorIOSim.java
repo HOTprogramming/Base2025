@@ -30,9 +30,9 @@ public class ElevatorIOSim extends ElevatorIO {
     private static MechanismLigament2d m_elevatorMech2d;
 
     public ElevatorIOSim() {        
-        encoderCfg.MagnetSensor.MagnetOffset = 0;
-        cfg.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-        encoderCfg.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+        // encoderCfg.MagnetSensor.MagnetOffset = 0;
+        // cfg.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        // encoderCfg.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
         applyConfig();
 

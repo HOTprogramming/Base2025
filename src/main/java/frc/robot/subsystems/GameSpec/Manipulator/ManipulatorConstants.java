@@ -3,8 +3,8 @@ package frc.robot.subsystems.GameSpec.Manipulator;
 public class ManipulatorConstants {
 
     // CORAL AND ALGEA IDS ARE WRONG
-    public static final int coralMotorID = 15;//flipped
-    public static final int coralEncoderID = 45;
+    public static final int coralMotorID = 15;
+    public static final int coralEncoderID = 54;
     public static final int coralCandiID = 53;//sweetbox 6
     public static final int coralWristID = 13;
     public static final double kReduction = (1.0 / 2.0);
@@ -18,8 +18,7 @@ public class ManipulatorConstants {
     public static final MMGains algaeGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
     
     public static final double coralWristHP = 0;
-    public static final double coralWristScore = 0;
-    public static final double coralWristVertical = 90;
+    public static final double coralWristScore = -0.246;
 
     public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
     public record VVGains(double kP, double kI, double kD, double kV, double kS) {} 

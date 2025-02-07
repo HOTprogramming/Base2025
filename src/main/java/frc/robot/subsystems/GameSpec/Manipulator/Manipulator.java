@@ -72,7 +72,7 @@ public class Manipulator extends SubsystemBase {
 
     private void UpdateTelemetry() {
         coralVelocity.setDouble(io.coral.getVelocity().getValueAsDouble());
-        coralPosition.setDouble(io.coralWrist.getPosition().getValueAsDouble());
+        coralPosition.setDouble(io.coralCancoder.getPosition().getValueAsDouble());
         coralSupplyCurrent.setDouble(stats.coralSupplyCurrentAmps);
         coralStatorCurrent.setDouble(stats.coralTorqueCurrentAmps);
         coralTemp.setDouble(stats.coralTempCelsius);
@@ -116,10 +116,6 @@ public class Manipulator extends SubsystemBase {
 
     public  Command goScore() {
         return coralCommand(ManipulatorConstants.coralWristScore);
-    }
-
-    public  Command goVertical() {
-        return coralCommand(ManipulatorConstants.coralWristVertical);
     }
 
     public Command zero(){

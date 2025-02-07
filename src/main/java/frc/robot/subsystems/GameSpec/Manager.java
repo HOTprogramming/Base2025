@@ -119,10 +119,6 @@ public class Manager extends SubsystemBase{
       return manipulatorSubsystem.goScore();
     }
 
-    public Command coralGoVertical(){
-      return manipulatorSubsystem.goVertical();
-    }
-
 
 
 }
