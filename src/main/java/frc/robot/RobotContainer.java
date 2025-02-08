@@ -74,7 +74,6 @@ public class RobotContainer {
 
 
     mode = Mode.coral;
-    SmartDashboard.putString("operator mode", mode.toString());
 
     SmartDashboard.putData(chooser);
 
