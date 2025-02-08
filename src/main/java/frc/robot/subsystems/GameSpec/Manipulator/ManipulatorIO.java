@@ -12,6 +12,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -36,6 +37,7 @@ public abstract class ManipulatorIO {
     protected TalonFX coral;
     protected MotionMagicVoltage coralWristMagic;
     protected VelocityTorqueCurrentFOC coralSpinController;
+    protected PositionVoltage positionVoltage;
     protected DigitalInput coralBeamBreak;
     protected CANdi coralCandi;
     public TalonFXS coralWrist;
@@ -130,6 +132,7 @@ public abstract class ManipulatorIO {
     
             algaeMagic = new MotionMagicVoltage(0);
             coralWristMagic = new MotionMagicVoltage(0);
+            positionVoltage = new PositionVoltage(0);
             coralSpinController = new VelocityTorqueCurrentFOC(0).withUpdateFreqHz(0.0);
             cfg = new TalonFXConfiguration();
             cFXS = new TalonFXSConfiguration();
@@ -357,7 +360,7 @@ public abstract class ManipulatorIO {
 
     public void setCoralAngleMotorControl(double commandedPosition) {
         // System.out.println(commandedPosition);
-        coralWrist.setControl(coralWristMagic.withPosition(commandedPosition).withSlot(0));
+        coralWrist.setControl(positionVoltage.withPosition(commandedPosition).withSlot(0));
     }
     
 
