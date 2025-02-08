@@ -69,9 +69,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("L4", gamespecManager.goToL4());
     NamedCommands.registerCommand("Package", gamespecManager.goToPackage());
     NamedCommands.registerCommand("Feeder", gamespecManager.goToFeeder());
-    NamedCommands.registerCommand("Coral Intake", gamespecManager.coralIntake());
-    NamedCommands.registerCommand("Coral Shoot", gamespecManager.coralShoot());
-    NamedCommands.registerCommand("Coral Zero", gamespecManager.coralZero());
+    NamedCommands.registerCommand("Coral HP", gamespecManager.coralGoHP());
+    NamedCommands.registerCommand("Coral Score", gamespecManager.coralGoScore());
 
 
     mode = Mode.coral;

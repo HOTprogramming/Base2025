@@ -106,13 +106,6 @@ public class Manager extends SubsystemBase{
         armSubsystem.goToFeeder()
       );
     }
- 
-    public Command coralIntake(){
-      return manipulatorSubsystem.intake();
-    }
-    public Command coralShoot(){
-      return manipulatorSubsystem.shoot();
-    }
 
     public Command coralGoHP(){
       return manipulatorSubsystem.goHP();
