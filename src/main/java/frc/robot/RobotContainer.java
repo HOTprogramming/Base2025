@@ -37,6 +37,14 @@ public class RobotContainer {
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
 
+  public enum Mode{
+    CORAL,
+    ALGAE,
+    CLIMB
+  }
+
+  public static Mode mode = Mode.CORAL;
+
   public RobotContainer() {
     RobotController.setBrownoutVoltage(Constants.brownoutVoltage); // stops stuttering under high load when the battery is good.
 

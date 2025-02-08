@@ -24,7 +24,6 @@ public class Robot extends TimedRobot {
   private GenericEntry voltsEntry;
   private GenericEntry ampsEntry;
 
-
   public Robot() {
     m_robotContainer = new RobotContainer();
 
