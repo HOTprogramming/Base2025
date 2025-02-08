@@ -91,8 +91,24 @@ public class Arm extends SubsystemBase {
     return armCommand(ArmConstants.L4Score);
   }
 
+  public Command L3Score(){
+    return armCommand(ArmConstants.L3Score);
+  }
+
+  public Command L2Score(){
+    return armCommand(ArmConstants.L2Score);
+  }
+
   public Command goToFeeder(){
     return armCommand(ArmConstants.FeederAngle);
+  }
+
+  public Command positiveTest(){
+    return armCommand(80.0);
+  }
+
+  public Command negativeTest(){
+    return armCommand(-80.0);
   }
 
   public boolean checkRange(double deadband){
@@ -100,7 +116,7 @@ public class Arm extends SubsystemBase {
            (stats.armPosition <= armCommandedPos.getDouble(0) + deadband);
   }
 
-  public boolean armPosition(double desiredPos, double threshHold){
+  public boolean armGreaterThan(double desiredPos, double threshHold){
     if(stats.armPosition > desiredPos - Math.abs(threshHold)){
       System.out.println(true);
       return true;
@@ -109,6 +125,16 @@ public class Arm extends SubsystemBase {
       System.out.println(false);
       return false;
     }
+  }
+
+  public boolean armLessThan(double desiredPos, double threshHold){
+    if(stats.armPosition < desiredPos - Math.abs(threshHold)){
+      return true;
+    }
+    else{
+      return false;
+    }
+
   }
 
   public Command runToPosition(double position){
