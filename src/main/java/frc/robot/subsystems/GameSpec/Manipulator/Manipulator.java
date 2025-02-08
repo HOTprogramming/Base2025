@@ -16,6 +16,7 @@ public class Manipulator extends SubsystemBase {
     private final ManipulatorIO io;
     public final ManipulatorIOStats stats;
     private final ShuffleboardTab coralShuffleboard;
+    private int delay = 0;
 
     /* Shuffleboard entries */
     private GenericEntry coralVelocity;
@@ -118,7 +119,7 @@ public class Manipulator extends SubsystemBase {
             io.setCoralSpinMotorControl(8);
             io.setCoralAngleMotorControl(ManipulatorConstants.coralWristHP);
 
-        }).onlyWhile(() -> stats.candiPWM1).andThen(zero());    
+        }).onlyWhile(() -> stats.candiPWM1).andThen(Commands.waitSeconds(0.2)).andThen(zero());    
     }
 
     public  Command goHP() {
@@ -140,7 +141,6 @@ public class Manipulator extends SubsystemBase {
     public Command zero(){
         return run(() -> io.stop());
     }
-    
     
     public Command BeamBreak2Stop() {
         return run(() -> {
