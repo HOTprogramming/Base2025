@@ -3,8 +3,8 @@ package frc.robot.subsystems.GameSpec.Manipulator;
 public class ManipulatorConstants {
 
     // CORAL AND ALGEA IDS ARE WRONG
-    public static final int coralMotorID = 15;
-    public static final int coralEncoderID = 54;
+    public static final int coralMotorID = 16;//flipped
+    public static final int coralEncoderID = 45;
     public static final int coralCandiID = 53;//sweetbox 6
     public static final int coralWristID = 13;
     public static final double kReduction = (1.0 / 2.0);
