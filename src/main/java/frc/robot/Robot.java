@@ -24,14 +24,6 @@ public class Robot extends TimedRobot {
   private GenericEntry voltsEntry;
   private GenericEntry ampsEntry;
 
-  public enum Mode{
-    CORAL,
-    ALGAE,
-    CLIMB
-  }
-
-  public static Mode mode = Mode.CORAL;
-
   public Robot() {
     m_robotContainer = new RobotContainer();
 
