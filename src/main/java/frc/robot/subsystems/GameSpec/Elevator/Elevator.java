@@ -107,6 +107,10 @@ public class Elevator extends SubsystemBase {
     return elevatorCommand(ElevatorConstants.PackageHeight);
   }
 
+  public Command goToHP(){
+    return elevatorCommand(ElevatorConstants.HPHeight);
+  }
+
 
   public Command managerElevatorTest(){
     System.out.println("elevatorworks");

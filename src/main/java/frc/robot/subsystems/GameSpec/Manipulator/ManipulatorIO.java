@@ -368,6 +368,7 @@ public abstract class ManipulatorIO {
     public void stop() {
         coral.setVoltage(0);
         algaeRoller.setVoltage(0);
+        coralWrist.setControl(positionVoltage.withPosition(ManipulatorConstants.coralWristScore).withSlot(0));
     }
 
     /** Apply motion magic control mode */

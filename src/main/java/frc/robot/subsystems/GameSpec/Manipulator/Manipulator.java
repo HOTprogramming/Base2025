@@ -116,6 +116,7 @@ public class Manipulator extends SubsystemBase {
         return run(() -> {
             coralCommandedSpeed.setDouble(8);
             io.setCoralSpinMotorControl(8);
+            io.setCoralAngleMotorControl(ManipulatorConstants.coralWristHP);
 
         }).onlyWhile(() -> stats.candiPWM1).andThen(zero());    
     }

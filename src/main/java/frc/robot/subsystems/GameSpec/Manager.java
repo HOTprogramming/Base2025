@@ -111,6 +111,9 @@ public class Manager extends SubsystemBase{
       return Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToFeeder(), manipulatorSubsystem.intake());
     }
 
+    //elevator position: 17.0
+    //arm position: 52.4
+
     public Command coralGoHP(){
       return manipulatorSubsystem.goHP();
     }

@@ -17,8 +17,8 @@ public class ManipulatorConstants {
     public static final int algaeEncoderID = 46;
     public static final MMGains algaeGains = new MMGains(100, 100, 200, 1.0 , 0.0, 0.0, 0, 0);
     
-    public static final double coralWristHP = 0;
-    public static final double coralWristScore = -90;
+    public static final double coralWristHP = -90;
+    public static final double coralWristScore = 0;
 
     public static final double algaeExtend = 0;
     public static final double algaePackage = 0;
