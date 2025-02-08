@@ -85,7 +85,7 @@ public abstract class ClimberIO {
         FeedbackConfigs fdb = cfg.Feedback;
         fdb.SensorToMechanismRatio = 1;
 
-        cfg.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        cfg.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         cfg.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
         cfg.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
         cfg.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
@@ -187,6 +187,10 @@ public abstract class ClimberIO {
     /** Stop motor */
     public void stop() {
         climber.setVoltage(0);
+    }
+
+    public void setPower(double power) {
+        climber.setVoltage(power *12.0);
     }
 
     /** Perform simulation-specific tasks */

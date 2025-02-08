@@ -1,5 +1,7 @@
 package frc.robot.subsystems.GameSpec;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
@@ -29,7 +31,7 @@ import frc.robot.subsystems.GameSpec.Manipulator.ManipulatorIOSim;
 public class Manager extends SubsystemBase{
     private Arm armSubsystem;
     private Elevator elevatorSubsystem;
-    private Climber climberSubsystem;
+    public Climber climberSubsystem;
     private Intake intakeSubsystem;
     private Manipulator manipulatorSubsystem;
   
@@ -96,7 +98,12 @@ public class Manager extends SubsystemBase{
         armSubsystem.goToFeeder()
       );
     }
-
+   public Command extend (){
+     return climberSubsystem.extend();
+   }
+  // public Command retract (){
+  // return climberSubsystem.retract();
+ //  }
     public Command coralIntake(){
       return manipulatorSubsystem.intake();
     }
@@ -108,8 +115,8 @@ public class Manager extends SubsystemBase{
     public Command coralZero(){
       return manipulatorSubsystem.zero();
     }
-    public Command Unwind(){
-      return climberSubsystem.Unwind();
+/*     public Command Unwind(){
+    return climberSubsystem.Unwind();
     }
     
     public Command Pull(){
@@ -117,6 +124,6 @@ public class Manager extends SubsystemBase{
     } 
     public Command ServoClamp(){
       return climberSubsystem.ServoClamp();
-    } 
+    }*/ 
 }
 

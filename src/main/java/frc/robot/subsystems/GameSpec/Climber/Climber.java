@@ -4,6 +4,11 @@
 
 package frc.robot.subsystems.GameSpec.Climber;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -21,6 +26,7 @@ public class Climber extends SubsystemBase {
   private final ShuffleboardTab climberShuffleboard;
 
   /* Shuffleboard entrys */
+  public GenericEntry climber;
   public GenericEntry climberPosition;
   public GenericEntry climberDirection;
   private GenericEntry climberVelocity;
@@ -30,12 +36,14 @@ public class Climber extends SubsystemBase {
   private GenericEntry climberCommandedPos;
   private GenericEntry servoVelocity;
   private GenericEntry servoClampCommandedPos;
+  private GenericEntry climberVoltage;
   public Climber(ClimberIO io) {
     this.io = io; 
     this.stats = ClimberIO.stats;
 
     this.climberShuffleboard = Shuffleboard.getTab("climber");
     
+    climberVoltage = this.climberShuffleboard.add("climber Voltage",0.0).getEntry();
     climberVelocity = this.climberShuffleboard.add("climber RPM", 0.0).getEntry();
     climberPosition = this.climberShuffleboard.add("climber Position", 0.0).getEntry();
     climberSupplyCurrent = this.climberShuffleboard.add("climber Supply Current", 0.0).getEntry();
@@ -57,6 +65,7 @@ public class Climber extends SubsystemBase {
   }
 
   private void UpdateTelemetry() {
+    climberVoltage.setDouble(stats.climberAppliedVolts);
     climberVelocity.setDouble(stats.climberVelocity);
     climberPosition.setDouble(stats.climberPosition);
     climberSupplyCurrent.setDouble(stats.SupplyCurrentAmps);
@@ -65,17 +74,47 @@ public class Climber extends SubsystemBase {
     servoVelocity.setDouble(stats.climberVelocity);
     servoClampCommandedPos.setDouble(stats.servoVelocity);
   }
-  // public boolean climberPosition(double desiredPos, double threshHold){
-  //   if(stats.climberPosition > desiredPos - Math.abs(threshHold)){
-  //     System.out.println(true);
-  //     return true;
-  //   }
-  //   else{
-  //     System.out.println(false);
-  //     return false;
-  //   }
+   //public boolean climberPosition(double desiredPos, double threshHold){
+   //  if(stats.climberPosition > desiredPos - Math.abs(threshHold)){
+   //    System.out.println(true);
+   //    return true;
+   //  }
+   //  else{
+   //    System.out.println(false);
+   //    return false;
+   //  }
+   //}
+   
+
+  // public Command extend(){
+  //  if(climberPosition == <1){
+  //    return run(() -> {
+  //      climberVoltage.setValue(6);
+  //    });
   // }
-  public Command runToPosition(double position){
+  //}
+
+    public void setPower(Double supplier){
+        io.setPower(supplier);
+    }
+
+
+
+   
+   public Command extend(){
+      return run(() -> {
+      
+      });
+      
+    }
+//
+   // public Command retract(){
+   //   return run( () -> {
+   //     climberVoltage.setValue(-6);
+   //   });
+   // }
+//
+  /*  public Command runToPosition(double position){
     return run(() -> {
         this.climberCommandedPos.setDouble(position);
         io.setClimberMotorControl(position);
@@ -134,7 +173,7 @@ public class Climber extends SubsystemBase {
     return (stats.climberPosition >= climberCommandedPos.getDouble(0) - deadband) && 
            (stats.climberPosition <= climberCommandedPos.getDouble(0) + deadband);
   }
-
+*/
   @Override
   public void simulationPeriodic() {
   }
