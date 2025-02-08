@@ -4,6 +4,11 @@
 
 package frc.robot.subsystems.GameSpec.Climber;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -21,6 +26,7 @@ public class Climber extends SubsystemBase {
   private final ShuffleboardTab climberShuffleboard;
 
   /* Shuffleboard entrys */
+  public GenericEntry climber;
   public GenericEntry climberPosition;
   public GenericEntry climberDirection;
   private GenericEntry climberVelocity;
@@ -28,19 +34,24 @@ public class Climber extends SubsystemBase {
   private GenericEntry climberStatorCurrent;
   private GenericEntry climberTemp;
   private GenericEntry climberCommandedPos;
-  
+  private GenericEntry servoVelocity;
+  private GenericEntry servoClampCommandedPos;
+  private GenericEntry climberVoltage;
   public Climber(ClimberIO io) {
     this.io = io; 
     this.stats = ClimberIO.stats;
 
     this.climberShuffleboard = Shuffleboard.getTab("climber");
-
+    
+    climberVoltage = this.climberShuffleboard.add("climber Voltage",0.0).getEntry();
     climberVelocity = this.climberShuffleboard.add("climber RPM", 0.0).getEntry();
-    climberPosition = this.climberShuffleboard.add("climber Position", 0.0).getEntry();;
+    climberPosition = this.climberShuffleboard.add("climber Position", 0.0).getEntry();
     climberSupplyCurrent = this.climberShuffleboard.add("climber Supply Current", 0.0).getEntry();
     climberStatorCurrent = this.climberShuffleboard.add("climber Stator Current", 0.0).getEntry();
     climberTemp = this.climberShuffleboard.add("climber Temp", 0.0).getEntry();
     climberCommandedPos = this.climberShuffleboard.add("climber Commanded Position", 0.0).getEntry();
+    servoVelocity = this.climberShuffleboard.add("servo Velocity", 0.0).getEntry();
+    servoClampCommandedPos = this.climberShuffleboard.add("servo Commanded Position", 0.0).getEntry();
   }
 
 
@@ -54,46 +65,32 @@ public class Climber extends SubsystemBase {
   }
 
   private void UpdateTelemetry() {
+    climberVoltage.setDouble(stats.climberAppliedVolts);
     climberVelocity.setDouble(stats.climberVelocity);
     climberPosition.setDouble(stats.climberPosition);
     climberSupplyCurrent.setDouble(stats.SupplyCurrentAmps);
     climberStatorCurrent.setDouble(stats.TorqueCurrentAmps);
     climberTemp.setDouble(stats.TempCelsius);
+    servoVelocity.setDouble(stats.climberVelocity);
+    servoClampCommandedPos.setDouble(stats.servoVelocity);
   }
-
-  public Command runToPosition(double position){
-    return run(() -> {
-        this.climberCommandedPos.setDouble(position);
-        io.setClimberMotorControl(position);
-    });
-  }
-
-  private FunctionalCommand climberCommand(double position){
-    return new FunctionalCommand(
-      () -> this.climberCommandedPos.setDouble(position),
-      () -> io.setClimberMotorControl(position),
-      interrupted -> io.setClimberMotorControl(position), 
-      () -> checkRange(.1),
-      this);
-  }
+   //public boolean climberPosition(double desiredPos, double threshHold){
+   //  if(stats.climberPosition > desiredPos - Math.abs(threshHold)){
+   //    System.out.println(true);
+   //    return true;
+   //  }
+   //  else{
+   //    System.out.println(false);
+   //    return false;
+   //  }
+   //}
+   
 
 
-  public Command stop(){
-    return run(() -> {
-        io.stop();
-    });  
-  }
+    public void setPower(Double supplier){
+        io.setPower(supplier);
+    }
 
-  public Command hold(){
-    return run(() -> {
-      io.setClimberMotorControl(climberCommandedPos.getDouble(0));
-    });
-  }
- 
-  public boolean checkRange(double deadband){
-    return (stats.climberPosition >= climberCommandedPos.getDouble(0) - deadband) && 
-           (stats.climberPosition <= climberCommandedPos.getDouble(0) + deadband);
-  }
 
   @Override
   public void simulationPeriodic() {
