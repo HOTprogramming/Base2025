@@ -73,7 +73,7 @@ public class Elevator extends SubsystemBase {
       () -> this.elevatorCommandedPos.setDouble(position),
       () -> io.setElevatorMotorControl(position),
       interrupted -> io.setElevatorMotorControl(position), 
-      () -> checkRange(.1),
+      () -> checkRange(1.0),
       this);
   }
 
@@ -91,6 +91,10 @@ public class Elevator extends SubsystemBase {
 
   public Command goToL1(){
     return elevatorCommand(ElevatorConstants.L1Height);
+  }
+
+  public Command L4Score(){
+    return elevatorCommand(ElevatorConstants.L4ScoreHeight);
   }
 
   public Command goToFeeder(){

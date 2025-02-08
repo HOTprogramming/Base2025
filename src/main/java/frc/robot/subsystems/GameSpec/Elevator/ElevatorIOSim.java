@@ -2,6 +2,8 @@ package frc.robot.subsystems.GameSpec.Elevator;
 
 import javax.sound.midi.SysexMessage;
 
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
@@ -28,6 +30,12 @@ public class ElevatorIOSim extends ElevatorIO {
     private static MechanismLigament2d m_elevatorMech2d;
 
     public ElevatorIOSim() {        
+        encoderCfg.MagnetSensor.MagnetOffset = 0;
+        cfg.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        encoderCfg.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+
+        applyConfig();
+
         elevatorMotorSimState = elevator.getSimState();
         encoderSimState = elevatorCancoder.getSimState();
 
@@ -58,10 +66,10 @@ public class ElevatorIOSim extends ElevatorIO {
 
         elevatorSim.update(.02);
 
-        encoderSimState.setRawPosition((elevatorSim.getPositionMeters()/3.0));
+        encoderSimState.setRawPosition(elevatorSim.getPositionMeters()/3.0226);
         // encoderSimState.setVelocity(elevatorSim.getVelocityMetersPerSecond());
 
-        m_elevatorMech2d.setLength(elevator.getPosition().getValueAsDouble());
+        m_elevatorMech2d.setLength(elevatorSim.getPositionMeters());
     }
 
     public static MechanismObject2d getElevatorLigament() {
