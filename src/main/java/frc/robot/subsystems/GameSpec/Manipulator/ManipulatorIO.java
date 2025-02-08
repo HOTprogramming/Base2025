@@ -6,14 +6,12 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.CANdiConfiguration;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -32,16 +30,11 @@ import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.DigitalInput;
-import com.ctre.phoenix6.signals.S1CloseStateValue;
-import com.ctre.phoenix6.signals.S1FloatStateValue;
-import com.ctre.phoenix6.signals.S2CloseStateValue;
-import com.ctre.phoenix6.signals.S2FloatStateValue;
-import com.ctre.phoenix6.signals.S2StateValue;
 
 public abstract class ManipulatorIO {
     // Protected TalonFX object accessible to subclasses
     protected TalonFX coral;
-    protected PositionVoltage coralWristPositionVoltage;
+    protected MotionMagicVoltage coralWristMagic;
     protected VelocityTorqueCurrentFOC coralSpinController;
     protected DigitalInput coralBeamBreak;
     protected CANdi coralCandi;
@@ -119,11 +112,11 @@ public abstract class ManipulatorIO {
         private final StatusSignal<AngularVelocity> AlgaeCancoderVelocity;
         private final StatusSignal<Boolean> CANdiPWM2;
     
-        TalonFXConfiguration cfg;
-        TalonFXSConfiguration cFXS;
-        CANcoderConfiguration eCfg;
-        CANdiConfiguration eCafg;
-
+        private TalonFXConfiguration cfg;
+        private TalonFXSConfiguration cFXS;
+        private CANcoderConfiguration eCfg;
+        
+    
         /** Constructor to initialize the TalonFX */
         public ManipulatorIO() {
             this.coral = new TalonFX(ManipulatorConstants.coralMotorID, "robot");
@@ -136,16 +129,12 @@ public abstract class ManipulatorIO {
             this.algaeCancoder = new CANcoder(ManipulatorConstants.algaeEncoderID, "robot");
     
             algaeMagic = new MotionMagicVoltage(0);
-            coralWristPositionVoltage = new PositionVoltage(ManipulatorConstants.coralWristHP);
+            coralWristMagic = new MotionMagicVoltage(0);
             coralSpinController = new VelocityTorqueCurrentFOC(0).withUpdateFreqHz(0.0);
             cfg = new TalonFXConfiguration();
             cFXS = new TalonFXSConfiguration();
             eCfg = new CANcoderConfiguration();
-            eCafg = new CANdiConfiguration();
-            eCafg.DigitalInputs.S1FloatState = S1FloatStateValue.PullHigh;
-            eCafg.DigitalInputs.S2FloatState = S2FloatStateValue.PullHigh;
-            eCafg.DigitalInputs.S1CloseState = S1CloseStateValue.CloseWhenLow;
-            eCafg.DigitalInputs.S2CloseState = S2CloseStateValue.CloseWhenLow;
+        
             MotionMagicConfigs mmC = cFXS.MotionMagic;
             mmC.MotionMagicCruiseVelocity = ManipulatorConstants.coralWristGains.CruiseVelocity(); //rps
             mmC.MotionMagicAcceleration = ManipulatorConstants.coralWristGains.Acceleration();
@@ -183,12 +172,12 @@ public abstract class ManipulatorIO {
             cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
             cfg.Feedback.SensorToMechanismRatio = 1; //changes what the cancoder and fx encoder ratio is
             cfg.Feedback.RotorToSensorRatio = 1; //12.8;
-            cfg.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+            cfg.MotorOutput.NeutralMode = NeutralModeValue.Coast;
             cfg.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
             cfg.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
             cfg.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
             cfg.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
-            
+    
     
             cFXS.ExternalFeedback.FeedbackRemoteSensorID = coralCancoder.getDeviceID();
             cFXS.ExternalFeedback.ExternalFeedbackSensorSource = ExternalFeedbackSensorSourceValue.RemoteCANcoder;
@@ -368,7 +357,7 @@ public abstract class ManipulatorIO {
 
     public void setCoralAngleMotorControl(double commandedPosition) {
         // System.out.println(commandedPosition);
-        coralWrist.setControl(coralWristPositionVoltage.withPosition(commandedPosition).withSlot(0));
+        coralWrist.setControl(coralWristMagic.withPosition(commandedPosition).withSlot(0));
     }
     
 

@@ -107,6 +107,10 @@ public class Manager extends SubsystemBase{
       );
     }
 
+    public Command alignStationIntake(){
+      return Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToFeeder(), manipulatorSubsystem.intake());
+    }
+
     public Command coralGoHP(){
       return manipulatorSubsystem.goHP();
     }
@@ -125,6 +129,10 @@ public class Manager extends SubsystemBase{
    
     public Command Intake(){
       return manipulatorSubsystem.intake();
-}
+    }
+    
+    public Command StopIntake(){
+      return manipulatorSubsystem.zero();
+    }
 
 }

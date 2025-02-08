@@ -24,7 +24,7 @@ public class ArmConstants {
 
     public static final double PackageAngle = 0;
 
-    public static final double FeederAngle = -45;
+    public static final double FeederAngle = 45;
     public static final double L1Angle = 70;
     public static final double L2Angle = -80;
     public static final double L3Angle = 90;
