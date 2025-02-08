@@ -50,6 +50,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Unused paths",
+  "folder": null,
   "choreoAuto": false
 }

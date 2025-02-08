@@ -7,43 +7,43 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BLUE4Place1"
+            "pathName": null
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "BLUE4Pick1"
+            "pathName": null
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "BLUE4Place2"
+            "pathName": null
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "BLUE4Pick2"
+            "pathName": null
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "BLUE4Place3"
+            "pathName": null
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "BLUE4Pick3"
+            "pathName": null
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "BLUE4Place4"
+            "pathName": null
           }
         }
       ]

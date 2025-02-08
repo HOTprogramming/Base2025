@@ -45,6 +45,12 @@
           "data": {
             "pathName": "REDRPlace4"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "REDR4Pickup4"
+          }
         }
       ]
     }
