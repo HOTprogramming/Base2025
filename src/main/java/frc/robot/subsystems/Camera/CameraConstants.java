@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import frc.robot.Constants;
 import frc.robot.subsystems.Camera.Camera.CameraPositions;
 
 public class CameraConstants {
@@ -63,29 +64,45 @@ public class CameraConstants {
     
     public CameraConstants(){
         cameraConstants = new EnumMap<>(CameraPositions.class);         
-            cameraConstants.put(CameraPositions.FRONT, new CameraConstant("front_camera",
-            new Translation3d(Units.inchesToMeters(12.483), Units.inchesToMeters(0), Units.inchesToMeters(8.625)),
-            new Rotation3d(0, 0, 0),
-            VecBuilder.fill(4, 4, 8),
-            VecBuilder.fill(0.5, 0.5, 1)));
+        switch (Constants.getRobot()) {
+            case DEVBOT:
+                cameraConstants.put(CameraPositions.LEFT, new CameraConstant("black_pink", // black
+                        new Translation3d(Units.inchesToMeters(10.75), Units.inchesToMeters(9.75), Units.inchesToMeters(12.25)),
+                        new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(0.0), Units.degreesToRadians(-41.3)),
+                        VecBuilder.fill(4, 4, 8),
+                        VecBuilder.fill(0.5, 0.5, 1)));
 
+                
+                cameraConstants.put(CameraPositions.RIGHT, new CameraConstant("white_pink", // white
+                        new Translation3d(Units.inchesToMeters(10.375), Units.inchesToMeters(-9.625), Units.inchesToMeters(12.25)),
+                        new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(0.0), Units.degreesToRadians(43.5)),
+                        VecBuilder.fill(4, 4, 8),
+                        VecBuilder.fill(0.5, 0.5, 1)));
+
+                cameraConstants.put(CameraPositions.BACK, new CameraConstant("black_black", // black
+                        new Translation3d(Units.inchesToMeters(0.0), Units.inchesToMeters(0.0), Units.inchesToMeters(20)),
+                        new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(0.0), Units.degreesToRadians(180)),
+                        VecBuilder.fill(4, 4, 8),
+                        VecBuilder.fill(0.5, 0.5, 1)));
+                break;
+            case COMPBOT:
+                break;
+            case SIMBOT:
+                cameraConstants.put(CameraPositions.FRONT, new CameraConstant("a",
+                        new Translation3d(Units.inchesToMeters(0.0), Units.inchesToMeters(0.0), Units.inchesToMeters(0.0)),
+                        new Rotation3d(0, 0, 0),
+                        VecBuilder.fill(4, 4, 8),
+                        VecBuilder.fill(0.5, 0.5, 1)));
+
+                
+                cameraConstants.put(CameraPositions.BACK, new CameraConstant("b",
+                        new Translation3d(Units.inchesToMeters(0.0), Units.inchesToMeters(0.0), Units.inchesToMeters(0.0)),
+                        new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(180)),
+                        VecBuilder.fill(4, 4, 8),
+                        VecBuilder.fill(0.5, 0.5, 1)));
+                break;
+        }
         
-        cameraConstants.put(CameraPositions.BACK, new CameraConstant("back_camera",
-                new Translation3d(Units.inchesToMeters(-12), Units.inchesToMeters(0), Units.inchesToMeters(6.193)),
-                new Rotation3d(0, Units.degreesToRadians(-20), Units.degreesToRadians(180)),
-                VecBuilder.fill(4, 4, 8),
-                VecBuilder.fill(0.5, 0.5, 1)));
 
-        cameraConstants.put(CameraPositions.LEFT,  new CameraConstant("left_camera",
-                                                    new Translation3d(Units.inchesToMeters(2), Units.inchesToMeters(11.49), Units.inchesToMeters(16.74)),
-                                                    new Rotation3d(Units.degreesToRadians(-5.77), Units.degreesToRadians(-9.92), Units.degreesToRadians(120.38)),
-                                                    VecBuilder.fill(4, 4, 8),
-                                                    VecBuilder.fill(0.5, 0.5, 1)));
-
-        cameraConstants.put(CameraPositions.RIGHT, new CameraConstant("right_camera",
-                                                    new Translation3d(Units.inchesToMeters(2), Units.inchesToMeters(-11.49), Units.inchesToMeters(16.74)),
-                                                    new Rotation3d(Units.degreesToRadians(5.77), Units.degreesToRadians(-9.92), Units.degreesToRadians(-120.38)),
-                                                    VecBuilder.fill(4, 4, 8),
-                                                    VecBuilder.fill(0.5, 0.5, 1)));
     }
 }
