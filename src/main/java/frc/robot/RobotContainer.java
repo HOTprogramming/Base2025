@@ -58,6 +58,7 @@ public class RobotContainer {
     gamespecManager = new Manager();
 
     chooser.setDefaultOption("Auto", "Auto");
+    chooser.addOption("LRed4", "LRed4");
     // chooser.addOption("Complex Auto", "m_complexAuto");
     // NamedCommands.registerCommand("Coral Intake", gamespecManager.coralIntake());
     // NamedCommands.registerCommand("Coral Shoot", gamespecManager.coralShoot());
