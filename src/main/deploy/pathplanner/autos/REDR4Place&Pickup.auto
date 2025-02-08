@@ -1,0 +1,55 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RedR4Place1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "REDR4Pickup1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "REDR4Place2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "REDR4Pickup2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "REDR4Place3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "REDR4Pickup3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "REDRPlace4"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

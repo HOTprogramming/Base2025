@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 13.677971311475408,
+        "x": 12.43125,
         "y": 5.331659836065573
       },
       "prevControl": null,
       "nextControl": {
-        "x": 12.982684426229508,
+        "x": 11.7359631147541,
         "y": 4.996004098360656
       },
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": "RedCoral4Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -125.00000000000001
+    "rotation": -55.0
   },
   "useDefaultConstraints": true
 }

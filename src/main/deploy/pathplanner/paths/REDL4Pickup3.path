@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 16.231825657894735,
-        "y": 6.940378289473683
+        "x": 16.193338815789474,
+        "y": 6.959621710526315
       },
       "prevControl": {
-        "x": 15.706062754229052,
-        "y": 6.542418907984231
+        "x": 15.667575912123791,
+        "y": 6.561662329036864
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,8 +32,8 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.0,
-      "maxWaypointRelativePos": 0.6296791443850273,
+      "minWaypointRelativePos": 0.5,
+      "maxWaypointRelativePos": 0.0106951871657754,
       "constraints": {
         "maxVelocity": 12.0,
         "maxAcceleration": 8.0,
@@ -59,7 +59,7 @@
     "rotation": -125.00000000000001
   },
   "reversed": false,
-  "folder": "REDL4",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": -119.99999999999999

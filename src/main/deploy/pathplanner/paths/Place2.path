@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 13.677971311475408,
+        "x": 12.43125,
         "y": 5.331659836065573
       },
       "prevControl": {
-        "x": 14.32069885252767,
+        "x": 13.073977541052262,
         "y": 5.594279941766645
       },
       "nextControl": null,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -125.00000000000001
+    "rotation": -55.0
   },
   "reversed": false,
   "folder": "RedCoral4Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -125.00000000000001
+    "rotation": 55.0
   },
   "useDefaultConstraints": true
 }

@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 15.660797991337448,
-        "y": 6.61132012298735
+        "x": 15.669629645950263,
+        "y": 6.5782426870541615
       },
       "isLocked": false,
       "linkedName": "REDPick1"
@@ -20,8 +20,8 @@
         "y": 5.37203947368421
       },
       "prevControl": {
-        "x": 14.627616513800506,
-        "y": 5.945042632509114
+        "x": 14.640176810332422,
+        "y": 5.960565106072123
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,8 +32,8 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.0,
-      "maxWaypointRelativePos": 0.6270053475935831,
+      "minWaypointRelativePos": 0.517379679144385,
+      "maxWaypointRelativePos": 0.00267379679144385,
       "constraints": {
         "maxVelocity": 12.0,
         "maxAcceleration": 8.0,
@@ -59,7 +59,7 @@
     "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": "REDL4",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": -125.00000000000001

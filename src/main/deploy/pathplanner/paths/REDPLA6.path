@@ -1,0 +1,68 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 13.970723684210524,
+        "y": 5.218092105263159
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 14.634621710526314,
+        "y": 5.891611842105262
+      },
+      "isLocked": false,
+      "linkedName": "REDPLA4"
+    },
+    {
+      "anchor": {
+        "x": 16.010526315789473,
+        "y": 7.103947368421052
+      },
+      "prevControl": {
+        "x": 15.500575657894736,
+        "y": 6.593996710526316
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "EDPLA.5"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.4959893048128342,
+      "constraints": {
+        "maxVelocity": 12.0,
+        "maxAcceleration": 8.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.6,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 6.0,
+    "maxAcceleration": 8.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.6,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -125.00000000000001
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -119.99999999999999
+  },
+  "useDefaultConstraints": true
+}

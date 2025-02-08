@@ -11,9 +11,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "L4"
+            "waitTime": 2.0
           }
         },
         {
@@ -23,9 +23,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Coral Intake"
+            "waitTime": 2.0
           }
         },
         {
@@ -35,15 +35,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Coral Shoot"
+            "waitTime": 2.0
           }
         },
         {
@@ -53,9 +47,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Coral Intake"
+            "waitTime": 2.0
           }
         },
         {
@@ -65,15 +59,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Coral Shoot"
+            "waitTime": 2.0
           }
         },
         {
@@ -83,27 +71,15 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Coral Intake"
+            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "REDL4Place4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Coral Shoot"
           }
         }
       ]

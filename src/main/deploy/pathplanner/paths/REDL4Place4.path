@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 16.231825657894735,
-        "y": 6.940378289473683
+        "x": 16.193338815789474,
+        "y": 6.959621710526315
       },
       "prevControl": null,
       "nextControl": {
-        "x": 15.805663001977603,
-        "y": 6.1257765020020205
+        "x": 15.767176159872342,
+        "y": 6.145019923054653
       },
       "isLocked": false,
       "linkedName": "REDPickup3"
     },
     {
       "anchor": {
-        "x": 14.557648026315787,
-        "y": 4.169325657894737
+        "x": 14.586513157894736,
+        "y": 4.178947368421053
       },
       "prevControl": {
-        "x": 15.183206299447725,
-        "y": 5.268759119706285
+        "x": 15.212071431026674,
+        "y": 5.278380830232601
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,8 +32,8 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.0,
-      "maxWaypointRelativePos": 0.6684491978609629,
+      "minWaypointRelativePos": 0.5802139037433155,
+      "maxWaypointRelativePos": 0.016042780748663103,
       "constraints": {
         "maxVelocity": 12.0,
         "maxAcceleration": 8.0,
@@ -59,7 +59,7 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "REDL4",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": -125.00000000000001
