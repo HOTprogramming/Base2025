@@ -119,6 +119,14 @@ public class Manager extends SubsystemBase{
       return manipulatorSubsystem.goScore();
     }
 
+    public Command algaeExtend(){
+      return manipulatorSubsystem.algaeExtend();
+    }
+
+    public Command algaePackage(){
+      return manipulatorSubsystem.algaePackage();
+    }
+
 
 
 }

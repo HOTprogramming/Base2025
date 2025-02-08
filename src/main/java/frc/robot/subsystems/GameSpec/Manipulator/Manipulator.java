@@ -72,7 +72,7 @@ public class Manipulator extends SubsystemBase {
 
     private void UpdateTelemetry() {
         coralVelocity.setDouble(io.coral.getVelocity().getValueAsDouble());
-        coralPosition.setDouble(io.coralCancoder.getPosition().getValueAsDouble());
+        coralPosition.setDouble(io.coralWrist.getPosition().getValueAsDouble());
         coralSupplyCurrent.setDouble(stats.coralSupplyCurrentAmps);
         coralStatorCurrent.setDouble(stats.coralTorqueCurrentAmps);
         coralTemp.setDouble(stats.coralTempCelsius);
@@ -91,6 +91,16 @@ public class Manipulator extends SubsystemBase {
             () -> this.coralCommandedPos.setDouble(position),
             () -> io.setCoralAngleMotorControl(position),
             interrupted -> io.setCoralAngleMotorControl(position), 
+            () -> true,
+            this
+        );
+    }
+
+    private FunctionalCommand algaeCommand(double position){
+        return new FunctionalCommand(
+            () -> this.algaeCommandedPos.setDouble(position),
+            () -> io.setAlgaeMotorControl(position),
+            interrupted -> io.setAlgaeMotorControl(position), 
             () -> true,
             this
         );
@@ -118,6 +128,14 @@ public class Manipulator extends SubsystemBase {
         return coralCommand(ManipulatorConstants.coralWristScore);
     }
 
+    public Command algaeExtend(){
+        return algaeCommand(ManipulatorConstants.algaeExtend);
+    }
+
+    public Command algaePackage(){
+        return algaeCommand(ManipulatorConstants.algaePackage);
+    }
+
     public Command zero(){
         return run(() -> io.stop());
     }
@@ -126,22 +144,6 @@ public class Manipulator extends SubsystemBase {
         return (stats.coralPosition >= coralCommandedPos.getDouble(0) - deadband) && 
                (stats.coralPosition <= coralCommandedPos.getDouble(0) + deadband);
     }
-
-    public Command runToPositionAlgae(double position){
-        return run(() -> {
-            this.algaeCommandedPos.setDouble(position);
-            io.setAlgaeMotorControl(position);
-        });
-      }
-    
-      private FunctionalCommand algaeCommand(double position){
-        return new FunctionalCommand(
-          () -> this.algaeCommandedPos.setDouble(position),
-          () -> io.setAlgaeMotorControl(position),
-          interrupted -> io.setAlgaeMotorControl(position), 
-          () -> checkAlgaeRange(.1),
-          this);
-      }
     
         public Command stop(){
           return run(() -> {

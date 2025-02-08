@@ -20,6 +20,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.ExternalFeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.Angle;
@@ -37,7 +38,7 @@ public abstract class ManipulatorIO {
     protected VelocityTorqueCurrentFOC coralSpinController;
     protected DigitalInput coralBeamBreak;
     protected CANdi coralCandi;
-    protected TalonFXS coralWrist;
+    public TalonFXS coralWrist;
     protected CANcoder coralCancoder;
 
     protected TalonFXS algaeArm;
@@ -151,17 +152,17 @@ public abstract class ManipulatorIO {
             slot0.kV = ManipulatorConstants.coralWristGains.kV();
             slot0.kS = ManipulatorConstants.coralWristGains.kS();
 
-            slot0.kP = ManipulatorConstants.coralSpinGains.kP();
-            slot0.kI = ManipulatorConstants.coralSpinGains.kI();
-            slot0.kD = ManipulatorConstants.coralSpinGains.kD();
-            slot0.kV = ManipulatorConstants.coralSpinGains.kV();
-            slot0.kS = ManipulatorConstants.coralSpinGains.kS();
+            // slot0.kP = ManipulatorConstants.coralSpinGains.kP();
+            // slot0.kI = ManipulatorConstants.coralSpinGains.kI();
+            // slot0.kD = ManipulatorConstants.coralSpinGains.kD();
+            // slot0.kV = ManipulatorConstants.coralSpinGains.kV();
+            // slot0.kS = ManipulatorConstants.coralSpinGains.kS();
 
-            slot0.kP = ManipulatorConstants.algaeGains.kP();
-            slot0.kI = ManipulatorConstants.algaeGains.kI();
-            slot0.kD = ManipulatorConstants.algaeGains.kD();
-            slot0.kV = ManipulatorConstants.algaeGains.kV();
-            slot0.kS = ManipulatorConstants.algaeGains.kS();
+            // slot0.kP = ManipulatorConstants.algaeGains.kP();
+            // slot0.kI = ManipulatorConstants.algaeGains.kI();
+            // slot0.kD = ManipulatorConstants.algaeGains.kD();
+            // slot0.kV = ManipulatorConstants.algaeGains.kV();
+            // slot0.kS = ManipulatorConstants.algaeGains.kS();
 
 
             FeedbackConfigs fdb = cfg.Feedback;
@@ -180,13 +181,14 @@ public abstract class ManipulatorIO {
     
             cFXS.ExternalFeedback.FeedbackRemoteSensorID = coralCancoder.getDeviceID();
             cFXS.ExternalFeedback.ExternalFeedbackSensorSource = ExternalFeedbackSensorSourceValue.RemoteCANcoder;
-            cFXS.ExternalFeedback.SensorToMechanismRatio = 1; //changes what the cancoder and fx encoder ratio is
+            cFXS.ExternalFeedback.SensorToMechanismRatio = 1/360.0; //changes what the cancoder and fx encoder ratio is
             cFXS.ExternalFeedback.RotorToSensorRatio = 1; //12.8;
             cFXS.MotorOutput.NeutralMode = NeutralModeValue.Coast;
             cFXS.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
             cFXS.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
             cFXS.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
             cFXS.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
+            cFXS.Commutation.MotorArrangement = MotorArrangementValue.Brushed_DC;
 
             eCfg.MagnetSensor.MagnetOffset = -0.291;
             //score -0.246
@@ -312,7 +314,7 @@ public abstract class ManipulatorIO {
             if (!CoralStatus.isOK()) {
                 System.out.println("Could not configure device. Error: " + CoralStatus.toString());
             }
-    
+
             StatusCode CoralStatus2 = StatusCode.StatusCodeNotInitialized;
             for(int i = 0; i < 5; ++i) {
                 CoralStatus2 = coralWrist.getConfigurator().apply(cFXS);
@@ -367,6 +369,7 @@ public abstract class ManipulatorIO {
 
     /** Apply motion magic control mode */
     public void setAlgaeMotorControl(double commandedPosition) {
+        algaeArm.setControl(algaeMagic.withPosition(commandedPosition).withSlot(0));
     }
 
 
