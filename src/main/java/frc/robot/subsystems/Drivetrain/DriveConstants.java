@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.*;
 import frc.robot.Constants;
+import frc.robot.subsystems.Drivetrain.DriveConstants.DriveConfig;
 
 public class DriveConstants {
     private static final boolean seedpose_auton_sim = true;
@@ -121,15 +122,18 @@ public class DriveConstants {
 
 
     private static final double kDriveGearRatio = 5.01;
-    private static final double kDriveGearRatioCambot = 5.01;
+    private static final double kDriveGearRatioCambot = 6.746031746031747;
 
     private static final double kSteerGearRatio = 13.3714;
-    private static final double kSteerGearRatioCambot = 13.3714;
+    private static final double kSteerGearRatioCambot = 21.428571428571427;
 
     private static final Distance kWheelRadius = Inches.of(2);
 
     private static final boolean kInvertLeftSide = false;
     private static final boolean kInvertRightSide = true;
+
+    private static final boolean kInvertLeftSideCambot = false;
+    private static final boolean kInvertRightSideCambot = true;
 
     private static final int kPigeonId = 50;
 
@@ -261,7 +265,50 @@ public class DriveConstants {
 
 
 
+    // Front Left
+    private static final int kFrontLeftDriveMotorIdCambot = 6;
+    private static final int kFrontLeftSteerMotorIdCambot = 8;
+    private static final int kFrontLeftEncoderIdCambot = 18;
+    private static final Angle kFrontLeftEncoderOffsetCambot = Rotations.of(0.41552734375);
+    private static final boolean kFrontLeftSteerMotorInvertedCambot = true;
+    private static final boolean kFrontLeftEncoderInvertedCambot = false;
 
+    private static final Distance kFrontLeftXPosCambot = Inches.of(8.75);
+    private static final Distance kFrontLeftYPosCambot = Inches.of(8.75);
+
+    // Front Right
+    private static final int kFrontRightDriveMotorIdCambot = 2;
+    private static final int kFrontRightSteerMotorIdCambot = 4;
+    private static final int kFrontRightEncoderIdCambot = 14;
+    private static final Angle kFrontRightEncoderOffsetCambot = Rotations.of(-0.361572265625);
+    private static final boolean kFrontRightSteerMotorInvertedCambot = true;
+    private static final boolean kFrontRightEncoderInvertedCambot = false;
+
+    private static final Distance kFrontRightXPosCambot = Inches.of(8.75);
+    private static final Distance kFrontRightYPosCambot = Inches.of(-8.75);
+
+    // Back Left
+    private static final int kBackLeftDriveMotorIdCambot = 5;
+    private static final int kBackLeftSteerMotorIdCambot = 7;
+    private static final int kBackLeftEncoderIdCambot = 17;
+    private static final Angle kBackLeftEncoderOffsetCambot = Rotations.of(0.43896484375);
+    private static final boolean kBackLeftSteerMotorInvertedCambot = true;
+    private static final boolean kBackLeftEncoderInvertedCambot = false;
+
+    private static final Distance kBackLeftXPosCambot = Inches.of(-8.75);
+    private static final Distance kBackLeftYPosCambot = Inches.of(8.75);
+
+    // Back Right
+    private static final int kBackRightDriveMotorIdCambot = 1;
+    private static final int kBackRightSteerMotorIdCambot = 3;
+    private static final int kBackRightEncoderIdCambot = 13;
+    private static final Angle kBackRightEncoderOffsetCambot = Rotations.of(0.32177734375);
+    private static final boolean kBackRightSteerMotorInvertedCambot = true;
+    private static final boolean kBackRightEncoderInvertedCambot = false;
+
+    private static final Distance kBackRightXPosCambot = Inches.of(-8.75);
+    private static final Distance kBackRightYPosCambot = Inches.of(-8.75);
+    
 
 
 
