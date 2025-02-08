@@ -83,8 +83,7 @@ public class Manipulator extends SubsystemBase {
         algaeSupplyCurrent.setDouble(stats.algaeSupplyCurrentAmps);
         algaeStatorCurrent.setDouble(stats.algaeTorqueCurrentAmps);
         algaeTemp.setDouble(stats.algaeTempCelsius);
-        //  CANdiPWM2.setBoolean(stats.candiPWM2);
-         stats.candiPWM2 = true;
+          CANdiPWM2.setBoolean(stats.candiPWM2);
     }
 
     private FunctionalCommand coralCommand(double position){
@@ -92,16 +91,6 @@ public class Manipulator extends SubsystemBase {
             () -> this.coralCommandedPos.setDouble(position),
             () -> io.setCoralAngleMotorControl(position),
             interrupted -> io.setCoralAngleMotorControl(position), 
-            () -> false,
-            this
-        );
-    }
-
-    private FunctionalCommand coralfakeCommand(Boolean CANdiPWM2){
-        return new FunctionalCommand(
-            () -> this.CANdiPWM2.setBoolean(true),
-            () -> io.setCoralBeamBreakTrue(true),
-            interrupted -> io.setCoralBeamBreakTrue(false), 
             () -> false,
             this
         );
@@ -132,14 +121,23 @@ public class Manipulator extends SubsystemBase {
         return run(() -> io.stop());
     }
     
-    public Command setBeamBreakTrue() {
-        return coralfakeCommand(io.setCoralBeamBreakTrue(true));
-    }
+    // public Command setBeamBreakTrue() {
+    //     return coralfakeCommand(io.setCoralBeamBreakTrue(true));
+    // }
  
-    public Command stopOnBeamBreak() {
+    public Command BeamBreak2Stop() {
         return run(() -> {
             if (stats.candiPWM2 == true) {
                 coralCommandedSpeed.setDouble(0);
+                io.setCoralSpinMotorControl(0);
+            }
+        });
+    }
+    public Command BeamBreak1Stop(){
+        return run(() -> {
+            if (stats.candiPWM1 == true) {
+                algaeVelocity.setDouble(0);
+
             }
         });
     }
