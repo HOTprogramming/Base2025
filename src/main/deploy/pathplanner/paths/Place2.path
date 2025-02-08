@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 15.799795081961566,
+        "y": 7.2496926229454495
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 15.612769514554593,
+        "y": 7.083796760621823
+      },
+      "isLocked": false,
+      "linkedName": "pickup1"
+    },
+    {
+      "anchor": {
+        "x": 13.677971311475408,
+        "y": 5.331659836065573
+      },
+      "prevControl": {
+        "x": 14.32069885252767,
+        "y": 5.594279941766645
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "dropoff2"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 6.0,
+    "maxAcceleration": 8.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.6,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -125.00000000000001
+  },
+  "reversed": false,
+  "folder": "RedCoral4Left",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -125.00000000000001
+  },
+  "useDefaultConstraints": true
+}
