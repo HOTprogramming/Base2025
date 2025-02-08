@@ -25,11 +25,11 @@ public class ArmConstants {
     public static final double PackageAngle = 0;
 
     public static final double FeederAngle = 52.4;
-    public static final double L1Angle = 70;
-    public static final double L2Angle = -80;
-    public static final double L3Angle = 90;
-    public static final double L4Angle = -45;
-    public static final double L4Score = -55;
+    public static final double L1Angle = -30;
+    public static final double L2Angle = -30;
+    public static final double L3Angle = -30;
+    public static final double L4Angle = -36;
+    public static final double L4Score = -65;
     public static final double Horizontal = 90;
     public static final double Intermediate = -20.0;
 

@@ -36,6 +36,15 @@ public class Manager extends SubsystemBase{
     public Climber climberSubsystem;
     private Intake intakeSubsystem;
     private Manipulator manipulatorSubsystem;
+
+    private enum ScoringLevel {
+      L1,
+      L2,
+      L3,
+      L4
+    }
+
+    private ScoringLevel scoringLevel;
   
     public Manager() {
       if (!Utils.isSimulation()){
@@ -50,6 +59,8 @@ public class Manager extends SubsystemBase{
         manipulatorSubsystem = new Manipulator(new ManipulatorIOSim());
         climberSubsystem = new Climber(new ClimberIOSim());
       }
+
+      scoringLevel = ScoringLevel.L1;
     }
 
     public Command goToPackage(){
@@ -58,46 +69,38 @@ public class Manager extends SubsystemBase{
     }
 
     public Command goToL1(){
-
-      return Commands.parallel(armSubsystem.goToL1());
-
-      // return Commands.sequence(
-      //   elevatorSubsystem.goToL1(),
-      //   armSubsystem.goToL1()
-      // );
+      scoringLevel = ScoringLevel.L1;
+      return Commands.parallel(elevatorSubsystem.goToL1().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0))), armSubsystem.goToPackage())
+      .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L1Height-30.0,2.0)))
+      .andThen(Commands.parallel(elevatorSubsystem.goToL1(), armSubsystem.goToL1()));
     }
 
     public Command goToL2(){
-
-      return Commands.parallel(armSubsystem.goToL2());
-
-      // return Commands.sequence(
-      //   elevatorSubsystem.goToL2(),
-      //   armSubsystem.goToL2()
-      // );
+      scoringLevel = ScoringLevel.L2;
+      return Commands.parallel(elevatorSubsystem.goToL2().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0))), armSubsystem.goToPackage())
+      .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L2Height-30.0,2.0)))
+      .andThen(Commands.parallel(elevatorSubsystem.goToL2(), armSubsystem.goToL2()));
     }
 
     public Command goToL3(){
-      return Commands.sequence(
-        // elevatorSubsystem.goToL1(),
-        // armSubsystem.goToL3()
-        //elevatorSubsystem.goToPackage(),
-        armSubsystem.positiveTest()
-      );
+      scoringLevel = ScoringLevel.L3;
+      return Commands.parallel(elevatorSubsystem.goToL3().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0))), armSubsystem.goToPackage())
+      .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L3Height-30.0,2.0)))
+      .andThen(Commands.parallel(elevatorSubsystem.goToL3(), armSubsystem.goToL3()));
     }
 
     public Command goToL4(){
+      scoringLevel = ScoringLevel.L4;
       return Commands.parallel(elevatorSubsystem.goToL4().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0))), armSubsystem.goToPackage())
       .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-30.0,2.0)))
       .andThen(Commands.parallel(elevatorSubsystem.goToL4(), armSubsystem.goToL4()));
     }
 
-    public Command L4Score(){
-      return Commands.parallel(elevatorSubsystem.goToL4());
-      // return Commands.sequence(
-      //   armSubsystem.L4Score(),
-      //   elevatorSubsystem.L4Score()
-      // );
+    public Command shoot(){
+      return Commands.sequence(
+        armSubsystem.L4Score(),
+        elevatorSubsystem.L4Score()
+      );
     }
 
     public Command goToFeeder(){

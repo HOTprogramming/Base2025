@@ -43,6 +43,8 @@ public class RobotContainer {
     climb
   }
 
+
+
   private Mode mode;
 
   private final CommandXboxController driver = new CommandXboxController(0);
@@ -74,6 +76,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake", gamespecManager.Intake());
     NamedCommands.registerCommand("Stop Intake", gamespecManager.StopIntake());
     NamedCommands.registerCommand("align station intake", gamespecManager.alignStationIntake());
+    NamedCommands.registerCommand("shoot", gamespecManager.shoot());
 
 
     mode = Mode.coral;
@@ -145,10 +148,10 @@ public class RobotContainer {
       operator.start().onTrue(gamespecManager.runOnce(() -> mode = Mode.climb));
       operator.back().onTrue(gamespecManager.runOnce(() -> mode = Mode.climb));
 
-      operator.a().and(this::isCoral).onTrue(NamedCommands.getCommand("Package"));
-      operator.b().and(this::isCoral).onTrue(NamedCommands.getCommand("L3"));
-      operator.x().and(this::isCoral).onTrue(NamedCommands.getCommand("L1"));
-      operator.y().and(this::isCoral).onTrue(NamedCommands.getCommand("L4"));
+      operator.a().and(this::isCoral).onTrue(NamedCommands.getCommand("L2")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
+      operator.b().and(this::isCoral).onTrue(NamedCommands.getCommand("L3")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
+      operator.x().and(this::isCoral).onTrue(NamedCommands.getCommand("L1")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
+      operator.y().and(this::isCoral).onTrue(NamedCommands.getCommand("L4")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
       operator.leftTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align floor intake")); 
       operator.rightTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align station intake")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"), NamedCommands.getCommand("Stop Intake")));
 
