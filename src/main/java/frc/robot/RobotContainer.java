@@ -151,9 +151,8 @@ public class RobotContainer {
 
       // NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
       // NamedCommands.registerCommand("R_OTF", drivetrain.runOnTheFly());
-         operator.a().onTrue(gamespecManager.Intake());
-         operator.b().onTrue(gamespecManager.goToHorizontal());
-        operator.y().whileTrue(gamespecManager.setBeamBreakTrue());
+        
+      
        
       new EventTrigger("OTF").onTrue(Commands.runOnce(() -> drivetrain.generateOnTheFly()));
   }

@@ -6,6 +6,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CANdiConfiguration;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -29,6 +30,11 @@ import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.DigitalInput;
+import com.ctre.phoenix6.signals.S1CloseStateValue;
+import com.ctre.phoenix6.signals.S1FloatStateValue;
+import com.ctre.phoenix6.signals.S2CloseStateValue;
+import com.ctre.phoenix6.signals.S2FloatStateValue;
+import com.ctre.phoenix6.signals.S2StateValue;
 
 public abstract class ManipulatorIO {
     // Protected TalonFX object accessible to subclasses
@@ -114,7 +120,8 @@ public abstract class ManipulatorIO {
         TalonFXConfiguration cfg;
         TalonFXSConfiguration cFXS;
         CANcoderConfiguration eCfg;
-    
+        CANdiConfiguration eCafg;
+
         /** Constructor to initialize the TalonFX */
         public ManipulatorIO() {
             this.coral = new TalonFX(ManipulatorConstants.coralMotorID, "robot");
@@ -132,7 +139,11 @@ public abstract class ManipulatorIO {
             cfg = new TalonFXConfiguration();
             cFXS = new TalonFXSConfiguration();
             eCfg = new CANcoderConfiguration();
-        
+            eCafg = new CANdiConfiguration();
+            eCafg.DigitalInputs.S1FloatState = S1FloatStateValue.PullHigh;
+            eCafg.DigitalInputs.S2FloatState = S2FloatStateValue.PullHigh;
+            eCafg.DigitalInputs.S1CloseState = S1CloseStateValue.CloseWhenLow;
+            eCafg.DigitalInputs.S2CloseState = S2CloseStateValue.CloseWhenLow;
             MotionMagicConfigs mmC = cFXS.MotionMagic;
             mmC.MotionMagicCruiseVelocity = ManipulatorConstants.coralWristGains.CruiseVelocity(); //rps
             mmC.MotionMagicAcceleration = ManipulatorConstants.coralWristGains.Acceleration();
@@ -351,9 +362,7 @@ public abstract class ManipulatorIO {
         // System.out.println(commandedPosition);
         coralWrist.setControl(coralWristMagic.withPosition(commandedPosition).withSlot(0));
     }
-    public Boolean setCoralBeamBreakTrue(boolean CANdiPWM2 ){
-        return stats.candiPWM1 = true; 
-    }
+    
 
     /** Stop motor */
     public void stop() {
@@ -369,4 +378,8 @@ public abstract class ManipulatorIO {
     public abstract void periodic(); 
     
 
+    public void runVelocity(double rPM, int i) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'runVelocity'");
+    }
 }
