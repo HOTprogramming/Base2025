@@ -95,6 +95,16 @@ public class Manipulator extends SubsystemBase {
             this
         );
     }
+
+    private FunctionalCommand algaeCommand(double position){
+        return new FunctionalCommand(
+            () -> this.algaeCommandedPos.setDouble(position),
+            () -> io.setAlgaeMotorControl(position),
+            interrupted -> io.setAlgaeMotorControl(position), 
+            () -> false,
+            this
+        );
+    }
     public Command shoot() {
         return runOnce(() -> {
             coralCommandedSpeed.setDouble(5);

@@ -71,6 +71,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Feeder", gamespecManager.goToFeeder());
     NamedCommands.registerCommand("Coral HP", gamespecManager.coralGoHP());
     NamedCommands.registerCommand("Coral Score", gamespecManager.coralGoScore());
+    NamedCommands.registerCommand("Intake", gamespecManager.Intake());
 
 
     mode = Mode.coral;
@@ -132,7 +133,7 @@ public class RobotContainer {
       driver.rightBumper().onTrue(drivetrain.run(() -> drivetrain.alignReef(-1))); 
       driver.b().onTrue(NamedCommands.getCommand("expel"));
       driver.rightTrigger().onTrue(NamedCommands.getCommand("shoot"));
-      driver.leftTrigger().onTrue(NamedCommands.getCommand("intake"));
+      driver.leftTrigger().onTrue(NamedCommands.getCommand("Intake"));
 
       driver.start().onTrue(drivetrain.resetPidgeon());
 
@@ -142,14 +143,14 @@ public class RobotContainer {
       operator.start().onTrue(gamespecManager.runOnce(() -> mode = Mode.climb));
       operator.back().onTrue(gamespecManager.runOnce(() -> mode = Mode.climb));
 
-      operator.a().and(this::isCoral).onTrue(NamedCommands.getCommand("L2"));
+      operator.a().and(this::isCoral).onTrue(NamedCommands.getCommand("Package"));
       operator.b().and(this::isCoral).onTrue(NamedCommands.getCommand("L3"));
       operator.x().and(this::isCoral).onTrue(NamedCommands.getCommand("L1"));
       operator.y().and(this::isCoral).onTrue(NamedCommands.getCommand("L4"));
       operator.leftTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align floor intake")); 
       operator.rightTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align station intake"));
 
-      operator.a().and(this::isAlgae).onTrue(NamedCommands.getCommand("L2"));
+      operator.a().and(this::isAlgae).onTrue(NamedCommands.getCommand("Package"));
       operator.b().and(this::isAlgae).onTrue(NamedCommands.getCommand("L3"));
       operator.x().and(this::isAlgae).onTrue(NamedCommands.getCommand("processer"));
       operator.y().and(this::isAlgae).onTrue(NamedCommands.getCommand("barge"));

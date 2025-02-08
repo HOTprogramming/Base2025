@@ -123,12 +123,6 @@ public class Manager extends SubsystemBase{
       return manipulatorSubsystem.algaePackage();
     }
    
-    public Command goToVertical(){
-      return manipulatorSubsystem.goVertical();
-    }
-    public Command goToHorizontal(){
-      return manipulatorSubsystem.goHorizontal();
-    }
     public Command Intake(){
       return manipulatorSubsystem.intake();
 }
