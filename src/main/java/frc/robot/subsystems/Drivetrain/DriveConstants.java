@@ -48,12 +48,17 @@ public class DriveConstants {
         .withKP(0.1).withKI(0).withKD(0)
         .withKS(0).withKV(0.124);
 
+    private static final Slot0Configs driveGainsVoltage = new Slot0Configs()
+        .withKP(0.1).withKI(0).withKD(0)
+        .withKS(0).withKV(0.124);
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
     private static final ClosedLoopOutputType kSteerClosedLoopOutput = ClosedLoopOutputType.Voltage;
     // The closed-loop output type to use for the drive motors;
     // This affects the PID/FF gains for the drive motors
     private static final ClosedLoopOutputType kDriveClosedLoopOutput = ClosedLoopOutputType.TorqueCurrentFOC;
+    private static final ClosedLoopOutputType kDriveClosedLoopOutputCambot = ClosedLoopOutputType.Voltage;
+
 
     // The type of motor used for the drive motor
     private static final DriveMotorArrangement kDriveMotorType = DriveMotorArrangement.TalonFX_Integrated;
@@ -106,15 +111,21 @@ public class DriveConstants {
 
     // Theoretical free speed (m/s) at 12 V applied output;
     // This needs to be tuned to your individual robot
-    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(6.37);
-    public static final AngularVelocity kMaxAngularVelocity = RadiansPerSecond.of(6.28);
+    public static final LinearVelocity kSpeedAt12Volts = FeetPerSecond.of(16.67);
+    public static final AngularVelocity kMaxAngularVelocity = RotationsPerSecond.of(2);
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
     private static final double kCoupleRatio = 3.5714285714285716;
+    private static final double kCoupleRatioCambot = 3.5714285714285716;
+
 
     private static final double kDriveGearRatio = 5.01;
+    private static final double kDriveGearRatioCambot = 5.01;
+
     private static final double kSteerGearRatio = 13.3714;
+    private static final double kSteerGearRatioCambot = 13.3714;
+
     private static final Distance kWheelRadius = Inches.of(2);
 
     private static final boolean kInvertLeftSide = false;
@@ -144,6 +155,29 @@ public class DriveConstants {
             .withDriveMotorGains(driveGains)
             .withSteerMotorClosedLoopOutput(kSteerClosedLoopOutput)
             .withDriveMotorClosedLoopOutput(kDriveClosedLoopOutput)
+            .withSlipCurrent(kSlipCurrent)
+            .withSpeedAt12Volts(kSpeedAt12Volts)
+            .withDriveMotorType(kDriveMotorType)
+            .withSteerMotorType(kSteerMotorType)
+            .withFeedbackSource(kSteerFeedbackType)
+            .withDriveMotorInitialConfigs(driveInitialConfigs)
+            .withSteerMotorInitialConfigs(steerInitialConfigs)
+            .withEncoderInitialConfigs(encoderInitialConfigs)
+            .withSteerInertia(kSteerInertia)
+            .withDriveInertia(kDriveInertia)
+            .withSteerFrictionVoltage(kSteerFrictionVoltage)
+            .withDriveFrictionVoltage(kDriveFrictionVoltage);
+
+    private static final SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> ConstantCreatorCambot =
+        new SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>()
+            .withDriveMotorGearRatio(kDriveGearRatioCambot)
+            .withSteerMotorGearRatio(kSteerGearRatioCambot)
+            .withCouplingGearRatio(kCoupleRatioCambot)
+            .withWheelRadius(kWheelRadius)
+            .withSteerMotorGains(steerGains)
+            .withDriveMotorGains(driveGainsVoltage)
+            .withSteerMotorClosedLoopOutput(kSteerClosedLoopOutput)
+            .withDriveMotorClosedLoopOutput(kDriveClosedLoopOutputCambot)
             .withSlipCurrent(kSlipCurrent)
             .withSpeedAt12Volts(kSpeedAt12Volts)
             .withDriveMotorType(kDriveMotorType)
@@ -225,6 +259,36 @@ public class DriveConstants {
             kBackRightXPos, kBackRightYPos, kInvertRightSide, kBackRightSteerMotorInverted, kBackRightEncoderInverted
         );
 
+
+
+
+
+
+
+    public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontLeftCambot =
+        ConstantCreatorCambot.createModuleConstants(
+            kFrontLeftSteerMotorIdCambot, kFrontLeftDriveMotorIdCambot, kFrontLeftEncoderIdCambot, kFrontLeftEncoderOffsetCambot,
+            kFrontLeftXPosCambot, kFrontLeftYPosCambot, kInvertLeftSideCambot, kFrontLeftSteerMotorInvertedCambot, kFrontLeftEncoderInvertedCambot
+        );
+    public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontRightCambot =
+        ConstantCreatorCambot.createModuleConstants(
+            kFrontRightSteerMotorIdCambot, kFrontRightDriveMotorIdCambot, kFrontRightEncoderIdCambot, kFrontRightEncoderOffsetCambot,
+            kFrontRightXPosCambot, kFrontRightYPosCambot, kInvertRightSideCambot, kFrontRightSteerMotorInvertedCambot, kFrontRightEncoderInvertedCambot
+        );
+    public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> BackLeftCambot =
+        ConstantCreatorCambot.createModuleConstants(
+            kBackLeftSteerMotorIdCambot, kBackLeftDriveMotorIdCambot, kBackLeftEncoderIdCambot, kBackLeftEncoderOffsetCambot,
+            kBackLeftXPosCambot, kBackLeftYPosCambot, kInvertLeftSideCambot, kBackLeftSteerMotorInvertedCambot, kBackLeftEncoderInvertedCambot
+        );
+    public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> BackRightCambot =
+        ConstantCreatorCambot.createModuleConstants(
+            kBackRightSteerMotorIdCambot, kBackRightDriveMotorIdCambot, kBackRightEncoderIdCambot, kBackRightEncoderOffsetCambot,
+            kBackRightXPosCambot, kBackRightYPosCambot, kInvertRightSideCambot, kBackRightSteerMotorInvertedCambot, kBackRightEncoderInvertedCambot
+        );
+
+
+    
+
     public static final DriveConfig DriveConfig =
         switch (Constants.getRobot()) {
             case COMPBOT -> new DriveConfig(
@@ -243,10 +307,10 @@ public class DriveConstants {
                 teleopPidConstantsTheta
                 );
             case DEVBOT -> new DriveConfig(
-                FrontLeft, 
-                FrontRight, 
-                BackLeft, 
-                BackRight,
+                FrontLeftCambot, 
+                FrontRightCambot, 
+                BackLeftCambot, 
+                BackRightCambot,
                 DrivetrainConstants,
                 kSpeedAt12Volts.in(MetersPerSecond),
                 kMaxAngularVelocity.in(RadiansPerSecond),
