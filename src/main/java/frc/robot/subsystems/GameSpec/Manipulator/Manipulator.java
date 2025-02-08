@@ -108,8 +108,9 @@ public class Manipulator extends SubsystemBase {
     }
     public Command shoot() {
         return runOnce(() -> {
-            coralCommandedSpeed.setDouble(5);
-            io.setCoralSpinMotorControl(5);
+            coralCommandedSpeed.setDouble(-1.5);
+            io.setCoralSpinMotorControl(-1.5);
+            io.setCoralAngleMotorControl(ManipulatorConstants.coralWristHP);
         });
     }
 
@@ -139,7 +140,7 @@ public class Manipulator extends SubsystemBase {
     }
 
     public Command zero(){
-        return run(() -> io.stop());
+        return runOnce(() -> io.stop());
     }
     
     public Command BeamBreak2Stop() {

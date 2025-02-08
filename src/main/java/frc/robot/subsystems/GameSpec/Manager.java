@@ -85,13 +85,17 @@ public class Manager extends SubsystemBase{
     }
 
     public Command goToL1(){
-      return Commands.parallel(elevatorSubsystem.goToL1().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0))), armSubsystem.goToPackage())
+      return Commands.parallel(
+      run(() -> {scoringLevel = ScoringLevel.L1;})
+      ,elevatorSubsystem.goToL1().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0))), armSubsystem.goToPackage())
       .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L1Height-30.0,2.0)))
-      .andThen(Commands.parallel(elevatorSubsystem.goToL1(), armSubsystem.goToL1()));
+      .andThen(Commands.parallel(elevatorSubsystem.goToL1(), armSubsystem.goToL1()), manipulatorSubsystem.goHP());
     }
 
     public Command goToL2(){
-      return Commands.parallel(elevatorSubsystem.goToL2().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0))), armSubsystem.goToPackage())
+      return Commands.parallel(
+      run(() -> {scoringLevel = ScoringLevel.L2;})
+      ,elevatorSubsystem.goToL2().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0))), armSubsystem.goToPackage())
       .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L2Height-30.0,2.0)))
       .andThen(Commands.parallel(elevatorSubsystem.goToL2(), armSubsystem.goToL2()));
     }
@@ -113,6 +117,8 @@ public class Manager extends SubsystemBase{
       .andThen(Commands.parallel(elevatorSubsystem.goToL4(), armSubsystem.goToL4()));
     }
 
+    //
+
     public ScoringLevel getLevel(){
       return scoringLevel;
     }
@@ -127,10 +133,22 @@ public class Manager extends SubsystemBase{
             elevatorSubsystem.L4Score()),
           ScoringLevel.L3, Commands.sequence(
             armSubsystem.L3Score(),
-            elevatorSubsystem.L3Score())
+            elevatorSubsystem.L3Score()),
+          ScoringLevel.L2, Commands.sequence(
+            armSubsystem.L2Score(),
+            elevatorSubsystem.L2Score()),
+          ScoringLevel.L1, Commands.sequence(
+            manipulatorSubsystem.shoot(),
+            Commands.waitSeconds(1.0),
+            manipulatorSubsystem.stop(),
+            manipulatorSubsystem.goHP()
+            )
         ),
         this::getLevel
       );
+
+      //elevator: 18.79
+      //arm: -104.0
 
       // UpdateTelemetry();
       // if(this::getLevel){

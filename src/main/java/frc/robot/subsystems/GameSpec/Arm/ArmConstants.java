@@ -25,14 +25,16 @@ public class ArmConstants {
     public static final double PackageAngle = 0;
 
     public static final double FeederAngle = 52.4;
-    public static final double L1Angle = -30;
-    public static final double L2Angle = -30;
+    public static final double L1Angle = -104.0;
+    public static final double L2Angle = -31.6;
     public static final double L3Angle = -31.6;
     public static final double L4Angle = -36;
     public static final double L4Score = -65;
     public static final double L3Score = -81.5;
+    public static final double L2Score = -71.5;
     public static final double Horizontal = 90;
     public static final double Intermediate = -20.0;
+    
 
     
     public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 

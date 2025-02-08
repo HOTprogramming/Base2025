@@ -95,6 +95,10 @@ public class Arm extends SubsystemBase {
     return armCommand(ArmConstants.L3Score);
   }
 
+  public Command L2Score(){
+    return armCommand(ArmConstants.L2Score);
+  }
+
   public Command goToFeeder(){
     return armCommand(ArmConstants.FeederAngle);
   }

@@ -13,12 +13,14 @@ public class ElevatorConstants {
 
     public static final double L4Height = 57.0;
     public static final double L3Height = 28.35;
-    public static final double L2Height = 38;
-    public static final double L1Height = 28;
+    public static final double L2Height = 13.2;
+    public static final double L1Height = 18.79;
     public static final double FeederHeight = 1.25;
     public static final double L4ScoreHeight = 40.0;
-    public static final double L3ScoreHeight = 26.37;
+    public static final double L3ScoreHeight = 24.37;
+    public static final double L2ScoreHeight = 11.2;
     public static final double HPHeight = 17.0;
+
 
     public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
 }
