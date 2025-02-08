@@ -103,10 +103,11 @@ public class Manipulator extends SubsystemBase {
     }
 
     public Command intake() {
-        return runOnce(() -> {
-            coralCommandedSpeed.setDouble(-5);
-            io.setCoralSpinMotorControl(-5);
-        });    
+        return run(() -> {
+            coralCommandedSpeed.setDouble(8);
+            io.setCoralSpinMotorControl(8);
+
+        }).onlyWhile(() -> stats.candiPWM1).andThen(zero());    
     }
 
     public  Command goHorizontal() {
@@ -121,10 +122,7 @@ public class Manipulator extends SubsystemBase {
         return run(() -> io.stop());
     }
     
-    // public Command setBeamBreakTrue() {
-    //     return coralfakeCommand(io.setCoralBeamBreakTrue(true));
-    // }
- 
+    
     public Command BeamBreak2Stop() {
         return run(() -> {
             if (stats.candiPWM2 == true) {

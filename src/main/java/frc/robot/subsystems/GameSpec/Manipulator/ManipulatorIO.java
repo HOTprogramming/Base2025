@@ -181,12 +181,12 @@ public abstract class ManipulatorIO {
             cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
             cfg.Feedback.SensorToMechanismRatio = 1; //changes what the cancoder and fx encoder ratio is
             cfg.Feedback.RotorToSensorRatio = 1; //12.8;
-            cfg.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+            cfg.MotorOutput.NeutralMode = NeutralModeValue.Brake;
             cfg.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
             cfg.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
             cfg.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
             cfg.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
-    
+            
     
             cFXS.ExternalFeedback.FeedbackRemoteSensorID = coralCancoder.getDeviceID();
             cFXS.ExternalFeedback.ExternalFeedbackSensorSource = ExternalFeedbackSensorSourceValue.RemoteCANcoder;
