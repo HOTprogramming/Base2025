@@ -143,19 +143,19 @@ public class RobotContainer {
       operator.start().onTrue(gamespecManager.runOnce(() -> mode = Mode.climb));
       operator.back().onTrue(gamespecManager.runOnce(() -> mode = Mode.climb));
 
-      operator.a().and(this::isCoral).onTrue(NamedCommands.getCommand("L2"));
-      operator.b().and(this::isCoral).onTrue(NamedCommands.getCommand("L3"));
-      operator.x().and(this::isCoral).onTrue(NamedCommands.getCommand("L1"));
-      operator.y().and(this::isCoral).onTrue(NamedCommands.getCommand("L4"));
-      operator.leftTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align floor intake")); 
-      operator.rightTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align station intake"));
+      // operator.a().and(this::isCoral).onTrue(NamedCommands.getCommand("L2"));
+      // operator.b().and(this::isCoral).onTrue(NamedCommands.getCommand("L3"));
+      // operator.x().and(this::isCoral).onTrue(NamedCommands.getCommand("L1"));
+      // operator.y().and(this::isCoral).onTrue(NamedCommands.getCommand("L4"));
+      // operator.leftTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align floor intake")); 
+      // operator.rightTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align station intake"));
 
-      operator.a().and(this::isAlgae).onTrue(NamedCommands.getCommand("L2"));
-      operator.b().and(this::isAlgae).onTrue(NamedCommands.getCommand("L3"));
-      operator.x().and(this::isAlgae).onTrue(NamedCommands.getCommand("processer"));
-      operator.y().and(this::isAlgae).onTrue(NamedCommands.getCommand("barge"));
-      operator.leftTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("align floor intake"));
-      operator.rightTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("align processor"));
+      // operator.a().and(this::isAlgae).onTrue(NamedCommands.getCommand("L2"));
+      // operator.b().and(this::isAlgae).onTrue(NamedCommands.getCommand("L3"));
+      // operator.x().and(this::isAlgae).onTrue(NamedCommands.getCommand("processer"));
+      // operator.y().and(this::isAlgae).onTrue(NamedCommands.getCommand("barge"));
+      // operator.leftTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("align floor intake"));
+      // operator.rightTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("align processor"));
 
       // operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
       // operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));
@@ -166,9 +166,9 @@ public class RobotContainer {
       //   )
       // );
 
-      operator.axisLessThan(5, -0.15).or(operator.axisGreaterThan(5, 0.15)).and(this::isClimb).whileTrue(
+      operator.axisLessThan(5, -0.05).or(operator.axisGreaterThan(5, 0.05)).and(this::isClimb).whileTrue(
         gamespecManager.climberSubsystem.run(
-          () -> gamespecManager.climberSubsystem.setPower(operator.getRightY())
+          () -> gamespecManager.climberSubsystem.setPower(-operator.getRightY())
         )
       ).onFalse(gamespecManager.climberSubsystem.run(
         () -> gamespecManager.climberSubsystem.setPower(0.0)
