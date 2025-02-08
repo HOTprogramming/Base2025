@@ -154,12 +154,10 @@ public class RobotContainer {
     //  driver.x().onTrue(gamespecManager.Unwind());
     //   driver.y().onTrue(gamespecManager.Pull());
       driver.povUp().onTrue(gamespecManager.goToL4());
-      operator.a().whileTrue(gamespecManager.extend());
       operator.rightBumper().whileTrue(
         gamespecManager.climberSubsystem.run(
           () -> gamespecManager.climberSubsystem.setPower(operator.getRightY())
         ));
-     // operator.b().whileTrue(gamespecManager.retract());
       new EventTrigger("OTF").onTrue(Commands.runOnce(() -> drivetrain.generateOnTheFly()));
   }
 

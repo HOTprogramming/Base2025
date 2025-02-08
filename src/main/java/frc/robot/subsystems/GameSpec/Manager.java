@@ -98,12 +98,7 @@ public class Manager extends SubsystemBase{
         armSubsystem.goToFeeder()
       );
     }
-   public Command extend (){
-     return climberSubsystem.extend();
-   }
-  // public Command retract (){
-  // return climberSubsystem.retract();
- //  }
+ 
     public Command coralIntake(){
       return manipulatorSubsystem.intake();
     }

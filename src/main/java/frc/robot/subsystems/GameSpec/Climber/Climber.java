@@ -86,94 +86,12 @@ public class Climber extends SubsystemBase {
    //}
    
 
-  // public Command extend(){
-  //  if(climberPosition == <1){
-  //    return run(() -> {
-  //      climberVoltage.setValue(6);
-  //    });
-  // }
-  //}
 
     public void setPower(Double supplier){
         io.setPower(supplier);
     }
 
 
-
-   
-   public Command extend(){
-      return run(() -> {
-      
-      });
-      
-    }
-//
-   // public Command retract(){
-   //   return run( () -> {
-   //     climberVoltage.setValue(-6);
-   //   });
-   // }
-//
-  /*  public Command runToPosition(double position){
-    return run(() -> {
-        this.climberCommandedPos.setDouble(position);
-        io.setClimberMotorControl(position);
-    });
-  }
-
-  private FunctionalCommand climberCommand(double position){
-    return new FunctionalCommand(
-      () -> this.climberCommandedPos.setDouble(position),
-      () -> io.setClimberMotorControl(position),
-      interrupted -> io.setClimberMotorControl(position), 
-      () -> checkRange(.1),
-      this);
-  }
-  public Command runToPositionClimber(double position){
-    return run(() -> {
-        this.climberCommandedPos.setDouble(position);
-        io.setClimberMotorControl(position);
-    });
-  }
-  private FunctionalCommand ServoClampCommand(double position){
-    return new FunctionalCommand(
-      () -> this.servoClampCommandedPos.setDouble(position),
-      () -> io.setServoMotorControl(position),
-      interrupted -> io.setServoMotorControl(position), 
-      () -> checkRange(.1),
-      this);
-  }
-
-  public Command stop(){
-    return run(() -> {
-        io.stop();
-    });  
-  }
-
-  public Command hold(){
-    return run(() -> {
-      io.setClimberMotorControl(climberCommandedPos.getDouble(0));
-    });
-  }
-    public Command servohold(){
-      return run(() -> {
-        io.setServoMotorControl(servoClampCommandedPos.getDouble(0));
-      });
-  }
-  public Command Unwind(){
-    return climberCommand(ClimberConstants.UnspoolDistance);
-  }
-  public Command Pull(){
-    return climberCommand(ClimberConstants.SpoolDistance);
-  }
-   public Command ServoClamp(){
-      return ServoClampCommand (ClimberConstants.ServoClampDistance);
-  }
-  public boolean checkRange(double deadband){
-    return (stats.climberPosition >= climberCommandedPos.getDouble(0) - deadband) && 
-           (stats.climberPosition <= climberCommandedPos.getDouble(0) + deadband);
-  }
-*/
   @Override
   public void simulationPeriodic() {
   }
