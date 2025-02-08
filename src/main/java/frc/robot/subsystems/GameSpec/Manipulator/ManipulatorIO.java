@@ -183,14 +183,14 @@ public abstract class ManipulatorIO {
             cFXS.ExternalFeedback.ExternalFeedbackSensorSource = ExternalFeedbackSensorSourceValue.RemoteCANcoder;
             cFXS.ExternalFeedback.SensorToMechanismRatio = 1/360.0; //changes what the cancoder and fx encoder ratio is
             cFXS.ExternalFeedback.RotorToSensorRatio = 1; //12.8;
-            cFXS.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+            cFXS.MotorOutput.NeutralMode = NeutralModeValue.Brake;
             cFXS.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
             cFXS.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
             cFXS.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
             cFXS.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
             cFXS.Commutation.MotorArrangement = MotorArrangementValue.Brushed_DC;
 
-            eCfg.MagnetSensor.MagnetOffset = -0.291;
+            eCfg.MagnetSensor.MagnetOffset = -0.472;
             //score -0.246
 
 

@@ -9,7 +9,7 @@ public class ManipulatorConstants {
     public static final int coralWristID = 13;
     public static final double kReduction = (1.0 / 2.0);
     public static final double kMaxAccelerationRpmPerSec = 9000.0; 
-    public static final MMGains coralWristGains = new MMGains(200, 300, 400, 2, 0.0, 0.0, 0, 0.1);
+    public static final MMGains coralWristGains = new MMGains(3000, 4000, 14000, 0.2, 0.0, 0.025, 0.01, 0.5);
     public static final VVGains coralSpinGains = new VVGains(10.0, 0.0, 0.0, 0, 1);
 
     public static final int algaeArmID = 17;
@@ -18,7 +18,7 @@ public class ManipulatorConstants {
     public static final MMGains algaeGains = new MMGains(100, 100, 200, 1.0 , 0.0, 0.0, 0, 0);
     
     public static final double coralWristHP = 0;
-    public static final double coralWristScore = 90;
+    public static final double coralWristScore = -90;
 
     public static final double algaeExtend = 0;
     public static final double algaePackage = 0;
