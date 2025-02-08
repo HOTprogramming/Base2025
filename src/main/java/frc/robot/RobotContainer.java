@@ -157,8 +157,22 @@ public class RobotContainer {
       operator.leftTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("align floor intake"));
       operator.rightTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("align processor"));
 
-      operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
-      operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));      
+      // operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
+      // operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));
+      // operator.rightStick().   
+      // driver.axisLessThan(5, -0.15).or(driver.axisGreaterThan(5, 0.15)).and(() -> true).whileTrue(
+      //   gamespecManager.climberSubsystem.run(
+      //     () -> gamespecManager.climberSubsystem.setPower(driver.getRightY())
+      //   )
+      // );
+
+      operator.axisLessThan(5, -0.15).or(operator.axisGreaterThan(5, 0.15)).and(this::isClimb).whileTrue(
+        gamespecManager.climberSubsystem.run(
+          () -> gamespecManager.climberSubsystem.setPower(operator.getRightY())
+        )
+      ).onFalse(gamespecManager.climberSubsystem.run(
+        () -> gamespecManager.climberSubsystem.setPower(0.0)
+      ));
 
       operator.leftTrigger().or(operator.rightTrigger()).onFalse(NamedCommands.getCommand("Coral Zero"));
 
