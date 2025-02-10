@@ -36,17 +36,9 @@ jobs:
     # Runs a single command using the runners shell
     - name: Compile and run tests on robot code
       run: ./gradlew build
-
-  simulate:
-    runs-on: ubuntu-latest
-    # This grabs the WPILib docker container
-    container: wpilib/roborio-cross-ubuntu:2024-22.04
-    
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
       
-      # Runs command to start simulation
-      - name: Run Simulation
-        run: ./gradlew simulateJava && ./gradlew --stop
+    # Runs command to start simulation
+    - name: Run Simulation
+      timeout-minutes: .5
+      run: ./gradlew simulateJava && ./gradlew --stop
       
