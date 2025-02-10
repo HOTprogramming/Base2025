@@ -39,4 +39,5 @@ jobs:
 
     # Runs command to start simulation
     - name: Run Simulation
-      run: ./gradlew simulateJava
+      run: ./gradlew simulateJava && ./gradlew --stop
+      
