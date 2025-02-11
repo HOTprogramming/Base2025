@@ -16,6 +16,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain.DriveConstants.DriveConfig;
 
 public class DriveConstants {
+    public static final double slowModeMultiplier = 0.5;
     private static final boolean seedpose_auton_sim = true;
     private static final boolean seedpose_auton_real = true;
 

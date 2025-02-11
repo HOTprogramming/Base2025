@@ -17,7 +17,7 @@
     public static final double loopPeriodSecs = 0.02;
     private static RobotType robotType = RobotType.DEVBOT;
     public static final boolean tuningMode = false;
-    public static final String canName = "rio";
+    public static final String canName = "Sim";
 
     public static final double brownoutVoltage = 5.5;
 
