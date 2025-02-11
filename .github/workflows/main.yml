@@ -36,7 +36,4 @@ jobs:
     # Runs a single command using the runners shell
     - name: Compile and run tests on robot code
       run: ./gradlew build
-
-          timeout-minutes: .5
-          run: ./gradlew simulateJava && ./gradlew --stop
       
