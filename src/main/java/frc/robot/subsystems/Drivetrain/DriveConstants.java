@@ -15,6 +15,7 @@ import edu.wpi.first.units.measure.*;
 import frc.robot.Constants;
 
 public class DriveConstants {
+    public static final double slowModeMultiplier = 0.5;
     private static final boolean seedpose_auton_sim = true;
     private static final boolean seedpose_auton_real = true;
 
@@ -106,7 +107,7 @@ public class DriveConstants {
 
     // Theoretical free speed (m/s) at 12 V applied output;
     // This needs to be tuned to your individual robot
-    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(6.37);
+    public static final LinearVelocity kSpeedAt12Volts = FeetPerSecond.of(16.6);
     public static final AngularVelocity kMaxAngularVelocity = RadiansPerSecond.of(6.28);
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;

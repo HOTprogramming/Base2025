@@ -257,6 +257,16 @@ public class Drive extends SubsystemBase {
         heading = this.iOdata.state.Pose.getRotation();
     }
 
+    public void teleopDriveSlow(double driveX, double driveY, double driveTheta)  {
+        driveIO.setSwerveRequest(FIELD_CENTRIC
+             .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY() * slowModeMultiplier)
+             .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY() * slowModeMultiplier)
+             .withRotationalRate((driveTheta <= 0 ? -(driveTheta * driveTheta) : (driveTheta * driveTheta)) * DriveConfig.MAX_ANGULAR_VELOCITY() * slowModeMultiplier)
+         );
+ 
+         heading = this.iOdata.state.Pose.getRotation();
+     }
+
     public void robotCentricTeleopDrive(double driveX, double driveY, double driveTheta)  {
         driveIO.setSwerveRequest(ROBOT_CENTRIC
              .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY())
@@ -344,8 +354,8 @@ public class Drive extends SubsystemBase {
         this.iOdata = driveIO.update();
         if (this.iOdata.state.Speeds != null) {
             speedEntry.setDouble(Math.hypot(
-                this.iOdata.state.Speeds.vxMetersPerSecond,
-                this.iOdata.state.Speeds.vyMetersPerSecond));
+                this.iOdata.state.Speeds.vxMetersPerSecond * 3.281,
+                this.iOdata.state.Speeds.vyMetersPerSecond * 3.281));
         }
         if (this.iOdata.state.Pose != null) {
             poseEntry.setDoubleArray(new Double[]{
@@ -379,7 +389,14 @@ public class Drive extends SubsystemBase {
     }
 
     public Command resetPidgeon() {
-        return runOnce(() -> {driveIO.resetPidgeon();});
+        return runOnce(() -> {
+            driveIO.resetPidgeon();
+            heading = iOdata.state.Pose.getRotation();
+            });
+    }
+
+    public Command resetHeading() {
+        return runOnce(() -> heading = iOdata.state.Pose.getRotation());
     }
 
     private void configurePathPlanner() {
