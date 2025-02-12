@@ -7,19 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "path 1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "OTF"
+            "pathName": "Place1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "path 3"
+            "pathName": "Pickup1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Place2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Pickup2"
           }
         }
       ]

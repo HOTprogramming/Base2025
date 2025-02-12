@@ -81,7 +81,7 @@ public class Drive extends SubsystemBase {
 
     private final SwerveRequest.SwerveDriveBrake BRAKE = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.FieldCentric FIELD_CENTRIC = new SwerveRequest.FieldCentric()
-    .withDeadband(5.0 * 0.1).withRotationalDeadband(3.14 * 0.1);
+    .withDeadband(0.0).withRotationalDeadband(0.0);
     private final SwerveRequest.RobotCentric ROBOT_CENTRIC = new SwerveRequest.RobotCentric();
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
 
@@ -257,6 +257,16 @@ public class Drive extends SubsystemBase {
         heading = this.iOdata.state.Pose.getRotation();
     }
 
+    public void teleopDriveSlow(double driveX, double driveY, double driveTheta)  {
+        driveIO.setSwerveRequest(FIELD_CENTRIC
+             .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY() * slowModeMultiplier)
+             .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY() * slowModeMultiplier)
+             .withRotationalRate((driveTheta <= 0 ? -(driveTheta * driveTheta) : (driveTheta * driveTheta)) * DriveConfig.MAX_ANGULAR_VELOCITY() * slowModeMultiplier)
+         );
+ 
+         heading = this.iOdata.state.Pose.getRotation();
+     }
+
     public void robotCentricTeleopDrive(double driveX, double driveY, double driveTheta)  {
         driveIO.setSwerveRequest(ROBOT_CENTRIC
              .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY())
@@ -330,22 +340,23 @@ public class Drive extends SubsystemBase {
     @Override
     public void periodic() {
 
+        if (!(DriverStation.isTeleopEnabled()) || Math.abs(iOdata.pigeon.getX()) > 0.2 || Math.abs(iOdata.pigeon.getY()) > 0.2) {
+            heading = iOdata.state.Pose.getRotation();
+        }
+
         if (DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
                 this.driveIO.setOperatorPerspective(
-                    allianceColor == Alliance.Red
-                        ? kRedAlliancePerspectiveRotation
-                        : kBlueAlliancePerspectiveRotation
-                );
-                
+                    allianceColor == Alliance.Red ? kRedAlliancePerspectiveRotation : kBlueAlliancePerspectiveRotation
+                ); 
             });
         }
 		
         this.iOdata = driveIO.update();
         if (this.iOdata.state.Speeds != null) {
             speedEntry.setDouble(Math.hypot(
-                this.iOdata.state.Speeds.vxMetersPerSecond,
-                this.iOdata.state.Speeds.vyMetersPerSecond));
+                this.iOdata.state.Speeds.vxMetersPerSecond * 3.281,
+                this.iOdata.state.Speeds.vyMetersPerSecond * 3.281));
         }
         if (this.iOdata.state.Pose != null) {
             poseEntry.setDoubleArray(new Double[]{
@@ -359,10 +370,6 @@ public class Drive extends SubsystemBase {
                 pathGoalPose.getY(), 
                 pathGoalPose.getRotation().getRadians()});
         } 
-
-        if (!DriverStation.isTeleop()) {
-            heading = iOdata.state.Pose.getRotation();
-        }
 
         if (pathGroup != null) {
             currentPathIndex = IntStream.range(0, pathGroup.size())
@@ -379,7 +386,14 @@ public class Drive extends SubsystemBase {
     }
 
     public Command resetPidgeon() {
-        return runOnce(() -> {driveIO.resetPidgeon();});
+        return runOnce(() -> {
+            driveIO.resetPidgeon();
+            heading = iOdata.state.Pose.getRotation();
+            });
+    }
+
+    public Command resetHeading() {
+        return runOnce(() -> heading = iOdata.state.Pose.getRotation());
     }
 
     private void configurePathPlanner() {

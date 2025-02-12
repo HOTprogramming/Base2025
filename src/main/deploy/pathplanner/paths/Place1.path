@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 13.07858606557377,
-        "y": 4.001024590163935
+        "x": 10.273463114754097,
+        "y": 5.127868852459017
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.078586065573768,
-        "y": 4.001024590163935
+        "x": 11.539865140367436,
+        "y": 5.195117755577717
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.507377049180327,
-        "y": 4.013012295081967
+        "x": 12.17950819672131,
+        "y": 5.151844262295082
       },
       "prevControl": {
-        "x": 3.5073770491803273,
-        "y": 4.013012295081967
+        "x": 11.06666540474748,
+        "y": 5.136392334091489
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "dropoff1"
     }
   ],
   "rotationTargets": [],
@@ -34,7 +34,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 6.0,
-    "maxAcceleration": 6.0,
+    "maxAcceleration": 8.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.6,
@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -0.0
+    "rotation": -55.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "RedCoral4Left",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

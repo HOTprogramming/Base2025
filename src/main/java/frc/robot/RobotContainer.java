@@ -67,6 +67,7 @@ public class RobotContainer {
     gamespecManager = new Manager();
 
     chooser.setDefaultOption("Auto", "Auto");
+    chooser.addOption("goods", "REDR4Place&Pickup");
     // chooser.addOption("Complex Auto", "m_complexAuto");
     
     NamedCommands.registerCommand("L1", gamespecManager.goToL1());
@@ -95,35 +96,48 @@ public class RobotContainer {
     drivetrain.setDefaultCommand
       (drivetrain.run(() -> {
             drivetrain.headingControl(
-              Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0, 
-              Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0);
+              Math.abs(driver.getLeftY()) >= 0.0 ? -driver.getLeftY() : 0, 
+              Math.abs(driver.getLeftX()) >= 0.0 ? -driver.getLeftX() : 0);
           }
-      ).unless(this::isClimb));    
+      ));    
 
-      driver.axisLessThan(4, -0.05)
-        .or(driver.axisGreaterThan(4, 0.05))
+      driver.axisLessThan(4, -0.00)
+        .or(driver.axisGreaterThan(4, 0.00))
         .and(driver.y().negate())
         .whileTrue
       (drivetrain.run(() -> {
         drivetrain.teleopDrive(
-          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
-          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
-          Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
+          Math.abs(driver.getLeftY()) >= 0.0 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.0 ? -driver.getLeftX() : 0,
+          Math.abs(driver.getRightX()) >= 0.015 ? -driver.getRightX() : 0);
         }
       )).onFalse(Commands.race(Commands.waitSeconds(0.15), drivetrain.run(() -> {
         drivetrain.teleopDrive(
-          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
-          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
-          Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
+          Math.abs(driver.getLeftY()) >= 0.0 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.0 ? -driver.getLeftX() : 0,
+          Math.abs(driver.getRightX()) >= 0.015 ? -driver.getRightX() : 0);
         })));
 
-      driver.a().whileTrue
-      (drivetrain.run(() -> {
-        drivetrain.lockReef(
-          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
-          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0);
-        }
-      ));
+      // driver.leftBumper().whileTrue(drivetrain.run(() -> {
+      //   drivetrain.teleopDriveSlow(
+      //     Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+      //     Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+      //     Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
+      // }))
+      // .onFalse(Commands.race(Commands.waitSeconds(0.15), drivetrain.run(() -> {
+      //   drivetrain.teleopDrive(
+      //     Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+      //     Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+      //     Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
+      //   })));
+
+      // driver.a().whileTrue
+      // (drivetrain.run(() -> {
+      //   drivetrain.lockReef(
+      //     Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+      //     Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0);
+      //   }
+      // ));
 
       driver.y()
       .and(driver.axisLessThan(4, -0.15).or(driver.axisGreaterThan(4, 0.15))
@@ -138,13 +152,18 @@ public class RobotContainer {
         }
       ));
   
-      driver.leftBumper().onTrue(drivetrain.run(() -> drivetrain.alignReef(1)));  
-      driver.rightBumper().onTrue(drivetrain.run(() -> drivetrain.alignReef(-1))); 
+      // driver.leftBumper().onTrue(drivetrain.run(() -> drivetrain.alignReef(1)));  
+      // driver.rightBumper().onTrue(drivetrain.run(() -> drivetrain.alignReef(-1))); 
       driver.b().onTrue(NamedCommands.getCommand("expel"));
       driver.rightTrigger().onTrue(NamedCommands.getCommand("shoot"));
       driver.leftTrigger().onTrue(NamedCommands.getCommand("Intake"));
 
-      driver.start().onTrue(drivetrain.resetPidgeon());
+      driver.start().onTrue(drivetrain.resetPidgeon()).onFalse(drivetrain.run(() -> {
+        drivetrain.teleopDrive(
+          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+          Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
+        }));
 
       operator.leftBumper().onTrue(gamespecManager.runOnce(() -> mode = Mode.coral));
       operator.rightBumper().onTrue(gamespecManager.runOnce(() -> mode = Mode.algae));

@@ -56,7 +56,7 @@ public class Camera extends SubsystemBase {
 
     public enum CameraPositions {
         FRONT,
-        BACK,
+        TOP,
         LEFT,
         RIGHT
     }
@@ -199,14 +199,14 @@ public class Camera extends SubsystemBase {
                 lastEstTimestamps.put(CameraPositions.RIGHT, -1.0);
         }
         
-        cameraConstant = constants.cameraConstants.get(CameraPositions.BACK);
+        cameraConstant = constants.cameraConstants.get(CameraPositions.TOP);
         if (cameraConstant != null) {
-            cameras.put(CameraPositions.BACK, new PhotonCamera(cameraConstant.getName()));
-            publishers.put(CameraPositions.BACK, table.getDoubleArrayTopic("Rear_Camera").publish());
+            cameras.put(CameraPositions.TOP, new PhotonCamera(cameraConstant.getName()));
+            publishers.put(CameraPositions.TOP, table.getDoubleArrayTopic("Top_Camera").publish());
             PhotonPoseEstimator estimator = new PhotonPoseEstimator(tags, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cameraConstant.getTransform());
             estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-                lastEstTimestamps.put(CameraPositions.BACK, -1.0);
-            photonPoseEstimators.put(CameraPositions.BACK, estimator);
+                lastEstTimestamps.put(CameraPositions.TOP, -1.0);
+            photonPoseEstimators.put(CameraPositions.TOP, estimator);
         }
     }
 
@@ -248,10 +248,10 @@ public class Camera extends SubsystemBase {
             SmartDashboard.putNumber("Camera" + key + "sees:", list.size());
         });
 
-        allowMultiTag = CameraPositions.BACK;
+        allowMultiTag = CameraPositions.TOP;
 
-        if (targetsSeenByCamera.containsKey(CameraPositions.BACK) && targetsSeenByCamera.get(CameraPositions.BACK).size() >=2 ) {
-            allowMultiTag = CameraPositions.BACK;
+        if (targetsSeenByCamera.containsKey(CameraPositions.TOP) && targetsSeenByCamera.get(CameraPositions.TOP).size() >=2 ) {
+            allowMultiTag = CameraPositions.TOP;
         } else if (targetsSeenByCamera.containsKey(CameraPositions.RIGHT) && targetsSeenByCamera.get(CameraPositions.RIGHT).size() >=2 ) {
             allowMultiTag = CameraPositions.RIGHT;
         } else if (targetsSeenByCamera.containsKey(CameraPositions.LEFT) && targetsSeenByCamera.get(CameraPositions.LEFT).size() >=2 ) {

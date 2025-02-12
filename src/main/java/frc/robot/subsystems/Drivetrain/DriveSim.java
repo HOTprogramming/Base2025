@@ -84,6 +84,8 @@ public class DriveSim extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder>  impl
             this.iOdata.state = this.currentState;
         }   
 
+        this.iOdata.pigeon = m_Pigeon2.getRotation3d();
+
         return this.iOdata;
     }
 
