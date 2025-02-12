@@ -61,8 +61,6 @@ public class Manager extends SubsystemBase{
         manipulatorSubsystem = new Manipulator(new ManipulatorIOReal());
         climberSubsystem = new Climber(new ClimberIOReal());
         intakeSubsystem = new Intake(new IntakeIOReal());
-      } else if (Constants.getRobot() == Constants.RobotType.DEVBOT) {
-
       } else {
         elevatorSubsystem = new Elevator(new ElevatorIOSim());
         armSubsystem = new Arm(new ArmIOSim());
