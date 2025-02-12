@@ -7,7 +7,8 @@ public class ClimberConstants {
     public static final double kReduction = (1.0 / 2.0);
     public static final double kMaxAccelerationRpmPerSec = 9000.0; 
     public static final MMGains climberGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
-    public static final int ServoID = 15;
+    public static final int ServoPort = 3;
+    public static final int ServoPort2 = 11;
     public static final double UnspoolDistance = -2;
     public static final double SpoolDistance = 3;
     public static final double ServoClampDistance = 0.5;

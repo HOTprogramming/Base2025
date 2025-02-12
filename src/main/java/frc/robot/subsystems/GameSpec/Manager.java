@@ -110,15 +110,10 @@ public class Manager extends SubsystemBase{
     public Command coralZero(){
       return manipulatorSubsystem.zero();
     }
-/*     public Command Unwind(){
-    return climberSubsystem.Unwind();
+    public Command Servo(){
+      System.out.println("b");
+      return climberSubsystem.servo();
     }
-    
-    public Command Pull(){
-      return climberSubsystem.Pull();
-    } 
-    public Command ServoClamp(){
-      return climberSubsystem.ServoClamp();
-    }*/ 
+
 }
 
