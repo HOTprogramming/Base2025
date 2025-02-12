@@ -97,8 +97,8 @@ public class RobotContainer {
           }
       ));    
 
-      driver.axisLessThan(4, -0.05)
-        .or(driver.axisGreaterThan(4, 0.05))
+      driver.axisLessThan(4, -0.00)
+        .or(driver.axisGreaterThan(4, 0.00))
         .and(driver.y().negate())
         .whileTrue
       (drivetrain.run(() -> {
