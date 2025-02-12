@@ -89,31 +89,30 @@ public class RobotContainer {
 
   private void configureBindings() {    
 
-    // drivetrain.setDefaultCommand
-    //   (drivetrain.run(() -> {
-    //         drivetrain.headingControl(
-    //           Math.abs(driver.getLeftY()) >= 0.0 ? -driver.getLeftY() : 0, 
-    //           Math.abs(driver.getLeftX()) >= 0.0 ? -driver.getLeftX() : 0);
-    //       }
-    //   ));    
-
-      // driver.axisLessThan(4, -0.05)
-      //   .or(driver.axisGreaterThan(4, 0.05))
-      //   .and(driver.y().negate())
-      //   .whileTrue
     drivetrain.setDefaultCommand
+      (drivetrain.run(() -> {
+            drivetrain.headingControl(
+              Math.abs(driver.getLeftY()) >= 0.0 ? -driver.getLeftY() : 0, 
+              Math.abs(driver.getLeftX()) >= 0.0 ? -driver.getLeftX() : 0);
+          }
+      ));    
+
+      driver.axisLessThan(4, -0.05)
+        .or(driver.axisGreaterThan(4, 0.05))
+        .and(driver.y().negate())
+        .whileTrue
       (drivetrain.run(() -> {
         drivetrain.teleopDrive(
           Math.abs(driver.getLeftY()) >= 0.0 ? -driver.getLeftY() : 0,
           Math.abs(driver.getLeftX()) >= 0.0 ? -driver.getLeftX() : 0,
           Math.abs(driver.getRightX()) >= 0.015 ? -driver.getRightX() : 0);
-        }));
-      // )).onFalse(Commands.race(Commands.waitSeconds(0.15), drivetrain.run(() -> {
-      //   drivetrain.teleopDrive(
-      //     Math.abs(driver.getLeftY()) >= 0.0 ? -driver.getLeftY() : 0,
-      //     Math.abs(driver.getLeftX()) >= 0.0 ? -driver.getLeftX() : 0,
-      //     Math.abs(driver.getRightX()) >= 0.015 ? -driver.getRightX() : 0);
-      //   })));
+        }
+      )).onFalse(Commands.race(Commands.waitSeconds(0.15), drivetrain.run(() -> {
+        drivetrain.teleopDrive(
+          Math.abs(driver.getLeftY()) >= 0.0 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.0 ? -driver.getLeftX() : 0,
+          Math.abs(driver.getRightX()) >= 0.015 ? -driver.getRightX() : 0);
+        })));
 
       // driver.leftBumper().whileTrue(drivetrain.run(() -> {
       //   drivetrain.teleopDriveSlow(
