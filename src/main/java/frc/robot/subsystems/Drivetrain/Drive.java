@@ -340,14 +340,15 @@ public class Drive extends SubsystemBase {
     @Override
     public void periodic() {
 
+        if (!(DriverStation.isTeleopEnabled()) || Math.abs(iOdata.pigeon.getX()) > 0.2 || Math.abs(iOdata.pigeon.getY()) > 0.2) {
+            heading = iOdata.state.Pose.getRotation();
+        }
+
         if (DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
                 this.driveIO.setOperatorPerspective(
-                    allianceColor == Alliance.Red
-                        ? kRedAlliancePerspectiveRotation
-                        : kBlueAlliancePerspectiveRotation
-                );
-                
+                    allianceColor == Alliance.Red ? kRedAlliancePerspectiveRotation : kBlueAlliancePerspectiveRotation
+                ); 
             });
         }
 		
@@ -369,10 +370,6 @@ public class Drive extends SubsystemBase {
                 pathGoalPose.getY(), 
                 pathGoalPose.getRotation().getRadians()});
         } 
-
-        if (!DriverStation.isTeleop()) {
-            heading = iOdata.state.Pose.getRotation();
-        }
 
         if (pathGroup != null) {
             currentPathIndex = IntStream.range(0, pathGroup.size())

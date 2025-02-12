@@ -15,6 +15,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 
@@ -84,6 +85,8 @@ public class DriveKraken extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
         if (currentState != null) {
             this.iOdata.state = this.currentState;
         }
+
+        this.iOdata.pigeon = m_Pigeon2.getRotation3d();
 
         // TODO ADD MODULE DATA
         return this.iOdata;
