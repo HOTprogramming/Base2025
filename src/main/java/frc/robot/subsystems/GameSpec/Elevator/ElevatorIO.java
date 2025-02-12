@@ -71,8 +71,8 @@ public abstract class ElevatorIO {
     private final StatusSignal<Angle> elevatorCancoderPosition;
     private final StatusSignal<AngularVelocity> elevatorCancoderVelocity;
 
-    public TalonFXConfiguration cfg;
-    public CANcoderConfiguration encoderCfg;
+    private TalonFXConfiguration cfg;
+    private CANcoderConfiguration encoderCfg;
 
     /** Constructor to initialize the TalonFX */
     public ElevatorIO() {

@@ -12,6 +12,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -20,6 +21,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.ExternalFeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.Angle;
@@ -35,9 +37,10 @@ public abstract class ManipulatorIO {
     protected TalonFX coral;
     protected MotionMagicVoltage coralWristMagic;
     protected VelocityTorqueCurrentFOC coralSpinController;
+    protected PositionVoltage positionVoltage;
     protected DigitalInput coralBeamBreak;
     protected CANdi coralCandi;
-    protected TalonFXS coralWrist;
+    public TalonFXS coralWrist;
     protected CANcoder coralCancoder;
 
     protected TalonFXS algaeArm;
@@ -111,9 +114,10 @@ public abstract class ManipulatorIO {
         private final StatusSignal<AngularVelocity> AlgaeCancoderVelocity;
         private final StatusSignal<Boolean> CANdiPWM2;
     
-        TalonFXConfiguration cfg;
-        TalonFXSConfiguration cFXS;
-        CANcoderConfiguration eCfg;
+        private TalonFXConfiguration cfg;
+        private TalonFXSConfiguration cFXS;
+        private CANcoderConfiguration eCfg;
+        
     
         /** Constructor to initialize the TalonFX */
         public ManipulatorIO() {
@@ -128,6 +132,7 @@ public abstract class ManipulatorIO {
     
             algaeMagic = new MotionMagicVoltage(0);
             coralWristMagic = new MotionMagicVoltage(0);
+            positionVoltage = new PositionVoltage(0);
             coralSpinController = new VelocityTorqueCurrentFOC(0).withUpdateFreqHz(0.0);
             cfg = new TalonFXConfiguration();
             cFXS = new TalonFXSConfiguration();
@@ -150,17 +155,17 @@ public abstract class ManipulatorIO {
             slot0.kV = ManipulatorConstants.coralWristGains.kV();
             slot0.kS = ManipulatorConstants.coralWristGains.kS();
 
-            slot0.kP = ManipulatorConstants.coralSpinGains.kP();
-            slot0.kI = ManipulatorConstants.coralSpinGains.kI();
-            slot0.kD = ManipulatorConstants.coralSpinGains.kD();
-            slot0.kV = ManipulatorConstants.coralSpinGains.kV();
-            slot0.kS = ManipulatorConstants.coralSpinGains.kS();
+            // slot0.kP = ManipulatorConstants.coralSpinGains.kP();
+            // slot0.kI = ManipulatorConstants.coralSpinGains.kI();
+            // slot0.kD = ManipulatorConstants.coralSpinGains.kD();
+            // slot0.kV = ManipulatorConstants.coralSpinGains.kV();
+            // slot0.kS = ManipulatorConstants.coralSpinGains.kS();
 
-            slot0.kP = ManipulatorConstants.algaeGains.kP();
-            slot0.kI = ManipulatorConstants.algaeGains.kI();
-            slot0.kD = ManipulatorConstants.algaeGains.kD();
-            slot0.kV = ManipulatorConstants.algaeGains.kV();
-            slot0.kS = ManipulatorConstants.algaeGains.kS();
+            // slot0.kP = ManipulatorConstants.algaeGains.kP();
+            // slot0.kI = ManipulatorConstants.algaeGains.kI();
+            // slot0.kD = ManipulatorConstants.algaeGains.kD();
+            // slot0.kV = ManipulatorConstants.algaeGains.kV();
+            // slot0.kS = ManipulatorConstants.algaeGains.kS();
 
 
             FeedbackConfigs fdb = cfg.Feedback;
@@ -181,11 +186,17 @@ public abstract class ManipulatorIO {
             cFXS.ExternalFeedback.ExternalFeedbackSensorSource = ExternalFeedbackSensorSourceValue.RemoteCANcoder;
             cFXS.ExternalFeedback.SensorToMechanismRatio = 1/360.0; //changes what the cancoder and fx encoder ratio is
             cFXS.ExternalFeedback.RotorToSensorRatio = 1; //12.8;
-            cFXS.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+            cFXS.MotorOutput.NeutralMode = NeutralModeValue.Brake;
             cFXS.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
             cFXS.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
             cFXS.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
             cFXS.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
+            cFXS.Commutation.MotorArrangement = MotorArrangementValue.Brushed_DC;
+
+            eCfg.MagnetSensor.MagnetOffset = -0.472;
+            //score -0.246
+
+
     
             setConfig();
     
@@ -306,7 +317,7 @@ public abstract class ManipulatorIO {
             if (!CoralStatus.isOK()) {
                 System.out.println("Could not configure device. Error: " + CoralStatus.toString());
             }
-    
+
             StatusCode CoralStatus2 = StatusCode.StatusCodeNotInitialized;
             for(int i = 0; i < 5; ++i) {
                 CoralStatus2 = coralWrist.getConfigurator().apply(cFXS);
@@ -349,7 +360,7 @@ public abstract class ManipulatorIO {
 
     public void setCoralAngleMotorControl(double commandedPosition) {
         // System.out.println(commandedPosition);
-        coralWrist.setControl(coralWristMagic.withPosition(commandedPosition).withSlot(0));
+        coralWrist.setControl(positionVoltage.withPosition(commandedPosition).withSlot(0));
     }
     
 
@@ -357,11 +368,13 @@ public abstract class ManipulatorIO {
     public void stop() {
         coral.setVoltage(0);
         algaeRoller.setVoltage(0);
+        coralWrist.setControl(positionVoltage.withPosition(ManipulatorConstants.coralWristScore).withSlot(0));
     }
 
-        /** Apply motion magic control mode */
-        public void setAlgaeMotorControl(double commandedPosition) {
-        }
+    /** Apply motion magic control mode */
+    public void setAlgaeMotorControl(double commandedPosition) {
+        algaeArm.setControl(algaeMagic.withPosition(commandedPosition).withSlot(0));
+    }
 
 
     public abstract void periodic(); 

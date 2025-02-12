@@ -26,6 +26,7 @@ import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
 import frc.robot.subsystems.GameSpec.Manager;
 import frc.robot.subsystems.GameSpec.Climber.Climber;
+import frc.robot.subsystems.Lights.Lights;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
 
 
@@ -36,12 +37,15 @@ public class RobotContainer {
   private Drive drivetrain;
   private Camera cameraSubsystem;
   private Manager gamespecManager;
+  private Lights m_Lights;
 
   private enum Mode {
     coral,
     algae,
     climb
   }
+
+
 
   private Mode mode;
 
@@ -54,8 +58,10 @@ public class RobotContainer {
     if(!Utils.isSimulation()){
         drivetrain = new Drive(new DriveKraken());
         cameraSubsystem = new Camera(drivetrain);
+        m_Lights = new Lights();
     } else {
       drivetrain = new Drive(new DriveSim());
+      m_Lights = new Lights();
     }
 
     gamespecManager = new Manager();
@@ -69,9 +75,12 @@ public class RobotContainer {
     NamedCommands.registerCommand("L4", gamespecManager.goToL4());
     NamedCommands.registerCommand("Package", gamespecManager.goToPackage());
     NamedCommands.registerCommand("Feeder", gamespecManager.goToFeeder());
-    NamedCommands.registerCommand("Coral Intake", gamespecManager.coralIntake());
-    NamedCommands.registerCommand("Coral Shoot", gamespecManager.coralShoot());
-    NamedCommands.registerCommand("Coral Zero", gamespecManager.coralZero());
+    NamedCommands.registerCommand("Coral HP", gamespecManager.coralGoHP());
+    NamedCommands.registerCommand("Coral Score", gamespecManager.coralGoScore());
+    NamedCommands.registerCommand("Intake", gamespecManager.Intake());
+    NamedCommands.registerCommand("Stop Intake", gamespecManager.StopIntake());
+    NamedCommands.registerCommand("align station intake", gamespecManager.alignStationIntake());
+    NamedCommands.registerCommand("shoot", gamespecManager.shoot());
 
 
     mode = Mode.coral;
@@ -89,10 +98,10 @@ public class RobotContainer {
               Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0, 
               Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0);
           }
-      ));    
+      ).unless(this::isClimb));    
 
-      driver.axisLessThan(4, -0.15)
-        .or(driver.axisGreaterThan(4, 0.15))
+      driver.axisLessThan(4, -0.05)
+        .or(driver.axisGreaterThan(4, 0.05))
         .and(driver.y().negate())
         .whileTrue
       (drivetrain.run(() -> {
@@ -133,7 +142,7 @@ public class RobotContainer {
       driver.rightBumper().onTrue(drivetrain.run(() -> drivetrain.alignReef(-1))); 
       driver.b().onTrue(NamedCommands.getCommand("expel"));
       driver.rightTrigger().onTrue(NamedCommands.getCommand("shoot"));
-      driver.leftTrigger().onTrue(NamedCommands.getCommand("intake"));
+      driver.leftTrigger().onTrue(NamedCommands.getCommand("Intake"));
 
       driver.start().onTrue(drivetrain.resetPidgeon());
 
@@ -143,28 +152,22 @@ public class RobotContainer {
       operator.start().onTrue(gamespecManager.runOnce(() -> mode = Mode.climb));
       operator.back().onTrue(gamespecManager.runOnce(() -> mode = Mode.climb));
 
-      // operator.a().and(this::isCoral).onTrue(NamedCommands.getCommand("L2"));
-      // operator.b().and(this::isCoral).onTrue(NamedCommands.getCommand("L3"));
-      // operator.x().and(this::isCoral).onTrue(NamedCommands.getCommand("L1"));
-      // operator.y().and(this::isCoral).onTrue(NamedCommands.getCommand("L4"));
-      // operator.leftTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align floor intake")); 
-      // operator.rightTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align station intake"));
+      operator.a().and(this::isCoral).onTrue(NamedCommands.getCommand("L2")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
+      operator.b().and(this::isCoral).onTrue(NamedCommands.getCommand("L3")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
+      operator.x().and(this::isCoral).onTrue(NamedCommands.getCommand("L1")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
+      operator.y().and(this::isCoral).onTrue(NamedCommands.getCommand("L4")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
+      operator.leftTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align floor intake")); 
+      operator.rightTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align station intake")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"), NamedCommands.getCommand("Stop Intake")));
 
-      // operator.a().and(this::isAlgae).onTrue(NamedCommands.getCommand("L2"));
-      // operator.b().and(this::isAlgae).onTrue(NamedCommands.getCommand("L3"));
-      // operator.x().and(this::isAlgae).onTrue(NamedCommands.getCommand("processer"));
-      // operator.y().and(this::isAlgae).onTrue(NamedCommands.getCommand("barge"));
-      // operator.leftTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("align floor intake"));
-      // operator.rightTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("align processor"));
+      operator.a().and(this::isAlgae).onTrue(NamedCommands.getCommand("Package"));
+      operator.b().and(this::isAlgae).onTrue(NamedCommands.getCommand("L3"));
+      operator.x().and(this::isAlgae).onTrue(NamedCommands.getCommand("processer"));
+      operator.y().and(this::isAlgae).onTrue(NamedCommands.getCommand("barge"));
+      operator.leftTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("align floor intake"));
+      operator.rightTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("align processor"));
 
-      // operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
-      // operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));
-      // operator.rightStick().   
-      // driver.axisLessThan(5, -0.15).or(driver.axisGreaterThan(5, 0.15)).and(() -> true).whileTrue(
-      //   gamespecManager.climberSubsystem.run(
-      //     () -> gamespecManager.climberSubsystem.setPower(driver.getRightY())
-      //   )
-      // );
+      operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
+      operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));
 
       operator.axisLessThan(5, -0.05).or(operator.axisGreaterThan(5, 0.05)).and(this::isClimb).whileTrue(
         gamespecManager.climberSubsystem.run(
@@ -200,5 +203,4 @@ public class RobotContainer {
     String autoName = chooser.getSelected();
     return new PathPlannerAuto(autoName).finallyDo(() -> System.out.println("ENDED AUTO COMMAND"));
   }
-
 }

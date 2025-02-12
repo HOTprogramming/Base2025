@@ -16,6 +16,7 @@ public class Manipulator extends SubsystemBase {
     private final ManipulatorIO io;
     public final ManipulatorIOStats stats;
     private final ShuffleboardTab coralShuffleboard;
+    private int delay = 0;
 
     /* Shuffleboard entries */
     private GenericEntry coralVelocity;
@@ -83,7 +84,7 @@ public class Manipulator extends SubsystemBase {
         algaeSupplyCurrent.setDouble(stats.algaeSupplyCurrentAmps);
         algaeStatorCurrent.setDouble(stats.algaeTorqueCurrentAmps);
         algaeTemp.setDouble(stats.algaeTempCelsius);
-        CANdiPWM2.setBoolean(stats.candiPWM2);
+          CANdiPWM2.setBoolean(stats.candiPWM2);
     }
 
     private FunctionalCommand coralCommand(double position){
@@ -91,57 +92,78 @@ public class Manipulator extends SubsystemBase {
             () -> this.coralCommandedPos.setDouble(position),
             () -> io.setCoralAngleMotorControl(position),
             interrupted -> io.setCoralAngleMotorControl(position), 
-            () -> true,
+            () -> false,
             this
         );
     }
 
+    private FunctionalCommand algaeCommand(double position){
+        return new FunctionalCommand(
+            () -> this.algaeCommandedPos.setDouble(position),
+            () -> io.setAlgaeMotorControl(position),
+            interrupted -> io.setAlgaeMotorControl(position), 
+            () -> false,
+            this
+        );
+    }
     public Command shoot() {
         return runOnce(() -> {
-            coralCommandedSpeed.setDouble(5);
-            io.setCoralSpinMotorControl(5);
+            coralCommandedSpeed.setDouble(-1.5);
+            io.setCoralSpinMotorControl(-1.5);
+            io.setCoralAngleMotorControl(ManipulatorConstants.coralWristHP);
         });
     }
 
     public Command intake() {
-        return runOnce(() -> {
-            coralCommandedSpeed.setDouble(-5);
-            io.setCoralSpinMotorControl(-5);
-        });    
+        return run(() -> {
+            coralCommandedSpeed.setDouble(8);
+            io.setCoralSpinMotorControl(8);
+            io.setCoralAngleMotorControl(ManipulatorConstants.coralWristHP);
+
+        }).onlyWhile(() -> stats.candiPWM1).andThen(Commands.waitSeconds(0.2)).andThen(zero());    
     }
 
-    public  Command goHorizontal() {
-        return coralCommand(0);
+    public  Command goHP() {
+        return coralCommand(ManipulatorConstants.coralWristHP);
     }
 
-    public  Command goVertical() {
-        return coralCommand(90);
+    public  Command goScore() {
+        return coralCommand(ManipulatorConstants.coralWristScore);
+    }
+
+    public Command algaeExtend(){
+        return algaeCommand(ManipulatorConstants.algaeExtend);
+    }
+
+    public Command algaePackage(){
+        return algaeCommand(ManipulatorConstants.algaePackage);
     }
 
     public Command zero(){
-        return run(() -> io.stop());
+        return runOnce(() -> io.stop());
     }
+    
+    public Command BeamBreak2Stop() {
+        return run(() -> {
+            if (stats.candiPWM2 == true) {
+                coralCommandedSpeed.setDouble(0);
+                io.setCoralSpinMotorControl(0);
+            }
+        });
+    }
+    public Command BeamBreak1Stop(){
+        return run(() -> {
+            if (stats.candiPWM1 == true) {
+                algaeVelocity.setDouble(0);
 
-    public boolean checkCoralRange(double deadband){
+            }
+        });
+    }
+        
+            public boolean checkCoralRange(double deadband){
         return (stats.coralPosition >= coralCommandedPos.getDouble(0) - deadband) && 
                (stats.coralPosition <= coralCommandedPos.getDouble(0) + deadband);
     }
-
-    public Command runToPositionAlgae(double position){
-        return run(() -> {
-            this.algaeCommandedPos.setDouble(position);
-            io.setAlgaeMotorControl(position);
-        });
-      }
-    
-      private FunctionalCommand algaeCommand(double position){
-        return new FunctionalCommand(
-          () -> this.algaeCommandedPos.setDouble(position),
-          () -> io.setAlgaeMotorControl(position),
-          interrupted -> io.setAlgaeMotorControl(position), 
-          () -> checkAlgaeRange(.1),
-          this);
-      }
     
         public Command stop(){
           return run(() -> {
