@@ -198,10 +198,10 @@ public class DriveConstants {
 
 
     // Front Left
-    private static final int kFrontLeftDriveMotorId = 4;
-    private static final int kFrontLeftSteerMotorId = 3;
-    private static final int kFrontLeftEncoderId = 43;
-    private static final Angle kFrontLeftEncoderOffset = Rotations.of(-0.42822265625);
+    private static final int kFrontLeftDriveMotorId = 8;
+    private static final int kFrontLeftSteerMotorId = 7;
+    private static final int kFrontLeftEncoderId = 41;
+    private static final Angle kFrontLeftEncoderOffset = Rotations.of(-0.12255859375);
     private static final boolean kFrontLeftSteerMotorInverted = true;
     private static final boolean kFrontLeftEncoderInverted = false;
 
@@ -209,10 +209,10 @@ public class DriveConstants {
     private static final Distance kFrontLeftYPos = Inches.of(11);
 
     // Front Right
-    private static final int kFrontRightDriveMotorId = 8;
-    private static final int kFrontRightSteerMotorId = 7;
-    private static final int kFrontRightEncoderId = 41;
-    private static final Angle kFrontRightEncoderOffset = Rotations.of(0.120849609375);
+    private static final int kFrontRightDriveMotorId = 6;
+    private static final int kFrontRightSteerMotorId = 5;
+    private static final int kFrontRightEncoderId = 40;
+    private static final Angle kFrontRightEncoderOffset = Rotations.of(-0.442138671875);
     private static final boolean kFrontRightSteerMotorInverted = true;
     private static final boolean kFrontRightEncoderInverted = false;
 
@@ -220,10 +220,10 @@ public class DriveConstants {
     private static final Distance kFrontRightYPos = Inches.of(-11);
 
     // Back Left
-    private static final int kBackLeftDriveMotorId = 2;
-    private static final int kBackLeftSteerMotorId = 1;
-    private static final int kBackLeftEncoderId = 42;
-    private static final Angle kBackLeftEncoderOffset = Rotations.of(-0.3056640625);
+    private static final int kBackLeftDriveMotorId = 4;
+    private static final int kBackLeftSteerMotorId = 3;
+    private static final int kBackLeftEncoderId = 43;
+    private static final Angle kBackLeftEncoderOffset = Rotations.of(-0.17626953125);
     private static final boolean kBackLeftSteerMotorInverted = true;
     private static final boolean kBackLeftEncoderInverted = false;
 
@@ -231,10 +231,10 @@ public class DriveConstants {
     private static final Distance kBackLeftYPos = Inches.of(11);
 
     // Back Right
-    private static final int kBackRightDriveMotorId = 6;
-    private static final int kBackRightSteerMotorId = 5;
-    private static final int kBackRightEncoderId = 40;
-    private static final Angle kBackRightEncoderOffset = Rotations.of(0.32177734375);
+    private static final int kBackRightDriveMotorId = 2;
+    private static final int kBackRightSteerMotorId = 1;
+    private static final int kBackRightEncoderId = 42;
+    private static final Angle kBackRightEncoderOffset = Rotations.of(0.443359375);
     private static final boolean kBackRightSteerMotorInverted = true;
     private static final boolean kBackRightEncoderInverted = false;
 
@@ -355,10 +355,10 @@ public class DriveConstants {
                 teleopPidConstantsTheta
                 );
             case DEVBOT -> new DriveConfig(
-                FrontLeftCambot, 
-                FrontRightCambot, 
-                BackLeftCambot, 
-                BackRightCambot,
+                FrontLeft, 
+                FrontRight, 
+                BackLeft, 
+                BackRight,
                 DrivetrainConstants,
                 kSpeedAt12Volts.in(MetersPerSecond),
                 kMaxAngularVelocity.in(RadiansPerSecond),
@@ -370,16 +370,16 @@ public class DriveConstants {
                 teleopPidConstantsTheta
                 );
             case SIMBOT -> new DriveConfig(
-                FrontLeft, 
-                FrontRight, 
-                BackLeft, 
-                BackRight,
+                FrontLeftCambot, 
+                FrontRightCambot, 
+                BackLeftCambot, 
+                BackRightCambot,
                 DrivetrainConstants,
                 kSpeedAt12Volts.in(MetersPerSecond),
                 kMaxAngularVelocity.in(RadiansPerSecond),
                 driveInitialConfigs.CurrentLimits,
                 steerInitialConfigs.CurrentLimits,
-                seedpose_auton_sim,
+                seedpose_auton_real,
                 autoPidConstantsTranslation,
                 autoPidConstantsTheta,
                 teleopPidConstantsTheta
