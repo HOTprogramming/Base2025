@@ -130,19 +130,26 @@ public class Manager extends SubsystemBase{
         Map.of(
           ScoringLevel.L4, Commands.sequence(
             armSubsystem.L4Score(),
-            elevatorSubsystem.L4Score()),
+            elevatorSubsystem.L4Score())
+            .onlyWhile(() -> (armSubsystem.armCurrent(30)))
+            .andThen(goToL4()),
           ScoringLevel.L3, Commands.sequence(
             armSubsystem.L3Score(),
-            elevatorSubsystem.L3Score()),
+            elevatorSubsystem.L3Score())
+            .onlyWhile(() -> (armSubsystem.armCurrent(30)))
+            .andThen(goToL3()),
           ScoringLevel.L2, Commands.sequence(
             armSubsystem.L2Score(),
-            elevatorSubsystem.L2Score()),
+            elevatorSubsystem.L2Score())
+            .onlyWhile(() -> (armSubsystem.armCurrent(30)))
+            .andThen(goToL2()),
           ScoringLevel.L1, Commands.sequence(
             manipulatorSubsystem.shoot(),
             Commands.waitSeconds(1.0),
             manipulatorSubsystem.stop(),
-            manipulatorSubsystem.goHP()
-            )
+            manipulatorSubsystem.goHP())
+            .onlyWhile(() -> (armSubsystem.armCurrent(30)))
+            .andThen(goToL1())
         ),
         this::getLevel
       );
