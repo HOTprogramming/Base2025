@@ -24,7 +24,7 @@ public class DriveConstants {
 
     private static final PIDConstants autoPidConstantsTranslation = new PIDConstants(10, 0, 0);
     private static final PIDConstants autoPidConstantsTheta = new PIDConstants (7, 0, 0); 
-    private static final PIDConstants teleopPidConstantsTheta = new PIDConstants (10, 0, 0); 
+    private static final PIDConstants teleopPidConstantsTheta = new PIDConstants (10, 0, 0.5); 
 
     public static final Pose2d SIDE_0 = new Pose2d(3.165, 4.025, Rotation2d.fromDegrees(0));
     public static final Pose2d SIDE_60 = new Pose2d(3.836, 2.886, Rotation2d.fromDegrees(60));

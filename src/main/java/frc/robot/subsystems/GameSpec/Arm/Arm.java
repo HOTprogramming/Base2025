@@ -88,7 +88,7 @@ public class Arm extends SubsystemBase {
   }
 
   public Command L4Score(){
-    return armCommand(ArmConstants.L4Score);
+    return armCommand(ArmConstants.L4Score); // arm spike supply current bad over 30
   }
 
   public Command L3Score(){

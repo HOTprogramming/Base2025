@@ -81,7 +81,7 @@ public class Drive extends SubsystemBase {
 
     private final SwerveRequest.SwerveDriveBrake BRAKE = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.FieldCentric FIELD_CENTRIC = new SwerveRequest.FieldCentric()
-    .withDeadband(0.0).withRotationalDeadband(0.0);
+    .withDeadband(0.2).withRotationalDeadband(0.2);
     private final SwerveRequest.RobotCentric ROBOT_CENTRIC = new SwerveRequest.RobotCentric();
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
 
@@ -311,9 +311,9 @@ public class Drive extends SubsystemBase {
             .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY() * 0.69)
             .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY() * 0.69)
             .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(),
-            Math.toRadians(60*Math.round(degToReef/60))))
+            Math.toRadians(60*Math.round(degToReef/60)) + Math.toRadians(90)))
         );        
-        heading = new Rotation2d (Math.toRadians(60*Math.round(degToReef/60)));
+        heading = new Rotation2d (Math.toRadians(60*Math.round(degToReef/60)) + Math.toRadians(90));
     }
 
     public void lockReefManual(double driveX, double driveY, double rightX, double rightY) {
