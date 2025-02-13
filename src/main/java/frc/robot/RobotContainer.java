@@ -156,7 +156,8 @@ public class RobotContainer {
       // driver.leftBumper().onTrue(drivetrain.run(() -> drivetrain.alignReef(1)));  
       // driver.rightBumper().onTrue(drivetrain.run(() -> drivetrain.alignReef(-1))); 
       driver.b().onTrue(NamedCommands.getCommand("expel"));
-      driver.rightTrigger().onTrue(NamedCommands.getCommand("shoot"))
+      driver.rightTrigger().onTrue(NamedCommands.getCommand("shoot")
+      .onlyIf(operator.b().or(operator.a()).or(operator.x()).or(operator.y())))
       .onFalse(NamedCommands.getCommand("cancel shoot")
       .onlyIf(operator.b().or(operator.a()).or(operator.x()).or(operator.y())));
       // driver.leftTrigger().onTrue(NamedCommands.getCommand("Intake"));
