@@ -96,8 +96,8 @@ public class Climber extends SubsystemBase {
     }
     public Command servo(){
       return run(() -> {
-       io.climberServo.set(1.0);
-       io.climberServo2.set(1.0);
+       io.climberServo.set(0.5);
+       io.climberServo2.set(0.5);
       });
     }
 

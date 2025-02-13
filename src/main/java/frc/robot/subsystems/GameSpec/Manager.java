@@ -206,8 +206,7 @@ public class Manager extends SubsystemBase{
     public Command StopIntake(){
       return manipulatorSubsystem.zero();
     }
-    public Command Servo(){
-      System.out.println("b");
+    public Command lockFingers(){
       return climberSubsystem.servo();
     }
 
