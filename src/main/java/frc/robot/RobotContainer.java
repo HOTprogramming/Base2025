@@ -82,6 +82,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Intake", gamespecManager.StopIntake());
     NamedCommands.registerCommand("align station intake", gamespecManager.alignStationIntake());
     NamedCommands.registerCommand("shoot", gamespecManager.shoot());
+    NamedCommands.registerCommand("cancel shoot", gamespecManager.cancelShoot());
 
 
     mode = Mode.coral;
@@ -155,7 +156,10 @@ public class RobotContainer {
       // driver.leftBumper().onTrue(drivetrain.run(() -> drivetrain.alignReef(1)));  
       // driver.rightBumper().onTrue(drivetrain.run(() -> drivetrain.alignReef(-1))); 
       driver.b().onTrue(NamedCommands.getCommand("expel"));
-      driver.rightTrigger().onTrue(NamedCommands.getCommand("shoot"));
+      driver.rightTrigger().onTrue(NamedCommands.getCommand("shoot")
+      .onlyIf(operator.b().or(operator.a()).or(operator.x()).or(operator.y())))
+      .onFalse(NamedCommands.getCommand("cancel shoot")
+      .onlyIf(operator.b().or(operator.a()).or(operator.x()).or(operator.y())));
       // driver.leftTrigger().onTrue(NamedCommands.getCommand("Intake"));
 
       driver.start().onTrue(drivetrain.resetPidgeon()).onFalse(drivetrain.run(() -> {

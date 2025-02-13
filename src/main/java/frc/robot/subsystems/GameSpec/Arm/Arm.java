@@ -127,6 +127,15 @@ public class Arm extends SubsystemBase {
     }
   }
 
+  public boolean armCurrent(double tripCurrent){
+    if(stats.SupplyCurrentAmps > tripCurrent){
+      return false;
+    }
+    else{
+      return true;
+    }
+  }
+
   public boolean armLessThan(double desiredPos, double threshHold){
     if(stats.armPosition < desiredPos - Math.abs(threshHold)){
       return true;
