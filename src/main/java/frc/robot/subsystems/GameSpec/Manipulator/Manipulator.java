@@ -123,6 +123,10 @@ public class Manipulator extends SubsystemBase {
         }).onlyWhile(() -> stats.candiPWM1).andThen(Commands.waitSeconds(0.2)).andThen(zero());    
     }
 
+    public Boolean returnBeambreak(){
+        return stats.candiPWM1;
+    }
+
     public  Command goHP() {
         return coralCommand(ManipulatorConstants.coralWristHP);
     }

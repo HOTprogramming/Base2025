@@ -144,8 +144,7 @@ public class Manager extends SubsystemBase{
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
             .andThen(goToL2().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))),
           ScoringLevel.L1, Commands.sequence(
-            manipulatorSubsystem.shoot(),
-            Commands.waitSeconds(1.0),
+            manipulatorSubsystem.shoot().onlyWhile(() -> !manipulatorSubsystem.returnBeambreak()),
             manipulatorSubsystem.stop(),
             manipulatorSubsystem.goHP())
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
