@@ -180,9 +180,12 @@ public class Manager extends SubsystemBase{
     }
 
     public Command alignStationIntake(){
-      return Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToFeeder(), manipulatorSubsystem.intake());
+      return Commands.parallel(
+        Commands.deadline(manipulatorSubsystem.intake(), armSubsystem.goToFeeder())
+        .andThen(armSubsystem.goToPackage()), 
+        elevatorSubsystem.goToPackage());
     }
-
+    
 //first one is position, second one is score
 //elevator L3: 28.35, 26.37
 //arm L3: -31.6, -81.5,

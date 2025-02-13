@@ -131,13 +131,13 @@ public class RobotContainer {
       //     Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
       //   })));
 
-      // driver.a().whileTrue
-      // (drivetrain.run(() -> {
-      //   drivetrain.lockReef(
-      //     Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
-      //     Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0);
-      //   }
-      // ));
+      driver.leftTrigger().whileTrue
+      (drivetrain.run(() -> {
+        drivetrain.lockReef(
+          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0);
+        }
+      ));
 
       driver.y()
       .and(driver.axisLessThan(4, -0.15).or(driver.axisGreaterThan(4, 0.15))
@@ -156,7 +156,7 @@ public class RobotContainer {
       // driver.rightBumper().onTrue(drivetrain.run(() -> drivetrain.alignReef(-1))); 
       driver.b().onTrue(NamedCommands.getCommand("expel"));
       driver.rightTrigger().onTrue(NamedCommands.getCommand("shoot"));
-      driver.leftTrigger().onTrue(NamedCommands.getCommand("Intake"));
+      // driver.leftTrigger().onTrue(NamedCommands.getCommand("Intake"));
 
       driver.start().onTrue(drivetrain.resetPidgeon()).onFalse(drivetrain.run(() -> {
         drivetrain.teleopDrive(
