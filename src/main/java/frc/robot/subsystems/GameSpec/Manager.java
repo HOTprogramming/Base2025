@@ -131,25 +131,25 @@ public class Manager extends SubsystemBase{
           ScoringLevel.L4, Commands.sequence(
             armSubsystem.L4Score(),
             elevatorSubsystem.L4Score())
-            .onlyWhile(() -> (armSubsystem.armCurrent(30)))
-            .andThen(goToL4()),
+            .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
+            .andThen(goToL4().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))),
           ScoringLevel.L3, Commands.sequence(
             armSubsystem.L3Score(),
             elevatorSubsystem.L3Score())
-            .onlyWhile(() -> (armSubsystem.armCurrent(30)))
-            .andThen(goToL3()),
+            .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
+            .andThen(goToL3().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))),
           ScoringLevel.L2, Commands.sequence(
             armSubsystem.L2Score(),
             elevatorSubsystem.L2Score())
-            .onlyWhile(() -> (armSubsystem.armCurrent(30)))
-            .andThen(goToL2()),
+            .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
+            .andThen(goToL2().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))),
           ScoringLevel.L1, Commands.sequence(
             manipulatorSubsystem.shoot(),
             Commands.waitSeconds(1.0),
             manipulatorSubsystem.stop(),
             manipulatorSubsystem.goHP())
-            .onlyWhile(() -> (armSubsystem.armCurrent(30)))
-            .andThen(goToL1())
+            .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
+            .andThen(goToL1().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail))))
         ),
         this::getLevel
       );
