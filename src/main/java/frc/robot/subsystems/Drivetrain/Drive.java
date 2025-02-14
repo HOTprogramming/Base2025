@@ -174,7 +174,7 @@ public class Drive extends SubsystemBase {
         return Math.abs(
                 this.iOdata.state.Pose.getTranslation().getDistance(
                     reefTarget.getTranslation())) 
-                    > 0.2;
+                    > 0.05;
     }
 
     public Command generateOnTheFly() {
