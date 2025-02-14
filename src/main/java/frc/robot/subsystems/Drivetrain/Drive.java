@@ -108,8 +108,8 @@ public class Drive extends SubsystemBase {
     public Drive(DriveIO driveIO) { 
         this.driveIO = driveIO;
         this.iOdata = driveIO.update();
-        translationControllerX.setTolerance(0.02);
-        translationControllerY.setTolerance(0.02);
+        translationControllerX.setTolerance(0.01);
+        translationControllerY.setTolerance(0.01);
 
 
         heading = Rotation2d.fromDegrees(0);
