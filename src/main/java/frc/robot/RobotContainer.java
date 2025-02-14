@@ -157,8 +157,8 @@ public class RobotContainer {
         }
       ));
   
-      driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1))).whileTrue(drivetrain.run(() -> drivetrain.alignReef()).onlyWhile(drivetrain::notAtTarget));  
-      driver.rightBumper().onTrue(drivetrain.runOnce(() -> drivetrain.updateReefTarget(-1))).whileTrue(drivetrain.run(() -> drivetrain.alignReef()).onlyWhile(drivetrain::notAtTarget)); 
+      driver.x().onTrue(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1))).whileTrue(drivetrain.run(() -> drivetrain.alignReef()).onlyWhile(drivetrain::notAtTarget));  
+      driver.b().onTrue(drivetrain.runOnce(() -> drivetrain.updateReefTarget(-1))).whileTrue(drivetrain.run(() -> drivetrain.alignReef()).onlyWhile(drivetrain::notAtTarget)); 
       driver.b().onTrue(NamedCommands.getCommand("expel"));
       driver.rightTrigger().onTrue(NamedCommands.getCommand("shoot")
       .onlyIf(operator.b().or(operator.a()).or(operator.x()).or(operator.y())))
