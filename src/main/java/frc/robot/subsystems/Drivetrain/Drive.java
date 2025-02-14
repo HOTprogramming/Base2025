@@ -3,6 +3,7 @@ package frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.hal.simulation.RoboRioDataJNI;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -79,7 +80,9 @@ public class Drive extends SubsystemBase {
     private Alert alert;
 
     private PIDController thetaController = new PIDController(10, 0, 0.5);
-    private PIDController translationController = new PIDController(10, 0, 0.5);
+    private ProfiledPIDController translationControllerY = new ProfiledPIDController(5.0, 0, 0, DEFAULT_XY_CONSTRAINTS);
+    private ProfiledPIDController translationControllerX = new ProfiledPIDController(5.0, 0, 0, DEFAULT_XY_CONSTRAINTS);
+
 
 
     private final SwerveRequest.SwerveDriveBrake BRAKE = new SwerveRequest.SwerveDriveBrake();
@@ -90,6 +93,7 @@ public class Drive extends SubsystemBase {
 
     private int currentPathIndex;
     private List<PathPlannerPath> pathGroup;
+    private Pose2d currentTarget;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -102,6 +106,9 @@ public class Drive extends SubsystemBase {
     public Drive(DriveIO driveIO) { 
         this.driveIO = driveIO;
         this.iOdata = driveIO.update();
+        translationControllerX.setTolerance(0.02);
+        translationControllerY.setTolerance(0.02);
+
 
         heading = Rotation2d.fromDegrees(0);
 
@@ -216,14 +223,14 @@ public class Drive extends SubsystemBase {
         pathGoalPose = objectAbsolute;
 
         driveIO.setSwerveRequest(FIELD_CENTRIC
-        .withVelocityX(translationController.calculate(iOdata.state.Pose.getX(), objectAbsolute.getX()))
-        .withVelocityY(translationController.calculate(iOdata.state.Pose.getY(), objectAbsolute.getY()))
+        .withVelocityX(translationControllerX.calculate(iOdata.state.Pose.getX(), objectAbsolute.getX()))
+        .withVelocityY(translationControllerY.calculate(iOdata.state.Pose.getY(), objectAbsolute.getY()))
         .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getDegrees(), objectAbsolute.getRotation().getDegrees()))
     );
 
     }
 
-    public void alignReef(int leftRight) {
+    public void updateReefTarget(int leftRight) {
         switch ((int) (60*Math.round(Math.toDegrees(Math.atan2(REEF_CENTER.getY() - iOdata.state.Pose.getY(), (DriverStation.getAlliance().get() == Alliance.Blue ? REEF_CENTER.getX(): REEF_CENTER.getX() + OFFSET_TO_RED) - iOdata.state.Pose.getX()))/60))) {
             case 0:
                 reefTarget = SIDE_0;
@@ -254,16 +261,19 @@ public class Drive extends SubsystemBase {
                 heading = Rotation2d.fromDegrees(-60);
                 break;
         }
-        reefTarget = new Pose2d(
+
+        currentTarget = new Pose2d(
             (DriverStation.getAlliance().get() == Alliance.Blue ? reefTarget.getX(): reefTarget.getX() + OFFSET_TO_RED) - (reefTarget.getRotation().getSin() * 0.1524 * leftRight),
             reefTarget.getY() + (reefTarget.getRotation().getCos() * 0.1524 * leftRight),
             reefTarget.getRotation()
         );
-        pathGoalPose = reefTarget;
+    }
+
+    public void alignReef() {
         driveIO.setSwerveRequest(FIELD_CENTRIC
-        .withVelocityX(translationController.calculate(iOdata.state.Pose.getX(), reefTarget.getX()))
-        .withVelocityY(translationController.calculate(iOdata.state.Pose.getY(), reefTarget.getY()))
-        .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getDegrees(), reefTarget.getRotation().getDegrees()))
+        .withVelocityX(translationControllerX.calculate(iOdata.state.Pose.getX(), currentTarget.getX()))
+        .withVelocityY(translationControllerY.calculate(iOdata.state.Pose.getY(), currentTarget.getY()))
+        .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(), 0.0))
     );
     }
 
@@ -323,10 +333,14 @@ public class Drive extends SubsystemBase {
              Math.atan2(point.getY() - iOdata.state.Pose.getY(), point.getX() - iOdata.state.Pose.getX())))
          );        
          heading = this.iOdata.state.Pose.getRotation();
-     }
+    }
+
+    public double getReefAngle() {
+        return Math.toDegrees(Math.atan2(REEF_CENTER.getY() - iOdata.state.Pose.getY(), (DriverStation.getAlliance().get() == Alliance.Blue ? REEF_CENTER.getX(): REEF_CENTER.getX() + OFFSET_TO_RED) - iOdata.state.Pose.getX()));
+    }
 
      public void lockReef(double driveX, double driveY) {
-        double degToReef = Math.toDegrees(Math.atan2(REEF_CENTER.getY() - iOdata.state.Pose.getY(), (DriverStation.getAlliance().get() == Alliance.Blue ? REEF_CENTER.getX(): REEF_CENTER.getX() + OFFSET_TO_RED) - iOdata.state.Pose.getX()));
+        double degToReef = getReefAngle();
         driveIO.setSwerveRequest(FIELD_CENTRIC
             .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY() * 0.69)
             .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY() * 0.69)
@@ -439,7 +453,7 @@ public class Drive extends SubsystemBase {
                 // Assume the path doesnt flip (Sep auto files for red and blue side)
                 () -> false,
                 this
-            );
+            )   ;
         } catch (Exception ex) {
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
         }
