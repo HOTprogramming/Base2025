@@ -152,8 +152,8 @@ public class RobotContainer {
         }
       ));
   
-      // driver.leftBumper().onTrue(drivetrain.run(() -> drivetrain.alignReef(1)));  
-      // driver.rightBumper().onTrue(drivetrain.run(() -> drivetrain.alignReef(-1))); 
+      driver.leftBumper().whileTrue(drivetrain.run(() -> drivetrain.alignReef(1)).onlyWhile(drivetrain::notAtTarget));  
+      driver.rightBumper().whileTrue(drivetrain.run(() -> drivetrain.alignReef(-1)).onlyWhile(drivetrain::notAtTarget)); 
       driver.b().onTrue(NamedCommands.getCommand("expel"));
       driver.rightTrigger().onTrue(NamedCommands.getCommand("shoot"));
       // driver.leftTrigger().onTrue(NamedCommands.getCommand("Intake"));

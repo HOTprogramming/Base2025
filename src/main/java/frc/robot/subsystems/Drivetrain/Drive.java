@@ -39,6 +39,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.GoalEndState;
@@ -77,11 +78,13 @@ public class Drive extends SubsystemBase {
 
     private Alert alert;
 
-    private PIDController thetaController = new PIDController(10, 0, 0);
+    private PIDController thetaController = new PIDController(10, 0, 0.5);
+    private PIDController translationController = new PIDController(10, 0, 0.5);
+
 
     private final SwerveRequest.SwerveDriveBrake BRAKE = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.FieldCentric FIELD_CENTRIC = new SwerveRequest.FieldCentric()
-    .withDeadband(0.2).withRotationalDeadband(0.2);
+    .withDeadband(0.0).withRotationalDeadband(0.0);
     private final SwerveRequest.RobotCentric ROBOT_CENTRIC = new SwerveRequest.RobotCentric();
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
 
@@ -167,6 +170,13 @@ public class Drive extends SubsystemBase {
         return false;
     }
 
+    public boolean notAtTarget() {
+        return Math.abs(
+                this.iOdata.state.Pose.getTranslation().getDistance(
+                    reefTarget.getTranslation())) 
+                    > 0.2;
+    }
+
     public Command generateOnTheFly() {
         return runOnce(() -> {
             SmartDashboard.putBoolean("Path Generated", true);
@@ -198,13 +208,19 @@ public class Drive extends SubsystemBase {
 
     public void chaseObject(int leftRight) {
         objectAbsolute = new Pose2d(
-            (iOdata.state.Pose.getX() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getCos() * objectRelative.getTranslation().getNorm())) - (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getSin() * 0.1524 * leftRight),
-            (iOdata.state.Pose.getY() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getSin() * objectRelative.getTranslation().getNorm())) + (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getCos() * 0.1524 * leftRight),
+            (iOdata.state.Pose.getX() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getCos() * objectRelative.getTranslation().getNorm())) - (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getSin() * 0.1524 * leftRight) - (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getCos() * 0.1524),
+            (iOdata.state.Pose.getY() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getSin() * objectRelative.getTranslation().getNorm())) + (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getCos() * 0.1524 * leftRight) + (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getSin() * 0.1524),
             iOdata.state.Pose.getRotation().plus(objectRelative.getRotation())
         );
         heading = objectAbsolute.getRotation();
         pathGoalPose = objectAbsolute;
-        AutoBuilder.pathfindToPose(objectAbsolute, constraints).schedule();
+
+        driveIO.setSwerveRequest(FIELD_CENTRIC
+        .withVelocityX(translationController.calculate(iOdata.state.Pose.getX(), objectAbsolute.getX()))
+        .withVelocityY(translationController.calculate(iOdata.state.Pose.getY(), objectAbsolute.getY()))
+        .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getDegrees(), objectAbsolute.getRotation().getDegrees()))
+    );
+
     }
 
     public void alignReef(int leftRight) {
@@ -244,7 +260,11 @@ public class Drive extends SubsystemBase {
             reefTarget.getRotation()
         );
         pathGoalPose = reefTarget;
-        AutoBuilder.pathfindToPose(reefTarget, constraints).schedule();
+        driveIO.setSwerveRequest(FIELD_CENTRIC
+        .withVelocityX(translationController.calculate(iOdata.state.Pose.getX(), reefTarget.getX()))
+        .withVelocityY(translationController.calculate(iOdata.state.Pose.getY(), reefTarget.getY()))
+        .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getDegrees(), reefTarget.getRotation().getDegrees()))
+    );
     }
 
     public void teleopDrive(double driveX, double driveY, double driveTheta)  {
@@ -311,9 +331,9 @@ public class Drive extends SubsystemBase {
             .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY() * 0.69)
             .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY() * 0.69)
             .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(),
-            Math.toRadians(60*Math.round(degToReef/60)) + Math.toRadians(90)))
+            Math.toRadians(60*Math.round(degToReef/60))))
         );        
-        heading = new Rotation2d (Math.toRadians(60*Math.round(degToReef/60)) + Math.toRadians(90));
+        heading = new Rotation2d (Math.toRadians(60*Math.round(degToReef/60)));
     }
 
     public void lockReefManual(double driveX, double driveY, double rightX, double rightY) {
