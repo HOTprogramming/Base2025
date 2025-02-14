@@ -95,6 +95,8 @@ public class Drive extends SubsystemBase {
     private List<PathPlannerPath> pathGroup;
     private Pose2d currentTarget;
 
+    private boolean goalPoseReady = false;
+
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -231,6 +233,8 @@ public class Drive extends SubsystemBase {
     }
 
     public void updateReefTarget(int leftRight) {
+        translationControllerX.reset(iOdata.state.Pose.getX());
+        translationControllerY.reset(iOdata.state.Pose.getY());
         switch ((int) (60*Math.round(Math.toDegrees(Math.atan2(REEF_CENTER.getY() - iOdata.state.Pose.getY(), (DriverStation.getAlliance().get() == Alliance.Blue ? REEF_CENTER.getX(): REEF_CENTER.getX() + OFFSET_TO_RED) - iOdata.state.Pose.getX()))/60))) {
             case 0:
                 reefTarget = SIDE_0;
@@ -267,14 +271,21 @@ public class Drive extends SubsystemBase {
             reefTarget.getY() + (reefTarget.getRotation().getCos() * 0.1524 * leftRight),
             reefTarget.getRotation()
         );
+        goalPoseReady = true;
+        SmartDashboard.putNumberArray("Drive target pose", new double[] {currentTarget.getX(), currentTarget.getY(), currentTarget.getRotation().getRadians()});
     }
 
     public void alignReef() {
-        driveIO.setSwerveRequest(FIELD_CENTRIC
-        .withVelocityX(translationControllerX.calculate(iOdata.state.Pose.getX(), currentTarget.getX()))
-        .withVelocityY(translationControllerY.calculate(iOdata.state.Pose.getY(), currentTarget.getY()))
-        .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(), 0.0))
-    );
+        if(goalPoseReady) {
+            driveIO.setSwerveRequest(FIELD_CENTRIC
+        .withVelocityX(!translationControllerX.atGoal() ? -translationControllerX.calculate(iOdata.state.Pose.getX(), currentTarget.getX()) : 0.0)
+        .withVelocityY(!translationControllerY.atGoal() ?-translationControllerY.calculate(iOdata.state.Pose.getY(), currentTarget.getY()) : 0.0)
+        .withRotationalRate(thetaController.calculate(
+            iOdata.state.Pose.getRotation().getRadians(), 
+            currentTarget.getRotation().getRadians() + Math.toRadians(90)
+            ))
+            );
+        }
     }
 
     public void teleopDrive(double driveX, double driveY, double driveTheta)  {
@@ -345,9 +356,9 @@ public class Drive extends SubsystemBase {
             .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY() * 0.69)
             .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY() * 0.69)
             .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getRadians(),
-            Math.toRadians(60*Math.round(degToReef/60))))
+            Math.toRadians(60*Math.round(degToReef/60)) + Math.toRadians(90)))
         );        
-        heading = new Rotation2d (Math.toRadians(60*Math.round(degToReef/60)));
+        heading = new Rotation2d (Math.toRadians(60*Math.round(degToReef/60)) + Math.toRadians(90));
     }
 
     public void lockReefManual(double driveX, double driveY, double rightX, double rightY) {
