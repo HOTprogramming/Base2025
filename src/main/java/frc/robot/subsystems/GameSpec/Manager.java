@@ -81,7 +81,7 @@ public class Manager extends SubsystemBase{
 
     public Command goToPackage(){
       return Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
-      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage()));
+      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), manipulatorSubsystem.goScore()));
     }
 
     public Command goToL1(){
@@ -144,12 +144,16 @@ public class Manager extends SubsystemBase{
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
             .andThen(goToL2().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))),
           ScoringLevel.L1, Commands.sequence(
-            manipulatorSubsystem.shoot(),
-            Commands.waitSeconds(1.0),
-            manipulatorSubsystem.stop(),
-            manipulatorSubsystem.goHP())
+            manipulatorSubsystem.shoot()
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
-            .andThen(goToL1().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail))))
+            .andThen(goToL1().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))))
+
+          // ScoringLevel.L1, Commands.sequence(
+          //   manipulatorSubsystem.shoot().onlyIf(() -> !manipulatorSubsystem.returnBeambreak()),
+          //   Commands.waitSeconds(0.5),
+          //   manipulatorSubsystem.stop())
+          //   .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
+          //   .andThen(goToL1().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail))))
         ),
         this::getLevel
       );
@@ -163,7 +167,7 @@ public class Manager extends SubsystemBase{
           ScoringLevel.L4, goToL4(),
           ScoringLevel.L3, goToL3(),
           ScoringLevel.L2, goToL2(),
-          ScoringLevel.L1, goToL1()
+          ScoringLevel.L1, Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goHP())
           ),
         this::getLevel
       );
