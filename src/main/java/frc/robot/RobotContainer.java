@@ -85,6 +85,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("lock fingers", gamespecManager.lockFingers()); 
     NamedCommands.registerCommand("open fingers", gamespecManager.OpenFingers());
     NamedCommands.registerCommand("cancel shoot", gamespecManager.cancelShoot());
+    NamedCommands.registerCommand("done scoring", gamespecManager.doneScoring());
 
 
     mode = Mode.coral;
@@ -183,7 +184,7 @@ public class RobotContainer {
       operator.a().and(this::isCoral).onTrue(NamedCommands.getCommand("L2")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
       operator.b().and(this::isCoral).onTrue(NamedCommands.getCommand("L3")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
       operator.x().and(this::isCoral).onTrue(NamedCommands.getCommand("L1")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
-      operator.y().and(this::isCoral).onTrue(NamedCommands.getCommand("L4")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
+      operator.y().and(this::isCoral).onTrue(NamedCommands.getCommand("L4")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"), NamedCommands.getCommand("done scoring")));
       operator.leftTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align floor intake")); 
       operator.rightTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align station intake")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"))); //, NamedCommands.getCommand("Stop Intake")));
 
