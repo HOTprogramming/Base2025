@@ -84,39 +84,48 @@ public class Manager extends SubsystemBase{
       .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore())));
     }
 
-    public Command goToL1(){
-      return Commands.parallel(
-      run(() -> {scoringLevel = ScoringLevel.L1;})
-      ,elevatorSubsystem.goToL1().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0))), armSubsystem.goToPackage())
-      .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L1Height-30.0,2.0)))
-      .andThen(Commands.parallel(elevatorSubsystem.goToL1(), armSubsystem.goToL1()), manipulatorSubsystem.goHP());
-    }
+    // public Command goToL1(){
+    //   return Commands.parallel(
+    //   run(() -> {scoringLevel = ScoringLevel.L1;})
+    //   ,elevatorSubsystem.goToL1().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0))), armSubsystem.goToPackage())
+    //   .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L1Height-30.0,2.0)))
+    //   .andThen(Commands.parallel(elevatorSubsystem.goToL1(), armSubsystem.goToL1()), manipulatorSubsystem.goHP());
+    // }
 
-    public Command goToL2(){
-      return Commands.parallel(
-      run(() -> {scoringLevel = ScoringLevel.L2;}),
-      Commands.sequence(armSubsystem.goToPackage(),
-      Commands.sequence(elevatorSubsystem.goToL2(), armSubsystem.goToL2())
-      )).onlyIf(() -> !manipulatorSubsystem.returnBeambreak());
-    }
+    // public Command goToL2(){
+    //   return Commands.parallel(
+    //   run(() -> {scoringLevel = ScoringLevel.L2;}),
+    //   Commands.sequence(armSubsystem.goToPackage(),
+    //   Commands.sequence(elevatorSubsystem.goToL2(), armSubsystem.goToL2())
+    //   )).onlyIf(() -> !manipulatorSubsystem.returnBeambreak());
+    // }
+
+    // public Command goToL3(){
+    //   return Commands.parallel(
+    //   run(() -> {scoringLevel = ScoringLevel.L3;}),
+    //   Commands.sequence(armSubsystem.goToPackage(),
+    //   Commands.sequence(elevatorSubsystem.goToL3(), armSubsystem.goToL3())
+    //   )).onlyIf(() -> !manipulatorSubsystem.returnBeambreak());
+    // }
+
+
+    // public Command goToL4() {
+    //   return Commands.parallel(
+    //   run(() -> {scoringLevel = ScoringLevel.L4;}),
+    //   Commands.sequence(armSubsystem.goToPackage(),
+    //   Commands.sequence(elevatorSubsystem.goToL4(), armSubsystem.goToL4())
+    //   )).onlyIf(() -> !manipulatorSubsystem.returnBeambreak());
+    // }
 
     public Command goToL3(){
-      return Commands.parallel(
-      run(() -> {scoringLevel = ScoringLevel.L3;}),
-      Commands.sequence(armSubsystem.goToPackage(),
-      Commands.sequence(elevatorSubsystem.goToL3(), armSubsystem.goToL3())
-      )).onlyIf(() -> !manipulatorSubsystem.returnBeambreak());
+      return Commands.parallel(Commands.parallel(      
+      run(() -> {scoringLevel = ScoringLevel.L3;})
+      ,elevatorSubsystem.goToL3().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
+      , armSubsystem.goToPackage())
+      .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L3Height-30.0,2.0)))
+      .andThen(Commands.parallel(elevatorSubsystem.goToL3(), armSubsystem.goToL3())))
+      .onlyIf(() -> !manipulatorSubsystem.returnBeambreak());
     }
-
-    public Command goToL4() {
-      return Commands.parallel(
-      run(() -> {scoringLevel = ScoringLevel.L4;}),
-      Commands.sequence(armSubsystem.goToPackage(),
-      Commands.sequence(elevatorSubsystem.goToL4(), armSubsystem.goToL4())
-      )).onlyIf(() -> !manipulatorSubsystem.returnBeambreak());
-    }
-
-    //
 
     public ScoringLevel getLevel(){
       return scoringLevel;
