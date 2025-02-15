@@ -83,6 +83,10 @@ public class Elevator extends SubsystemBase {
     return elevatorCommand(ElevatorConstants.L4Height);
   }
 
+  public Command goToL4Long(){
+    return elevatorCommand(ElevatorConstants.L4LongHeight);
+  }
+
   public Command goToL3(){
     return elevatorCommand(ElevatorConstants.L3Height);
   }

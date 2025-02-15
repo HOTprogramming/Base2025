@@ -135,7 +135,7 @@ public class Manager extends SubsystemBase{
       ,elevatorSubsystem.goToL4().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
       ,armSubsystem.goToPackage())
       .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-30.0,2.0)))
-      .andThen(Commands.parallel(elevatorSubsystem.goToL4(),Commands.sequence(armSubsystem.goToL4().onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), armSubsystem.goToL4Short()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak()))))
+      .andThen(Commands.parallel(Commands.sequence(elevatorSubsystem.goToL4().onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), elevatorSubsystem.goToL4Long()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak())), Commands.sequence(armSubsystem.goToL4().onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), armSubsystem.goToL4Short()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak())))
       .onlyIf(() -> checkDoneScoring());
     }
 

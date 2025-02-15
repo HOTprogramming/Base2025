@@ -12,6 +12,7 @@ public class ElevatorConstants {
     public static final double PackageHeight = 17.9;
 
     public static final double L4Height = 57.0;
+    public static final double L4LongHeight = 53.0;
     public static final double L3Height = 28.35;
     public static final double L2Height = 13.2;
     public static final double L1Height = 18.79;
