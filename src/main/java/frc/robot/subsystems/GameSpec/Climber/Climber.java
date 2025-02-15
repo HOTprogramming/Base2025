@@ -109,28 +109,16 @@ public class Climber extends SubsystemBase {
       });
     }
 
-    public Command climberDeploy() {
-      return run(() -> {
-          double currentPosition = stats.climberPosition;
-          if (Math.abs(ClimberConstants.targetClicks - currentPosition) > 5.0) { // Allow a small threshold
-              io.setPower(Math.signum(ClimberConstants.targetClicks - currentPosition) * ClimberConstants.kP);
-          } else {
-              io.setPower(0.0); // Stop when within threshold
-          }
-      }).until(() -> Math.abs(stats.climberPosition - ClimberConstants.targetClicks) < 5.0); // Command ends when within 5 clicks
-  }
-
-
     /**
    * 
-   * @return true if the climber is deployed, false if it isn't
+   * @return false if the climber is deployed, true if it isn't
    */
   public boolean checkClimberDeployed(){
-    if(Math.abs(stats.climberPosition - ClimberConstants.targetClicks) < 5.0){
-      return true;
+    if(stats.climberPosition > ClimberConstants.targetClicks){
+      return false;
     }
     else{
-      return false;
+      return true;
     }
   }
 

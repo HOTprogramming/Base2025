@@ -244,6 +244,8 @@ public class Manager extends SubsystemBase{
 
     //deploys the climber
     public Command climberOut(){
-      return Commands.sequence(armSubsystem.horizontal(), climberSubsystem.climberDeploy(), elevatorSubsystem.climbDown());
+      return Commands.sequence(armSubsystem.horizontal(),
+      run(() -> climberSubsystem.setPower(3.0)).onlyWhile(() -> climberSubsystem.checkClimberDeployed()).andThen(runOnce(() -> climberSubsystem.setPower(0.0)))
+      ,elevatorSubsystem.climbDown());
     }
 }

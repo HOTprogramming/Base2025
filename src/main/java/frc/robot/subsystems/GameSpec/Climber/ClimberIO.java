@@ -146,6 +146,8 @@ public abstract class ClimberIO {
             voltage2,
             servoVelocity
           );
+
+          climber.setPosition(0.0);
     }
 
 
