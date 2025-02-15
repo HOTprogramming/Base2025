@@ -52,9 +52,15 @@ public class Manager extends SubsystemBase{
       L4
     }
 
+    private enum ClimbState{
+      climbed,
+      notClimbed
+    }
+
     public boolean doneScoring = false;
 
     private ScoringLevel scoringLevel;
+    private ClimbState climbState;
   
     public Manager() {
       if (!Utils.isSimulation()){
@@ -71,6 +77,7 @@ public class Manager extends SubsystemBase{
       }
 
       scoringLevel = ScoringLevel.L1;
+      climbState = ClimbState.notClimbed;
 
       this.managerShuffleboard = Shuffleboard.getTab("Manager");
 
@@ -81,12 +88,17 @@ public class Manager extends SubsystemBase{
       scoringEnum.setString(scoringLevel.name());
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public Command goToPackage(){
-      return Commands.sequence(Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
-      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore())))
-      .onlyWhile(() -> !elevatorSubsystem.elevatorClimbHeight()),
-      Commands.sequence(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage())
-      .onlyWhile(() -> climberSubsystem.checkClimberDeployed()));
+
+      return new SelectCommand(
+        Map.of(
+          ClimbState.notClimbed, Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
+          .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()))),
+          ClimbState.climbed, Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage())
+          ),
+        this::getClimbState
+      );
     }
 
     public Command doneScoring(){
@@ -144,6 +156,10 @@ public class Manager extends SubsystemBase{
 
     public ScoringLevel getLevel(){
       return scoringLevel;
+    }
+
+    public ClimbState getClimbState(){
+      return climbState;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -244,7 +260,7 @@ public class Manager extends SubsystemBase{
 
     //deploys the climber
     public Command climberOut(){
-      return Commands.sequence(armSubsystem.horizontal(),
+      return Commands.sequence(runOnce(() -> { climbState = ClimbState.climbed;}), armSubsystem.horizontal(),
       run(() -> climberSubsystem.setPower(3.0)).onlyWhile(() -> climberSubsystem.checkClimberDeployed()).andThen(runOnce(() -> climberSubsystem.setPower(0.0)))
       ,elevatorSubsystem.climbDown());
     }
