@@ -159,18 +159,18 @@ public class Manager extends SubsystemBase{
             armSubsystem.L3Score(),
             elevatorSubsystem.L3Score())
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
-            .andThen(goToL4().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))),
+            .andThen(goToL3().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))),
             Commands.sequence(Commands.parallel(goToPackage().onlyIf(() -> (manipulatorSubsystem.returnBeamBreak()))
             ,(run(() -> {doneScoring = true;}).onlyIf(() -> (manipulatorSubsystem.returnBeamBreak()))))),    
-            goToL4().onlyIf(() -> (!manipulatorSubsystem.returnBeamBreak()))),
+            goToL3().onlyIf(() -> (!manipulatorSubsystem.returnBeamBreak()))),
           ScoringLevel.L2, Commands.sequence(Commands.sequence(
             armSubsystem.L2Score(),
             elevatorSubsystem.L2Score())
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
-            .andThen(goToL4().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))),
+            .andThen(goToL2().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))),
             Commands.sequence(Commands.parallel(goToPackage().onlyIf(() -> (manipulatorSubsystem.returnBeamBreak()))
             ,(run(() -> {doneScoring = true;}).onlyIf(() -> (manipulatorSubsystem.returnBeamBreak()))))),    
-            goToL4().onlyIf(() -> (!manipulatorSubsystem.returnBeamBreak()))),
+            goToL2().onlyIf(() -> (!manipulatorSubsystem.returnBeamBreak()))),
           ScoringLevel.L1, Commands.sequence(
             manipulatorSubsystem.shoot()
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
