@@ -23,6 +23,7 @@ public abstract class ClimberIO {
 
     // Protected TalonFX object accessible to subclasses
     protected Servo climberServo;
+    protected Servo climberServo2;
     protected TalonFX climber;
     protected TalonFX climber2;
     protected MotionMagicVoltage climberMagic;
@@ -47,6 +48,7 @@ public abstract class ClimberIO {
         public double TorqueCurrentAmps2 = 0.0;
         public double TempCelsius2 = 0.0;
         public double servoVelocity = 0.0;
+
         public double supplyCurrentVolts2 = 0.0;
 
     }
@@ -72,7 +74,8 @@ public abstract class ClimberIO {
     public ClimberIO() {
         this.climber = new TalonFX(ClimberConstants.climberMotorID, "robot");
         this.climber2 = new TalonFX(ClimberConstants.climberMotor2ID, "robot");
-        this.climberServo = new Servo(ClimberConstants.ServoID);
+        this.climberServo = new Servo(ClimberConstants.ServoPort);
+        this.climberServo2 = new Servo(ClimberConstants.ServoPort2);
         climberMagic = new MotionMagicVoltage(0);
         TalonFXConfiguration cfg = new TalonFXConfiguration();
 
@@ -195,9 +198,9 @@ public abstract class ClimberIO {
         // climber.setControl(climberMagic.withPosition(commandedPosition).withSlot(0));
         climber2.setControl(new Follower(climber.getDeviceID(), false));
     }
-    public void setServoMotorControl(double commandedPosition) {
-        climberServo.set(commandedPosition);
-    }
+    // public void setServoMotorControl(double commandedPosition) {
+    //     climberServo.set(commandedPosition);
+    // }
     /** Stop motor */
     public void stop() {
         climber.setVoltage(0);

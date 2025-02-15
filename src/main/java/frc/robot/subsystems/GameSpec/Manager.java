@@ -204,5 +204,12 @@ public class Manager extends SubsystemBase{
     public Command StopIntake(){
       return manipulatorSubsystem.zero();
     }
+    public Command lockFingers(){
+      return climberSubsystem.servoLock();
+    }    
+    public Command OpenFingers(){
+      return climberSubsystem.servoOpen();
+    }
 
 }
+

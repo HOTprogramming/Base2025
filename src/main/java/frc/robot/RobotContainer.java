@@ -82,6 +82,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Intake", gamespecManager.StopIntake());
     NamedCommands.registerCommand("align station intake", gamespecManager.alignStationIntake());
     NamedCommands.registerCommand("shoot", gamespecManager.shoot());
+    NamedCommands.registerCommand("lock fingers", gamespecManager.lockFingers()); 
+    NamedCommands.registerCommand("open fingers", gamespecManager.OpenFingers());
     NamedCommands.registerCommand("cancel shoot", gamespecManager.cancelShoot());
 
 
@@ -173,11 +175,10 @@ public class RobotContainer {
           Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
         }));
 
-      operator.leftBumper().onTrue(gamespecManager.runOnce(() -> mode = Mode.coral));
-      operator.rightBumper().onTrue(gamespecManager.runOnce(() -> mode = Mode.algae));
-
-      operator.start().onTrue(gamespecManager.runOnce(() -> mode = Mode.climb));
-      operator.back().onTrue(gamespecManager.runOnce(() -> mode = Mode.climb));
+       operator.leftBumper().onTrue(gamespecManager.runOnce(() -> mode = Mode.coral));
+       operator.rightBumper().onTrue(gamespecManager.runOnce(() -> mode = Mode.algae));
+       operator.start().onTrue(gamespecManager.runOnce(() -> mode = Mode.climb));
+       operator.back().onTrue(gamespecManager.runOnce(() -> mode = Mode.climb));
 
       operator.a().and(this::isCoral).onTrue(NamedCommands.getCommand("L2")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
       operator.b().and(this::isCoral).onTrue(NamedCommands.getCommand("L3")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
@@ -195,6 +196,7 @@ public class RobotContainer {
 
       operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
       operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));
+      operator.y().and(this::isClimb).onTrue(NamedCommands.getCommand("open fingers"));
 
       operator.axisLessThan(5, -0.05).or(operator.axisGreaterThan(5, 0.05)).and(this::isClimb).whileTrue(
         gamespecManager.climberSubsystem.run(
@@ -203,8 +205,8 @@ public class RobotContainer {
       ).onFalse(gamespecManager.climberSubsystem.run(
         () -> gamespecManager.climberSubsystem.setPower(0.0)
       ));
-
       operator.leftTrigger().or(operator.rightTrigger()).onFalse(NamedCommands.getCommand("Coral Zero"));
+      System.out.println("c");
 
       NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
       NamedCommands.registerCommand("R_OTF", drivetrain.runOnTheFly());
