@@ -94,13 +94,18 @@ public class Climber extends SubsystemBase {
     public void setPower(Double supplier){
         io.setPower(supplier);
     }
-    public Command servo(){
+    public Command servoLock(){
       return run(() -> {
-       io.climberServo.set(0.5);
-       io.climberServo2.set(0.5);
+       io.climberServo.set(ClimberConstants.climberServoLockPos);
+       io.climberServo2.set(ClimberConstants.climberServoLockPos);
       });
     }
-
+    public Command servoOpen(){
+      return run(() -> {
+      io.climberServo.set(ClimberConstants.climberServoOpenPos);
+      io.climberServo2.set(ClimberConstants.climberServoOpenPos);
+      });
+    }
 
   @Override
   public void simulationPeriodic() {

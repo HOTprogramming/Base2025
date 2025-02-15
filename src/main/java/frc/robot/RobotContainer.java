@@ -83,6 +83,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("align station intake", gamespecManager.alignStationIntake());
     NamedCommands.registerCommand("shoot", gamespecManager.shoot());
     NamedCommands.registerCommand("lock fingers", gamespecManager.lockFingers()); 
+    NamedCommands.registerCommand("open fingers", gamespecManager.OpenFingers());
     NamedCommands.registerCommand("cancel shoot", gamespecManager.cancelShoot());
 
 
@@ -195,6 +196,7 @@ public class RobotContainer {
 
       operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
       operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));
+      operator.y().and(this::isClimb).onTrue(NamedCommands.getCommand("open fingers"));
 
       operator.axisLessThan(5, -0.05).or(operator.axisGreaterThan(5, 0.05)).and(this::isClimb).whileTrue(
         gamespecManager.climberSubsystem.run(

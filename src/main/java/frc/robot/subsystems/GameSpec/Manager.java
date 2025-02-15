@@ -210,8 +210,12 @@ public class Manager extends SubsystemBase{
       return manipulatorSubsystem.zero();
     }
     public Command lockFingers(){
-      return climberSubsystem.servo();
-    }    /**
+      return climberSubsystem.servoLock();
+    }    
+    public Command OpenFingers(){
+      return climberSubsystem.servoOpen();
+    }
+    /**
      * @return true if the arm should run normally, false if it should stop because it has coral and the arm overruns
      */
     private boolean armAbort() {
