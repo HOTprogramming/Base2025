@@ -176,13 +176,6 @@ public class Manager extends SubsystemBase{
             manipulatorSubsystem.shoot()
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
             .andThen(goToL1().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))))
-
-          // ScoringLevel.L1, Commands.sequence(
-          //   manipulatorSubsystem.shoot().onlyIf(() -> !manipulatorSubsystem.returnBeambreak()),
-          //   Commands.waitSeconds(0.5),
-          //   manipulatorSubsystem.stop())
-          //   .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
-          //   .andThen(goToL1().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail))))
         ),
         this::getLevel
       );
@@ -236,8 +229,13 @@ public class Manager extends SubsystemBase{
     public Command Intake(){
       return manipulatorSubsystem.intake();
     }
-    
     public Command StopIntake(){
       return manipulatorSubsystem.zero();
+    }
+    public Command lockFingers(){
+      return climberSubsystem.servoLock();
+    }    
+    public Command OpenFingers(){
+      return climberSubsystem.servoOpen();
     }
 }
