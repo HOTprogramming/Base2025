@@ -82,8 +82,11 @@ public class Manager extends SubsystemBase{
     }
 
     public Command goToPackage(){
-      return Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
-      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore())));
+      return Commands.sequence(Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
+      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore())))
+      .onlyWhile(() -> !climberSubsystem.checkClimberDeployed()),
+      Commands.sequence(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage())
+      .onlyWhile(() -> climberSubsystem.checkClimberDeployed()));
     }
 
     public Command doneScoring(){
@@ -237,5 +240,10 @@ public class Manager extends SubsystemBase{
     }    
     public Command OpenFingers(){
       return climberSubsystem.servoOpen();
+    }
+
+    //deploys the climber
+    public Command climberOut(){
+      return Commands.sequence(armSubsystem.horizontal(), climberSubsystem.climberDeploy(), elevatorSubsystem.climbDown());
     }
 }

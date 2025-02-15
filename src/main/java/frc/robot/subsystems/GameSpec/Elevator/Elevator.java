@@ -122,6 +122,10 @@ public class Elevator extends SubsystemBase {
   public Command goToHP(){
     return elevatorCommand(ElevatorConstants.HPHeight);
   }
+
+  public Command climbDown(){
+    return elevatorCommand(ElevatorConstants.climbHeight);
+  }
   
 
   public Command managerElevatorTest(){

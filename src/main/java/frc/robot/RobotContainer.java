@@ -86,7 +86,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("open fingers", gamespecManager.OpenFingers());
     NamedCommands.registerCommand("cancel shoot", gamespecManager.cancelShoot());
     NamedCommands.registerCommand("done scoring", gamespecManager.doneScoring());
-    NamedCommands.registerCommand("climb", gamespecManager.doneScoring());
+    NamedCommands.registerCommand("climb", gamespecManager.climberOut());
 
 
     mode = Mode.coral;
