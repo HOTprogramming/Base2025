@@ -130,18 +130,18 @@ public class Manager extends SubsystemBase{
           ScoringLevel.L4, Commands.sequence(
             armSubsystem.L4Score(),
             elevatorSubsystem.L4Score())
-            .onlyWhile(() -> (armAbort()))
-            .andThen(goToL4().onlyIf(() -> false)),
+            .onlyWhile(() -> (!armAbort()))
+            .andThen(goToL4().onlyIf(() -> armAbort())),
           ScoringLevel.L3, Commands.sequence(
             armSubsystem.L3Score(),
             elevatorSubsystem.L3Score())
-            .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
-            .andThen(goToL3().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))),
+            .onlyWhile(() -> (!armAbort()))
+            .andThen(goToL3().onlyIf(() -> (armAbort()))),
           ScoringLevel.L2, Commands.sequence(
             armSubsystem.L2Score(),
             elevatorSubsystem.L2Score())
-            .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
-            .andThen(goToL2().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))),
+            .onlyWhile(() -> (!armAbort()))
+            .andThen(goToL2().onlyIf(() -> (armAbort()))),
           ScoringLevel.L1, Commands.sequence(
             manipulatorSubsystem.shoot()
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
@@ -210,11 +210,17 @@ public class Manager extends SubsystemBase{
       return manipulatorSubsystem.zero();
     }
 
+    // /**
+    //  * @return true if the arm should run normally, false if it should stop because it has coral and the arm overruns
+    //  */
+    // private boolean armAbort() {
+    //   return armSubsystem.armCurrent(ArmConstants.CurrentFail) || manipulatorSubsystem.returnBeambreak();
+    // }
+
     /**
-     * @return true if the arm should run normally, false if it should stop because it has coral and the arm overruns
+     * @return true if arm should abort
      */
     private boolean armAbort() {
-      return armSubsystem.armCurrent(ArmConstants.CurrentFail) || manipulatorSubsystem.returnBeambreak();
+      return !armSubsystem.armCurrent(ArmConstants.CurrentFail) || manipulatorSubsystem.returnBeambreak();
     }
-
 }
