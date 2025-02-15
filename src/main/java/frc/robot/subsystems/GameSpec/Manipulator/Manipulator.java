@@ -1,5 +1,7 @@
 package frc.robot.subsystems.GameSpec.Manipulator;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.StatusSignal;
 
 import edu.wpi.first.networktables.GenericEntry;
@@ -7,6 +9,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.GameSpec.Arm.ArmConstants;
 import frc.robot.subsystems.GameSpec.Manipulator.ManipulatorIO.ManipulatorIOStats;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -36,6 +39,7 @@ public class Manipulator extends SubsystemBase {
     private GenericEntry algaeTemp;
     private GenericEntry algaeCommandedPos;
     private GenericEntry CANdiPWM2;
+    private GenericEntry CANdiPWM3;
     
     public Manipulator(ManipulatorIO io) {
         this.io = io;
@@ -59,7 +63,7 @@ public class Manipulator extends SubsystemBase {
         algaeTemp = this.coralShuffleboard.add("Algae Temp", 0.0).getEntry();
         algaeCommandedPos = this.coralShuffleboard.add("Algae Commanded Position", 0.0).getEntry();
         CANdiPWM2 = this.coralShuffleboard.add("CANdi Algae Beambreak",false).getEntry();//false when there is no object, true when it detects object
-  
+        CANdiPWM3 = this.coralShuffleboard.add("Second Beam Break",false).getEntry();//false when there is no object, true when it detects object
     }
 
     @Override
@@ -85,6 +89,7 @@ public class Manipulator extends SubsystemBase {
         algaeStatorCurrent.setDouble(stats.algaeTorqueCurrentAmps);
         algaeTemp.setDouble(stats.algaeTempCelsius);
           CANdiPWM2.setBoolean(stats.candiPWM2);
+          CANdiPWM3.setBoolean(stats.candiPWM3);
     }
 
     private FunctionalCommand coralCommand(double position){
@@ -129,6 +134,10 @@ public class Manipulator extends SubsystemBase {
     public Boolean returnBeambreak(){
         return stats.candiPWM1;
     }
+    public Boolean returnOuterBeamBreak(){
+        return stats.candiPWM3;
+    }
+    
 
     public  Command goHP() {
         return coralCommand(ManipulatorConstants.coralWristHP);
@@ -158,6 +167,7 @@ public class Manipulator extends SubsystemBase {
             }
         });
     }
+   
     public Command BeamBreak1Stop(){
         return run(() -> {
             if (stats.candiPWM1 == true) {
