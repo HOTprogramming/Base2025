@@ -97,13 +97,13 @@ public class Climber extends SubsystemBase {
     public Command servoLock(){
       return run(() -> {
        io.climberServo.set(ClimberConstants.climberServoLockPos);
-       io.climberServo2.set(ClimberConstants.climberServoLockPos2);
+       io.climberServo2.set(1 - ClimberConstants.climberServoLockPos);
       });
     }
     public Command servoOpen(){
       return run(() -> {
       io.climberServo.set(ClimberConstants.climberServoOpenPos);
-      io.climberServo2.set(ClimberConstants.climberServoOpenPos2);
+      io.climberServo2.set(1.0 - ClimberConstants.climberServoOpenPos);
       });
     }
 
