@@ -84,7 +84,7 @@ public class Manager extends SubsystemBase{
     public Command goToPackage(){
       return Commands.sequence(Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
       .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore())))
-      .onlyWhile(() -> !climberSubsystem.checkClimberDeployed()),
+      .onlyWhile(() -> !elevatorSubsystem.elevatorClimbHeight()),
       Commands.sequence(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage())
       .onlyWhile(() -> climberSubsystem.checkClimberDeployed()));
     }

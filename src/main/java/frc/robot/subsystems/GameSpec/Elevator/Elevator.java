@@ -126,6 +126,15 @@ public class Elevator extends SubsystemBase {
   public Command climbDown(){
     return elevatorCommand(ElevatorConstants.climbHeight);
   }
+
+  public boolean elevatorClimbHeight(){
+    if(stats.elevatorPosition < ElevatorConstants.L1Height - 1.0){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
   
 
   public Command managerElevatorTest(){
