@@ -59,6 +59,7 @@ public class CameraConstants {
 
     public double[] STDEV_GAIN = new double[] {.7, .7, .5};
     public double MAX_DISTANCE = 5.5;
+    public static final int[] REEF_TAGS_RED = new int[] {6, 7, 8, 9, 10, 11};
     
     public Map<CameraPositions, CameraConstant> cameraConstants = null;
     

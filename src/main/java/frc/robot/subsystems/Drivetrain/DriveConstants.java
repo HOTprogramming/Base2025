@@ -2,6 +2,8 @@ package frc.robot.subsystems.Drivetrain;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.security.PublicKey;
+
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.*;
@@ -11,6 +13,7 @@ import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.*;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain.DriveConstants.DriveConfig;
@@ -25,11 +28,19 @@ public class DriveConstants {
     private static final PIDConstants autoPidConstantsTranslation = new PIDConstants(10, 0, 0);
     private static final PIDConstants autoPidConstantsTheta = new PIDConstants (7, 0, 0); 
     private static final PIDConstants teleopPidConstantsTheta = new PIDConstants (10, 0, 0.5); 
+    // Theoretical free speed (m/s) at 12 V applied output;
+    // This needs to be tuned to your individual robot
+    public static final AngularVelocity kMaxAngularVelocity = RotationsPerSecond.of(2);
+    public static final LinearVelocity kSpeedAt12Volts = FeetPerSecond.of(16.67);
 
-    public static final Pose2d SIDE_0 = new Pose2d(3.165, 4.025, Rotation2d.fromDegrees(0));
+    public static final TrapezoidProfile.Constraints DEFAULT_XY_CONSTRAINTS = new TrapezoidProfile.Constraints(
+        kSpeedAt12Volts.in(MetersPerSecond) * 0.5,
+        kSpeedAt12Volts.in(MetersPerSecond));
+
+    public static final Pose2d SIDE_0 = new Pose2d(3.165, 4.005, Rotation2d.fromDegrees(0));
     public static final Pose2d SIDE_60 = new Pose2d(3.836, 2.886, Rotation2d.fromDegrees(60));
     public static final Pose2d SIDE_120 = new Pose2d(5.155, 2.886, Rotation2d.fromDegrees(120));
-    public static final Pose2d SIDE_180 = new Pose2d(5.790, 4.025, Rotation2d.fromDegrees(180));
+    public static final Pose2d SIDE_180 = new Pose2d(5.647, 4.005, Rotation2d.fromDegrees(180));
     public static final Pose2d SIDE_240 = new Pose2d(5.155, 5.140, Rotation2d.fromDegrees(-120));
     public static final Pose2d SIDE_300 = new Pose2d(3.836, 5.140, Rotation2d.fromDegrees(-60));
     public static final double OFFSET_TO_RED = 8.583;
@@ -111,10 +122,7 @@ public class DriveConstants {
     // All swerve devices must share the same CAN bus
     public static final CANBus kCANBus = new CANBus("robot", "./logs/example.hoot");
 
-    // Theoretical free speed (m/s) at 12 V applied output;
-    // This needs to be tuned to your individual robot
-    public static final LinearVelocity kSpeedAt12Volts = FeetPerSecond.of(16.67);
-    public static final AngularVelocity kMaxAngularVelocity = RotationsPerSecond.of(2);
+    
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot

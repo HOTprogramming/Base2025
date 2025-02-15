@@ -305,6 +305,13 @@ public class Camera extends SubsystemBase {
         if (numTags == 1 && avgDist > 4)
             estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
         else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
+        for (PhotonTrackedTarget target: targets) {
+            for (int id : CameraConstants.REEF_TAGS_RED) {
+                if (target.fiducialId == id && avgDist < 2) {
+                    estStdDevs = VecBuilder.fill(0.2, 0.2, 1);
+                }
+            }
+        }
 
         return estStdDevs;
     }    

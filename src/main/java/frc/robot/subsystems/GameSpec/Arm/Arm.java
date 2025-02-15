@@ -127,13 +127,14 @@ public class Arm extends SubsystemBase {
     }
   }
 
+  /**
+   * 
+   * @param tripCurrent
+   * @return false if bad
+   */
   public boolean armCurrent(double tripCurrent){
-    if(stats.SupplyCurrentAmps > tripCurrent){
-      return false;
-    }
-    else{
-      return true;
-    }
+    return !(stats.SupplyCurrentAmps > tripCurrent);
+
   }
 
   public boolean armLessThan(double desiredPos, double threshHold){
