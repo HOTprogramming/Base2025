@@ -63,7 +63,7 @@ public class Manipulator extends SubsystemBase {
         algaeTemp = this.coralShuffleboard.add("Algae Temp", 0.0).getEntry();
         algaeCommandedPos = this.coralShuffleboard.add("Algae Commanded Position", 0.0).getEntry();
         CANdiPWM2 = this.coralShuffleboard.add("CANdi Algae Beambreak",false).getEntry();//false when there is no object, true when it detects object
-        CANdiPWM3 = this.coralShuffleboard.add("Second Beam Break",false).getEntry();//false when there is no object, true when it detects object
+        CANdiPWM3 = this.coralShuffleboard.add("Outer BeamBreak",false).getEntry();//false when there is no object, true when it detects object
     }
 
     @Override
@@ -88,8 +88,8 @@ public class Manipulator extends SubsystemBase {
         algaeSupplyCurrent.setDouble(stats.algaeSupplyCurrentAmps);
         algaeStatorCurrent.setDouble(stats.algaeTorqueCurrentAmps);
         algaeTemp.setDouble(stats.algaeTempCelsius);
-          CANdiPWM2.setBoolean(stats.candiPWM2);
-          CANdiPWM3.setBoolean(stats.candiPWM3);
+        CANdiPWM2.setBoolean(stats.candiPWM2);
+        CANdiPWM3.setBoolean(stats.candiPWM3);
     }
 
     private FunctionalCommand coralCommand(double position){
