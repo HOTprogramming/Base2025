@@ -4,12 +4,14 @@
 
 package frc.robot.subsystems.GameSpec.Climber;
 
+import java.io.PrintStream;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -37,6 +39,7 @@ public class Climber extends SubsystemBase {
   private GenericEntry servoVelocity;
   private GenericEntry servoClampCommandedPos;
   private GenericEntry climberVoltage;
+  
   public Climber(ClimberIO io) {
     this.io = io; 
     this.stats = ClimberIO.stats;
@@ -57,6 +60,7 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void periodic() {
+
     io.periodic();
 
     io.updateStats();
@@ -84,13 +88,24 @@ public class Climber extends SubsystemBase {
    //    return false;
    //  }
    //}
-   
+    
 
 
     public void setPower(Double supplier){
         io.setPower(supplier);
     }
-
+    public Command servoLock(){
+      return run(() -> {
+       io.climberServo.set(ClimberConstants.climberServoLockPos);
+       io.climberServo2.set(ClimberConstants.climberServoLockPos2);
+      });
+    }
+    public Command servoOpen(){
+      return run(() -> {
+      io.climberServo.set(ClimberConstants.climberServoOpenPos);
+      io.climberServo2.set(ClimberConstants.climberServoOpenPos2);
+      });
+    }
 
   @Override
   public void simulationPeriodic() {

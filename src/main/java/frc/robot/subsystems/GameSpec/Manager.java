@@ -209,7 +209,12 @@ public class Manager extends SubsystemBase{
     public Command StopIntake(){
       return manipulatorSubsystem.zero();
     }
-
+    public Command lockFingers(){
+      return climberSubsystem.servoLock();
+    }    
+    public Command OpenFingers(){
+      return climberSubsystem.servoOpen();
+    }
     /**
      * @return true if the arm should run normally, false if it should stop because it has coral and the arm overruns
      */
@@ -218,3 +223,4 @@ public class Manager extends SubsystemBase{
     }
 
 }
+
