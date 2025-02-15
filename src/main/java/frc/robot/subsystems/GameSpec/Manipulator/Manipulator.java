@@ -131,7 +131,7 @@ public class Manipulator extends SubsystemBase {
     /** 
      * @apiNote false when it has coral
      */
-    public Boolean returnBeambreak(){
+    public Boolean returnBeamBreak(){
         return stats.candiPWM1;
     }
     public Boolean returnOuterBeamBreak(){
