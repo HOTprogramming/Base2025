@@ -18,7 +18,7 @@ public class ElevatorConstants {
     public static final double FeederHeight = 1.25;
     public static final double L4ScoreHeight = 40.0;
     public static final double L3ScoreHeight = 24.37;
-    public static final double L2ScoreHeight = 11.2;
+    public static final double L2ScoreHeight = 9.2;
     public static final double HPHeight = 17.0;
 
 
