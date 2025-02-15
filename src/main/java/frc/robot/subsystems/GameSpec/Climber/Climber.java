@@ -94,18 +94,33 @@ public class Climber extends SubsystemBase {
     public void setPower(Double supplier){
         io.setPower(supplier);
     }
+
     public Command servoLock(){
       return run(() -> {
        io.climberServo.set(ClimberConstants.climberServoLockPos);
        io.climberServo2.set(1 - ClimberConstants.climberServoLockPos);
       });
     }
+
     public Command servoOpen(){
       return run(() -> {
       io.climberServo.set(ClimberConstants.climberServoOpenPos);
       io.climberServo2.set(1.0 - ClimberConstants.climberServoOpenPos);
       });
     }
+
+    /**
+   * 
+   * @return false if the climber is deployed, true if it isn't
+   */
+  public boolean checkClimberDeployed(){
+    if(stats.climberPosition > ClimberConstants.targetClicks){
+      return false;
+    }
+    else{
+      return true;
+    }
+  }
 
   @Override
   public void simulationPeriodic() {

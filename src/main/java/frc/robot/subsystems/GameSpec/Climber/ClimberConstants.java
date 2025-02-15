@@ -16,6 +16,7 @@ public class ClimberConstants {
     public static final double climberServoOpenPos = 0.16;
     //public static final double climberServoLockPos2 = 0.33;
     //public static final double climberServoOpenPos2 = 0.34;
+    public static final double targetClicks = 80.0;
 
     public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
 }

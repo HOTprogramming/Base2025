@@ -94,12 +94,13 @@ public class Arm extends SubsystemBase {
   public Command goToL2Short(){
     return armCommand(ArmConstants.L2Short);
   }
+
   public Command goToL4(){
     return armCommand(ArmConstants.L4Angle);
   }
 
   public Command L4Score(){
-    return armCommand(ArmConstants.L4Score); // arm spike supply current bad over 30
+    return armCommand(ArmConstants.L4Score);
   }
 
   public Command L3Score(){
@@ -114,12 +115,8 @@ public class Arm extends SubsystemBase {
     return armCommand(ArmConstants.FeederAngle);
   }
 
-  public Command positiveTest(){
-    return armCommand(80.0);
-  }
-
-  public Command negativeTest(){
-    return armCommand(-80.0);
+  public Command horizontal(){
+    return armCommand(ArmConstants.Horizontal);
   }
 
   public boolean checkRange(double deadband){

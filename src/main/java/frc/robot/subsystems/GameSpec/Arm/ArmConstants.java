@@ -38,7 +38,6 @@ public class ArmConstants {
     public static final double L3short = -20.6;
     public static final double L2Short = -20.6;
     public static final double L4Short = -22.5;
-    //53, -22
     
     public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
 }
