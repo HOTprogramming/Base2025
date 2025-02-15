@@ -88,7 +88,7 @@ public class Arm extends SubsystemBase {
   }
 
   public Command L4Score(){
-    return armCommand(ArmConstants.L4Score);
+    return armCommand(ArmConstants.L4Score); // arm spike supply current bad over 30
   }
 
   public Command L3Score(){
@@ -125,6 +125,16 @@ public class Arm extends SubsystemBase {
       System.out.println(false);
       return false;
     }
+  }
+
+  /**
+   * 
+   * @param tripCurrent
+   * @return false if bad
+   */
+  public boolean armCurrent(double tripCurrent){
+    return !(stats.SupplyCurrentAmps > tripCurrent);
+
   }
 
   public boolean armLessThan(double desiredPos, double threshHold){

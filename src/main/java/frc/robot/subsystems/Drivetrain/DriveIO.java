@@ -7,6 +7,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.*;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -15,6 +16,8 @@ public interface DriveIO {
     // Data to be logged 
     class DriveIOdata { 
         public SwerveDriveState state = new SwerveDriveState();
+
+        public Rotation3d pigeon;
 
         public double frontLeftDrivePositionRads = 0.0;
         public double frontLeftDriveVelocityRpm = 0.0;

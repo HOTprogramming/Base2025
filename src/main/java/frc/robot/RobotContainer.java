@@ -67,6 +67,7 @@ public class RobotContainer {
     gamespecManager = new Manager();
 
     chooser.setDefaultOption("Auto", "Auto");
+    chooser.addOption("goods", "REDR4Place&Pickup");
     // chooser.addOption("Complex Auto", "m_complexAuto");
     
     NamedCommands.registerCommand("L1", gamespecManager.goToL1());
@@ -81,7 +82,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Intake", gamespecManager.StopIntake());
     NamedCommands.registerCommand("align station intake", gamespecManager.alignStationIntake());
     NamedCommands.registerCommand("shoot", gamespecManager.shoot());
-    NamedCommands.registerCommand("lock fingers", gamespecManager.lockFingers());
+    NamedCommands.registerCommand("lock fingers", gamespecManager.lockFingers()); 
+    NamedCommands.registerCommand("cancel shoot", gamespecManager.cancelShoot());
+
 
     mode = Mode.coral;
 
@@ -92,32 +95,49 @@ public class RobotContainer {
 
   private void configureBindings() {    
 
-    drivetrain.setDefaultCommand
-      (drivetrain.run(() -> {
-            drivetrain.headingControl(
-              Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0, 
-              Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0);
-          }
-      ).unless(this::isClimb));    
+    // drivetrain.setDefaultCommand
+    //   (drivetrain.run(() -> {
+    //         drivetrain.headingControl(
+    //           Math.abs(driver.getLeftY()) >= 0.0 ? -driver.getLeftY() : 0, 
+    //           Math.abs(driver.getLeftX()) >= 0.0 ? -driver.getLeftX() : 0);
+    //       }
+    //   ));    
 
-      driver.axisLessThan(4, -0.05)
-        .or(driver.axisGreaterThan(4, 0.05))
-        .and(driver.y().negate())
-        .whileTrue
+      // driver.axisLessThan(0, -0.00)
+      //   .or(driver.axisGreaterThan(0, 0.00))
+      //   .or(driver.axisLessThan(1, -0.00))
+      //   .or(driver.axisGreaterThan(1, 0.00))
+      //   .and(driver.y().negate())
+      //   .whileTrue
+      drivetrain.setDefaultCommand
       (drivetrain.run(() -> {
         drivetrain.teleopDrive(
-          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
-          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
-          Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
+          Math.abs(driver.getLeftY()) >= 0.0 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.0 ? -driver.getLeftX() : 0,
+          Math.abs(driver.getRightX()) >= 0.015 ? -driver.getRightX() : 0);
         }
-      )).onFalse(Commands.race(Commands.waitSeconds(0.15), drivetrain.run(() -> {
-        drivetrain.teleopDrive(
-          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
-          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
-          Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
-        })));
+      ));
+      // .onFalse(Commands.race(Commands.waitSeconds(0.15), drivetrain.run(() -> {
+      //   drivetrain.teleopDrive(
+      //     Math.abs(driver.getLeftY()) >= 0.0 ? -driver.getLeftY() : 0,
+      //     Math.abs(driver.getLeftX()) >= 0.0 ? -driver.getLeftX() : 0,
+      //     Math.abs(driver.getRightX()) >= 0.015 ? -driver.getRightX() : 0);
+      //   })));
 
-      driver.a().whileTrue
+      // driver.leftBumper().whileTrue(drivetrain.run(() -> {
+      //   drivetrain.teleopDriveSlow(
+      //     Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+      //     Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+      //     Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
+      // }))
+      // .onFalse(Commands.race(Commands.waitSeconds(0.15), drivetrain.run(() -> {
+      //   drivetrain.teleopDrive(
+      //     Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+      //     Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+      //     Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
+      //   })));
+
+      driver.leftTrigger().whileTrue
       (drivetrain.run(() -> {
         drivetrain.lockReef(
           Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
@@ -138,32 +158,42 @@ public class RobotContainer {
         }
       ));
   
-      driver.leftBumper().onTrue(drivetrain.run(() -> drivetrain.alignReef(1)));  
-      driver.rightBumper().onTrue(drivetrain.run(() -> drivetrain.alignReef(-1))); 
+      driver.x().onTrue(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1))).whileTrue(drivetrain.run(() -> drivetrain.alignReef()).onlyWhile(drivetrain::notAtTarget));  
+      driver.b().onTrue(drivetrain.runOnce(() -> drivetrain.updateReefTarget(-1))).whileTrue(drivetrain.run(() -> drivetrain.alignReef()).onlyWhile(drivetrain::notAtTarget)); 
       driver.b().onTrue(NamedCommands.getCommand("expel"));
-      driver.rightTrigger().onTrue(NamedCommands.getCommand("shoot"));
-      driver.leftTrigger().onTrue(NamedCommands.getCommand("Intake"));
+      driver.rightTrigger().onTrue(NamedCommands.getCommand("shoot")
+      .onlyIf(operator.b().or(operator.a()).or(operator.x()).or(operator.y())))
+      .onFalse(NamedCommands.getCommand("cancel shoot")
+      .onlyIf(operator.b().or(operator.a()).or(operator.x()).or(operator.y())));
+      // driver.leftTrigger().onTrue(NamedCommands.getCommand("Intake"));
 
-      driver.start().onTrue(drivetrain.resetPidgeon());
+      driver.start().onTrue(drivetrain.resetPidgeon()).onFalse(drivetrain.run(() -> {
+        drivetrain.teleopDrive(
+          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+          Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
+        }));
 
        operator.leftBumper().onTrue(gamespecManager.runOnce(() -> mode = Mode.coral));
        operator.rightBumper().onTrue(gamespecManager.runOnce(() -> mode = Mode.algae));
        operator.start().onTrue(gamespecManager.runOnce(() -> mode = Mode.climb));
        operator.back().onTrue(gamespecManager.runOnce(() -> mode = Mode.climb));
 
-       operator.a().and(this::isCoral).onTrue(NamedCommands.getCommand("L2")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
-       operator.b().and(this::isCoral).onTrue(NamedCommands.getCommand("L3")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
-       operator.x().and(this::isCoral).onTrue(NamedCommands.getCommand("L1")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
-       operator.y().and(this::isCoral).onTrue(NamedCommands.getCommand("L4")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
-       operator.leftTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align floor intake")); 
-       operator.rightTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align station intake")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"), NamedCommands.getCommand("Stop Intake")));
-       operator.a().and(this::isAlgae).onTrue(NamedCommands.getCommand("Package"));
-       operator.b().and(this::isAlgae).onTrue(NamedCommands.getCommand("L3"));
-       operator.x().and(this::isAlgae).onTrue(NamedCommands.getCommand("processer"));
-       operator.y().and(this::isAlgae).onTrue(NamedCommands.getCommand("barge"));
-       operator.leftTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("align floor intake"));
-       operator.rightTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("align processor"));
-       operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
+      operator.a().and(this::isCoral).onTrue(NamedCommands.getCommand("L2")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
+      operator.b().and(this::isCoral).onTrue(NamedCommands.getCommand("L3")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
+      operator.x().and(this::isCoral).onTrue(NamedCommands.getCommand("L1")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
+      operator.y().and(this::isCoral).onTrue(NamedCommands.getCommand("L4")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
+      operator.leftTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align floor intake")); 
+      operator.rightTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align station intake")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"))); //, NamedCommands.getCommand("Stop Intake")));
+
+      operator.a().and(this::isAlgae).onTrue(NamedCommands.getCommand("Package"));
+      operator.b().and(this::isAlgae).onTrue(NamedCommands.getCommand("L3"));
+      operator.x().and(this::isAlgae).onTrue(NamedCommands.getCommand("processer"));
+      operator.y().and(this::isAlgae).onTrue(NamedCommands.getCommand("barge"));
+      operator.leftTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("align floor intake"));
+      operator.rightTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("align processor"));
+
+      operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
       operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));
 
       operator.axisLessThan(5, -0.05).or(operator.axisGreaterThan(5, 0.05)).and(this::isClimb).whileTrue(

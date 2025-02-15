@@ -92,7 +92,7 @@ public class Manipulator extends SubsystemBase {
             () -> this.coralCommandedPos.setDouble(position),
             () -> io.setCoralAngleMotorControl(position),
             interrupted -> io.setCoralAngleMotorControl(position), 
-            () -> false,
+            () -> stats.coralCancoderPosition <= position + .01 && stats.coralCancoderPosition >= position - .01,
             this
         );
     }
@@ -121,6 +121,13 @@ public class Manipulator extends SubsystemBase {
             io.setCoralAngleMotorControl(ManipulatorConstants.coralWristHP);
 
         }).onlyWhile(() -> stats.candiPWM1).andThen(Commands.waitSeconds(0.2)).andThen(zero());    
+    }
+
+    /** 
+     * @apiNote false when it has coral
+     */
+    public Boolean returnBeambreak(){
+        return stats.candiPWM1;
     }
 
     public  Command goHP() {

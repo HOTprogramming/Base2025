@@ -81,7 +81,7 @@ public class Manager extends SubsystemBase{
 
     public Command goToPackage(){
       return Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
-      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage()));
+      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore())));
     }
 
     public Command goToL1(){
@@ -94,27 +94,26 @@ public class Manager extends SubsystemBase{
 
     public Command goToL2(){
       return Commands.parallel(
-      run(() -> {scoringLevel = ScoringLevel.L2;})
-      ,elevatorSubsystem.goToL2().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0))), armSubsystem.goToPackage())
-      .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L2Height-30.0,2.0)))
-      .andThen(Commands.parallel(elevatorSubsystem.goToL2(), armSubsystem.goToL2()));
+      run(() -> {scoringLevel = ScoringLevel.L2;}),
+      Commands.sequence(armSubsystem.goToPackage(),
+      Commands.sequence(elevatorSubsystem.goToL2(), armSubsystem.goToL2())
+      )).onlyIf(() -> !manipulatorSubsystem.returnBeambreak());
     }
 
     public Command goToL3(){
-      return Commands.parallel(      
-      run(() -> {scoringLevel = ScoringLevel.L3;})
-      ,elevatorSubsystem.goToL3().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0))), armSubsystem.goToPackage())
-      .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L3Height-30.0,2.0)))
-      .andThen(Commands.parallel(elevatorSubsystem.goToL3(), armSubsystem.goToL3()));
+      return Commands.parallel(
+      run(() -> {scoringLevel = ScoringLevel.L3;}),
+      Commands.sequence(armSubsystem.goToPackage(),
+      Commands.sequence(elevatorSubsystem.goToL3(), armSubsystem.goToL3())
+      )).onlyIf(() -> !manipulatorSubsystem.returnBeambreak());
     }
 
-    public Command goToL4(){
+    public Command goToL4() {
       return Commands.parallel(
-      run(() -> {scoringLevel = ScoringLevel.L4;})
-      ,elevatorSubsystem.goToL4().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
-      ,armSubsystem.goToPackage())
-      .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-30.0,2.0)))
-      .andThen(Commands.parallel(elevatorSubsystem.goToL4(), armSubsystem.goToL4()));
+      run(() -> {scoringLevel = ScoringLevel.L4;}),
+      Commands.sequence(armSubsystem.goToPackage(),
+      Commands.sequence(elevatorSubsystem.goToL4(), armSubsystem.goToL4())
+      )).onlyIf(() -> !manipulatorSubsystem.returnBeambreak());
     }
 
     //
@@ -130,39 +129,47 @@ public class Manager extends SubsystemBase{
         Map.of(
           ScoringLevel.L4, Commands.sequence(
             armSubsystem.L4Score(),
-            elevatorSubsystem.L4Score()),
+            elevatorSubsystem.L4Score())
+            .onlyWhile(() -> (armAbort()))
+            .andThen(goToL4().onlyIf(() -> false)),
           ScoringLevel.L3, Commands.sequence(
             armSubsystem.L3Score(),
-            elevatorSubsystem.L3Score()),
+            elevatorSubsystem.L3Score())
+            .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
+            .andThen(goToL3().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))),
           ScoringLevel.L2, Commands.sequence(
             armSubsystem.L2Score(),
-            elevatorSubsystem.L2Score()),
+            elevatorSubsystem.L2Score())
+            .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
+            .andThen(goToL2().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))),
           ScoringLevel.L1, Commands.sequence(
-            manipulatorSubsystem.shoot(),
-            Commands.waitSeconds(1.0),
-            manipulatorSubsystem.stop(),
-            manipulatorSubsystem.goHP()
-            )
+            manipulatorSubsystem.shoot()
+            .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
+            .andThen(goToL1().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))))
+
+          // ScoringLevel.L1, Commands.sequence(
+          //   manipulatorSubsystem.shoot().onlyIf(() -> !manipulatorSubsystem.returnBeambreak()),
+          //   Commands.waitSeconds(0.5),
+          //   manipulatorSubsystem.stop())
+          //   .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
+          //   .andThen(goToL1().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail))))
         ),
         this::getLevel
       );
+    }
 
-      //elevator: 18.79
-      //arm: -104.0
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public Command cancelShoot(){
 
-      // UpdateTelemetry();
-      // if(this::getLevel){
-      //   System.out.println("L4");
-      //   return Commands.sequence(
-      //   armSubsystem.L4Score(),
-      //   elevatorSubsystem.L4Score());
-      // }
-      // else{
-      //   System.out.println("L3");
-      //   return Commands.sequence(        
-      //   armSubsystem.L3Score(),
-      //   elevatorSubsystem.L3Score());
-      // }
+      return new SelectCommand(
+        Map.of(
+          ScoringLevel.L4, goToL4(),
+          ScoringLevel.L3, goToL3(),
+          ScoringLevel.L2, goToL2(),
+          ScoringLevel.L1, Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goHP())
+          ),
+        this::getLevel
+      );
     }
 
     public Command goToFeeder(){
@@ -173,15 +180,11 @@ public class Manager extends SubsystemBase{
     }
 
     public Command alignStationIntake(){
-      return Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToFeeder(), manipulatorSubsystem.intake());
+      return Commands.parallel(
+        Commands.deadline(manipulatorSubsystem.intake(), armSubsystem.goToFeeder())
+        .andThen(armSubsystem.goToPackage()), 
+        elevatorSubsystem.goToPackage());
     }
-
-//first one is position, second one is score
-//elevator L3: 28.35, 26.37
-//arm L3: -31.6, -81.5,
-
-//elevator L2: 
-//arm L2: 
 
     public Command coralGoHP(){
       return manipulatorSubsystem.goHP();
@@ -208,6 +211,11 @@ public class Manager extends SubsystemBase{
     }
     public Command lockFingers(){
       return climberSubsystem.servo();
+    }    /**
+     * @return true if the arm should run normally, false if it should stop because it has coral and the arm overruns
+     */
+    private boolean armAbort() {
+      return armSubsystem.armCurrent(ArmConstants.CurrentFail) || manipulatorSubsystem.returnBeambreak();
     }
 
 }
