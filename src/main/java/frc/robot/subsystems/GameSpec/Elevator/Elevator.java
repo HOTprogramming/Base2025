@@ -83,6 +83,10 @@ public class Elevator extends SubsystemBase {
     return elevatorCommand(ElevatorConstants.L4Height);
   }
 
+  public Command goToL4Long(){
+    return elevatorCommand(ElevatorConstants.L4LongHeight);
+  }
+
   public Command goToL3(){
     return elevatorCommand(ElevatorConstants.L3Height);
   }
@@ -118,7 +122,7 @@ public class Elevator extends SubsystemBase {
   public Command goToHP(){
     return elevatorCommand(ElevatorConstants.HPHeight);
   }
-
+  
 
   public Command managerElevatorTest(){
     System.out.println("elevatorworks");

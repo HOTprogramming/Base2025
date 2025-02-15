@@ -83,8 +83,9 @@ public abstract class ManipulatorIO {
     
             public double algaeCancoderPosition = 0.0;
             public double algaeCancoderVelocity = 0.0;
-    
+            
             public boolean candiPWM2;
+            public boolean candiPWM3;
         }
     
         protected static ManipulatorIOStats stats = new ManipulatorIOStats();
@@ -113,7 +114,7 @@ public abstract class ManipulatorIO {
         private final StatusSignal<Angle> AlgaeCancoderPosition;
         private final StatusSignal<AngularVelocity> AlgaeCancoderVelocity;
         private final StatusSignal<Boolean> CANdiPWM2;
-    
+        private final StatusSignal<Boolean> CANdiPWM3;
         private TalonFXConfiguration cfg;
         private TalonFXSConfiguration cFXS;
         private CANcoderConfiguration eCfg;
@@ -228,7 +229,7 @@ public abstract class ManipulatorIO {
             AlgaeCancoderVelocity = algaeCancoder.getVelocity();
 
             CANdiPWM2 = coralCandi.getS2Closed();
-        
+            CANdiPWM3 = coralCandi.getS2Closed();
             BaseStatusSignal.setUpdateFrequencyForAll(
                 100.0,
                 CoralPosition,
@@ -251,7 +252,8 @@ public abstract class ManipulatorIO {
                 AlgaeTempCelsius2,
                 AlgaeCancoderPosition,
                 AlgaeCancoderVelocity,
-                CANdiPWM2
+                CANdiPWM2,
+                CANdiPWM3
                 );
         }
     
@@ -279,6 +281,7 @@ public abstract class ManipulatorIO {
                 AlgaeTempCelsius2,
                 AlgaeCancoderPosition,
                 AlgaeCancoderVelocity,
+                CANdiPWM3,
                 CANdiPWM2)
                 .isOK();
     
@@ -305,7 +308,7 @@ public abstract class ManipulatorIO {
     
             stats.algaeCancoderPosition = AlgaeCancoderPosition.getValueAsDouble();
             stats.algaeCancoderVelocity = AlgaeCancoderVelocity.getValueAsDouble();
-    
+            stats.candiPWM3 = CANdiPWM3.getValue();
             stats.candiPWM2 = CANdiPWM2.getValue();
         }
     
