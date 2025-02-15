@@ -117,6 +117,26 @@ public class Manager extends SubsystemBase{
     //   )).onlyIf(() -> !manipulatorSubsystem.returnBeambreak());
     // }
 
+    public Command goToL1(){
+      return Commands.parallel(Commands.parallel(
+      run(() -> {scoringLevel = ScoringLevel.L1;})
+      ,elevatorSubsystem.goToL1().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
+      , armSubsystem.goToPackage())
+      .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L1Height-30.0,2.0)))
+      .andThen(Commands.parallel(elevatorSubsystem.goToL1(), armSubsystem.goToL1()), manipulatorSubsystem.goHP()))
+      .onlyIf(() -> !manipulatorSubsystem.returnBeambreak());
+    }
+
+    public Command goToL2(){
+      return Commands.parallel(Commands.parallel(
+      run(() -> {scoringLevel = ScoringLevel.L2;})
+      ,elevatorSubsystem.goToL2().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
+      , armSubsystem.goToPackage())
+      .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L2Height-30.0,2.0)))
+      .andThen(Commands.parallel(elevatorSubsystem.goToL2(), armSubsystem.goToL2())))
+      .onlyIf(() -> !manipulatorSubsystem.returnBeambreak());
+    }
+
     public Command goToL3(){
       return Commands.parallel(Commands.parallel(      
       run(() -> {scoringLevel = ScoringLevel.L3;})
@@ -124,6 +144,16 @@ public class Manager extends SubsystemBase{
       , armSubsystem.goToPackage())
       .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L3Height-30.0,2.0)))
       .andThen(Commands.parallel(elevatorSubsystem.goToL3(), armSubsystem.goToL3())))
+      .onlyIf(() -> !manipulatorSubsystem.returnBeambreak());
+    }
+
+    public Command goToL4(){
+      return Commands.parallel(Commands.parallel(
+      run(() -> {scoringLevel = ScoringLevel.L4;})
+      ,elevatorSubsystem.goToL4().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
+      ,armSubsystem.goToPackage())
+      .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-30.0,2.0)))
+      .andThen(Commands.parallel(elevatorSubsystem.goToL4(), armSubsystem.goToL4())))
       .onlyIf(() -> !manipulatorSubsystem.returnBeambreak());
     }
 
