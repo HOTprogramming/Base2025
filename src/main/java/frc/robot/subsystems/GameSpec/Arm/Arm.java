@@ -26,7 +26,7 @@ public class Arm extends SubsystemBase {
   private GenericEntry armSupplyCurrent;
   private GenericEntry armStatorCurrent;
   private GenericEntry armTemp;
-  private GenericEntry armCommandedPos;
+  public GenericEntry armCommandedPos;
   
   public Arm(ArmIO io) {
     this.io = io; 
@@ -83,6 +83,17 @@ public class Arm extends SubsystemBase {
     return armCommand(ArmConstants.L3Angle);
   }
 
+  public Command goToL3Short(){
+    return armCommand(ArmConstants.L3short);
+  }
+  
+  public Command goToL4Short(){
+    return armCommand(ArmConstants.L4Short);
+  }
+
+  public Command goToL2Short(){
+    return armCommand(ArmConstants.L2Short);
+  }
   public Command goToL4(){
     return armCommand(ArmConstants.L4Angle);
   }
