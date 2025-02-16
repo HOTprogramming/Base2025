@@ -74,7 +74,7 @@ public class Manager extends SubsystemBase{
         armSubsystem = new Arm(new ArmIOSim());
         manipulatorSubsystem = new Manipulator(new ManipulatorIOSim());
         climberSubsystem = new Climber(new ClimberIOSim());
-      }
+      } 
 
       scoringLevel = ScoringLevel.L1;
       climbState = ClimbState.notClimbed;
@@ -235,6 +235,14 @@ public class Manager extends SubsystemBase{
 
     public Command coralGoScore(){
       return manipulatorSubsystem.goScore();
+    }
+
+    public Command elevatorTestUp(){
+      return elevatorSubsystem.goToL3();
+    }
+
+    public Command elevatorTestDown(){
+      return elevatorSubsystem.goToPackage();
     }
 
     public Command algaeExtend(){

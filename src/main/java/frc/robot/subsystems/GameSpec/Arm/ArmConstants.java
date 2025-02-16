@@ -21,6 +21,7 @@ public class ArmConstants {
     public static MMGains armGains;
     public static DCMotor simGearBox;
     public static boolean gravity;
+    public static double armEncoderOffset;
 
     public static double PackageAngle;
     public static double FeederAngle;
@@ -70,6 +71,7 @@ public class ArmConstants {
         armGains = new MMGains(3000, 3000, 6500, 0.2, 0.0, 0.01, 0.025, 0.3);//Voltage
         simGearBox = DCMotor.getKrakenX60Foc(1);
         gravity = false;
+        armEncoderOffset = -0.148;
     
         PackageAngle = 0;
         FeederAngle = 52.4;
@@ -105,6 +107,7 @@ public class ArmConstants {
         armGains = new MMGains(3000, 3000, 6500, 0.2, 0.0, 0.01, 0.025, 0.3);//Voltage
         simGearBox = DCMotor.getKrakenX60Foc(1);
         gravity = false;
+        armEncoderOffset = -0.1977;
     
         PackageAngle = 0;
         FeederAngle = 52.4;

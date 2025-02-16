@@ -194,7 +194,7 @@ public abstract class ManipulatorIO {
             cFXS.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
             cFXS.Commutation.MotorArrangement = MotorArrangementValue.Brushed_DC;
 
-            eCfg.MagnetSensor.MagnetOffset = -0.472;
+            eCfg.MagnetSensor.MagnetOffset = ManipulatorConstants.coralWristEncoderOffset;
             //score -0.246
 
 

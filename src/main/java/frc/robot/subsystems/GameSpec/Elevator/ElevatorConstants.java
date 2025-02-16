@@ -10,9 +10,9 @@ public class ElevatorConstants {
     public static double kReduction;
     public static double kMaxAccelerationRpmPerSec;
     public static MMGains elevatorGains;
+    public static double elevatorEncoderOffset;
     
     public static double PackageHeight;
-
     public static double L4Height;
     public static double L4LongHeight;
     public static double L3Height;
@@ -50,9 +50,9 @@ public class ElevatorConstants {
         kReduction = (1.0 / 2.0);
         kMaxAccelerationRpmPerSec = 9000.0; 
         elevatorGains = new MMGains(1000, 1500, 4500, 2.5 , 0, 0.0, 0.025, 0.3);
-        
-        PackageHeight = 17.9;
-    
+        elevatorEncoderOffset = 0.2546;
+
+        PackageHeight = 25.0; 
         L4Height = 57.0;
         L4LongHeight = 53.0;
         L3Height = 28.35;
@@ -75,9 +75,9 @@ public class ElevatorConstants {
         kReduction = (1.0 / 2.0);
         kMaxAccelerationRpmPerSec = 9000.0; 
         elevatorGains = new MMGains(1000, 1500, 4500, 2.5 , 0, 0.0, 0.025, 0.3);
-        
-        PackageHeight = 17.9;
-    
+        elevatorEncoderOffset = 0.4953;
+
+        PackageHeight = 17.9; 
         L4Height = 57.0;
         L4LongHeight = 53.0;
         L3Height = 28.35;

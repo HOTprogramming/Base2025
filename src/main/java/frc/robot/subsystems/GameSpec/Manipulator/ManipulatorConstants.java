@@ -18,6 +18,7 @@ public class ManipulatorConstants {
       public static double kMaxAccelerationRpmPerSec;
       public static MMGains coralWristGains;
       public static VVGains coralSpinGains;
+      public static double coralWristEncoderOffset;
   
       public static int algaeArmID;
       public static int algaeRollerID;
@@ -58,6 +59,7 @@ public class ManipulatorConstants {
       kMaxAccelerationRpmPerSec = 9000.0; 
       coralWristGains = new MMGains(3000, 4000, 14000, 0.2, 0.0, 0.002, 0.1, 0.0);
       coralSpinGains = new VVGains(10.0, 0.0, 0.0, 0, 1);
+      coralWristEncoderOffset = 0.163086;
   
       algaeArmID = 17;
       algaeRollerID = 25;
@@ -84,6 +86,7 @@ public class ManipulatorConstants {
       kMaxAccelerationRpmPerSec = 9000.0; 
       coralWristGains = new MMGains(3000, 4000, 14000, 0.2, 0.0, 0.002, 0.1, 0.0);
       coralSpinGains = new VVGains(10.0, 0.0, 0.0, 0, 1);
+      coralWristEncoderOffset = -0.472;
   
       algaeArmID = 17;
       algaeRollerID = 25;
