@@ -121,6 +121,14 @@ public class Elevator extends SubsystemBase {
     // return elevatorCommand(25.0);
   }
 
+  public Command goToHighAlgae(){
+    return elevatorCommand(ElevatorConstants.highAlgae);
+  }
+
+  public Command goToLowAlgae(){
+    return elevatorCommand(ElevatorConstants.lowAlgae);
+  }
+
   public Command goToHP(){
     return elevatorCommand(ElevatorConstants.HPHeight);
   }

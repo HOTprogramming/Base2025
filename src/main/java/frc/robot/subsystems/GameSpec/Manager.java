@@ -49,7 +49,9 @@ public class Manager extends SubsystemBase{
       L1,
       L2,
       L3,
-      L4
+      L4,
+      AlgaeHigh,
+      AlgaeLow
     }
 
     private enum ClimbState{
@@ -154,6 +156,18 @@ public class Manager extends SubsystemBase{
       .onlyIf(() -> checkDoneScoring());
     }
 
+    public Command highAlgae(){
+      return Commands.parallel(elevatorSubsystem.goToHighAlgae(), armSubsystem.goToPackage())
+      .andThen(Commands.parallel(armSubsystem.horizontal(), manipulatorSubsystem.algaeExtend())
+      ,runOnce(() -> {scoringLevel = ScoringLevel.AlgaeHigh;}));
+    }
+
+    public Command lowAlgae(){
+      return Commands.parallel(elevatorSubsystem.goToLowAlgae(), armSubsystem.goToPackage())
+      .andThen(Commands.parallel(armSubsystem.horizontal(), manipulatorSubsystem.algaeExtend())
+      ,runOnce(() -> {scoringLevel = ScoringLevel.AlgaeLow;}));
+    }
+
     public ScoringLevel getLevel(){
       return scoringLevel;
     }
@@ -237,14 +251,6 @@ public class Manager extends SubsystemBase{
       return manipulatorSubsystem.goScore();
     }
 
-    public Command elevatorTestUp(){
-      return elevatorSubsystem.goToL3();
-    }
-
-    public Command elevatorTestDown(){
-      return elevatorSubsystem.goToPackage();
-    }
-
     public Command algaeExtend(){
       return manipulatorSubsystem.algaeExtend();
     }
@@ -271,5 +277,13 @@ public class Manager extends SubsystemBase{
       return Commands.sequence(runOnce(() -> { climbState = ClimbState.climbed;}), armSubsystem.horizontal(),
       run(() -> climberSubsystem.setPower(3.0)).onlyWhile(() -> climberSubsystem.checkClimberDeployed()).andThen(runOnce(() -> climberSubsystem.setPower(0.0)))
       ,elevatorSubsystem.climbDown());
+    }
+
+    public Command elevatorTestUp(){
+      return elevatorSubsystem.goToL3();
+    }
+
+    public Command elevatorTestDown(){
+      return elevatorSubsystem.goToPackage();
     }
 }
