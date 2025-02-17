@@ -54,12 +54,12 @@ public class ManipulatorConstants {
     private static void compBotConstants(){
       
       coralMotorID = 16;
-      coralEncoderID = 54;
+      coralEncoderID = 45;
       coralCandiID = 53;
       coralWristID = 13;
       kReduction = (1.0 / 2.0);
       kMaxAccelerationRpmPerSec = 9000.0; 
-      coralWristGains = new MMGains(3000, 4000, 14000, 0.2, 0.0, 0.002, 0.1, 0.0);
+      coralWristGains = new MMGains(0, 0, 0, 0.2, 0.0, 0.002, 0.1, 0.0);
       coralSpinGains = new VVGains(10.0, 0.0, 0.0, 0, 1);
       coralWristEncoderOffset = 0.163086;
   

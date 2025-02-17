@@ -283,10 +283,10 @@ public class Manager extends SubsystemBase{
     }
 
     public Command elevatorTestUp(){
-      return elevatorSubsystem.goToL3();
+      return Commands.sequence(elevatorSubsystem.goToPackage(), armSubsystem.goToL3(), manipulatorSubsystem.goHP());
     }
 
     public Command elevatorTestDown(){
-      return elevatorSubsystem.goToPackage();
+      return Commands.sequence(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), manipulatorSubsystem.goScore());
     }
 }
