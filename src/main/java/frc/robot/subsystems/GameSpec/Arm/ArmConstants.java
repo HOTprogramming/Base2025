@@ -68,8 +68,7 @@ public class ArmConstants {
         simMaxAngle = Units.degreesToRadians(90);
         startingAngle = Units.degreesToRadians(0);
         measurementSTDDEVS = 2.0 * Math.PI / 4096.0;
-        // armGains = new MMGains(3000, 3000, 6500, 0.2, 0.0, 0.01, 0.025, 0.3);//Voltage
-        armGains = new MMGains(100, 100, 200, 0.1, 0.0, 0.01, 0.0, 0.0);//Voltage
+        armGains = new MMGains(3000, 3000, 6500, 0.2, 0.0, 0.01, 0.025, 0.3);//Voltage
         simGearBox = DCMotor.getKrakenX60Foc(1);
         gravity = false;
         armEncoderOffset = 0.14892578125;

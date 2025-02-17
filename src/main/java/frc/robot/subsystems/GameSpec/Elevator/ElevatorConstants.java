@@ -51,8 +51,7 @@ public class ElevatorConstants {
         elevatorEncoderID = 52;
         kReduction = (1.0 / 2.0);
         kMaxAccelerationRpmPerSec = 9000.0; 
-        // elevatorGains = new MMGains(1000, 1500, 4500, 2.5 , 0, 0.0, 0.025, 0.3);
-        elevatorGains = new MMGains(100, 100, 200, 1.0 , 0, 0.0, 0.0, 0.0);
+        elevatorGains = new MMGains(1000, 1500, 4500, 2.5 , 0, 0.0, 0.025, 0.3);
         elevatorEncoderOffset = 0.2546;
 
         PackageHeight = 17.9; 
