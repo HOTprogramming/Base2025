@@ -32,6 +32,7 @@ import frc.robot.subsystems.GameSpec.Intake.Intake;
 import frc.robot.subsystems.GameSpec.Intake.IntakeIOReal;
 import frc.robot.subsystems.GameSpec.Intake.IntakeIOSim;
 import frc.robot.subsystems.GameSpec.Manipulator.Manipulator;
+import frc.robot.subsystems.GameSpec.Manipulator.ManipulatorConstants;
 import frc.robot.subsystems.GameSpec.Manipulator.ManipulatorIOReal;
 import frc.robot.subsystems.GameSpec.Manipulator.ManipulatorIOSim;
 
@@ -208,7 +209,9 @@ public class Manager extends SubsystemBase{
           ScoringLevel.L1, Commands.sequence(
             manipulatorSubsystem.shoot()
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
-            .andThen(goToL1().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))))
+            .andThen(goToL1().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail))))),
+          ScoringLevel.AlgaeHigh, manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage),
+          ScoringLevel.AlgaeLow, manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage)
         ),
         this::getLevel
       );

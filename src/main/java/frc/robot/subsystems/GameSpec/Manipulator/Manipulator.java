@@ -38,6 +38,7 @@ public class Manipulator extends SubsystemBase {
     private GenericEntry algaeStatorCurrent;
     private GenericEntry algaeTemp;
     private GenericEntry algaeCommandedPos;
+    private GenericEntry algaeCommandedSpeed;
     private GenericEntry CANdiPWM2;
     private GenericEntry CANdiPWM3;
     
@@ -62,6 +63,7 @@ public class Manipulator extends SubsystemBase {
         algaeStatorCurrent = this.coralShuffleboard.add("Algae Stator Current", 0.0).getEntry();
         algaeTemp = this.coralShuffleboard.add("Algae Temp", 0.0).getEntry();
         algaeCommandedPos = this.coralShuffleboard.add("Algae Commanded Position", 0.0).getEntry();
+        algaeCommandedSpeed = this.coralShuffleboard.add("algae commanded speed", 0.0).getEntry();
         CANdiPWM2 = this.coralShuffleboard.add("CANdi Algae Beambreak",false).getEntry();//false when there is no object, true when it detects object
         CANdiPWM3 = this.coralShuffleboard.add("Outer BeamBreak",false).getEntry();//false when there is no object, true when it detects object
     }
@@ -111,6 +113,7 @@ public class Manipulator extends SubsystemBase {
             this
         );
     }
+
     public Command shoot() {
         return runOnce(() -> {
             coralCommandedSpeed.setDouble(-1.5);
@@ -138,7 +141,6 @@ public class Manipulator extends SubsystemBase {
         return stats.candiPWM3;
     }
     
-
     public  Command goHP() {
         return coralCommand(ManipulatorConstants.coralWristHP);
     }
@@ -153,6 +155,13 @@ public class Manipulator extends SubsystemBase {
 
     public Command algaePackage(){
         return algaeCommand(ManipulatorConstants.algaePackage);
+    }
+
+    public Command algaeVoltage(double voltage){
+            return runOnce(() -> {
+                algaeCommandedSpeed.setDouble(voltage);
+                io.setAlgaeSpinMotorControl(voltage);
+            });
     }
 
     public Command zero(){

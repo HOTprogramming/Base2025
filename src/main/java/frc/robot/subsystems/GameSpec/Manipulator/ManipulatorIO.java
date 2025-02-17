@@ -356,9 +356,9 @@ public abstract class ManipulatorIO {
     
     
     /** Apply motion magic control mode */
-    public void setCoralSpinMotorControl(double commandedVelocity) {
+    public void setCoralSpinMotorControl(double commandedVoltage) {
         // coral.setControl(coralSpinController.withVelocity(commandedVelocity).withSlot(0));
-        coral.setVoltage(commandedVelocity);
+        coral.setVoltage(commandedVoltage);
     }
 
     public void setCoralAngleMotorControl(double commandedPosition) {
@@ -377,6 +377,10 @@ public abstract class ManipulatorIO {
     /** Apply motion magic control mode */
     public void setAlgaeMotorControl(double commandedPosition) {
         algaeArm.setControl(algaeMagic.withPosition(commandedPosition).withSlot(0));
+    }
+
+    public void setAlgaeSpinMotorControl(double commandedVoltage){
+        algaeRoller.setVoltage(commandedVoltage);
     }
 
 
