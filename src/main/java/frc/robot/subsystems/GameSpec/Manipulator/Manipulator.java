@@ -104,16 +104,6 @@ public class Manipulator extends SubsystemBase {
         );
     }
 
-    private FunctionalCommand algaeCommand(double position){
-        return new FunctionalCommand(
-            () -> this.algaeCommandedPos.setDouble(position),
-            () -> io.setAlgaeMotorControl(position),
-            interrupted -> io.setAlgaeMotorControl(position), 
-            () -> false,
-            this
-        );
-    }
-
     public Command shoot() {
         return runOnce(() -> {
             coralCommandedSpeed.setDouble(-1.5);
@@ -147,14 +137,6 @@ public class Manipulator extends SubsystemBase {
 
     public  Command goScore() {
         return coralCommand(ManipulatorConstants.coralWristScore);
-    }
-
-    public Command algaeExtend(){
-        return algaeCommand(ManipulatorConstants.algaeExtend);
-    }
-
-    public Command algaePackage(){
-        return algaeCommand(ManipulatorConstants.algaePackage);
     }
 
     public Command algaeVoltage(double voltage){
@@ -195,12 +177,6 @@ public class Manipulator extends SubsystemBase {
           return run(() -> {
               io.stop();
           });  
-        }
-    
-        public Command hold(){
-          return run(() -> {
-            io.setAlgaeMotorControl(algaeCommandedPos.getDouble(0));
-          });
         }
      
       public boolean checkAlgaeRange(double deadband){

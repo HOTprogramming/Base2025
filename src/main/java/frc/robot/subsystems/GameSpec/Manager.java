@@ -159,13 +159,13 @@ public class Manager extends SubsystemBase{
 
     public Command highAlgae(){
       return Commands.parallel(elevatorSubsystem.goToHighAlgae(), armSubsystem.goToPackage())
-      .andThen(Commands.parallel(armSubsystem.horizontal(), manipulatorSubsystem.algaeExtend())
+      .andThen(Commands.parallel(armSubsystem.horizontal())
       ,runOnce(() -> {scoringLevel = ScoringLevel.AlgaeHigh;}));
     }
 
     public Command lowAlgae(){
       return Commands.parallel(elevatorSubsystem.goToLowAlgae(), armSubsystem.goToPackage())
-      .andThen(Commands.parallel(armSubsystem.horizontal(), manipulatorSubsystem.algaeExtend())
+      .andThen(Commands.parallel(armSubsystem.horizontal())
       ,runOnce(() -> {scoringLevel = ScoringLevel.AlgaeLow;}));
     }
 
@@ -252,14 +252,6 @@ public class Manager extends SubsystemBase{
 
     public Command coralGoScore(){
       return manipulatorSubsystem.goScore();
-    }
-
-    public Command algaeExtend(){
-      return manipulatorSubsystem.algaeExtend();
-    }
-
-    public Command algaePackage(){
-      return manipulatorSubsystem.algaePackage();
     }
    
     public Command Intake(){

@@ -64,7 +64,7 @@ public class ManipulatorConstants {
       coralWristEncoderOffset = 0.163086;
   
       algaeArmID = 17;
-      algaeRollerID = 25;
+      algaeRollerID = 15;
       algaeEncoderID = 46;
       algaeGains = new MMGains(100, 100, 200, 1.0 , 0.0, 0.0, 0, 0);
       
