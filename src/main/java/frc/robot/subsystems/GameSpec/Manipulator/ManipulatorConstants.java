@@ -32,6 +32,7 @@ public class ManipulatorConstants {
       public static double algaePackage;
 
       public static double algaeIntakeVoltage;
+      public static double algaeExpelVoltage;
 
       public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
       public record VVGains(double kP, double kI, double kD, double kV, double kS) {}
@@ -75,6 +76,7 @@ public class ManipulatorConstants {
       algaePackage = 0;
 
       algaeIntakeVoltage = -1.5;
+      algaeExpelVoltage = 3.0;
     }
 
     private static void practiceBotConstants(){

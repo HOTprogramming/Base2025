@@ -38,6 +38,7 @@ public class ArmConstants {
     public static double L3short;
     public static double L2Short;
     public static double L4Short;
+    public static double IntakeAlgae;
     
     public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
 
@@ -88,6 +89,7 @@ public class ArmConstants {
         L3short = -20.6;
         L2Short = -20.6;
         L4Short = -22.5;
+        IntakeAlgae = -30.0;
 
     }
 

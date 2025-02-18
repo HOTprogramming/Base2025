@@ -133,6 +133,10 @@ public class Elevator extends SubsystemBase {
     return elevatorCommand(ElevatorConstants.HPHeight);
   }
 
+  public Command goToBarge(){
+    return elevatorCommand(ElevatorConstants.BargeHeight);
+  }
+
   public Command climbDown(){
     return elevatorCommand(ElevatorConstants.climbHeight);
   }
