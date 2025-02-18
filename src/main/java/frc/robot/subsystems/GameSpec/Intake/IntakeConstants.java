@@ -1,21 +1,72 @@
 package frc.robot.subsystems.GameSpec.Intake;
 
+import frc.robot.Constants;
+
 public class IntakeConstants {
-    
-    public static final int intakeRollerID = 18;
-    public static final int intakeRotationID = 19;
-    public static final int intakeEncoderID = 46;
-    public static final double kReduction = (1.0 / 2.0);
-    public static final double kMaxAccelerationRpmPerSec = 9000.0; 
-    public static final MMGains intakeGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
-    
-    public static final double l4Height = 2;
-    public static final double l3Height = 1.5;
-    public static final double l2Height = 1;
-    public static final double l1Height = .5;
-    public static final double netHeight = 3;
-    public static final double intakeCoralHeight = 1.25;
-    public static final double intakeAlgaeHeight = .75;
+
+    public static int intakeRollerID;
+    public static int intakeRotationID;
+    public static int intakeEncoderID;
+    public static double kReduction;
+    public static double kMaxAccelerationRpmPerSec;
+    public static MMGains intakeGains;
+
+    public static double intakePackage;
+    public static double intakeGround;
+
+    public static double intakeEncoderOffset;
 
     public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
+
+    static {
+        switch (Constants.getRobot()) {
+        case COMPBOT -> {
+          compBotConstants();
+        }
+        case DEVBOT -> {
+          practiceBotConstants();
+        }
+        case SIMBOT -> {    
+          simBotConstants();
+        }
+      }
+    }
+
+    private static void compBotConstants(){
+
+        intakeRollerID = 18;
+        intakeRotationID = 19;
+        intakeEncoderID = 46;
+        kReduction = (1.0 / 2.0);
+        kMaxAccelerationRpmPerSec = 9000.0; 
+        intakeGains = new MMGains(0, 0, 0, 0.1 , 0.0, 0.0, 0.05, 0);
+        
+        intakePackage = -5.0;
+        intakeGround = -158.0;
+
+        intakeEncoderOffset = 0.39404296875;
+
+    }
+
+    private static void practiceBotConstants(){
+
+        intakeRollerID = 18;
+        intakeRotationID = 19;
+        intakeEncoderID = 46;
+        kReduction = (1.0 / 2.0);
+        kMaxAccelerationRpmPerSec = 9000.0; 
+        intakeGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
+    }
+
+    private static void simBotConstants(){
+
+        intakeRollerID = 18;
+        intakeRotationID = 19;
+        intakeEncoderID = 46;
+        kReduction = (1.0 / 2.0);
+        kMaxAccelerationRpmPerSec = 9000.0; 
+        intakeGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
+        
+
+    }
 }

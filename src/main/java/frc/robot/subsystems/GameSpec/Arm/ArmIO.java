@@ -89,7 +89,7 @@ public abstract class ArmIO {
         cfg.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         encoderCfg.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-        encoderCfg.MagnetSensor.MagnetOffset = -0.1977;
+        encoderCfg.MagnetSensor.MagnetOffset = ArmConstants.armEncoderOffset;
 
         setConfig();
 
