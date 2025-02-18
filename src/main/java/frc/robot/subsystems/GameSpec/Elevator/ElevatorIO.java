@@ -4,10 +4,12 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -107,7 +109,17 @@ public abstract class ElevatorIO {
         cfg.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
 
         cfg.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-
+         cfg.withCurrentLimits(
+            new CurrentLimitsConfigs()
+                .withStatorCurrentLimit(80)
+                .withStatorCurrentLimitEnable(true)
+                .withSupplyCurrentLimit(90)
+                .withSupplyCurrentLimitEnable(true)
+        ).withTorqueCurrent(
+            new TorqueCurrentConfigs()
+                .withPeakForwardTorqueCurrent(65)
+                .withPeakReverseTorqueCurrent(-65)
+        );
         encoderCfg.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
         encoderCfg.MagnetSensor.MagnetOffset = ElevatorConstants.elevatorEncoderOffset;
 
