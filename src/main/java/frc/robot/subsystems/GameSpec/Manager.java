@@ -225,7 +225,9 @@ public class Manager extends SubsystemBase{
           ScoringLevel.L4, goToL4(),
           ScoringLevel.L3, goToL3(),
           ScoringLevel.L2, goToL2(),
-          ScoringLevel.L1, Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goHP())
+          ScoringLevel.L1, Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goHP()),
+          ScoringLevel.AlgaeHigh, manipulatorSubsystem.algaeVoltage(0.0),
+          ScoringLevel.AlgaeLow, manipulatorSubsystem.algaeVoltage(0.0)
           ),
         this::getLevel
       );
@@ -272,13 +274,5 @@ public class Manager extends SubsystemBase{
       return Commands.sequence(runOnce(() -> { climbState = ClimbState.climbed;}), armSubsystem.horizontal(),
       run(() -> climberSubsystem.setPower(3.0)).onlyWhile(() -> climberSubsystem.checkClimberDeployed()).andThen(runOnce(() -> climberSubsystem.setPower(0.0)))
       ,elevatorSubsystem.climbDown());
-    }
-
-    public Command elevatorTestUp(){
-      return Commands.sequence(manipulatorSubsystem.algaeVoltage(1.0));
-    }
-
-    public Command elevatorTestDown(){
-      return Commands.sequence(manipulatorSubsystem.algaeVoltage(-1.0));
     }
 }
