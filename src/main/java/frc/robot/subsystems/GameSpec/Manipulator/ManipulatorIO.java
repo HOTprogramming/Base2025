@@ -35,7 +35,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 public abstract class ManipulatorIO {
     // Protected TalonFX object accessible to subclasses
     protected TalonFX coral;
-    protected MotionMagicVoltage coralWristMagic;
     protected VelocityTorqueCurrentFOC coralSpinController;
     protected PositionVoltage positionVoltage;
     protected DigitalInput coralBeamBreak;
@@ -71,19 +70,7 @@ public abstract class ManipulatorIO {
             public double algaeSupplyCurrentAmps = 0.0;
             public double algaeTorqueCurrentAmps = 0.0;
             public double algaeTempCelsius = 0.0;
-    
-            public boolean algaeMotorConnected2 = true;
-            public double algaePosition2 = 0.0;
-            public double algaeVelocity2 = 0.0;
-            public double algaeAppliedVolts2 = 0.0;
-            public double algaeCurrentAmps2 = 0.0;
-            public double algaeSupplyCurrentAmps2 = 0.0;
-            public double algaeTorqueCurrentAmps2 = 0.0;
-            public double algaeTempCelsius2 = 0.0;
-    
-            public double algaeCancoderPosition = 0.0;
-            public double algaeCancoderVelocity = 0.0;
-            
+
             public boolean candiPWM2;
             public boolean candiPWM3;
         }
@@ -104,15 +91,7 @@ public abstract class ManipulatorIO {
         private final StatusSignal<Current> AlgaeSupplyCurrent;
         private final StatusSignal<Current> AlgaeTorqueCurrent;
         private final StatusSignal<Temperature> AlgaeTempCelsius;
-    
-        private final StatusSignal<Angle> AlgaePosition2;
-        private final StatusSignal<AngularVelocity> AlgaeVelocity2;
-        private final StatusSignal<Current> AlgaeSupplyCurrent2;
-        private final StatusSignal<Current> AlgaeTorqueCurrent2;
-        private final StatusSignal<Temperature> AlgaeTempCelsius2;
-    
-        private final StatusSignal<Angle> AlgaeCancoderPosition;
-        private final StatusSignal<AngularVelocity> AlgaeCancoderVelocity;
+
         private final StatusSignal<Boolean> CANdiPWM2;
         private final StatusSignal<Boolean> CANdiPWM3;
         private TalonFXConfiguration cfg;
@@ -127,27 +106,12 @@ public abstract class ManipulatorIO {
             this.coralWrist = new TalonFXS(ManipulatorConstants.coralWristID,"robot");
             this.coralCancoder = new CANcoder(ManipulatorConstants.coralEncoderID, "robot");
 
-            this.algaeArm = new TalonFXS(ManipulatorConstants.algaeArmID, "robot");
             this.algaeRoller = new TalonFX(ManipulatorConstants.algaeRollerID, "robot");
-            this.algaeCancoder = new CANcoder(ManipulatorConstants.algaeEncoderID, "robot");
     
-            algaeMagic = new MotionMagicVoltage(0);
-            coralWristMagic = new MotionMagicVoltage(0);
             positionVoltage = new PositionVoltage(0);
-            coralSpinController = new VelocityTorqueCurrentFOC(0).withUpdateFreqHz(0.0);
-            cfg = new TalonFXConfiguration();
             cFXS = new TalonFXSConfiguration();
+            cfg = new TalonFXConfiguration();
             eCfg = new CANcoderConfiguration();
-        
-            MotionMagicConfigs mmC = cFXS.MotionMagic;
-            mmC.MotionMagicCruiseVelocity = ManipulatorConstants.coralWristGains.CruiseVelocity(); //rps
-            mmC.MotionMagicAcceleration = ManipulatorConstants.coralWristGains.Acceleration();
-            mmC.MotionMagicJerk = ManipulatorConstants.coralWristGains.Jerk();
-
-            MotionMagicConfigs mmA = cfg.MotionMagic;
-            mmA.MotionMagicCruiseVelocity = ManipulatorConstants.algaeGains.CruiseVelocity(); //rps
-            mmA.MotionMagicAcceleration = ManipulatorConstants.algaeGains.Acceleration();
-            mmA.MotionMagicJerk = ManipulatorConstants.algaeGains.Jerk();
     
             Slot0Configs slot0 = cFXS.Slot0;
             slot0.kP = ManipulatorConstants.coralWristGains.kP();
@@ -156,24 +120,9 @@ public abstract class ManipulatorIO {
             slot0.kV = ManipulatorConstants.coralWristGains.kV();
             slot0.kS = ManipulatorConstants.coralWristGains.kS();
 
-            // slot0.kP = ManipulatorConstants.coralSpinGains.kP();
-            // slot0.kI = ManipulatorConstants.coralSpinGains.kI();
-            // slot0.kD = ManipulatorConstants.coralSpinGains.kD();
-            // slot0.kV = ManipulatorConstants.coralSpinGains.kV();
-            // slot0.kS = ManipulatorConstants.coralSpinGains.kS();
-
-            // slot0.kP = ManipulatorConstants.algaeGains.kP();
-            // slot0.kI = ManipulatorConstants.algaeGains.kI();
-            // slot0.kD = ManipulatorConstants.algaeGains.kD();
-            // slot0.kV = ManipulatorConstants.algaeGains.kV();
-            // slot0.kS = ManipulatorConstants.algaeGains.kS();
-
-
             FeedbackConfigs fdb = cfg.Feedback;
             fdb.SensorToMechanismRatio = 1;
-    
-            cfg.Feedback.FeedbackRemoteSensorID = algaeCancoder.getDeviceID();
-            cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+
             cfg.Feedback.SensorToMechanismRatio = 1; //changes what the cancoder and fx encoder ratio is
             cfg.Feedback.RotorToSensorRatio = 1; //12.8;
             cfg.MotorOutput.NeutralMode = NeutralModeValue.Coast;
@@ -194,7 +143,7 @@ public abstract class ManipulatorIO {
             cFXS.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
             cFXS.Commutation.MotorArrangement = MotorArrangementValue.Brushed_DC;
 
-            eCfg.MagnetSensor.MagnetOffset = -0.472;
+            eCfg.MagnetSensor.MagnetOffset = ManipulatorConstants.coralWristEncoderOffset;
             //score -0.246
 
 
@@ -213,20 +162,11 @@ public abstract class ManipulatorIO {
             CANdiPWM1 = coralCandi.getS1Closed();
 
 
-            AlgaePosition = algaeArm.getPosition();
-            AlgaeVelocity = algaeArm.getVelocity();
-            AlgaeSupplyCurrent = algaeArm.getSupplyCurrent();
-            AlgaeTorqueCurrent = algaeArm.getTorqueCurrent();
-            AlgaeTempCelsius = algaeArm.getDeviceTemp();
-
-            AlgaePosition2 = algaeRoller.getPosition();
-            AlgaeVelocity2 = algaeRoller.getVelocity();
-            AlgaeSupplyCurrent2 = algaeRoller.getSupplyCurrent();
-            AlgaeTorqueCurrent2 = algaeRoller.getTorqueCurrent();
-            AlgaeTempCelsius2 = algaeRoller.getDeviceTemp();
-
-            AlgaeCancoderPosition = algaeCancoder.getPosition();
-            AlgaeCancoderVelocity = algaeCancoder.getVelocity();
+            AlgaePosition = algaeRoller.getPosition();
+            AlgaeVelocity = algaeRoller.getVelocity();
+            AlgaeSupplyCurrent = algaeRoller.getSupplyCurrent();
+            AlgaeTorqueCurrent = algaeRoller.getTorqueCurrent();
+            AlgaeTempCelsius = algaeRoller.getDeviceTemp();
 
             CANdiPWM2 = coralCandi.getS2Closed();
             CANdiPWM3 = coralCandi.getS2Closed();
@@ -245,13 +185,6 @@ public abstract class ManipulatorIO {
                 AlgaeSupplyCurrent,
                 AlgaeTorqueCurrent,
                 AlgaeTempCelsius,
-                AlgaePosition2,
-                AlgaeVelocity2,
-                AlgaeSupplyCurrent2,
-                AlgaeTorqueCurrent2,
-                AlgaeTempCelsius2,
-                AlgaeCancoderPosition,
-                AlgaeCancoderVelocity,
                 CANdiPWM2,
                 CANdiPWM3
                 );
@@ -274,13 +207,6 @@ public abstract class ManipulatorIO {
                 AlgaeSupplyCurrent,
                 AlgaeTorqueCurrent,
                 AlgaeTempCelsius,
-                AlgaePosition2,
-                AlgaeVelocity2,
-                AlgaeSupplyCurrent2,
-                AlgaeTorqueCurrent2,
-                AlgaeTempCelsius2,
-                AlgaeCancoderPosition,
-                AlgaeCancoderVelocity,
                 CANdiPWM3,
                 CANdiPWM2)
                 .isOK();
@@ -300,26 +226,11 @@ public abstract class ManipulatorIO {
             stats.algaeTorqueCurrentAmps = AlgaeTorqueCurrent.getValueAsDouble();
             stats.algaeTempCelsius = AlgaeTempCelsius.getValueAsDouble();
     
-            stats.algaePosition2 = AlgaePosition2.getValueAsDouble();
-            stats.algaeVelocity2 = AlgaeVelocity2.getValueAsDouble();
-            stats.algaeSupplyCurrentAmps2 = AlgaeSupplyCurrent2.getValueAsDouble();
-            stats.algaeTorqueCurrentAmps2 = AlgaeTorqueCurrent2.getValueAsDouble();
-            stats.algaeTempCelsius2 = AlgaeTempCelsius2.getValueAsDouble();
-    
-            stats.algaeCancoderPosition = AlgaeCancoderPosition.getValueAsDouble();
-            stats.algaeCancoderVelocity = AlgaeCancoderVelocity.getValueAsDouble();
             stats.candiPWM3 = CANdiPWM3.getValue();
             stats.candiPWM2 = CANdiPWM2.getValue();
         }
     
         public void setConfig(){
-            StatusCode CoralStatus = StatusCode.StatusCodeNotInitialized;
-            for(int i = 0; i < 5; ++i) {
-                CoralStatus = coral.getConfigurator().apply(cfg);
-            if (CoralStatus.isOK()) break;}
-            if (!CoralStatus.isOK()) {
-                System.out.println("Could not configure device. Error: " + CoralStatus.toString());
-            }
 
             StatusCode CoralStatus2 = StatusCode.StatusCodeNotInitialized;
             for(int i = 0; i < 5; ++i) {
@@ -336,29 +247,21 @@ public abstract class ManipulatorIO {
             if (!CoralEncoder.isOK()) {
                 System.out.println("Could not configure device. Error: " + CoralEncoder.toString());
             }
-
+    
             StatusCode algaeStatus = StatusCode.StatusCodeNotInitialized;
             for(int i = 0; i < 5; ++i) {
-                algaeStatus = algaeArm.getConfigurator().apply(cFXS);
+                algaeStatus = algaeRoller.getConfigurator().apply(cfg);
             if (algaeStatus.isOK()) break;}
             if (!algaeStatus.isOK()) {
-                System.out.println("Could not configure device. Error: " + algaeStatus.toString());
-            }
-    
-            StatusCode algaeStatus2 = StatusCode.StatusCodeNotInitialized;
-            for(int i = 0; i < 5; ++i) {
-                algaeStatus2 = algaeRoller.getConfigurator().apply(cfg);
-            if (algaeStatus2.isOK()) break;}
-            if (!algaeStatus2.isOK()) {
                 System.out.println("Could not configure device. Error: " + algaeStatus.toString());
             }
         }
     
     
     /** Apply motion magic control mode */
-    public void setCoralSpinMotorControl(double commandedVelocity) {
+    public void setCoralSpinMotorControl(double commandedVoltage) {
         // coral.setControl(coralSpinController.withVelocity(commandedVelocity).withSlot(0));
-        coral.setVoltage(commandedVelocity);
+        coral.setVoltage(commandedVoltage);
     }
 
     public void setCoralAngleMotorControl(double commandedPosition) {
@@ -374,9 +277,8 @@ public abstract class ManipulatorIO {
         coralWrist.setControl(positionVoltage.withPosition(ManipulatorConstants.coralWristScore).withSlot(0));
     }
 
-    /** Apply motion magic control mode */
-    public void setAlgaeMotorControl(double commandedPosition) {
-        algaeArm.setControl(algaeMagic.withPosition(commandedPosition).withSlot(0));
+    public void setAlgaeSpinMotorControl(double commandedVoltage){
+        algaeRoller.setVoltage(commandedVoltage);
     }
 
 

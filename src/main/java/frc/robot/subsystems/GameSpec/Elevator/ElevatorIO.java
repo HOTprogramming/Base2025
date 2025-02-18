@@ -109,12 +109,7 @@ public abstract class ElevatorIO {
         cfg.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         encoderCfg.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-        encoderCfg.MagnetSensor.MagnetOffset = 0.4953;
-
-        //11.25 start
-        //36 in 0.208
-
-        //package: 17.9
+        encoderCfg.MagnetSensor.MagnetOffset = ElevatorConstants.elevatorEncoderOffset;
 
         applyConfig();
 

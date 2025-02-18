@@ -1,22 +1,93 @@
 package frc.robot.subsystems.GameSpec.Climber;
 
+import frc.robot.Constants;
+
 public class ClimberConstants {
-    
-    public static final int climberMotorID = 11;
-    public static final int climberMotor2ID = 12;
-    public static final double kReduction = (1.0 / 2.0);
-    public static final double kMaxAccelerationRpmPerSec = 9000.0; 
-    public static final MMGains climberGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
-    public static final int ServoPort = 8;
-    public static final int ServoPort2 = 9;
-    public static final double UnspoolDistance = -2;
-    public static final double SpoolDistance = 3;
-    public static final double ServoClampDistance = 0.5;
-    public static final double climberServoLockPos = 0.50;
-    public static final double climberServoOpenPos = 0.16;
-    //public static final double climberServoLockPos2 = 0.33;
-    //public static final double climberServoOpenPos2 = 0.34;
-    public static final double targetClicks = 95.0;
+    public static int climberMotorID;
+    public static int climberMotor2ID;
+    public static double kReduction;
+    public static double kMaxAccelerationRpmPerSec;
+    public static MMGains climberGains;
+    public static int ServoPort;
+    public static int ServoPort2;
+    public static double UnspoolDistance;
+    public static double SpoolDistance;
+    public static double ServoClampDistance;
+    public static double climberServoLockPos;
+    public static double climberServoOpenPos;
+    public static double targetClicks;
 
     public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
+
+    //public static final double climberServoLockPos2 = 0.33;
+    //public static final double climberServoOpenPos2 = 0.34;
+
+    static {
+        switch (Constants.getRobot()) {
+        case COMPBOT -> {
+          compBotConstants();
+        }
+        case DEVBOT -> {
+          practiceBotConstants();
+        }
+        case SIMBOT -> {    
+          simBotConstants();
+        }
+      }
+    }
+
+    private static void compBotConstants(){
+
+        climberMotorID = 11;
+        climberMotor2ID = 12;
+        ServoPort = 8;
+        ServoPort2 = 9;
+        kReduction = (1.0 / 2.0);
+        kMaxAccelerationRpmPerSec = 9000.0;
+        UnspoolDistance = -2;
+        SpoolDistance = 3;
+        ServoClampDistance = 0.5;
+        climberServoLockPos = 0.50;
+        climberServoOpenPos = 0.16;
+        targetClicks = 80.0;
+        climberGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
+
+    }
+
+    private static void practiceBotConstants(){
+
+        climberMotorID = 11;
+        climberMotor2ID = 12;
+        ServoPort = 8;
+        ServoPort2 = 9;
+        kReduction = (1.0 / 2.0);
+        kMaxAccelerationRpmPerSec = 9000.0;
+        UnspoolDistance = -2;
+        SpoolDistance = 3;
+        ServoClampDistance = 0.5;
+        climberServoLockPos = 0.50;
+        climberServoOpenPos = 0.16;
+        targetClicks = 80.0;
+        climberGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
+
+    }
+
+    private static void simBotConstants(){
+
+        climberMotorID = 11;
+        climberMotor2ID = 12;
+        ServoPort = 8;
+        ServoPort2 = 9;
+        kReduction = (1.0 / 2.0);
+        kMaxAccelerationRpmPerSec = 9000.0;
+        UnspoolDistance = -2;
+        SpoolDistance = 3;
+        ServoClampDistance = 0.5;
+        climberServoLockPos = 0.50;
+        climberServoOpenPos = 0.16;
+        targetClicks = 80.0;
+        climberGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
+
+    }
+
 }

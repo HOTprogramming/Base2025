@@ -3,41 +3,163 @@ package frc.robot.subsystems.GameSpec.Arm;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import frc.robot.Constants;
 
 public class ArmConstants {
-    
-    public static final int armMotorID = 14;
-    public static final int armEncoderID = 44;
-    public static final double kReduction = (1.0 / 2.0);
-    public static final double kMaxAccelerationRpmPerSec = 9000.0; 
-    public static final MMGains armGains = new MMGains(3000, 3000, 6500, 0.2, 0.0, 0.01, 0.025, 0.3); //Voltage
-    //kp:0.2, ki:0.0, kd: 0.1, ks: 4.0, kv: 0.0, ka: 0.0, kg: 0.4, vel:500, accel:600, jerk:6000, gravitytype: armcosine
-    public static final DCMotor simGearBox = DCMotor.getKrakenX60Foc(1);
-    public static final double simGearing = 200;
-    public static final double simInertia = SingleJointedArmSim.estimateMOI(Units.inchesToMeters(30), 8.0);
-    public static final double simArmLength = Units.inchesToMeters(60);
-    public static final double simMinAngle = Units.degreesToRadians(-90);
-    public static final double simMaxAngle = Units.degreesToRadians(90);
-    public static final boolean gravity = false;
-    public static final double startingAngle = Units.degreesToRadians(0);
-    public static final double measurementSTDDEVS = 2.0 * Math.PI / 4096.0;
 
-    public static final double PackageAngle = 0;
+    public static int armMotorID;
+    public static int armEncoderID;
+    public static double kReduction;
+    public static double kMaxAccelerationRpmPerSec;
+    public static double simGearing;
+    public static double simInertia;
+    public static double simArmLength;
+    public static double simMinAngle;
+    public static double simMaxAngle;
+    public static double startingAngle;
+    public static double measurementSTDDEVS;
+    public static MMGains armGains;
+    public static DCMotor simGearBox;
+    public static boolean gravity;
+    public static double armEncoderOffset;
 
-    public static final double FeederAngle = 52.4;
-    public static final double L1Angle = -104.0;
-    public static final double L2Angle = -31.6;
-    public static final double L3Angle = -31.6;
-    public static final double L4Angle = -36;
-    public static final double L4Score = -65;
-    public static final double L3Score = -81.5;
-    public static final double L2Score = -71.5;
-    public static final double Horizontal = 90;
-    public static final double Intermediate = -20.0;
-    public static final double CurrentFail = 17.0;
-    public static final double L3short = -20.6;
-    public static final double L2Short = -20.6;
-    public static final double L4Short = -22.5;
+    public static double PackageAngle;
+    public static double FeederAngle;
+    public static double L1Angle;
+    public static double L2Angle;
+    public static double L3Angle;
+    public static double L4Angle;
+    public static double L4Score;
+    public static double L3Score;
+    public static double L2Score;
+    public static double Horizontal;
+    public static double Intermediate;
+    public static double CurrentFail;
+    public static double L3short;
+    public static double L2Short;
+    public static double L4Short;
     
     public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
+
+    static {
+        switch (Constants.getRobot()) {
+        case COMPBOT -> {
+          compBotConstants();
+        }
+        case DEVBOT -> {
+          practiceBotConstants();
+        }
+        case SIMBOT -> {    
+          simBotConstants();
+        }
+      }
+    }
+
+    private static void compBotConstants(){
+
+        armMotorID = 14;
+        armEncoderID = 44;
+        kReduction = (1.0 / 2.0);
+        kMaxAccelerationRpmPerSec = 9000.0; 
+        simGearing = 200;
+        simInertia = SingleJointedArmSim.estimateMOI(Units.inchesToMeters(30), 8.0);
+        simArmLength = Units.inchesToMeters(60);
+        simMinAngle = Units.degreesToRadians(-90);
+        simMaxAngle = Units.degreesToRadians(90);
+        startingAngle = Units.degreesToRadians(0);
+        measurementSTDDEVS = 2.0 * Math.PI / 4096.0;
+        armGains = new MMGains(3000, 3000, 6500, 0.2, 0.0, 0.01, 0.025, 0.3);//Voltage
+        simGearBox = DCMotor.getKrakenX60Foc(1);
+        gravity = false;
+        armEncoderOffset = 0.14892578125;
+    
+        PackageAngle = 0;
+        FeederAngle = 52.4;
+        L1Angle = -104.0;
+        L2Angle = -31.6;
+        L3Angle = -31.6;
+        L4Angle = -36;
+        L4Score = -65;
+        L3Score = -81.5;
+        L2Score = -71.5;
+        Horizontal = 90;
+        Intermediate = -20.0;
+        CurrentFail = 17.0;
+        L3short = -20.6;
+        L2Short = -20.6;
+        L4Short = -22.5;
+
+    }
+
+    private static void practiceBotConstants(){
+
+        armMotorID = 14;
+        armEncoderID = 44;
+        kReduction = (1.0 / 2.0);
+        kMaxAccelerationRpmPerSec = 9000.0; 
+        simGearing = 200;
+        simInertia = SingleJointedArmSim.estimateMOI(Units.inchesToMeters(30), 8.0);
+        simArmLength = Units.inchesToMeters(60);
+        simMinAngle = Units.degreesToRadians(-90);
+        simMaxAngle = Units.degreesToRadians(90);
+        startingAngle = Units.degreesToRadians(0);
+        measurementSTDDEVS = 2.0 * Math.PI / 4096.0;
+        armGains = new MMGains(3000, 3000, 6500, 0.2, 0.0, 0.01, 0.025, 0.3);//Voltage
+        simGearBox = DCMotor.getKrakenX60Foc(1);
+        gravity = false;
+        armEncoderOffset = -0.1977;
+    
+        PackageAngle = 0;
+        FeederAngle = 52.4;
+        L1Angle = -104.0;
+        L2Angle = -31.6;
+        L3Angle = -31.6;
+        L4Angle = -36;
+        L4Score = -65;
+        L3Score = -81.5;
+        L2Score = -71.5;
+        Horizontal = 90;
+        Intermediate = -20.0;
+        CurrentFail = 17.0;
+        L3short = -20.6;
+        L2Short = -20.6;
+        L4Short = -22.5;
+
+    }
+
+    private static void simBotConstants(){
+
+        armMotorID = 14;
+        armEncoderID = 44;
+        kReduction = (1.0 / 2.0);
+        kMaxAccelerationRpmPerSec = 9000.0; 
+        simGearing = 200;
+        simInertia = SingleJointedArmSim.estimateMOI(Units.inchesToMeters(30), 8.0);
+        simArmLength = Units.inchesToMeters(60);
+        simMinAngle = Units.degreesToRadians(-90);
+        simMaxAngle = Units.degreesToRadians(90);
+        startingAngle = Units.degreesToRadians(0);
+        measurementSTDDEVS = 2.0 * Math.PI / 4096.0;
+        armGains = new MMGains(3000, 3000, 6500, 0.2, 0.0, 0.01, 0.025, 0.3);//Voltage
+        simGearBox = DCMotor.getKrakenX60Foc(1);
+        gravity = false;
+    
+        PackageAngle = 0;
+        FeederAngle = 52.4;
+        L1Angle = -104.0;
+        L2Angle = -31.6;
+        L3Angle = -31.6;
+        L4Angle = -36;
+        L4Score = -65;
+        L3Score = -81.5;
+        L2Score = -71.5;
+        Horizontal = 90;
+        Intermediate = -20.0;
+        CurrentFail = 17.0;
+        L3short = -20.6;
+        L2Short = -20.6;
+        L4Short = -22.5;
+
+    }
+    
 }
