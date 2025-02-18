@@ -3,28 +3,36 @@ package frc.robot.subsystems.GameSpec.Intake;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
+import frc.robot.subsystems.GameSpec.Arm.ArmConstants;
 
 public abstract class IntakeIO {
 
     // Protected TalonFX object accessible to subclasses
     protected TalonFX intakeRoller;
     protected TalonFX intakeRotation;
-    protected MotionMagicVoltage intakeMagic;
+    protected CANcoder intakeCancoder;
+    protected PositionVoltage positionVoltage;
     protected VelocityTorqueCurrentFOC velocityControl;
 
     public static class IntakeIOStats {
@@ -45,6 +53,9 @@ public abstract class IntakeIO {
         public double SupplyCurrentAmps2 = 0.0;
         public double TorqueCurrentAmps2 = 0.0;
         public double TempCelsius2 = 0.0;
+
+        public double intakeCancoderPosition = 0.0;
+        public double intakeCancoderVelocity = 0.0;
     }
 
     protected static IntakeIOStats stats = new IntakeIOStats();
@@ -61,13 +72,21 @@ public abstract class IntakeIO {
     private final StatusSignal<Current> TorqueCurrent2;
     private final StatusSignal<Temperature> TempCelsius2;
 
+    private final StatusSignal<Angle> intakeCancoderPosition;
+    private final StatusSignal<AngularVelocity> intakeCancoderVelocity;
+
+    public CANcoderConfiguration encoderCfg;
+    public TalonFXConfiguration cfg;
+
     /** Constructor to initialize the TalonFX */
     public IntakeIO() {
         this.intakeRoller = new TalonFX(IntakeConstants.intakeRollerID, "robot");
         this.intakeRotation = new TalonFX(IntakeConstants.intakeRotationID, "robot");
+        this.intakeCancoder = new CANcoder(IntakeConstants.intakeEncoderID, "robot");
 
-        intakeMagic = new MotionMagicVoltage(0);
-        TalonFXConfiguration cfg = new TalonFXConfiguration();
+        positionVoltage = new PositionVoltage(0);
+        cfg = new TalonFXConfiguration();
+        encoderCfg = new CANcoderConfiguration();
 
         velocityControl = new VelocityTorqueCurrentFOC(0).withUpdateFreqHz(0.0);
 
@@ -86,11 +105,20 @@ public abstract class IntakeIO {
         FeedbackConfigs fdb = cfg.Feedback;
         fdb.SensorToMechanismRatio = 1;
 
+        cfg.Feedback.FeedbackRemoteSensorID = intakeCancoder.getDeviceID();
+        cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+        cfg.Feedback.SensorToMechanismRatio = 1/360.0;//changes what the cancoder and fx encoder ratio is
+        cfg.Feedback.RotorToSensorRatio = 1; //12.8;
         cfg.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         cfg.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
         cfg.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
         cfg.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
         cfg.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
+
+        cfg.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+
+        encoderCfg.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        encoderCfg.MagnetSensor.MagnetOffset = IntakeConstants.intakeEncoderOffset;
 
         StatusCode intakeStatus = StatusCode.StatusCodeNotInitialized;
         for(int i = 0; i < 5; ++i) {
@@ -108,6 +136,14 @@ public abstract class IntakeIO {
             System.out.println("Could not configure device. Error: " + intakeStatus.toString());
         }
 
+        StatusCode encoderStatus = StatusCode.StatusCodeNotInitialized;
+        for(int i = 0; i < 5; ++i) {
+            encoderStatus = intakeCancoder.getConfigurator().apply(encoderCfg);
+        if (encoderStatus.isOK()) break;}
+        if (!encoderStatus.isOK()) {
+            System.out.println("Could not configure device. Error: " + encoderStatus.toString());
+        }
+
         intakePosition = intakeRoller.getPosition();
         intakeVelocity = intakeRoller.getVelocity();
         SupplyCurrent = intakeRoller.getSupplyCurrent();
@@ -119,6 +155,9 @@ public abstract class IntakeIO {
         SupplyCurrent2 = intakeRotation.getSupplyCurrent();
         TorqueCurrent2 = intakeRotation.getTorqueCurrent();
         TempCelsius2 = intakeRotation.getDeviceTemp();
+
+        intakeCancoderPosition = intakeCancoder.getPosition();
+        intakeCancoderVelocity = intakeCancoder.getVelocity();
     
         BaseStatusSignal.setUpdateFrequencyForAll(
             100.0,
@@ -131,7 +170,9 @@ public abstract class IntakeIO {
             intakeVelocity2,
             SupplyCurrent2,
             TorqueCurrent2,
-            TempCelsius2
+            TempCelsius2,
+            intakeCancoderPosition,
+            intakeCancoderVelocity
           );
     }
 
@@ -150,7 +191,9 @@ public abstract class IntakeIO {
           intakeVelocity2,
           SupplyCurrent2,
           TorqueCurrent2,
-          TempCelsius2)
+          TempCelsius2,
+          intakeCancoderPosition,
+          intakeCancoderVelocity)
             .isOK();
 
         stats.intakePosition = intakePosition.getValueAsDouble();
@@ -164,13 +207,15 @@ public abstract class IntakeIO {
         stats.SupplyCurrentAmps2 = SupplyCurrent2.getValueAsDouble();
         stats.TorqueCurrentAmps2 = TorqueCurrent2.getValueAsDouble();
         stats.TempCelsius2 = TempCelsius2.getValueAsDouble();
+
+        stats.intakeCancoderPosition = intakeCancoderPosition.getValueAsDouble();
+        stats.intakeCancoderVelocity = intakeCancoderVelocity.getValueAsDouble();
     }
 
 
     /** Apply motion magic control mode */
-    public void setIntakeMotorControl(double rotationPosition, double rollerSpeedRPM) {
-        intakeRoller.setControl(velocityControl.withVelocity(rollerSpeedRPM / 60.0));
-        intakeRotation.setControl(intakeMagic.withPosition(rotationPosition).withSlot(0));
+    public void setIntakeMotorControl(double rotationPosition) {
+        intakeRotation.setControl(positionVoltage.withPosition(rotationPosition).withSlot(0));
     }
 
     /** Stop motor */

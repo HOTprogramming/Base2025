@@ -29,6 +29,9 @@ public class Intake extends SubsystemBase {
   private GenericEntry intakeTemp;
   private GenericEntry intakeRotationPos;
   private GenericEntry intakeRollerSpeed;
+  private GenericEntry intakeCancoderPosition;
+  private GenericEntry IntakeCancoderVelocity;
+  public GenericEntry intakeCommandedPos;
   
   public Intake(IntakeIO io) {
     this.io = io; 
@@ -43,6 +46,9 @@ public class Intake extends SubsystemBase {
     intakeTemp = this.intakeShuffleboard.add("Intake Temp", 0.0).getEntry();
     intakeRotationPos = this.intakeShuffleboard.add("Intake Rotation Position", 0.0).getEntry();
     intakeRollerSpeed = this.intakeShuffleboard.add("Intake Roller Speed", 0.0).getEntry();
+    intakeCancoderPosition = this.intakeShuffleboard.add("Intake Cancoder Position", 0.0).getEntry();
+    IntakeCancoderVelocity = this.intakeShuffleboard.add("Intake Cancoder Speed", 0.0).getEntry();
+    intakeCommandedPos = this.intakeShuffleboard.add("Arm Commanded Position", 0.0).getEntry();
   }
 
 
@@ -61,22 +67,25 @@ public class Intake extends SubsystemBase {
     intakeSupplyCurrent.setDouble(stats.SupplyCurrentAmps);
     intakeStatorCurrent.setDouble(stats.TorqueCurrentAmps);
     intakeTemp.setDouble(stats.TempCelsius);
+    intakeCancoderPosition.setDouble(stats.intakeCancoderPosition);
+    IntakeCancoderVelocity.setDouble(stats.intakeCancoderVelocity);
   }
 
-  private FunctionalCommand intakeCommand(double rotation, double speed){
+  public FunctionalCommand intakeCommand(double position){
     return new FunctionalCommand(
-      () -> {
-         this.intakeRotationPos.setDouble(rotation);
-         this.intakeRollerSpeed.setDouble(speed);
-        },
-      () -> io.setIntakeMotorControl(rotation, speed),
-      interrupted -> io.setIntakeMotorControl(rotation, speed), 
-      () -> checkRange(.1),
+      () -> this.intakeCommandedPos.setDouble(position),
+      () -> io.setIntakeMotorControl(position),
+      interrupted -> io.setIntakeMotorControl(position), 
+      () -> checkRange(5),
       this);
   }
 
-  public Command intakeCoralGround(){
-    return intakeCommand(0, 0);
+  public Command intakeAlgaeGround(){
+    return intakeCommand(0);
+  }
+
+  public Command goToPackage(){
+    return intakeCommand(0);
   }
 
   public Command stop(){

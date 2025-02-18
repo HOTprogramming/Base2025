@@ -10,15 +10,11 @@ public class IntakeConstants {
     public static double kReduction;
     public static double kMaxAccelerationRpmPerSec;
     public static MMGains intakeGains;
-    
-    public static double l4Height;
-    public static double l3Height;
-    public static double l2Height;
-    public static double l1Height;
-    public static double netHeight;
-    public static double intakeCoralHeight;
-    public static double intakeAlgaeHeight;
 
+    public static double intakePackage;
+    public static double intakeGround;
+
+    public static double intakeEncoderOffset;
 
     public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
 
@@ -43,15 +39,12 @@ public class IntakeConstants {
         intakeEncoderID = 46;
         kReduction = (1.0 / 2.0);
         kMaxAccelerationRpmPerSec = 9000.0; 
-        intakeGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
+        intakeGains = new MMGains(0, 0, 0, 0.1 , 0.0, 0.0, 0.05, 0);
         
-        l4Height = 2;
-        l3Height = 1.5;
-        l2Height = 1;
-        l1Height = .5;
-        netHeight = 3;
-        intakeCoralHeight = 1.25;
-        intakeAlgaeHeight = .75;
+        intakePackage = -5.0;
+        intakeGround = -20.0;
+
+        intakeEncoderOffset = 0.39404296875;
 
     }
 
@@ -63,15 +56,6 @@ public class IntakeConstants {
         kReduction = (1.0 / 2.0);
         kMaxAccelerationRpmPerSec = 9000.0; 
         intakeGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
-        
-        l4Height = 2;
-        l3Height = 1.5;
-        l2Height = 1;
-        l1Height = .5;
-        netHeight = 3;
-        intakeCoralHeight = 1.25;
-        intakeAlgaeHeight = .75;
-
     }
 
     private static void simBotConstants(){
@@ -83,13 +67,6 @@ public class IntakeConstants {
         kMaxAccelerationRpmPerSec = 9000.0; 
         intakeGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
         
-        l4Height = 2;
-        l3Height = 1.5;
-        l2Height = 1;
-        l1Height = .5;
-        netHeight = 3;
-        intakeCoralHeight = 1.25;
-        intakeAlgaeHeight = .75;
 
     }
 }

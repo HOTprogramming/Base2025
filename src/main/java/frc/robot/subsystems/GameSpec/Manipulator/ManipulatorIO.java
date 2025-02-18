@@ -35,7 +35,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 public abstract class ManipulatorIO {
     // Protected TalonFX object accessible to subclasses
     protected TalonFX coral;
-    protected MotionMagicVoltage coralWristMagic;
     protected VelocityTorqueCurrentFOC coralSpinController;
     protected PositionVoltage positionVoltage;
     protected DigitalInput coralBeamBreak;
@@ -121,21 +120,9 @@ public abstract class ManipulatorIO {
             slot0.kV = ManipulatorConstants.coralWristGains.kV();
             slot0.kS = ManipulatorConstants.coralWristGains.kS();
 
-            // slot0.kP = ManipulatorConstants.coralSpinGains.kP();
-            // slot0.kI = ManipulatorConstants.coralSpinGains.kI();
-            // slot0.kD = ManipulatorConstants.coralSpinGains.kD();
-            // slot0.kV = ManipulatorConstants.coralSpinGains.kV();
-            // slot0.kS = ManipulatorConstants.coralSpinGains.kS();
-
-            // slot0.kP = ManipulatorConstants.algaeGains.kP();
-            // slot0.kI = ManipulatorConstants.algaeGains.kI();
-            // slot0.kD = ManipulatorConstants.algaeGains.kD();
-            // slot0.kV = ManipulatorConstants.algaeGains.kV();
-            // slot0.kS = ManipulatorConstants.algaeGains.kS();
-
             FeedbackConfigs fdb = cfg.Feedback;
             fdb.SensorToMechanismRatio = 1;
-            
+
             cfg.Feedback.SensorToMechanismRatio = 1; //changes what the cancoder and fx encoder ratio is
             cfg.Feedback.RotorToSensorRatio = 1; //12.8;
             cfg.MotorOutput.NeutralMode = NeutralModeValue.Coast;

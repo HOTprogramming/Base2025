@@ -275,4 +275,6 @@ public class Manager extends SubsystemBase{
       run(() -> climberSubsystem.setPower(3.0)).onlyWhile(() -> climberSubsystem.checkClimberDeployed()).andThen(runOnce(() -> climberSubsystem.setPower(0.0)))
       ,elevatorSubsystem.climbDown());
     }
+
+    
 }
