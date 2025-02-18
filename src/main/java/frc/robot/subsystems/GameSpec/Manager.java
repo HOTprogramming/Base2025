@@ -276,5 +276,13 @@ public class Manager extends SubsystemBase{
       ,elevatorSubsystem.climbDown());
     }
 
-    
+    public Command alignFloorIntake(){
+      return Commands.sequence(elevatorSubsystem.goToPackage(), armSubsystem.horizontal(), intakeSubsystem.intakeAlgaeGround());
+    }
+
+    public Command alignProcessor(){
+      return Commands.sequence(elevatorSubsystem.goToPackage(), armSubsystem.horizontal(), intakeSubsystem.goToPackage());
+    }
+
+
 }

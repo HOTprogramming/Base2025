@@ -81,11 +81,11 @@ public class Intake extends SubsystemBase {
   }
 
   public Command intakeAlgaeGround(){
-    return intakeCommand(0);
+    return intakeCommand(IntakeConstants.intakeGround);
   }
 
   public Command goToPackage(){
-    return intakeCommand(0);
+    return intakeCommand(IntakeConstants.intakePackage);
   }
 
   public Command stop(){

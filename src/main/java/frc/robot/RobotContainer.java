@@ -89,6 +89,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("climb", gamespecManager.climberOut());
     NamedCommands.registerCommand("high algae", gamespecManager.highAlgae());
     NamedCommands.registerCommand("low algae", gamespecManager.lowAlgae());
+    NamedCommands.registerCommand("align floor intake", gamespecManager.alignFloorIntake());
+    NamedCommands.registerCommand("align processor", gamespecManager.alignProcessor());
 
 
     mode = Mode.coral;
