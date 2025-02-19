@@ -56,16 +56,16 @@ public class ElevatorConstants {
         elevatorGains = new MMGains(1000, 1500, 4500, 2.5 , 0, 0.0, 0.025, 0.3);
         elevatorEncoderOffset = 0.2546;
 
-        PackageHeight = 17.9; 
+        PackageHeight = 15.0; 
         L4Height = 57.0;
         L4LongHeight = 53.0;
         L3Height = 25.35;
-        L2Height = 9.2;
+        L2Height = 13.9;
         L1Height = 14.79;
         FeederHeight = 13.2;
         L4ScoreHeight = 40.0;
         L3ScoreHeight = 19.8;
-        L2ScoreHeight = 4.2;
+        L2ScoreHeight = 9.8;
         HPHeight = 17.0;
         climbHeight = 1.4;
         highAlgae = 35;
