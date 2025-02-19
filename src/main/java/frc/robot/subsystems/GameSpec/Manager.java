@@ -159,12 +159,12 @@ public class Manager extends SubsystemBase{
 
     public Command highAlgae(){
       return Commands.parallel(elevatorSubsystem.goToHighAlgae(), armSubsystem.goToPackage())
-      .andThen(Commands.parallel(armSubsystem.horizontal()));
+      .andThen(Commands.parallel(armSubsystem.getAlgaeFromReef()));
     }
 
     public Command lowAlgae(){
       return Commands.parallel(elevatorSubsystem.goToLowAlgae(), armSubsystem.goToPackage())
-      .andThen(Commands.parallel(armSubsystem.horizontal()));
+      .andThen(Commands.parallel(armSubsystem.getAlgaeFromReef()));
     }
 
     public ScoringLevel getLevel(){

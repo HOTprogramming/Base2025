@@ -69,14 +69,14 @@ public class ManipulatorConstants {
       algaeEncoderID = 46;
       algaeGains = new MMGains(100, 100, 200, 1.0 , 0.0, 0.0, 0, 0);
       
-      coralWristHP = -90;
-      coralWristScore = 0;
+      coralWristHP = 90;
+      coralWristScore = 180;
   
       algaeExtend = 0;
       algaePackage = 0;
 
-      algaeIntakeVoltage = -1.5;
-      algaeExpelVoltage = 8.0;
+      algaeIntakeVoltage = -8.0;
+      algaeExpelVoltage = 10.0;
     }
 
     private static void practiceBotConstants(){

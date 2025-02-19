@@ -69,7 +69,7 @@ public class ElevatorConstants {
         HPHeight = 17.0;
         climbHeight = 1.4;
         highAlgae = 35;
-        lowAlgae = 20;
+        lowAlgae = 17;
         BargeHeight = 65.0;
         ProcessorHeight = 14.0;
 

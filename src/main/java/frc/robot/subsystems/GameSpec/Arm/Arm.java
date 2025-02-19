@@ -119,6 +119,10 @@ public class Arm extends SubsystemBase {
     return armCommand(ArmConstants.Horizontal);
   }
 
+  public Command getAlgaeFromReef(){
+    return armCommand(ArmConstants.GetAlgaeFromReef);
+  }
+
   public Command processor(){
     return armCommand(ArmConstants.Processor);
   }
