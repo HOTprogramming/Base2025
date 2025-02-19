@@ -229,20 +229,11 @@ public class Manager extends SubsystemBase{
       );
     }
 
-    //gets coral from the human player station
-    public Command goToFeeder(){
-      return Commands.sequence(
-        elevatorSubsystem.goToFeeder(),
-        armSubsystem.goToFeeder(),
-        run(() -> doneScoring = false)
-      );
-    }
-
     public Command alignStationIntake(){
       return Commands.parallel(
         Commands.deadline(manipulatorSubsystem.intake(), armSubsystem.goToFeeder())
         .andThen(armSubsystem.goToPackage()), 
-        elevatorSubsystem.goToPackage());
+        elevatorSubsystem.goToFeeder());
     }
 
     public Command coralGoHP(){

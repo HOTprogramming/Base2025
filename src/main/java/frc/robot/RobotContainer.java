@@ -75,7 +75,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("L3", gamespecManager.goToL3());
     NamedCommands.registerCommand("L4", gamespecManager.goToL4());
     NamedCommands.registerCommand("Package", gamespecManager.goToPackage());
-    NamedCommands.registerCommand("Feeder", gamespecManager.goToFeeder());
     NamedCommands.registerCommand("Coral HP", gamespecManager.coralGoHP());
     NamedCommands.registerCommand("Coral Score", gamespecManager.coralGoScore());
     NamedCommands.registerCommand("align station intake", gamespecManager.alignStationIntake());
