@@ -329,6 +329,4 @@ public class Manager extends SubsystemBase{
       ,intakeSubsystem.intakeRollerVoltage(0.0));
 
     }
-
-
 }
