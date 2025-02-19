@@ -29,6 +29,7 @@ public class ElevatorConstants {
     public static double BargeHeight;
     public static double ProcessorHeight;
     public static double FloorIntakeHeight;
+    public static double FloorIntakeGrabHeight;
 
 
     public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
@@ -74,6 +75,7 @@ public class ElevatorConstants {
         BargeHeight = 65.0;
         ProcessorHeight = 14.0;
         FloorIntakeHeight = 18.0;
+        FloorIntakeGrabHeight = 13.0;
 
     }
 

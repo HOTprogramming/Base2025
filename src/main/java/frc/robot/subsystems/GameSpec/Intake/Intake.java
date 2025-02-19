@@ -81,13 +81,23 @@ public class Intake extends SubsystemBase {
   }
 
   public Command intakeAlgaeGround(){
-    // return intakeCommand(IntakeConstants.intakeGround);
     return runOnce(() -> {
       intakeCommandedPos.setDouble(IntakeConstants.intakeGround);
-      //intakeRollerSpeed.setDouble(IntakeConstants.rollerIntakeVoltage);
-
-      //io.setIntakeSpinMotorControl(IntakeConstants.rollerIntakeVoltage);
       io.setIntakeMotorControl(IntakeConstants.intakeGround);
+  });
+  }
+
+  public Command runIntakeAlgae(){
+    return runOnce(() -> {
+      intakeRollerSpeed.setDouble(IntakeConstants.rollerIntakeVoltage);
+      io.setIntakeSpinMotorControl(IntakeConstants.rollerIntakeVoltage);
+  });
+  }
+
+  public Command intakeRollerVoltage(double voltage){
+    return runOnce(() -> {
+      intakeRollerSpeed.setDouble(voltage);
+      io.setIntakeSpinMotorControl(voltage);
   });
   }
 

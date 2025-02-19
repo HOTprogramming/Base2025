@@ -45,7 +45,7 @@ public class IntakeConstants {
         
         intakePackage = -5.0;
         intakeGround = -158.0;
-        rollerIntakeVoltage = 1.5;
+        rollerIntakeVoltage = 10;
         rollerExpelVoltage = 1.5;
 
         intakeEncoderOffset = 0.313232421875;

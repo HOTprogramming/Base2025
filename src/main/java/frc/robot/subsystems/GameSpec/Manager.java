@@ -29,6 +29,7 @@ import frc.robot.subsystems.GameSpec.Elevator.ElevatorConstants;
 import frc.robot.subsystems.GameSpec.Elevator.ElevatorIOReal;
 import frc.robot.subsystems.GameSpec.Elevator.ElevatorIOSim;
 import frc.robot.subsystems.GameSpec.Intake.Intake;
+import frc.robot.subsystems.GameSpec.Intake.IntakeConstants;
 import frc.robot.subsystems.GameSpec.Intake.IntakeIOReal;
 import frc.robot.subsystems.GameSpec.Intake.IntakeIOSim;
 import frc.robot.subsystems.GameSpec.Manipulator.Manipulator;
@@ -60,10 +61,16 @@ public class Manager extends SubsystemBase{
       algaed
     }
 
+    private enum AlgaeIntakeEnum{
+      floor,
+      pluck
+    }
+
     public boolean doneScoring = false;
 
     private ScoringLevel scoringLevel;
     private PackageMode packageMode;
+    private AlgaeIntakeEnum algaeIntakeEnum;
   
     public Manager() {
       if (!Utils.isSimulation()){
@@ -81,6 +88,7 @@ public class Manager extends SubsystemBase{
 
       scoringLevel = ScoringLevel.L1;
       packageMode = PackageMode.notClimbed;
+      algaeIntakeEnum = AlgaeIntakeEnum.pluck;
 
       this.managerShuffleboard = Shuffleboard.getTab("Manager");
 
@@ -163,11 +171,17 @@ public class Manager extends SubsystemBase{
     }
 
     public Command highAlgae(){
-      return Commands.parallel(elevatorSubsystem.goToHighAlgae(), armSubsystem.getAlgaeFromReef());
+      return Commands.sequence(
+        runOnce(() -> {algaeIntakeEnum = AlgaeIntakeEnum.pluck;})
+        ,Commands.parallel(elevatorSubsystem.goToHighAlgae(), armSubsystem.getAlgaeFromReef())
+      );
     }
 
     public Command lowAlgae(){
-      return Commands.parallel(elevatorSubsystem.goToLowAlgae(), armSubsystem.getAlgaeFromReef());
+      return Commands.sequence(
+        runOnce(() -> {algaeIntakeEnum = AlgaeIntakeEnum.pluck;})
+        ,Commands.parallel(elevatorSubsystem.goToLowAlgae(), armSubsystem.getAlgaeFromReef())
+      );
     }
 
     public ScoringLevel getLevel(){
@@ -176,6 +190,10 @@ public class Manager extends SubsystemBase{
 
     public PackageMode getPackageMode(){
       return packageMode;
+    }
+
+    public AlgaeIntakeEnum getAlgaeIntakeEnum(){
+      return algaeIntakeEnum;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -264,10 +282,11 @@ public class Manager extends SubsystemBase{
     //picks up an algae from the ground
     public Command alignFloorIntake(){
       return Commands.sequence(
-      elevatorSubsystem.goToFloorIntake()
-      ,armSubsystem.horizontal()
+      runOnce(() -> {algaeIntakeEnum = AlgaeIntakeEnum.floor;})
+      ,Commands.parallel(elevatorSubsystem.goToFloorIntake()
+      ,armSubsystem.horizontal())
       ,intakeSubsystem.intakeAlgaeGround()
-      ,armSubsystem.intakeAlgae()
+      ,Commands.parallel(armSubsystem.intakeAlgae(), elevatorSubsystem.goToFloorIntakeGrab())
       );
     }
 
@@ -290,12 +309,25 @@ public class Manager extends SubsystemBase{
         ,armSubsystem.horizontal());
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public Command algaeIntake(){
-      return manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage);
+
+      return new SelectCommand(
+        Map.of(
+          AlgaeIntakeEnum.pluck, manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage),
+          AlgaeIntakeEnum.floor, Commands.parallel(
+           manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage)
+          ,intakeSubsystem.intakeRollerVoltage(IntakeConstants.rollerIntakeVoltage))
+          ),
+        this::getAlgaeIntakeEnum
+      );
     }
 
     public Command algaeStopIntake(){
-      return manipulatorSubsystem.algaeVoltage(0.0);
+      return Commands.parallel(
+      manipulatorSubsystem.algaeVoltage(0.0)
+      ,intakeSubsystem.intakeRollerVoltage(0.0));
+
     }
 
 

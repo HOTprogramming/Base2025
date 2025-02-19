@@ -91,7 +91,7 @@ public class ArmConstants {
         L3short = -20.6;
         L2Short = -20.6;
         L4Short = -22.5;
-        IntakeAlgae = -30.0;
+        IntakeAlgae = -56.0;
         Processor = 14.3;
         GetAlgaeFromReef = 109;
 
