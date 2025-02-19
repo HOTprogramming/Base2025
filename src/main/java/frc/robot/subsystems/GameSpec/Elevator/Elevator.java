@@ -118,7 +118,10 @@ public class Elevator extends SubsystemBase {
 
   public Command goToPackage(){
     return elevatorCommand(ElevatorConstants.PackageHeight);
-    // return elevatorCommand(25.0);
+  }
+
+  public Command goToProcessor(){
+    return elevatorCommand(ElevatorConstants.ProcessorHeight);
   }
 
   public Command goToHighAlgae(){

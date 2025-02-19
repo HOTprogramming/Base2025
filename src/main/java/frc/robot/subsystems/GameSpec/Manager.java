@@ -56,7 +56,8 @@ public class Manager extends SubsystemBase{
 
     private enum ClimbState{
       climbed,
-      notClimbed
+      notClimbed,
+      algaed
     }
 
     public boolean doneScoring = false;
@@ -96,7 +97,7 @@ public class Manager extends SubsystemBase{
       return new SelectCommand(
         Map.of(
           ClimbState.notClimbed, Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
-          .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), intakeSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()))),
+          .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()))),
           ClimbState.climbed, Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage())
           ),
         this::getClimbState
@@ -277,9 +278,9 @@ public class Manager extends SubsystemBase{
     }
 
     public Command alignProcessor(){
-      return Commands.sequence(
-        Commands.parallel(elevatorSubsystem.goToPackage(), runOnce(() -> {scoringLevel = ScoringLevel.Algae;}))
-        ,armSubsystem.horizontal());
+      return Commands.sequence(runOnce(() -> {scoringLevel = ScoringLevel.Algae;}),
+        Commands.parallel(elevatorSubsystem.goToProcessor())
+        ,Commands.parallel(armSubsystem.processor()));
     }
 
     public Command barge(){

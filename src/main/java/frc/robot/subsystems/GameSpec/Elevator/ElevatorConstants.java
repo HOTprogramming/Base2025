@@ -27,6 +27,7 @@ public class ElevatorConstants {
     public static double highAlgae;
     public static double lowAlgae;
     public static double BargeHeight;
+    public static double ProcessorHeight;
 
 
     public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
@@ -70,6 +71,7 @@ public class ElevatorConstants {
         highAlgae = 35;
         lowAlgae = 20;
         BargeHeight = 65.0;
+        ProcessorHeight = 14.0;
 
     }
 
