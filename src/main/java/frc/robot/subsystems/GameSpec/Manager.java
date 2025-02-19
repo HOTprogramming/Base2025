@@ -163,13 +163,11 @@ public class Manager extends SubsystemBase{
     }
 
     public Command highAlgae(){
-      return Commands.parallel(elevatorSubsystem.goToHighAlgae(), armSubsystem.goToPackage())
-      .andThen(Commands.parallel(armSubsystem.getAlgaeFromReef()));
+      return Commands.parallel(elevatorSubsystem.goToHighAlgae(), armSubsystem.getAlgaeFromReef());
     }
 
     public Command lowAlgae(){
-      return Commands.parallel(elevatorSubsystem.goToLowAlgae(), armSubsystem.goToPackage())
-      .andThen(Commands.parallel(armSubsystem.getAlgaeFromReef()));
+      return Commands.parallel(elevatorSubsystem.goToLowAlgae(), armSubsystem.getAlgaeFromReef());
     }
 
     public ScoringLevel getLevel(){
@@ -266,11 +264,18 @@ public class Manager extends SubsystemBase{
     //picks up an algae from the ground
     public Command alignFloorIntake(){
       return Commands.sequence(
-      elevatorSubsystem.goToPackage()
+      elevatorSubsystem.goToFloorIntake()
       ,armSubsystem.horizontal()
       ,intakeSubsystem.intakeAlgaeGround()
       ,armSubsystem.intakeAlgae()
       );
+    }
+
+    public Command floorIntakePackage(){
+      return Commands.sequence(elevatorSubsystem.goToFloorIntake()
+      ,armSubsystem.horizontal()
+      ,intakeSubsystem.goToPackage()
+      ,Commands.parallel(armSubsystem.goToPackage(), elevatorSubsystem.goToPackage()));
     }
 
     public Command alignProcessor(){
