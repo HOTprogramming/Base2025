@@ -54,7 +54,7 @@ public class Manager extends SubsystemBase{
       Algae
     }
 
-    private enum ClimbState{
+    private enum PackageMode{
       climbed,
       notClimbed,
       algaed
@@ -63,7 +63,7 @@ public class Manager extends SubsystemBase{
     public boolean doneScoring = false;
 
     private ScoringLevel scoringLevel;
-    private ClimbState climbState;
+    private PackageMode packageMode;
   
     public Manager() {
       if (!Utils.isSimulation()){
@@ -80,7 +80,7 @@ public class Manager extends SubsystemBase{
       } 
 
       scoringLevel = ScoringLevel.L1;
-      climbState = ClimbState.notClimbed;
+      packageMode = PackageMode.notClimbed;
 
       this.managerShuffleboard = Shuffleboard.getTab("Manager");
 
@@ -96,12 +96,17 @@ public class Manager extends SubsystemBase{
 
       return new SelectCommand(
         Map.of(
-          ClimbState.notClimbed, Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
+          PackageMode.notClimbed, Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
           .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()))),
-          ClimbState.climbed, Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage())
+          PackageMode.climbed, Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage())
           ),
-        this::getClimbState
+        this::getPackageMode
       );
+    }
+
+    public Command goToL2Package(){
+      return Commands.parallel(elevatorSubsystem.goToPackage())
+      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore())));
     }
 
     public Command doneScoring(){
@@ -171,8 +176,8 @@ public class Manager extends SubsystemBase{
       return scoringLevel;
     }
 
-    public ClimbState getClimbState(){
-      return climbState;
+    public PackageMode getPackageMode(){
+      return packageMode;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -253,7 +258,7 @@ public class Manager extends SubsystemBase{
 
     //deploys the climber
     public Command climberOut(){
-      return Commands.sequence(runOnce(() -> { climbState = ClimbState.climbed;}), armSubsystem.horizontal(),
+      return Commands.sequence(runOnce(() -> { packageMode = PackageMode.climbed;}), armSubsystem.horizontal(),
       run(() -> climberSubsystem.setPower(3.0)).onlyWhile(() -> climberSubsystem.checkClimberDeployed()).andThen(runOnce(() -> climberSubsystem.setPower(0.0)))
       ,elevatorSubsystem.climbDown());
     }

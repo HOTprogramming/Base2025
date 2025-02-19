@@ -86,7 +86,7 @@ public class ArmConstants {
         L3Score = -81.5;
         L2Score = -87.8;
         Horizontal = 90;
-        Intermediate = -20.0;
+        Intermediate = -49.0;
         CurrentFail = 17.0;
         L3short = -20.6;
         L2Short = -20.6;

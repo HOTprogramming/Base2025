@@ -91,6 +91,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("barge", gamespecManager.barge());
     NamedCommands.registerCommand("intake", gamespecManager.algaeIntake());
     NamedCommands.registerCommand("stop intake", gamespecManager.algaeStopIntake());
+    NamedCommands.registerCommand("L2 Package", gamespecManager.goToL2Package());
 
     mode = Mode.coral;
 
@@ -185,7 +186,7 @@ public class RobotContainer {
        operator.start().onTrue(gamespecManager.runOnce(() -> mode = Mode.climb));
        operator.back().onTrue(gamespecManager.runOnce(() -> mode = Mode.climb));
 
-      operator.a().and(this::isCoral).onTrue(NamedCommands.getCommand("L2")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"), NamedCommands.getCommand("done scoring")));
+      operator.a().and(this::isCoral).onTrue(NamedCommands.getCommand("L2")).onFalse(Commands.parallel(NamedCommands.getCommand("L2 Package"), NamedCommands.getCommand("done scoring")));
       operator.b().and(this::isCoral).onTrue(NamedCommands.getCommand("L3")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"), NamedCommands.getCommand("done scoring")));
       operator.x().and(this::isCoral).onTrue(NamedCommands.getCommand("L1")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"), NamedCommands.getCommand("done scoring")));
       operator.y().and(this::isCoral).onTrue(NamedCommands.getCommand("L4")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"), NamedCommands.getCommand("done scoring")));
