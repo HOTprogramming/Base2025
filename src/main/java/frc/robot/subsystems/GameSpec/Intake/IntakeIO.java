@@ -231,6 +231,10 @@ public abstract class IntakeIO {
         intakeRotation.setControl(positionVoltage.withPosition(rotationPosition).withSlot(0));
     }
 
+    public void setIntakeSpinMotorControl(double voltage){
+        intakeRoller.setVoltage(voltage);
+    }
+
     /** Stop motor */
     public void stop() {
         intakeRoller.setVoltage(0);

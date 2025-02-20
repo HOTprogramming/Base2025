@@ -3,6 +3,9 @@ package frc.robot.subsystems.Drivetrain;
 import static edu.wpi.first.units.Units.*;
 
 import java.security.PublicKey;
+import java.util.EnumMap;
+import java.util.Map;
+
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
@@ -31,18 +34,73 @@ public class DriveConstants {
     // Theoretical free speed (m/s) at 12 V applied output;
     // This needs to be tuned to your individual robot
     public static final AngularVelocity kMaxAngularVelocity = RotationsPerSecond.of(2);
-    public static final LinearVelocity kSpeedAt12Volts = FeetPerSecond.of(16.67);
+    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.58);
+
 
     public static final TrapezoidProfile.Constraints DEFAULT_XY_CONSTRAINTS = new TrapezoidProfile.Constraints(
-        kSpeedAt12Volts.in(MetersPerSecond) * 0.5,
+        kSpeedAt12Volts.in(MetersPerSecond) * 0.25,
         kSpeedAt12Volts.in(MetersPerSecond));
 
+    public enum ReefPoses {
+        AB,
+        CD,
+        EF,
+        GH,
+        IJ,
+        KL
+    }
+
+    public static final Map<ReefPoses, Pose2d> redPoses = new EnumMap<>(ReefPoses.class) {
+        {
+            put(ReefPoses.GH, new Pose2d(11.89, 4.005, Rotation2d.fromDegrees(0)));
+            put(ReefPoses.IJ, new Pose2d(12.50, 3.02, Rotation2d.fromDegrees(60)));
+            put(ReefPoses.KL, new Pose2d(13.712, 3.04, Rotation2d.fromDegrees(120)));
+            put(ReefPoses.AB, new Pose2d(14.25, 4.06, Rotation2d.fromDegrees(180)));
+            put(ReefPoses.CD, new Pose2d(13.63, 5.050, Rotation2d.fromDegrees(-120)));
+            put(ReefPoses.EF, new Pose2d(12.445, 5.018, Rotation2d.fromDegrees(-60))); 
+        }
+    };
+    public static final Map<ReefPoses, Pose2d> bluePoses = new EnumMap<>(ReefPoses.class) {
+        {
+            put(ReefPoses.AB, new Pose2d(3.165, 4.005, Rotation2d.fromDegrees(0)));
+            put(ReefPoses.CD, new Pose2d(3.877, 3.01, Rotation2d.fromDegrees(60)));
+            put(ReefPoses.EF, new Pose2d(5.155, 3.01, Rotation2d.fromDegrees(120)));
+            put(ReefPoses.GH, new Pose2d(5.647, 4.005, Rotation2d.fromDegrees(180)));
+            put(ReefPoses.IJ, new Pose2d(5.155, 5.040, Rotation2d.fromDegrees(-120)));
+            put(ReefPoses.KL, new Pose2d(3.877, 5.040, Rotation2d.fromDegrees(-60))); 
+        }
+    };
+
+    public static final Map<ReefPoses, Double[]> redShift = new EnumMap<>(ReefPoses.class) {
+        {
+            put(ReefPoses.AB, new Double[] {6.0, -6.0});
+            put(ReefPoses.CD, new Double[] {6.0, -6.0});
+            put(ReefPoses.EF, new Double[] {6.0, -6.0});
+            put(ReefPoses.GH, new Double[] {6.0, -6.0});
+            put(ReefPoses.IJ, new Double[] {6.0, -6.0});
+            put(ReefPoses.KL, new Double[] {6.0, -6.0});
+        }
+    };
+
+    public static final Map<ReefPoses, Double[]> blueShift = new EnumMap<>(ReefPoses.class) {
+        {
+            put(ReefPoses.AB, new Double[] {6.0, -6.0});
+            put(ReefPoses.CD, new Double[] {6.0, -6.0});
+            put(ReefPoses.EF, new Double[] {6.0, -6.0});
+            put(ReefPoses.GH, new Double[] {6.0, -6.0});
+            put(ReefPoses.IJ, new Double[] {6.0, -6.0});
+            put(ReefPoses.KL, new Double[] {6.0, -6.0});
+        }
+    };
+
+
+
     public static final Pose2d SIDE_0 = new Pose2d(3.165, 4.005, Rotation2d.fromDegrees(0));
-    public static final Pose2d SIDE_60 = new Pose2d(3.836, 2.886, Rotation2d.fromDegrees(60));
-    public static final Pose2d SIDE_120 = new Pose2d(5.155, 2.886, Rotation2d.fromDegrees(120));
+    public static final Pose2d SIDE_60 = new Pose2d(3.877, 3.01, Rotation2d.fromDegrees(60));
+    public static final Pose2d SIDE_120 = new Pose2d(5.155, 3.01, Rotation2d.fromDegrees(120));
     public static final Pose2d SIDE_180 = new Pose2d(5.647, 4.005, Rotation2d.fromDegrees(180));
-    public static final Pose2d SIDE_240 = new Pose2d(5.155, 5.140, Rotation2d.fromDegrees(-120));
-    public static final Pose2d SIDE_300 = new Pose2d(3.836, 5.140, Rotation2d.fromDegrees(-60));
+    public static final Pose2d SIDE_240 = new Pose2d(5.155, 5.040, Rotation2d.fromDegrees(-120));
+    public static final Pose2d SIDE_300 = new Pose2d(3.877, 5.040, Rotation2d.fromDegrees(-60));
     public static final double OFFSET_TO_RED = 8.583;
     public static final Pose2d REEF_CENTER = new Pose2d(4.483, 4.025, Rotation2d.fromDegrees(0));
 
@@ -52,7 +110,7 @@ public class DriveConstants {
     // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
     private static final Slot0Configs steerGains = new Slot0Configs()
         .withKP(100).withKI(0).withKD(0.5)
-        .withKS(0.1).withKV(1.91).withKA(0)
+        .withKS(0.1).withKV(1.5).withKA(0)
         // .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign)
         ;
     // When using closed-loop control, the drive motor uses the control
@@ -124,15 +182,18 @@ public class DriveConstants {
 
     
 
+
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
+    private static final double kCoupleRatioCompbot = 4.909090909090909;
     private static final double kCoupleRatio = 3.5714285714285716;
     private static final double kCoupleRatioCambot = 3.5714285714285716;
 
-
+    private static final double kDriveGearRatioCompbot = 6.976076555023923;
     private static final double kDriveGearRatio = 5.01;
     private static final double kDriveGearRatioCambot = 6.746031746031747;
 
+    private static final double kSteerGearRatioCompbot = 12.1;
     private static final double kSteerGearRatio = 13.3714;
     private static final double kSteerGearRatioCambot = 21.428571428571427;
 
@@ -180,6 +241,29 @@ public class DriveConstants {
             .withDriveInertia(kDriveInertia)
             .withSteerFrictionVoltage(kSteerFrictionVoltage)
             .withDriveFrictionVoltage(kDriveFrictionVoltage);
+
+            private static final SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> ConstantCreatorCompbot =
+            new SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>()
+                .withDriveMotorGearRatio(kDriveGearRatioCompbot)
+                .withSteerMotorGearRatio(kSteerGearRatioCompbot)
+                .withCouplingGearRatio(kCoupleRatioCompbot)
+                .withWheelRadius(kWheelRadius)
+                .withSteerMotorGains(steerGains)
+                .withDriveMotorGains(driveGains)
+                .withSteerMotorClosedLoopOutput(kSteerClosedLoopOutput)
+                .withDriveMotorClosedLoopOutput(kDriveClosedLoopOutput)
+                .withSlipCurrent(kSlipCurrent)
+                .withSpeedAt12Volts(kSpeedAt12Volts)
+                .withDriveMotorType(kDriveMotorType)
+                .withSteerMotorType(kSteerMotorType)
+                .withFeedbackSource(kSteerFeedbackType)
+                .withDriveMotorInitialConfigs(driveInitialConfigs)
+                .withSteerMotorInitialConfigs(steerInitialConfigs)
+                .withEncoderInitialConfigs(encoderInitialConfigs)
+                .withSteerInertia(kSteerInertia)
+                .withDriveInertia(kDriveInertia)
+                .withSteerFrictionVoltage(kSteerFrictionVoltage)
+                .withDriveFrictionVoltage(kDriveFrictionVoltage);
 
     private static final SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> ConstantCreatorCambot =
         new SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>()
@@ -343,15 +427,82 @@ public class DriveConstants {
         );
 
 
-    
 
-    public static final DriveConfig DriveConfig =
+        
+    // Front Left
+    private static final int kFrontLeftDriveMotorIdCompbot = 8;
+    private static final int kFrontLeftSteerMotorIdCompbot = 7;
+    private static final int kFrontLeftEncoderIdCompbot = 41;
+    private static final Angle kFrontLeftEncoderOffsetCompbot = Rotations.of(-0.254150390625);
+    private static final boolean kFrontLeftSteerMotorInvertedCompbot = true;
+    private static final boolean kFrontLeftEncoderInvertedCompbot = false;
+
+    private static final Distance kFrontLeftXPosCompbot = Inches.of(11.5);
+    private static final Distance kFrontLeftYPosCompbot = Inches.of(11.5);
+
+    // Front Right
+    private static final int kFrontRightDriveMotorIdCompbot = 6;
+    private static final int kFrontRightSteerMotorIdCompbot = 5;
+    private static final int kFrontRightEncoderIdCompbot = 40;
+    private static final Angle kFrontRightEncoderOffsetCompbot = Rotations.of(0.3642578125);
+    private static final boolean kFrontRightSteerMotorInvertedCompbot = true;
+    private static final boolean kFrontRightEncoderInvertedCompbot = false;
+
+    private static final Distance kFrontRightXPosCompbot = Inches.of(11.5);
+    private static final Distance kFrontRightYPosCompbot = Inches.of(-11.5);
+
+    // Back Left
+    private static final int kBackLeftDriveMotorIdCompbot = 4;
+    private static final int kBackLeftSteerMotorIdCompbot = 3;
+    private static final int kBackLeftEncoderIdCompbot = 43;
+    private static final Angle kBackLeftEncoderOffsetCompbot = Rotations.of(-0.1357421875);
+    private static final boolean kBackLeftSteerMotorInvertedCompbot = true;
+    private static final boolean kBackLeftEncoderInvertedCompbot = false;
+
+    private static final Distance kBackLeftXPosCompbot = Inches.of(-11.5);
+    private static final Distance kBackLeftYPosCompbot = Inches.of(11.5);
+
+    // Back Right
+    private static final int kBackRightDriveMotorIdCompbot = 2;
+    private static final int kBackRightSteerMotorIdCompbot = 1;
+    private static final int kBackRightEncoderIdCompbot = 42;
+    private static final Angle kBackRightEncoderOffsetCompbot = Rotations.of(-0.0908203125);
+    private static final boolean kBackRightSteerMotorInvertedCompbot = true;
+    private static final boolean kBackRightEncoderInvertedCompbot = false;
+
+    private static final Distance kBackRightXPosCompbot = Inches.of(-11.5);
+    private static final Distance kBackRightYPosCompbot = Inches.of(-11.5);
+
+
+    public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontLeftCompbot =
+        ConstantCreator.createModuleConstants(
+            kFrontLeftSteerMotorIdCompbot, kFrontLeftDriveMotorIdCompbot, kFrontLeftEncoderIdCompbot, kFrontLeftEncoderOffsetCompbot,
+            kFrontLeftXPosCompbot, kFrontLeftYPosCompbot, kInvertLeftSide, kFrontLeftSteerMotorInvertedCompbot, kFrontLeftEncoderInvertedCompbot
+        );
+    public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontRightCompbot =
+        ConstantCreator.createModuleConstants(
+            kFrontRightSteerMotorIdCompbot, kFrontRightDriveMotorIdCompbot, kFrontRightEncoderIdCompbot, kFrontRightEncoderOffsetCompbot,
+            kFrontRightXPosCompbot, kFrontRightYPosCompbot, kInvertRightSide, kFrontRightSteerMotorInvertedCompbot, kFrontRightEncoderInvertedCompbot
+        );
+    public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> BackLeftCompbot =
+        ConstantCreator.createModuleConstants(
+            kBackLeftSteerMotorIdCompbot, kBackLeftDriveMotorIdCompbot, kBackLeftEncoderIdCompbot, kBackLeftEncoderOffsetCompbot,
+            kBackLeftXPosCompbot, kBackLeftYPosCompbot, kInvertLeftSide, kBackLeftSteerMotorInvertedCompbot, kBackLeftEncoderInvertedCompbot
+        );
+    public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> BackRightCompbot =
+        ConstantCreator.createModuleConstants(
+            kBackRightSteerMotorIdCompbot, kBackRightDriveMotorIdCompbot, kBackRightEncoderIdCompbot, kBackRightEncoderOffsetCompbot,
+            kBackRightXPosCompbot, kBackRightYPosCompbot, kInvertRightSide, kBackRightSteerMotorInvertedCompbot, kBackRightEncoderInvertedCompbot
+        );
+
+
+        public static final DriveConfig DriveConfig =
         switch (Constants.getRobot()) {
             case COMPBOT -> new DriveConfig(
-                FrontLeft, 
-                FrontRight, 
-                BackLeft, 
-                BackRight,
+                FrontLeftCompbot, 
+                FrontRightCompbot, 
+                BackLeftCompbot, 
+                BackRightCompbot,
                 DrivetrainConstants,
                 kSpeedAt12Volts.in(MetersPerSecond),
                 kMaxAngularVelocity.in(RadiansPerSecond),
