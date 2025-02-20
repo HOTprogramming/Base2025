@@ -32,6 +32,7 @@ public class ManipulatorConstants {
       public static double algaePackage;
 
       public static double algaeIntakeVoltage;
+      public static double algaeExpelVoltage;
 
       public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
       public record VVGains(double kP, double kI, double kD, double kV, double kS) {}
@@ -61,7 +62,7 @@ public class ManipulatorConstants {
       kMaxAccelerationRpmPerSec = 9000.0; 
       coralWristGains = new MMGains(0, 0, 0, 0.2, 0.0, 0.002, 0.1, 0.0);
       coralSpinGains = new VVGains(10.0, 0.0, 0.0, 0, 1);
-      coralWristEncoderOffset = 0.163086;
+      coralWristEncoderOffset = 0.667724609375;
   
       algaeArmID = 17;
       algaeRollerID = 15;
@@ -74,7 +75,8 @@ public class ManipulatorConstants {
       algaeExtend = 0;
       algaePackage = 0;
 
-      algaeIntakeVoltage = -1.5;
+      algaeIntakeVoltage = -8.0;
+      algaeExpelVoltage = 10.0;
     }
 
     private static void practiceBotConstants(){

@@ -38,6 +38,9 @@ public class ArmConstants {
     public static double L3short;
     public static double L2Short;
     public static double L4Short;
+    public static double IntakeAlgae;
+    public static double Processor;
+    public static double GetAlgaeFromReef;
     
     public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
 
@@ -74,20 +77,23 @@ public class ArmConstants {
         armEncoderOffset = 0.14892578125;
     
         PackageAngle = 0;
-        FeederAngle = 52.4;
+        FeederAngle = 50.8;
         L1Angle = -104.0;
-        L2Angle = -31.6;
+        L2Angle = -52.2;
         L3Angle = -31.6;
         L4Angle = -36;
         L4Score = -65;
         L3Score = -81.5;
-        L2Score = -71.5;
+        L2Score = -87.8;
         Horizontal = 90;
-        Intermediate = -20.0;
+        Intermediate = -49.0;
         CurrentFail = 17.0;
         L3short = -20.6;
         L2Short = -20.6;
         L4Short = -22.5;
+        IntakeAlgae = -56.0;
+        Processor = 14.3;
+        GetAlgaeFromReef = 109;
 
     }
 
