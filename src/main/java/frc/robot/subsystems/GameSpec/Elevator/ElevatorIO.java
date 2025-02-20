@@ -109,7 +109,7 @@ public abstract class ElevatorIO {
         cfg.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
 
         cfg.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-         cfg.withCurrentLimits(
+        cfg.withCurrentLimits(
             new CurrentLimitsConfigs()
                 .withStatorCurrentLimit(80)
                 .withStatorCurrentLimitEnable(true)

@@ -101,7 +101,7 @@ public abstract class ClimberIO {
         cfg.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
         cfg.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
         cfg.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
-         cfg.withCurrentLimits(
+        cfg.withCurrentLimits(
             new CurrentLimitsConfigs()
                 .withStatorCurrentLimit(80)
                 .withStatorCurrentLimitEnable(true)

@@ -132,17 +132,18 @@ public abstract class ManipulatorIO {
             cfg.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
             cfg.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
             cfg.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
-             cfg.withCurrentLimits(
+
+            cfg.withCurrentLimits(
             new CurrentLimitsConfigs()
                 .withStatorCurrentLimit(80)
                 .withStatorCurrentLimitEnable(true)
                 .withSupplyCurrentLimit(90)
                 .withSupplyCurrentLimitEnable(true)
-        ).withTorqueCurrent(
+            ).withTorqueCurrent(
             new TorqueCurrentConfigs()
                 .withPeakForwardTorqueCurrent(65)
                 .withPeakReverseTorqueCurrent(-65)
-        );
+            );
     
             cFXS.ExternalFeedback.FeedbackRemoteSensorID = coralCancoder.getDeviceID();
             cFXS.ExternalFeedback.ExternalFeedbackSensorSource = ExternalFeedbackSensorSourceValue.RemoteCANcoder;
@@ -154,6 +155,7 @@ public abstract class ManipulatorIO {
             cFXS.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
             cFXS.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
             cFXS.Commutation.MotorArrangement = MotorArrangementValue.Brushed_DC;
+            
             cFXS.withCurrentLimits(
                 new CurrentLimitsConfigs()
                     .withStatorCurrentLimit(80)
