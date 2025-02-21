@@ -3,10 +3,12 @@ package frc.robot.subsystems.GameSpec.Climber;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -93,13 +95,13 @@ public abstract class ClimberIO {
 
         FeedbackConfigs fdb = cfg.Feedback;
         fdb.SensorToMechanismRatio = 1;
-
+        
         cfg.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         cfg.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
         cfg.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
         cfg.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
         cfg.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
-
+        
         StatusCode climberStatus = StatusCode.StatusCodeNotInitialized;
         for(int i = 0; i < 5; ++i) {
             climberStatus = climber.getConfigurator().apply(cfg);
