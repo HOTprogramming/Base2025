@@ -12,6 +12,7 @@ import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -137,6 +138,8 @@ public class Camera extends SubsystemBase {
     DoubleArrayPublisher rightCameraPub;
     DoubleArrayPublisher rearCameraPub;
 
+    Field2d fieldRight = new Field2d();
+    Field2d fieldLeft = new Field2d();
 
     Map<CameraPositions, Optional<EstimatedRobotPose>> cameraMeasurements = new EnumMap<>(CameraPositions.class);
     Map<CameraPositions, Matrix<N3, N1>> cameraStdDeviations = new EnumMap<>(CameraPositions.class);
@@ -159,6 +162,9 @@ public class Camera extends SubsystemBase {
     private Drive drivetrain;
 
     public Camera(Drive drive) {
+        SmartDashboard.putData("Left", fieldLeft);
+        SmartDashboard.putData("Right", fieldRight);
+
         drivetrain = drive;
         constants = new CameraConstants();
         
@@ -233,6 +239,8 @@ public class Camera extends SubsystemBase {
      @Override
     public void periodic() {
 
+        drivetrain.seesReefTag = false;
+
         minimumTagsSeenByAnyCamera = 0;
 
         constants.cameraConstants.forEach((key,constant) -> {
@@ -274,9 +282,18 @@ public class Camera extends SubsystemBase {
                     // Change our trust in the measurement based on the tags we can see
                     var estStdDevs = cameraStdDeviations.get(key);
 
-                    drivetrain.addVisionMeasurement(
-                            est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+                    // drivetrain.addVisionMeasurement(
+                    //         est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
                     
+                    // SmartDashboard.putNumber(key + " X", est.estimatedPose.toPose2d().getX());
+                    // SmartDashboard.putNumber(key + " Y", est.estimatedPose.toPose2d().getY());
+                    // SmartDashboard.putNumber(key + " Rotation", est.estimatedPose.toPose2d().getRotation().getDegrees());
+
+                    if(key == CameraPositions.RIGHT){
+                        fieldRight.setRobotPose(est.estimatedPose.toPose2d()); 
+                    } else {
+                        fieldLeft.setRobotPose(est.estimatedPose.toPose2d()); 
+                    }
 
                 });
         });
@@ -305,10 +322,19 @@ public class Camera extends SubsystemBase {
         if (numTags == 1 && avgDist > 4)
             estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
         else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
-        for (PhotonTrackedTarget target: targets) {
+        for (PhotonTrackedTarget target : targets) {
             for (int id : CameraConstants.REEF_TAGS_RED) {
                 if (target.fiducialId == id && avgDist < 2) {
-                    estStdDevs = VecBuilder.fill(0.2, 0.2, 1);
+                    // estStdDevs = VecBuilder.fill(0.25, 0.25, 2);
+                    drivetrain.tagTransform = target.getBestCameraToTarget(); //new Transform3d().plus(target.getBestCameraToTarget())
+                            // .plus(constant.getTransform().inverse());
+                    drivetrain.reefTagID = target.fiducialId;
+                    drivetrain.seesReefTag = true;
+
+                    // SmartDashboard.put
+                    // SmartDashboard.putNumber("Tag X", drivetrain.tagTransform.getX());
+                    // SmartDashboard.putNumber("Tag Y", drivetrain.tagTransform.getY());
+                    // SmartDashboard.putNumber("Tag Rotation", Units.radiansToDegrees(drivetrain.tagTransform.getRotation().getAngle()));
                 }
             }
         }
