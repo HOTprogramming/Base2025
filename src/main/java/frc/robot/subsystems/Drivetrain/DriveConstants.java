@@ -108,6 +108,8 @@ public class DriveConstants {
         }
     };
 
+    public static final double robotToReefTagFace = 0.40;
+
 
 
     public static final Pose2d SIDE_0 = new Pose2d(3.165, 4.005, Rotation2d.fromDegrees(0));

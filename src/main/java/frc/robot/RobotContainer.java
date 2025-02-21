@@ -95,8 +95,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("Floor Intake Package", gamespecManager.floorIntakePackage());
 
 
-    NamedCommands.registerCommand("Align Reef Left",  drivetrain.run(() -> drivetrain.alignReef(0)));
-    NamedCommands.registerCommand("Align Reef Right",  drivetrain.run(() -> drivetrain.alignReef(1)));
+    NamedCommands.registerCommand("Align Reef Left",  drivetrain.autonAlignReefCommand(0));
+    NamedCommands.registerCommand("Align Reef Right",  drivetrain.autonAlignReefCommand(1));
+
+    NamedCommands.registerCommand("Auton Shoot",  gamespecManager.autonShoot());
+
     // must make a runonce command using a functional command interface
     // NamedCommands.registerCommand("Auton Align Left",  drivetrain.run(() -> drivetrain.alignReef(0)));
     // NamedCommands.registerCommand("Auton Align Right", drivetrain.run(() -> drivetrain.alignReef(1)));
@@ -172,13 +175,14 @@ public class RobotContainer {
           Math.abs(driver.getRightY()) >= 0.1 ? -driver.getRightY() : 0);
         }
       ));
-  
-      driver.b().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(0)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));
-      driver.x().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));
+      // working
+      driver.b().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));
+      driver.x().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(0)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));
+
 
       // driver.b().whileTrue(NamedCommands.getCommand("Align Reef Left"));
       // driver.x().whileTrue(NamedCommands.getCommand("Align Reef Right"));
-      driver.b().onTrue(NamedCommands.getCommand("expel"));
+      // driver.b().onTrue(NamedCommands.getCommand("expel"));
       driver.rightTrigger().onTrue(NamedCommands.getCommand("shoot")
       .onlyIf(operator.b().or(operator.a()).or(operator.x()).or(operator.y())))
       .onFalse(NamedCommands.getCommand("cancel shoot")
