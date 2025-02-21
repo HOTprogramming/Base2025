@@ -42,15 +42,6 @@ public class DriveConstants {
         kSpeedAt12Volts.in(MetersPerSecond) * 0.25,
         kSpeedAt12Volts.in(MetersPerSecond));
 
-    public enum ReefPoses {
-        AB,
-        CD,
-        EF,
-        GH,
-        IJ,
-        KL
-    }
-
     public static final Map<Rotation2d, Pose2d> redPoses = new HashMap<>() {
         {
             put(Rotation2d.fromDegrees(0), new Pose2d(11.6, 4.015, Rotation2d.fromDegrees(0)));

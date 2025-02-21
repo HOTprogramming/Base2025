@@ -94,6 +94,13 @@ public class RobotContainer {
     NamedCommands.registerCommand("L2 Package", gamespecManager.goToL2Package());
     NamedCommands.registerCommand("Floor Intake Package", gamespecManager.floorIntakePackage());
 
+
+    NamedCommands.registerCommand("Align Reef Left",  drivetrain.run(() -> drivetrain.alignReef(0)));
+    NamedCommands.registerCommand("Align Reef Right",  drivetrain.run(() -> drivetrain.alignReef(1)));
+    // must make a runonce command using a functional command interface
+    // NamedCommands.registerCommand("Auton Align Left",  drivetrain.run(() -> drivetrain.alignReef(0)));
+    // NamedCommands.registerCommand("Auton Align Right", drivetrain.run(() -> drivetrain.alignReef(1)));
+
     mode = Mode.coral;
 
     SmartDashboard.putData(chooser);
@@ -166,8 +173,8 @@ public class RobotContainer {
         }
       ));
   
-      driver.x().onTrue(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1))).whileTrue(drivetrain.run(() -> drivetrain.alignReef()).onlyWhile(drivetrain::notAtTarget));  
-      driver.b().onTrue(drivetrain.runOnce(() -> drivetrain.updateReefTarget(-1))).whileTrue(drivetrain.run(() -> drivetrain.alignReef()).onlyWhile(drivetrain::notAtTarget)); 
+      driver.b().whileTrue(NamedCommands.getCommand("Align Reef Left"));
+      driver.x().whileTrue(NamedCommands.getCommand("Align Reef Right"));
       driver.b().onTrue(NamedCommands.getCommand("expel"));
       driver.rightTrigger().onTrue(NamedCommands.getCommand("shoot")
       .onlyIf(operator.b().or(operator.a()).or(operator.x()).or(operator.y())))

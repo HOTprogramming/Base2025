@@ -282,8 +282,8 @@ public class Camera extends SubsystemBase {
                     // Change our trust in the measurement based on the tags we can see
                     var estStdDevs = cameraStdDeviations.get(key);
 
-                    // drivetrain.addVisionMeasurement(
-                    //         est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+                    drivetrain.addVisionMeasurement(
+                            est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
                     
                     // SmartDashboard.putNumber(key + " X", est.estimatedPose.toPose2d().getX());
                     // SmartDashboard.putNumber(key + " Y", est.estimatedPose.toPose2d().getY());
@@ -326,8 +326,10 @@ public class Camera extends SubsystemBase {
             for (int id : CameraConstants.REEF_TAGS_RED) {
                 if (target.fiducialId == id && avgDist < 2) {
                     // estStdDevs = VecBuilder.fill(0.25, 0.25, 2);
-                    drivetrain.tagTransform = target.getBestCameraToTarget(); //new Transform3d().plus(target.getBestCameraToTarget())
-                            // .plus(constant.getTransform().inverse());
+                    drivetrain.tagTransform = new Pose3d()
+                            .plus(target.getBestCameraToTarget())
+                            .plus(constant.getTransform().inverse());
+                            
                     drivetrain.reefTagID = target.fiducialId;
                     drivetrain.seesReefTag = true;
 

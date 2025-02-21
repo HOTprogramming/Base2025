@@ -27,7 +27,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.Drivetrain.DriveConstants.ReefPoses;
 import frc.robot.subsystems.Drivetrain.DriveIO.DriveIOdata;
 
 import static frc.robot.subsystems.Drivetrain.DriveConstants.*;
@@ -76,7 +75,7 @@ public class Drive extends SubsystemBase {
     private PathConstraints constraints;
     private List<Waypoint> waypoints;
 
-    public Transform3d tagTransform;
+    public Pose3d tagTransform;
     public boolean seesReefTag;
     public int reefTagID;
 
@@ -248,27 +247,20 @@ public class Drive extends SubsystemBase {
         );
     }
 
-    public void pathToReef() {
-        Pose2d calculatedPose = DriverStation.getAlliance().get() == Alliance.Blue ? bluePoses.get(getNearestReefAngle()) : redPoses.get(getNearestReefAngle());
-        currentTarget = new Pose2d(
-            calculatedPose.getX(),
-            calculatedPose.getY(),
-            calculatedPose.getRotation().plus(Rotation2d.fromDegrees(90))
-        );
-        heading = calculatedPose.getRotation();
-        SmartDashboard.putNumberArray("Drive target pose", new double[] {currentTarget.getX(), currentTarget.getY(), currentTarget.getRotation().getRadians()});
-        AutoBuilder.pathfindToPose(currentTarget, constraints).until(this::seesReefTag).schedule();
-    }
-
-
     public void alignReef(int leftRight) {
 
         double leftRightFromTable = Units.inchesToMeters(DriverStation.getAlliance().get() == Alliance.Blue ? blueShift.get(reefTagID)[leftRight] : redShift.get(reefTagID)[leftRight]);
 
         driveIO.setSwerveRequest(ROBOT_CENTRIC
-            .withVelocityX(-(-0.25 - tagTransform.getX()) * 5)
-            .withVelocityY(-(-0.35 - tagTransform.getY()) * 7.5)
+            .withVelocityX(-(-leftRightFromTable - tagTransform.getX()) * 5)
+            .withVelocityY((-0.44 - tagTransform.getY()) * 7.5)
+            // .withRotationalRate()
+
         );
+    }
+
+    public void alignReefFieldcentric(int leftRight) {
+        
     }
 
     public void teleopDrive(double driveX, double driveY, double driveTheta)  {
@@ -370,6 +362,9 @@ public class Drive extends SubsystemBase {
         try{
             SmartDashboard.putNumber("Drive tag x", tagTransform.getX());
             SmartDashboard.putNumber("Drive  tag y", tagTransform.getY());
+            // SmartDashboard.putNumber("Drive  tag Rot", tagTransform.getRotation());
+
+    
             // SmartDashboard.putNumber("tag x", tagTransform.getX());
             // SmartDashboard.putNumber("tag y", tagTransform.getY());
         } catch(Exception e){
