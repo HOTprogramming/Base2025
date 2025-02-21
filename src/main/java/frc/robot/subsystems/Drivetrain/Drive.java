@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -300,8 +301,8 @@ public class Drive extends SubsystemBase {
 
         currentTarget = new Pose2d(
             //                                               Pole shift                                                 Bumper shift
-            reefTarget.getX() - (reefTarget.getRotation().getSin() * Units.inchesToMeters(poleShift)) - (reefTarget.getRotation().getCos() * 0.41),
-            reefTarget.getY() + (reefTarget.getRotation().getCos() * Units.inchesToMeters(poleShift)) - (reefTarget.getRotation().getSin() * 0.41),
+            reefTarget.getX() - (reefTarget.getRotation().getSin() * Units.inchesToMeters(poleShift)) - (reefTarget.getRotation().getCos() * robotToReefTagFace),
+            reefTarget.getY() + (reefTarget.getRotation().getCos() * Units.inchesToMeters(poleShift)) - (reefTarget.getRotation().getSin() * robotToReefTagFace),
             reefTarget.getRotation()
         );
 
@@ -321,6 +322,19 @@ public class Drive extends SubsystemBase {
             ))
         );
         
+    }
+
+    public FunctionalCommand autonAlignReefCommand(int LR) {
+        return new FunctionalCommand(
+      () -> updateReefTarget(LR),
+      () -> alignReefFieldcentric(),
+      interrupted -> {
+        if (interrupted) {
+            driveIO.setSwerveRequest(FIELD_CENTRIC.withVelocityX(0).withVelocityY(0).withRotationalRate(0));
+        }
+        }, 
+      () -> Math.abs(currentTarget.getTranslation().getDistance(iOdata.state.Pose.getTranslation()) - 0.015) < 0.015,
+      this);
     }
 
     public void teleopDrive(double driveX, double driveY, double driveTheta)  {
