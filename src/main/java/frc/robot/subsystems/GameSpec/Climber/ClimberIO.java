@@ -101,17 +101,7 @@ public abstract class ClimberIO {
         cfg.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
         cfg.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
         cfg.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
-        cfg.withCurrentLimits(
-            new CurrentLimitsConfigs()
-                .withStatorCurrentLimit(80)
-                .withStatorCurrentLimitEnable(true)
-                .withSupplyCurrentLimit(90)
-                .withSupplyCurrentLimitEnable(true)
-        ).withTorqueCurrent(
-            new TorqueCurrentConfigs()
-                .withPeakForwardTorqueCurrent(65)
-                .withPeakReverseTorqueCurrent(-65)
-        );
+        
         StatusCode climberStatus = StatusCode.StatusCodeNotInitialized;
         for(int i = 0; i < 5; ++i) {
             climberStatus = climber.getConfigurator().apply(cfg);
