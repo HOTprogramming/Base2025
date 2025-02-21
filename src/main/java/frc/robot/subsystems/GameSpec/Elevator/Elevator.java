@@ -118,7 +118,18 @@ public class Elevator extends SubsystemBase {
 
   public Command goToPackage(){
     return elevatorCommand(ElevatorConstants.PackageHeight);
-    // return elevatorCommand(25.0);
+  }
+
+  public Command goToFloorIntake(){
+    return elevatorCommand(ElevatorConstants.FloorIntakeHeight);
+  }
+
+  public Command goToFloorIntakeGrab(){
+    return elevatorCommand(ElevatorConstants.FloorIntakeGrabHeight);
+  }
+
+  public Command goToProcessor(){
+    return elevatorCommand(ElevatorConstants.ProcessorHeight);
   }
 
   public Command goToHighAlgae(){
@@ -131,6 +142,10 @@ public class Elevator extends SubsystemBase {
 
   public Command goToHP(){
     return elevatorCommand(ElevatorConstants.HPHeight);
+  }
+
+  public Command goToBarge(){
+    return elevatorCommand(ElevatorConstants.BargeHeight);
   }
 
   public Command climbDown(){
