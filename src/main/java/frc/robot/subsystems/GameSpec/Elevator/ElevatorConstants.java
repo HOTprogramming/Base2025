@@ -75,7 +75,7 @@ public class ElevatorConstants {
         BargeHeight = 68.5;
         ProcessorHeight = 14.0;
         FloorIntakeHeight = 20.0;
-        FloorIntakeGrabHeight = 16.0;
+        FloorIntakeGrabHeight = 15.0;
 
     }
 
