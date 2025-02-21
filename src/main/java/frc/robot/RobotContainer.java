@@ -173,8 +173,11 @@ public class RobotContainer {
         }
       ));
   
-      driver.b().whileTrue(NamedCommands.getCommand("Align Reef Left"));
-      driver.x().whileTrue(NamedCommands.getCommand("Align Reef Right"));
+      driver.b().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(0)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));
+      driver.x().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));
+
+      // driver.b().whileTrue(NamedCommands.getCommand("Align Reef Left"));
+      // driver.x().whileTrue(NamedCommands.getCommand("Align Reef Right"));
       driver.b().onTrue(NamedCommands.getCommand("expel"));
       driver.rightTrigger().onTrue(NamedCommands.getCommand("shoot")
       .onlyIf(operator.b().or(operator.a()).or(operator.x()).or(operator.y())))

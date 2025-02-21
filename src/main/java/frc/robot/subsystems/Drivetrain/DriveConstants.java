@@ -48,8 +48,8 @@ public class DriveConstants {
             put(Rotation2d.fromDegrees(60), new Pose2d(12.236, 2.621, Rotation2d.fromDegrees(60)));
             put(Rotation2d.fromDegrees(120), new Pose2d(13.884, 2.66, Rotation2d.fromDegrees(120)));
             put(Rotation2d.fromDegrees(180), new Pose2d(14.5, 4.015, Rotation2d.fromDegrees(180)));
-            put(Rotation2d.fromDegrees(-120), new Pose2d(13.855, 5.429, Rotation2d.fromDegrees(-120)));
-            put(Rotation2d.fromDegrees(-120), new Pose2d(12.246, 5.429, Rotation2d.fromDegrees(-60))); 
+            put(Rotation2d.fromDegrees(-120), new Pose2d(13.47, 4.75, Rotation2d.fromDegrees(-120)));
+            put(Rotation2d.fromDegrees(-60), new Pose2d(12.246, 5.429, Rotation2d.fromDegrees(-60))); 
         }
     };
     public static final Map<Rotation2d, Pose2d> bluePoses = new HashMap<>() {
@@ -75,14 +75,36 @@ public class DriveConstants {
         }
     };
 
-    public static final Map<Integer, Double[]> blueShift = new HashMap<>() {
+    public static final Map<Rotation2d, Double[]> blueShift = new HashMap<>() {
         {
-            put(6, new Double[] {6.0, -6.0});
-            put(7, new Double[] {6.0, -6.0});
-            put(8, new Double[] {6.0, -6.0});
-            put(9, new Double[] {6.0, -6.0});
-            put(10, new Double[] {6.0, -6.0});
-            put(11, new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(0), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(60), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(120), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(180), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -6.0});
+        }
+    };
+
+    public static final Map<Rotation2d, Double[]> redShiftH = new HashMap<>() {
+        {
+            put(Rotation2d.fromDegrees(0), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(60), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(120), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(180), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -6.0});
+        }
+    };
+
+    public static final Map<Rotation2d, Double[]> blueShiftH = new HashMap<>() {
+        {
+            put(Rotation2d.fromDegrees(0), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(60), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(120), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(180), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -6.0});
         }
     };
 
