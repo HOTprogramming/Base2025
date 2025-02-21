@@ -68,27 +68,47 @@ public class CameraConstants {
         switch (Constants.getRobot()) {
             case DEVBOT:
                 cameraConstants.put(CameraPositions.LEFT, new CameraConstant("LEFT",
-                        new Translation3d(Units.inchesToMeters(6.516), Units.inchesToMeters(-10.84), Units.inchesToMeters(7.752)), // without wheel squish
-                        // new Rotation3d(),
-                        new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(20.0), Units.degreesToRadians(-149.39)),
+                        new Translation3d(Units.inchesToMeters(11.2), Units.inchesToMeters(-10.25), Units.inchesToMeters(7.752)), // without wheel squish
+                        new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(-20.0), Units.degreesToRadians(-144.5)), // -145
+
                         VecBuilder.fill(4, 4, 8),
                         VecBuilder.fill(0.5, 0.5, 1)));
 
                 
                 cameraConstants.put(CameraPositions.RIGHT, new CameraConstant("RIGHT",
-                        new Translation3d(Units.inchesToMeters(-6.516), Units.inchesToMeters(-10.84), Units.inchesToMeters(7.752)),
-                        // new Rotation3d(),
-                        new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(20.0), Units.degreesToRadians(-27.16)),
+                        new Translation3d(Units.inchesToMeters(-11.2), Units.inchesToMeters(-10.25), Units.inchesToMeters(7.752)), // 10.84 6.516
+                        new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(-20.0), Units.degreesToRadians(-35.5)),
+
                         VecBuilder.fill(4, 4, 8),
                         VecBuilder.fill(0.5, 0.5, 1)));
 
-                // cameraConstants.put(CameraPositions.TOP, new CameraConstant("TOP", // top
-                //         new Translation3d(Units.inchesToMeters(8.75), Units.inchesToMeters(7.829), Units.inchesToMeters(41.863)),
-                //         new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(67.48), Units.degreesToRadians(23.23)),
-                //         VecBuilder.fill(4, 4, 8),
-                //         VecBuilder.fill(0.5, 0.5, 1)));
+                cameraConstants.put(CameraPositions.TOP, new CameraConstant("TOP", // top
+                        new Translation3d(Units.inchesToMeters(-7.0), Units.inchesToMeters(-8.76), Units.inchesToMeters(42)),
+                        new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(-22.5), Units.degreesToRadians(62.77)),
+                        VecBuilder.fill(4, 4, 8),
+                        VecBuilder.fill(0.5, 0.5, 1)));
                 break;
             case COMPBOT:
+                cameraConstants.put(CameraPositions.LEFT, new CameraConstant("LEFT",
+                        new Translation3d(Units.inchesToMeters(11.2), Units.inchesToMeters(-10.25), Units.inchesToMeters(7.752)), // without wheel squish
+                        new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(-20.0), Units.degreesToRadians(-145.0)), // -145
+
+                        VecBuilder.fill(4, 4, 8),
+                        VecBuilder.fill(0.5, 0.5, 1)));
+
+                
+                cameraConstants.put(CameraPositions.RIGHT, new CameraConstant("RIGHT",
+                        new Translation3d(Units.inchesToMeters(-11.2), Units.inchesToMeters(-10.25), Units.inchesToMeters(7.752)), // 10.84 6.516
+                        new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(-20.0), Units.degreesToRadians(-35.0)),
+
+                        VecBuilder.fill(4, 4, 8),
+                        VecBuilder.fill(0.5, 0.5, 1)));
+
+                cameraConstants.put(CameraPositions.TOP, new CameraConstant("TOP", // top
+                        new Translation3d(Units.inchesToMeters(-7.0), Units.inchesToMeters(-8.76), Units.inchesToMeters(42)),
+                        new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(-22.5), Units.degreesToRadians(62.77)),
+                        VecBuilder.fill(4, 4, 8),
+                        VecBuilder.fill(0.5, 0.5, 1)));
                 break;
             case SIMBOT:
                 cameraConstants.put(CameraPositions.FRONT, new CameraConstant("a",
