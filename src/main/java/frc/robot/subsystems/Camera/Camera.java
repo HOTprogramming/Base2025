@@ -341,6 +341,10 @@ public class Camera extends SubsystemBase {
             }
         }
 
+        if (numTags == 1 && avgDist > 2.75) {
+            estStdDevs =VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+        }
+
         return estStdDevs;
     }    
 }

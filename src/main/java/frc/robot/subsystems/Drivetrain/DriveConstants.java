@@ -49,7 +49,7 @@ public class DriveConstants {
             put(Rotation2d.fromDegrees(120), new Pose2d(13.884, 2.66, Rotation2d.fromDegrees(120)));
             put(Rotation2d.fromDegrees(180), new Pose2d(14.5, 4.015, Rotation2d.fromDegrees(180)));
             put(Rotation2d.fromDegrees(-120), new Pose2d(13.47, 4.75, Rotation2d.fromDegrees(-120)));
-            put(Rotation2d.fromDegrees(-60), new Pose2d(12.246, 5.429, Rotation2d.fromDegrees(-60))); 
+            put(Rotation2d.fromDegrees(-60), new Pose2d(12.64, 4.75, Rotation2d.fromDegrees(-60))); 
         }
     };
     public static final Map<Rotation2d, Pose2d> bluePoses = new HashMap<>() {
@@ -92,8 +92,8 @@ public class DriveConstants {
             put(Rotation2d.fromDegrees(60), new Double[] {6.0, -6.0});
             put(Rotation2d.fromDegrees(120), new Double[] {6.0, -6.0});
             put(Rotation2d.fromDegrees(180), new Double[] {6.0, -6.0});
-            put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -6.0});
-            put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -7.0});
+            put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -9.0});
         }
     };
 

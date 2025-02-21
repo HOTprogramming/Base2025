@@ -91,7 +91,7 @@ public class CameraConstants {
             case COMPBOT:
                 cameraConstants.put(CameraPositions.LEFT, new CameraConstant("LEFT",
                         new Translation3d(Units.inchesToMeters(11.2), Units.inchesToMeters(-10.25), Units.inchesToMeters(7.752)), // without wheel squish
-                        new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(-20.0), Units.degreesToRadians(-145.0)), // -145
+                        new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(-20.0), Units.degreesToRadians(-144.5)), // -145
 
                         VecBuilder.fill(4, 4, 8),
                         VecBuilder.fill(0.5, 0.5, 1)));
@@ -99,7 +99,7 @@ public class CameraConstants {
                 
                 cameraConstants.put(CameraPositions.RIGHT, new CameraConstant("RIGHT",
                         new Translation3d(Units.inchesToMeters(-11.2), Units.inchesToMeters(-10.25), Units.inchesToMeters(7.752)), // 10.84 6.516
-                        new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(-20.0), Units.degreesToRadians(-35.0)),
+                        new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(-20.0), Units.degreesToRadians(-35.5)),
 
                         VecBuilder.fill(4, 4, 8),
                         VecBuilder.fill(0.5, 0.5, 1)));

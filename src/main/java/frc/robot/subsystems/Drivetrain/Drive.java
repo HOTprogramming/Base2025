@@ -116,8 +116,8 @@ public class Drive extends SubsystemBase {
         this.driveIO = driveIO;
         this.iOdata = driveIO.update();
 
-        translationControllerX.setTolerance(0.015);
-        translationControllerY.setTolerance(0.015);
+        translationControllerX.setTolerance(0.005);
+        translationControllerY.setTolerance(0.005);
 
 
         heading = Rotation2d.fromDegrees(0);
@@ -300,8 +300,8 @@ public class Drive extends SubsystemBase {
 
         currentTarget = new Pose2d(
             //                                               Pole shift                                                 Bumper shift
-            reefTarget.getX() - (reefTarget.getRotation().getSin() * Units.inchesToMeters(poleShift)) - (reefTarget.getRotation().getCos() * 0.44),
-            reefTarget.getY() + (reefTarget.getRotation().getCos() * Units.inchesToMeters(poleShift)) - (reefTarget.getRotation().getSin() * 0.44),
+            reefTarget.getX() - (reefTarget.getRotation().getSin() * Units.inchesToMeters(poleShift)) - (reefTarget.getRotation().getCos() * 0.41),
+            reefTarget.getY() + (reefTarget.getRotation().getCos() * Units.inchesToMeters(poleShift)) - (reefTarget.getRotation().getSin() * 0.41),
             reefTarget.getRotation()
         );
 
