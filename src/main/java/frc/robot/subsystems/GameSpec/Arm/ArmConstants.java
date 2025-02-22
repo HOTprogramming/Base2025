@@ -41,6 +41,7 @@ public class ArmConstants {
     public static double IntakeAlgae;
     public static double Processor;
     public static double GetAlgaeFromReef;
+    public static double Barge;
     
     public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
 
@@ -91,9 +92,10 @@ public class ArmConstants {
         L3short = -20.6;
         L2Short = -20.6;
         L4Short = -22.5;
-        IntakeAlgae = -56.0;
+        IntakeAlgae = -61.0;
         Processor = 14.3;
         GetAlgaeFromReef = 109;
+        Barge = 128;
 
     }
 

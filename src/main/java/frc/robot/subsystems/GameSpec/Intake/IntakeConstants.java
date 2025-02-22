@@ -45,7 +45,7 @@ public class IntakeConstants {
         intakeGains = new MMGains(0, 0, 0, 0.1 , 0.0, 0.0, 0.05, 0);
         
         intakePackage = -5.0;
-        intakeGround = -158.0;
+        intakeGround = -150.0;
         rollerIntakeVoltage = 10;
         rollerExpelVoltage = 1.5;
         climberOut = -90;
