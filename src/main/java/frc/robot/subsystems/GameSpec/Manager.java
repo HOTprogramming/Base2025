@@ -340,6 +340,10 @@ public class Manager extends SubsystemBase{
       ,Commands.parallel(armSubsystem.goToPackage(), elevatorSubsystem.goToPackage()));
     }
 
+    public Command algaePackage(){
+      return armSubsystem.goToPackage();
+    }
+
     public Command alignProcessor(){
       return Commands.sequence(runOnce(() -> {scoringLevel = ScoringLevel.Algae;}),
         Commands.parallel(elevatorSubsystem.goToProcessor())
