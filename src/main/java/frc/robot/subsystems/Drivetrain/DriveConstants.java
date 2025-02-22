@@ -93,7 +93,7 @@ public class DriveConstants {
             put(Rotation2d.fromDegrees(120), new Double[] {6.0, -6.0});
             put(Rotation2d.fromDegrees(180), new Double[] {6.0, -6.0});
             put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -7.0});
-            put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -9.0});
+            put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -6.5});
         }
     };
 
@@ -108,7 +108,7 @@ public class DriveConstants {
         }
     };
 
-    public static final double robotToReefTagFace = 0.40;
+    public static final double robotToReefTagFace = 0.39;
 
 
 

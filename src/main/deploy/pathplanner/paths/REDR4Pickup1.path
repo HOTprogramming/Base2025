@@ -21,7 +21,7 @@
       },
       "prevControl": {
         "x": 15.421589541991725,
-        "y": 1.2812419277479488
+        "y": 1.2812419277479485
       },
       "nextControl": null,
       "isLocked": false,
@@ -59,7 +59,7 @@
     "rotation": 125.00000000000001
   },
   "reversed": false,
-  "folder": "REDPAP",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 59.99999999999999

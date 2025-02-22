@@ -42,6 +42,7 @@ import java.util.stream.IntStream;
 import org.json.simple.parser.ParseException;
 import org.opencv.ml.RTrees;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -305,8 +306,8 @@ public class Drive extends SubsystemBase {
             reefTarget.getY() + (reefTarget.getRotation().getCos() * Units.inchesToMeters(poleShift)) - (reefTarget.getRotation().getSin() * robotToReefTagFace),
             reefTarget.getRotation()
         );
-
-        
+        translationControllerX.calculate(iOdata.state.Pose.getX(), currentTarget.getX());
+        translationControllerY.calculate(iOdata.state.Pose.getY(), currentTarget.getY());
         SmartDashboard.putNumberArray("Drive target pose", new double[] {currentTarget.getX(), currentTarget.getY(), currentTarget.getRotation().getRadians()});
     }
 
@@ -326,15 +327,20 @@ public class Drive extends SubsystemBase {
 
     public FunctionalCommand autonAlignReefCommand(int LR) {
         return new FunctionalCommand(
-      () -> updateReefTarget(LR),
-      () -> alignReefFieldcentric(),
-      interrupted -> {
-        if (interrupted) {
-            driveIO.setSwerveRequest(FIELD_CENTRIC.withVelocityX(0).withVelocityY(0).withRotationalRate(0));
-        }
-        }, 
-      () -> Math.abs(currentTarget.getTranslation().getDistance(iOdata.state.Pose.getTranslation()) - 0.015) < 0.015,
-      this);
+        () -> updateReefTarget(LR),
+        () -> alignReefFieldcentric(),
+      interrupted -> {}, 
+     () -> Math.abs(currentTarget.getTranslation().getDistance(iOdata.state.Pose.getTranslation())) < 0.035,
+        // () -> translationControllerX.atGoal() && translationControllerY.atGoal(),
+        this);
+    }
+
+    public Command setCoast() {
+        return runOnce(() ->driveIO.setNeutralMode(NeutralModeValue.Coast));
+    }
+
+    public Command setBrake() {
+        return runOnce(() ->driveIO.setNeutralMode(NeutralModeValue.Brake));
     }
 
     public void teleopDrive(double driveX, double driveY, double driveTheta)  {

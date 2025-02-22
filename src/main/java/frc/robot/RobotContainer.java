@@ -3,6 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot;
 
+import static edu.wpi.first.units.Units.derive;
+
 import java.util.Map;
 
 import com.ctre.phoenix6.Utils;
@@ -68,6 +70,7 @@ public class RobotContainer {
 
     chooser.setDefaultOption("Auto", "Auto");
     chooser.addOption("goods", "REDR4Place&Pickup");
+    chooser.addOption("First", "First");
     // chooser.addOption("Complex Auto", "m_complexAuto");
     
     NamedCommands.registerCommand("L1", gamespecManager.goToL1());
@@ -99,6 +102,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("Align Reef Right",  drivetrain.autonAlignReefCommand(1));
 
     NamedCommands.registerCommand("Auton Shoot",  gamespecManager.autonShoot());
+
+    //new EventTrigger("Package").whileTrue(gamespecManager.goToPackage());
+
 
     // must make a runonce command using a functional command interface
     // NamedCommands.registerCommand("Auton Align Left",  drivetrain.run(() -> drivetrain.alignReef(0)));
@@ -178,7 +184,8 @@ public class RobotContainer {
       // working
       driver.b().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));
       driver.x().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(0)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));
-
+      driver.a().onTrue(drivetrain.setCoast());
+      driver.y().onTrue(drivetrain.setBrake());
 
       // driver.b().whileTrue(NamedCommands.getCommand("Align Reef Left"));
       // driver.x().whileTrue(NamedCommands.getCommand("Align Reef Right"));

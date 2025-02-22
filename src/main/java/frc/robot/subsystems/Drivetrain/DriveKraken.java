@@ -11,6 +11,7 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -65,6 +66,7 @@ public class DriveKraken extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
         SwerveModule<TalonFX, TalonFX, CANcoder>[] m_modules = getModules();
         
         for (int i = 0; i < m_modules.length; i++) {
+            m_modules[i].getDriveMotor().setNeutralMode(NeutralModeValue.Coast, 1.0);
             m_modules[i].getDriveMotor().getConfigurator().apply(DriveConstants.driveInitialConfigs.CurrentLimits, 1.0);
             m_modules[i].getSteerMotor().getConfigurator().apply(DriveConstants.steerInitialConfigs.CurrentLimits, 1.0);
             // apply these seperatly (not in a TalonFXConfiguration obj) to ensure PID doesn't get overwritten
@@ -108,7 +110,9 @@ public class DriveKraken extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
 
     @Override
     public void seedFieldRelative(Pose2d seedling) {
-        resetPose(seedling);
+        if (currentState.Pose.getTranslation().getDistance(seedling.getTranslation()) > .5) {
+            resetPose(seedling);
+        }
     }
 
     @Override
@@ -119,5 +123,13 @@ public class DriveKraken extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
     @Override
     public void setOperatorPerspective(Rotation2d rotation2d) {
         setOperatorPerspectiveForward(rotation2d);
+    }
+
+    public void setNeutralMode(NeutralModeValue neutralModeValue) {
+        SwerveModule<TalonFX, TalonFX, CANcoder>[] m_modules = getModules();
+
+        for (int i = 0; i < m_modules.length; i++) {
+            m_modules[i].getDriveMotor().setNeutralMode(neutralModeValue, 1.0);
+        }
     }
 }

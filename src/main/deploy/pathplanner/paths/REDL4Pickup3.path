@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 16.193338815789474,
-        "y": 6.959621710526315
+        "x": 16.279303278688527,
+        "y": 7.069877049180328
       },
       "prevControl": {
-        "x": 15.667575912123791,
-        "y": 6.561662329036864
+        "x": 15.753540375022844,
+        "y": 6.6719176676908765
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,6 +30,19 @@
   ],
   "rotationTargets": [],
   "constraintZones": [
+    {
+      "name": "Test",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.6,
+        "unlimited": false
+      }
+    },
     {
       "name": "Constraints Zone",
       "minWaypointRelativePos": 0.5,
@@ -56,13 +69,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -125.00000000000001
+    "rotation": -35.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "LRed4",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -119.99999999999999
+    "rotation": -32.0
   },
   "useDefaultConstraints": true
 }
