@@ -19,6 +19,18 @@
                 "data": {
                   "name": "Align Reef Right"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Auton Shoot"
+                }
               }
             ]
           }
