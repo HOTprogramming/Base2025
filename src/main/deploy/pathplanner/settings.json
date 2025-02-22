@@ -9,14 +9,18 @@
     "First",
     "FloorPickupRotation",
     "LRed4",
+    "BlueR3",
     "Red1",
     "RedCoral4Left",
-    "RRed4",
-    "Slow"
+    "Second",
+    "Slow",
+    "Third"
   ],
-  "autoFolders": [],
-  "defaultMaxVel": 6.0,
-  "defaultMaxAccel": 8.5,
+  "autoFolders": [
+    "Tests"
+  ],
+  "defaultMaxVel": 4.96,
+  "defaultMaxAccel": 6.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "defaultNominalVoltage": 12.6,

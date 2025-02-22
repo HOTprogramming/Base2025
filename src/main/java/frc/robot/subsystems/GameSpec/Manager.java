@@ -85,6 +85,8 @@ public class Manager extends SubsystemBase{
         armSubsystem = new Arm(new ArmIOSim());
         manipulatorSubsystem = new Manipulator(new ManipulatorIOSim());
         climberSubsystem = new Climber(new ClimberIOSim());
+        intakeSubsystem = new Intake(new IntakeIOSim());
+
       } 
 
       scoringLevel = ScoringLevel.L1;
@@ -284,6 +286,18 @@ public class Manager extends SubsystemBase{
         ),
         this::getLevel
       );
+    }
+
+    public Command autonL4() {
+      return Commands.parallel(runOnce(() -> {scoringLevel = ScoringLevel.L4;}), elevatorSubsystem.goToL4());
+    }
+
+    public Command autonIntake() {
+      return Commands.parallel(Commands.deadline(manipulatorSubsystem.intake(), armSubsystem.goToFeeder()), elevatorSubsystem.goToFeeder());
+    }
+
+    public Command autonFinishIntake() {
+      return armSubsystem.goToPackage();
     }
 
 

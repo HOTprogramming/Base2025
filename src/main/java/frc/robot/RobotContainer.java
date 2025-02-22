@@ -69,8 +69,14 @@ public class RobotContainer {
     gamespecManager = new Manager();
 
     chooser.setDefaultOption("Auto", "Auto");
-    chooser.addOption("goods", "REDR4Place&Pickup");
-    chooser.addOption("First", "First");
+    
+    chooser.addOption("RedR3", "RedR3"); 
+    chooser.addOption("RedL3", "RedL3");
+    chooser.addOption("BlueR3", "BlueR3");
+    chooser.addOption("BlueL3", "BlueL3");
+
+     
+
     // chooser.addOption("Complex Auto", "m_complexAuto");
     
     NamedCommands.registerCommand("L1", gamespecManager.goToL1());
@@ -102,6 +108,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("Align Reef Right",  drivetrain.autonAlignReefCommand(1));
 
     NamedCommands.registerCommand("Auton Shoot",  gamespecManager.autonShoot());
+    NamedCommands.registerCommand("Auton Intake Start", gamespecManager.autonIntake());
+    NamedCommands.registerCommand("Auton Finish Intake", gamespecManager.autonFinishIntake());
+    NamedCommands.registerCommand("AL4", gamespecManager.autonL4());
+
 
     //new EventTrigger("Package").whileTrue(gamespecManager.goToPackage());
 
