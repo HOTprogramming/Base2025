@@ -52,7 +52,8 @@ public class Manager extends SubsystemBase{
       L2,
       L3,
       L4,
-      Algae
+      Algae,
+      Barge
     }
 
     private enum PackageMode{
@@ -229,7 +230,8 @@ public class Manager extends SubsystemBase{
             manipulatorSubsystem.shoot()
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
             .andThen(goToL1().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail))))),
-          ScoringLevel.Algae, manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeExpelVoltage)
+          ScoringLevel.Algae, manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeExpelVoltage),
+          ScoringLevel.Barge, manipulatorSubsystem.algaeVoltage(12.0)
         ),
         this::getLevel
       );
@@ -244,7 +246,8 @@ public class Manager extends SubsystemBase{
           ScoringLevel.L3, goToL3(),
           ScoringLevel.L2, goToL2(),
           ScoringLevel.L1, Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goHP()),
-          ScoringLevel.Algae, manipulatorSubsystem.algaeVoltage(0.0)
+          ScoringLevel.Algae, manipulatorSubsystem.algaeVoltage(0.0),
+          ScoringLevel.Barge, manipulatorSubsystem.algaeVoltage(0.0)
           ),
         this::getLevel
       );
@@ -321,9 +324,9 @@ public class Manager extends SubsystemBase{
     }
 
     public Command barge(){
-      return Commands.sequence(
-        Commands.parallel(elevatorSubsystem.goToBarge(), runOnce(() -> {scoringLevel = ScoringLevel.Algae;}))
-        ,armSubsystem.horizontal());
+      return Commands.parallel(
+        Commands.parallel(elevatorSubsystem.goToBarge(), runOnce(() -> {scoringLevel = ScoringLevel.Barge;}))
+        ,armSubsystem.barge());
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
