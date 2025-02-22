@@ -102,7 +102,7 @@ public class Manager extends SubsystemBase{
     return Commands.sequence(
     run(() -> climberSubsystem.setPower(-3.0))
         .onlyWhile(() -> climberSubsystem.checkClimberPackaged())
-        .andThen((runOnce(() -> climberSubsystem.setPower(0.0)).onlyIf(() -> climberSubsystem.checkClimberPackaged())))
+        .andThen((runOnce(() -> climberSubsystem.setPower(0.0))))
         ,intakeSubsystem.goToPackage()
         ,elevatorSubsystem.goToPackage()
         ,armSubsystem.goToPackage()
@@ -291,13 +291,16 @@ public class Manager extends SubsystemBase{
     //deploys the climber
     public Command climberOut(){
       return Commands.sequence(
-      elevatorSubsystem.goToPackage()
+      elevatorSubsystem.goToFloorIntake()
       ,armSubsystem.horizontal()
       ,intakeSubsystem.intakeClimberOut()
-      ,run(() -> climberSubsystem.setPower(3.0))
+      ,run(() -> climberSubsystem.setPower(16.0))
       .onlyWhile(() -> climberSubsystem.checkClimberDeployed())
       .andThen(runOnce(() -> climberSubsystem.setPower(0.0)))
-      ,elevatorSubsystem.climbDown());
+      ,elevatorSubsystem.climbDown()
+      ,intakeSubsystem.intakeVert()
+      )
+      ;
     }
 
     //picks up an algae from the ground

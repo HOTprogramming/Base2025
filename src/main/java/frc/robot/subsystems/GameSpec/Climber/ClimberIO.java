@@ -212,7 +212,7 @@ public abstract class ClimberIO {
     }
 
     public void setPower(double power) {
-        climber.setVoltage(power *12.0);
+        climber.setVoltage(power *16.0);
         climber2.setControl(new Follower(climber.getDeviceID(), false));
     }
 
