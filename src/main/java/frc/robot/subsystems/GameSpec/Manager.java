@@ -109,7 +109,14 @@ public class Manager extends SubsystemBase{
         Map.of(
           PackageMode.notClimbed, Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
           .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()))),
-          PackageMode.climbed, Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage())
+          PackageMode.climbed, Commands.sequence(
+          run(() -> climberSubsystem.setPower(-3.0))
+          .onlyWhile(() -> climberSubsystem.checkClimberPackaged())
+          .andThen(runOnce(() -> climberSubsystem.setPower(0.0)))
+          ,intakeSubsystem.goToPackage()
+          ,elevatorSubsystem.goToPackage()
+          ,armSubsystem.goToPackage()
+          )
           ),
         this::getPackageMode
       );
@@ -259,13 +266,14 @@ public class Manager extends SubsystemBase{
     public Command autonShoot(){
       return new SelectCommand(
         Map.of(
-          ScoringLevel.L4, Commands.sequence(
-            armSubsystem.L4Score(), elevatorSubsystem.L4Score()
+            ScoringLevel.L4, Commands.sequence(
+            armSubsystem.L4Score(), elevatorSubsystem.L4MiniScore()
           ),
             ScoringLevel.L3, Commands.sequence(
             armSubsystem.L3Score(), elevatorSubsystem.L3Score()
           )
           // .onlyWhile(() -> elevatorSubsystem.elevatorGreaterThan(elevator working pose, 0))
+          //shut up im coding
         ),
         this::getLevel
       );
@@ -296,8 +304,14 @@ public class Manager extends SubsystemBase{
 
     //deploys the climber
     public Command climberOut(){
-      return Commands.sequence(runOnce(() -> { packageMode = PackageMode.climbed;}), armSubsystem.horizontal(),
-      run(() -> climberSubsystem.setPower(3.0)).onlyWhile(() -> climberSubsystem.checkClimberDeployed()).andThen(runOnce(() -> climberSubsystem.setPower(0.0)))
+      return Commands.sequence(
+      runOnce(() -> {packageMode = PackageMode.climbed;})
+      ,elevatorSubsystem.goToPackage()
+      ,armSubsystem.horizontal()
+      ,intakeSubsystem.intakeClimberOut()
+      ,run(() -> climberSubsystem.setPower(3.0))
+      .onlyWhile(() -> climberSubsystem.checkClimberDeployed())
+      .andThen(runOnce(() -> climberSubsystem.setPower(0.0)))
       ,elevatorSubsystem.climbDown());
     }
 

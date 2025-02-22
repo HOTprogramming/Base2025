@@ -122,6 +122,15 @@ public class Climber extends SubsystemBase {
     }
   }
 
+  public boolean checkClimberPackaged(){
+    if(stats.climberPosition < ClimberConstants.packageClicks){
+      return false;
+    }
+    else{
+      return true;
+    }
+  }
+
   @Override
   public void simulationPeriodic() {
   }
