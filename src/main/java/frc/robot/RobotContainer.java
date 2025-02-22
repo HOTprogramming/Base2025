@@ -71,6 +71,9 @@ public class RobotContainer {
     chooser.setDefaultOption("Auto", "Auto");
     chooser.addOption("goods", "REDR4Place&Pickup");
     chooser.addOption("First", "First");
+    chooser.addOption("Copy of First", "Copy of First"); 
+    chooser.addOption("Second", "Second"); 
+    chooser.addOption("Third", "Third");
     // chooser.addOption("Complex Auto", "m_complexAuto");
     
     NamedCommands.registerCommand("L1", gamespecManager.goToL1());

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 16.272750000000002,
-        "y": 0.9147499999999991
+        "x": 16.01,
+        "y": 7.4
       },
       "prevControl": null,
       "nextControl": {
-        "x": 16.15575,
-        "y": 1.1389999999999998
+        "x": 15.792939214468888,
+        "y": 7.275965265410791
       },
       "isLocked": false,
-      "linkedName": "Coral6"
+      "linkedName": "pickup2"
     },
     {
       "anchor": {
-        "x": 14.664000000000001,
-        "y": 3.8397499999999996
+        "x": 13.929713114754097,
+        "y": 5.367622950819673
       },
       "prevControl": {
-        "x": 14.839500000000001,
-        "y": 3.6154999999999995
+        "x": 14.049590163934427,
+        "y": 5.607377049180328
       },
       "nextControl": null,
       "isLocked": false,
@@ -37,18 +37,18 @@
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
-    "nominalVoltage": 12.0,
+    "nominalVoltage": 12.6,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0.9,
-    "rotation": -90.0
+    "rotation": -29.999999999999996
   },
   "reversed": false,
-  "folder": "Third",
+  "folder": "RedCoral4Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -145.0
+    "rotation": -35.0
   },
   "useDefaultConstraints": true
 }

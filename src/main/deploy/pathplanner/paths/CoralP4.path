@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 13.728000000000002,
-        "y": 2.5527499999999996
+        "x": 13.570081967213113,
+        "y": 2.8382172131147545
       },
       "prevControl": null,
       "nextControl": {
-        "x": 13.947473893228597,
-        "y": 2.4330369673298557
+        "x": 14.045233602499327,
+        "y": 2.4660946734137976
       },
       "isLocked": false,
-      "linkedName": "Coral3"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 0.7977499999999997
       },
       "prevControl": {
-        "x": 15.668250000000004,
-        "y": 1.0512499999999996
+        "x": 15.809972410360887,
+        "y": 1.016253613573245
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,26 +29,12 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.6233250620347401,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 6.0,
-        "maxAcceleration": 8.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 4.96,
+    "maxAcceleration": 6.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -59,10 +45,10 @@
     "rotation": -145.0
   },
   "reversed": false,
-  "folder": "RRed4",
+  "folder": "Third",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -150.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

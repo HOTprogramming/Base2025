@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 16.272750000000002,
-        "y": 0.9147499999999991
+        "x": 1.5943647540990307,
+        "y": 7.3935450819691075
       },
       "prevControl": null,
       "nextControl": {
-        "x": 16.15575,
-        "y": 1.1389999999999998
+        "x": 1.752012910371301,
+        "y": 7.199516581938948
       },
       "isLocked": false,
-      "linkedName": "Coral6"
+      "linkedName": "b1"
     },
     {
       "anchor": {
-        "x": 14.664000000000001,
-        "y": 3.8397499999999996
+        "x": 3.728176229508197,
+        "y": 5.391598360655737
       },
       "prevControl": {
-        "x": 14.839500000000001,
-        "y": 3.6154999999999995
+        "x": 3.560348360655738,
+        "y": 5.619364754098362
       },
       "nextControl": null,
       "isLocked": false,
@@ -37,18 +37,18 @@
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
-    "nominalVoltage": 12.0,
+    "nominalVoltage": 12.6,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0.9,
-    "rotation": -90.0
+    "rotation": 29.999999999999996
   },
   "reversed": false,
-  "folder": "Third",
+  "folder": "Second",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -145.0
+    "rotation": 35.0
   },
   "useDefaultConstraints": true
 }

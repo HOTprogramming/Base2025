@@ -84,6 +84,8 @@ public class Manager extends SubsystemBase{
         armSubsystem = new Arm(new ArmIOSim());
         manipulatorSubsystem = new Manipulator(new ManipulatorIOSim());
         climberSubsystem = new Climber(new ClimberIOSim());
+        intakeSubsystem = new Intake(new IntakeIOSim());
+
       } 
 
       scoringLevel = ScoringLevel.L1;
