@@ -14,6 +14,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix6.Utils;
@@ -161,6 +162,8 @@ public class Camera extends SubsystemBase {
     // docs https://docs.photonvision.org/ 
     private Drive drivetrain;
 
+    private boolean ignoring = false;
+
     public Camera(Drive drive) {
         SmartDashboard.putData("Left", fieldLeft);
         SmartDashboard.putData("Right", fieldRight);
@@ -214,6 +217,14 @@ public class Camera extends SubsystemBase {
                 lastEstTimestamps.put(CameraPositions.TOP, -1.0);
             photonPoseEstimators.put(CameraPositions.TOP, estimator);
         }
+    }
+
+    public Command setIgnore() {
+        return runOnce(() -> ignoring = true);
+    }
+
+    public Command setUnIgnore() {
+        return runOnce(() -> ignoring = false);
     }
 
     private Optional<EstimatedRobotPose> updateCameraMeasurment(CameraPositions key, CameraConstant constant, PhotonCamera camera, DoubleArrayPublisher publisher, PhotonPoseEstimator estimator, double lastEstTimestamp) {
@@ -277,26 +288,29 @@ public class Camera extends SubsystemBase {
         // robotState.putTargetsSeenByCamera(targetsSeenByCamera);
 
         cameraMeasurements.forEach((key,measurement) -> {
-            measurement.ifPresent(
-                est -> {
-                    // Change our trust in the measurement based on the tags we can see
-                    var estStdDevs = cameraStdDeviations.get(key);
+            // ignore top camera when aligning to reef
+            if (!(key == CameraPositions.TOP && ignoring)) {
+                measurement.ifPresent(
+                    est -> {
+                        // Change our trust in the measurement based on the tags we can see
+                        var estStdDevs = cameraStdDeviations.get(key);
 
-                    drivetrain.addVisionMeasurement(
-                            est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
-                    
-                    // SmartDashboard.putNumber(key + " X", est.estimatedPose.toPose2d().getX());
-                    // SmartDashboard.putNumber(key + " Y", est.estimatedPose.toPose2d().getY());
-                    // SmartDashboard.putNumber(key + " Rotation", est.estimatedPose.toPose2d().getRotation().getDegrees());
+                        drivetrain.addVisionMeasurement(
+                                est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+                        
+                        // SmartDashboard.putNumber(key + " X", est.estimatedPose.toPose2d().getX());
+                        // SmartDashboard.putNumber(key + " Y", est.estimatedPose.toPose2d().getY());
+                        // SmartDashboard.putNumber(key + " Rotation", est.estimatedPose.toPose2d().getRotation().getDegrees());
 
-                    if(key == CameraPositions.RIGHT){
-                        fieldRight.setRobotPose(est.estimatedPose.toPose2d()); 
-                    } else {
-                        fieldLeft.setRobotPose(est.estimatedPose.toPose2d()); 
-                    }
+                        if(key == CameraPositions.RIGHT){
+                            fieldRight.setRobotPose(est.estimatedPose.toPose2d()); 
+                        } else {
+                            fieldLeft.setRobotPose(est.estimatedPose.toPose2d()); 
+                        }
 
-                });
-        });
+                    });
+            }
+            });
         // robotState.setVisionMeasurements(cameraMeasurements);
         // robotState.setCameraStdDeviations(cameraStdDeviations);
     }
@@ -325,7 +339,7 @@ public class Camera extends SubsystemBase {
         for (PhotonTrackedTarget target : targets) {
             for (int id : CameraConstants.REEF_TAGS_RED) {
                 if (target.fiducialId == id && avgDist < 2) {
-                    // estStdDevs = VecBuilder.fill(0.25, 0.25, 2);
+                    estStdDevs = VecBuilder.fill(0.25, 0.25, 2);
                     drivetrain.tagTransform = new Pose3d()
                             .plus(target.getBestCameraToTarget())
                             .plus(constant.getTransform().inverse());
@@ -339,12 +353,17 @@ public class Camera extends SubsystemBase {
                     // SmartDashboard.putNumber("Tag Rotation", Units.radiansToDegrees(drivetrain.tagTransform.getRotation().getAngle()));
                 }
             }
+            for (int id : CameraConstants.IGNORE_ALWAYS) {
+                if (target.fiducialId == id) {
+                    estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+
+                }
+            }
         }
 
         if (numTags == 1 && avgDist > 2.75) {
             estStdDevs =VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
         }
-
         return estStdDevs;
     }    
 }
