@@ -264,13 +264,14 @@ public class Manager extends SubsystemBase{
     public Command autonShoot(){
       return new SelectCommand(
         Map.of(
-          ScoringLevel.L4, Commands.sequence(
-            armSubsystem.L4Score(), elevatorSubsystem.L4Score()
+            ScoringLevel.L4, Commands.sequence(
+            armSubsystem.L4Score(), elevatorSubsystem.L4MiniScore()
           ),
             ScoringLevel.L3, Commands.sequence(
             armSubsystem.L3Score(), elevatorSubsystem.L3Score()
           )
           // .onlyWhile(() -> elevatorSubsystem.elevatorGreaterThan(elevator working pose, 0))
+          //shut up im coding
         ),
         this::getLevel
       );
