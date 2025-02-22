@@ -267,31 +267,24 @@ public class Drive extends SubsystemBase {
         translationControllerY.reset(iOdata.state.Pose.getY());
         switch ((int) (60*Math.round(Math.toDegrees(Math.atan2(REEF_CENTER.getY() - iOdata.state.Pose.getY(), (DriverStation.getAlliance().get() == Alliance.Blue ? REEF_CENTER.getX(): REEF_CENTER.getX() + OFFSET_TO_RED) - iOdata.state.Pose.getX()))/60))) {
             case 0:
-                reefTarget = SIDE_0;
                 heading = Rotation2d.fromDegrees(0);
                 break;
             case 60:
-                reefTarget = SIDE_60;
                 heading = Rotation2d.fromDegrees(60);
                 break;
             case 120:
-                reefTarget = SIDE_120;
                 heading = Rotation2d.fromDegrees(120);
                 break;
             case -180:
-                reefTarget = SIDE_180;
                 heading = Rotation2d.fromDegrees(180);
                 break;
             case 180:
-                reefTarget = SIDE_180;
                 heading = Rotation2d.fromDegrees(180);
                 break;
             case -120:
-                reefTarget = SIDE_240;
                 heading = Rotation2d.fromDegrees(-120);
                 break;
             case -60:
-                reefTarget = SIDE_300;
                 heading = Rotation2d.fromDegrees(-60);
                 break;
         }
@@ -299,6 +292,49 @@ public class Drive extends SubsystemBase {
         reefTarget = curAlliance == Alliance.Blue ? bluePoses.get(heading) : redPoses.get(heading);
 
         double poleShift = curAlliance == Alliance.Blue ? blueShiftH.get(heading)[leftRight] : redShiftH.get(heading)[leftRight];
+
+        currentTarget = new Pose2d(
+            //                                               Pole shift                                                 Bumper shift
+            reefTarget.getX() - (reefTarget.getRotation().getSin() * Units.inchesToMeters(poleShift)) - (reefTarget.getRotation().getCos() * robotToReefTagFace),
+            reefTarget.getY() + (reefTarget.getRotation().getCos() * Units.inchesToMeters(poleShift)) - (reefTarget.getRotation().getSin() * robotToReefTagFace),
+            reefTarget.getRotation()
+        );
+        translationControllerX.calculate(iOdata.state.Pose.getX(), currentTarget.getX());
+        translationControllerY.calculate(iOdata.state.Pose.getY(), currentTarget.getY());
+        SmartDashboard.putNumberArray("Drive target pose", new double[] {currentTarget.getX(), currentTarget.getY(), currentTarget.getRotation().getRadians()});
+    }
+
+    public void updateReefTargetWBall(int leftRight) {
+        Alliance curAlliance = DriverStation.getAlliance().get();
+        translationControllerX.reset(iOdata.state.Pose.getX());
+        translationControllerY.reset(iOdata.state.Pose.getY());
+        switch ((int) (60*Math.round(Math.toDegrees(Math.atan2(REEF_CENTER.getY() - iOdata.state.Pose.getY(), (DriverStation.getAlliance().get() == Alliance.Blue ? REEF_CENTER.getX(): REEF_CENTER.getX() + OFFSET_TO_RED) - iOdata.state.Pose.getX()))/60))) {
+            case 0:
+                heading = Rotation2d.fromDegrees(0);
+                break;
+            case 60:
+                heading = Rotation2d.fromDegrees(60);
+                break;
+            case 120:
+                heading = Rotation2d.fromDegrees(120);
+                break;
+            case -180:
+                heading = Rotation2d.fromDegrees(180);
+                break;
+            case 180:
+                heading = Rotation2d.fromDegrees(180);
+                break;
+            case -120:
+                heading = Rotation2d.fromDegrees(-120);
+                break;
+            case -60:
+                heading = Rotation2d.fromDegrees(-60);
+                break;
+        }
+
+        reefTarget = curAlliance == Alliance.Blue ? bluePoses.get(heading) : redPoses.get(heading);
+
+        double poleShift = curAlliance == Alliance.Blue ? blueShiftBall.get(heading)[leftRight] : redShiftBall.get(heading)[leftRight];
 
         currentTarget = new Pose2d(
             //                                               Pole shift                                                 Bumper shift

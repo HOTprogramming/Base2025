@@ -74,7 +74,7 @@ public class ArmConstants {
         armGains = new MMGains(3000, 3000, 6500, 0.2, 0.0, 0.01, 0.025, 0.3);//Voltage
         simGearBox = DCMotor.getKrakenX60Foc(1);
         gravity = false;
-        armEncoderOffset = 0.14892578125;
+        armEncoderOffset = 0.14892578125 - 0.062744;
     
         PackageAngle = 0;
         FeederAngle = 50.8;
@@ -92,7 +92,7 @@ public class ArmConstants {
         L2Short = -20.6;
         L4Short = -22.5;
         IntakeAlgae = -56.0;
-        Processor = 14.3;
+        Processor = 35.0;
         GetAlgaeFromReef = 109;
 
     }
