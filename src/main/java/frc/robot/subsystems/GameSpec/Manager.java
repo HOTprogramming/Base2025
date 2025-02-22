@@ -260,6 +260,7 @@ public class Manager extends SubsystemBase{
             ScoringLevel.L3, Commands.sequence(
             armSubsystem.L3Score(), elevatorSubsystem.L3Score()
           )
+          // .onlyWhile(() -> elevatorSubsystem.elevatorGreaterThan(elevator working pose, 0))
         ),
         this::getLevel
       );
