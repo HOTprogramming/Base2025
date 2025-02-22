@@ -75,7 +75,7 @@ public class ArmConstants {
         armGains = new MMGains(0, 0, 0, 1.0, 0.0, 0.14, 0.0, 0.0);//Voltage
         simGearBox = DCMotor.getKrakenX60Foc(1);
         gravity = false;
-        armEncoderOffset = 0.14892578125;
+        armEncoderOffset = 0.08618178125;
     
         PackageAngle = 0;
         FeederAngle = 50.8;
@@ -88,7 +88,7 @@ public class ArmConstants {
         L2Score = -87.8;
         Horizontal = 90;
         Intermediate = -49.0;
-        CurrentFail = 17.0;
+        CurrentFail = 60.0;
         L3short = -20.6;
         L2Short = -20.6;
         L4Short = -22.5;
