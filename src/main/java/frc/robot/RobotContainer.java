@@ -181,11 +181,14 @@ public class RobotContainer {
           Math.abs(driver.getRightY()) >= 0.1 ? -driver.getRightY() : 0);
         }
       ));
-      // working
-      driver.b().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));
-      driver.x().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(0)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));
-      driver.a().onTrue(drivetrain.setCoast());
-      driver.y().onTrue(drivetrain.setBrake());
+      // b right y middle x left
+      driver.b().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTargetWBall(2)), cameraSubsystem.setIgnore()), drivetrain.run(() -> drivetrain.alignReefFieldcentric()))).onFalse(cameraSubsystem.setUnIgnore());
+      driver.y().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTargetWBall(1)), cameraSubsystem.setIgnore()), drivetrain.run(() -> drivetrain.alignReefFieldcentric()))).onFalse(cameraSubsystem.setUnIgnore());
+      driver.x().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTargetWBall(0)), cameraSubsystem.setIgnore()), drivetrain.run(() -> drivetrain.alignReefFieldcentric()))).onFalse(cameraSubsystem.setUnIgnore());
+
+      // driver.b().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));      
+      // driver.x().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(0)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));      
+
 
       // driver.b().whileTrue(NamedCommands.getCommand("Align Reef Left"));
       // driver.x().whileTrue(NamedCommands.getCommand("Align Reef Right"));

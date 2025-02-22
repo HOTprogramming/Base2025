@@ -76,7 +76,7 @@ public class ManipulatorConstants {
       algaePackage = 0;
 
       algaeIntakeVoltage = -8.0;
-      algaeExpelVoltage = 10.0;
+      algaeExpelVoltage = 16.0;
     }
 
     private static void practiceBotConstants(){
