@@ -253,6 +253,23 @@ public class Manager extends SubsystemBase{
       );
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public Command autonShoot(){
+      return new SelectCommand(
+        Map.of(
+          ScoringLevel.L4, Commands.sequence(
+            armSubsystem.L4Score(), elevatorSubsystem.L4Score()
+          ),
+            ScoringLevel.L3, Commands.sequence(
+            armSubsystem.L3Score(), elevatorSubsystem.L3Score()
+          )
+          // .onlyWhile(() -> elevatorSubsystem.elevatorGreaterThan(elevator working pose, 0))
+        ),
+        this::getLevel
+      );
+    }
+
+
     public Command alignStationIntake(){
       return Commands.parallel(
         Commands.deadline(manipulatorSubsystem.intake(), armSubsystem.goToFeeder())

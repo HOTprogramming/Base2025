@@ -127,7 +127,7 @@ public abstract class ManipulatorIO {
 
             cfg.Feedback.SensorToMechanismRatio = 1; //changes what the cancoder and fx encoder ratio is
             cfg.Feedback.RotorToSensorRatio = 1; //12.8;
-            cfg.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+            cfg.MotorOutput.NeutralMode = NeutralModeValue.Brake;
             cfg.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
             cfg.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
             cfg.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;

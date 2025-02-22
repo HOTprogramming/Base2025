@@ -3,6 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot;
 
+import static edu.wpi.first.units.Units.derive;
+
 import java.util.Map;
 
 import com.ctre.phoenix6.Utils;
@@ -68,6 +70,7 @@ public class RobotContainer {
 
     chooser.setDefaultOption("Auto", "Auto");
     chooser.addOption("goods", "REDR4Place&Pickup");
+    chooser.addOption("First", "First");
     // chooser.addOption("Complex Auto", "m_complexAuto");
     
     NamedCommands.registerCommand("L1", gamespecManager.goToL1());
@@ -93,6 +96,19 @@ public class RobotContainer {
     NamedCommands.registerCommand("stop intake", gamespecManager.algaeStopIntake());
     NamedCommands.registerCommand("L2 Package", gamespecManager.goToL2Package());
     NamedCommands.registerCommand("Floor Intake Package", gamespecManager.floorIntakePackage());
+
+
+    NamedCommands.registerCommand("Align Reef Left",  drivetrain.autonAlignReefCommand(0));
+    NamedCommands.registerCommand("Align Reef Right",  drivetrain.autonAlignReefCommand(1));
+
+    NamedCommands.registerCommand("Auton Shoot",  gamespecManager.autonShoot());
+
+    //new EventTrigger("Package").whileTrue(gamespecManager.goToPackage());
+
+
+    // must make a runonce command using a functional command interface
+    // NamedCommands.registerCommand("Auton Align Left",  drivetrain.run(() -> drivetrain.alignReef(0)));
+    // NamedCommands.registerCommand("Auton Align Right", drivetrain.run(() -> drivetrain.alignReef(1)));
 
     mode = Mode.coral;
 
@@ -165,10 +181,18 @@ public class RobotContainer {
           Math.abs(driver.getRightY()) >= 0.1 ? -driver.getRightY() : 0);
         }
       ));
-  
-      driver.x().onTrue(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1))).whileTrue(drivetrain.run(() -> drivetrain.alignReef()).onlyWhile(drivetrain::notAtTarget));  
-      driver.b().onTrue(drivetrain.runOnce(() -> drivetrain.updateReefTarget(-1))).whileTrue(drivetrain.run(() -> drivetrain.alignReef()).onlyWhile(drivetrain::notAtTarget)); 
-      driver.b().onTrue(NamedCommands.getCommand("expel"));
+      // b right y middle x left
+      driver.b().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTargetWBall(2)), cameraSubsystem.setIgnore()), drivetrain.run(() -> drivetrain.alignReefFieldcentric()))).onFalse(cameraSubsystem.setUnIgnore());
+      driver.y().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTargetWBall(1)), cameraSubsystem.setIgnore()), drivetrain.run(() -> drivetrain.alignReefFieldcentric()))).onFalse(cameraSubsystem.setUnIgnore());
+      driver.x().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTargetWBall(0)), cameraSubsystem.setIgnore()), drivetrain.run(() -> drivetrain.alignReefFieldcentric()))).onFalse(cameraSubsystem.setUnIgnore());
+
+      // driver.b().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));      
+      // driver.x().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(0)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));      
+
+
+      // driver.b().whileTrue(NamedCommands.getCommand("Align Reef Left"));
+      // driver.x().whileTrue(NamedCommands.getCommand("Align Reef Right"));
+      // driver.b().onTrue(NamedCommands.getCommand("expel"));
       driver.rightTrigger().onTrue(NamedCommands.getCommand("shoot")
       .onlyIf(operator.b().or(operator.a()).or(operator.x()).or(operator.y())))
       .onFalse(NamedCommands.getCommand("cancel shoot")

@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.*;
 
 import java.security.PublicKey;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -28,7 +29,7 @@ public class DriveConstants {
 
     public static final double OTF_end_tolerance = 0.2;
 
-    private static final PIDConstants autoPidConstantsTranslation = new PIDConstants(10, 0, 0);
+    private static final PIDConstants autoPidConstantsTranslation = new PIDConstants(5, 0, 0);
     private static final PIDConstants autoPidConstantsTheta = new PIDConstants (7, 0, 0); 
     private static final PIDConstants teleopPidConstantsTheta = new PIDConstants (10, 0, 0.5); 
     // Theoretical free speed (m/s) at 12 V applied output;
@@ -41,57 +42,101 @@ public class DriveConstants {
         kSpeedAt12Volts.in(MetersPerSecond) * 0.25,
         kSpeedAt12Volts.in(MetersPerSecond));
 
-    public enum ReefPoses {
-        AB,
-        CD,
-        EF,
-        GH,
-        IJ,
-        KL
-    }
-
-    public static final Map<ReefPoses, Pose2d> redPoses = new EnumMap<>(ReefPoses.class) {
+    public static final Map<Rotation2d, Pose2d> redPoses = new HashMap<>() {
         {
-            put(ReefPoses.GH, new Pose2d(11.89, 4.005, Rotation2d.fromDegrees(0)));
-            put(ReefPoses.IJ, new Pose2d(12.50, 3.02, Rotation2d.fromDegrees(60)));
-            put(ReefPoses.KL, new Pose2d(13.712, 3.04, Rotation2d.fromDegrees(120)));
-            put(ReefPoses.AB, new Pose2d(14.25, 4.06, Rotation2d.fromDegrees(180)));
-            put(ReefPoses.CD, new Pose2d(13.63, 5.050, Rotation2d.fromDegrees(-120)));
-            put(ReefPoses.EF, new Pose2d(12.445, 5.018, Rotation2d.fromDegrees(-60))); 
+            put(Rotation2d.fromDegrees(0), new Pose2d(12.23, 4.03, Rotation2d.fromDegrees(0)));
+            put(Rotation2d.fromDegrees(60), new Pose2d(12.64, 3.31, Rotation2d.fromDegrees(60)));
+            put(Rotation2d.fromDegrees(120), new Pose2d(13.47, 3.31, Rotation2d.fromDegrees(120)));
+            put(Rotation2d.fromDegrees(180), new Pose2d(13.89, 4.03, Rotation2d.fromDegrees(180)));
+            put(Rotation2d.fromDegrees(-120), new Pose2d(13.47, 4.75, Rotation2d.fromDegrees(-120)));
+            put(Rotation2d.fromDegrees(-60), new Pose2d(12.64, 4.75, Rotation2d.fromDegrees(-60))); 
         }
     };
-    public static final Map<ReefPoses, Pose2d> bluePoses = new EnumMap<>(ReefPoses.class) {
+    public static final Map<Rotation2d, Pose2d> bluePoses = new HashMap<>() {
         {
-            put(ReefPoses.AB, new Pose2d(3.165, 4.005, Rotation2d.fromDegrees(0)));
-            put(ReefPoses.CD, new Pose2d(3.877, 3.01, Rotation2d.fromDegrees(60)));
-            put(ReefPoses.EF, new Pose2d(5.155, 3.01, Rotation2d.fromDegrees(120)));
-            put(ReefPoses.GH, new Pose2d(5.647, 4.005, Rotation2d.fromDegrees(180)));
-            put(ReefPoses.IJ, new Pose2d(5.155, 5.040, Rotation2d.fromDegrees(-120)));
-            put(ReefPoses.KL, new Pose2d(3.877, 5.040, Rotation2d.fromDegrees(-60))); 
+            put(Rotation2d.fromDegrees(0), new Pose2d(3.165, 4.005, Rotation2d.fromDegrees(0)));
+            put(Rotation2d.fromDegrees(60), new Pose2d(3.877, 3.01, Rotation2d.fromDegrees(60)));
+            put(Rotation2d.fromDegrees(120), new Pose2d(5.155, 3.01, Rotation2d.fromDegrees(120)));
+            put(Rotation2d.fromDegrees(180), new Pose2d(5.647, 4.005, Rotation2d.fromDegrees(180)));
+            put(Rotation2d.fromDegrees(-120), new Pose2d(5.155, 5.040, Rotation2d.fromDegrees(-120)));
+            put(Rotation2d.fromDegrees(-60), new Pose2d(3.877, 5.040, Rotation2d.fromDegrees(-60))); 
         }
     };
 
-    public static final Map<ReefPoses, Double[]> redShift = new EnumMap<>(ReefPoses.class) {
+    public static final Map<Integer, Double[]> redShift = new HashMap<>() {
         {
-            put(ReefPoses.AB, new Double[] {6.0, -6.0});
-            put(ReefPoses.CD, new Double[] {6.0, -6.0});
-            put(ReefPoses.EF, new Double[] {6.0, -6.0});
-            put(ReefPoses.GH, new Double[] {6.0, -6.0});
-            put(ReefPoses.IJ, new Double[] {6.0, -6.0});
-            put(ReefPoses.KL, new Double[] {6.0, -6.0});
+            put(6, new Double[] {6.0, -6.0});
+            put(7, new Double[] {6.0, -6.0});
+            put(8, new Double[] {6.0, -6.0});
+            put(9, new Double[] {6.0, -6.0});
+            put(10, new Double[] {6.0, -6.0});
+            put(11, new Double[] {6.0, -6.0});
+
         }
     };
 
-    public static final Map<ReefPoses, Double[]> blueShift = new EnumMap<>(ReefPoses.class) {
+    public static final Map<Rotation2d, Double[]> blueShift = new HashMap<>() {
         {
-            put(ReefPoses.AB, new Double[] {6.0, -6.0});
-            put(ReefPoses.CD, new Double[] {6.0, -6.0});
-            put(ReefPoses.EF, new Double[] {6.0, -6.0});
-            put(ReefPoses.GH, new Double[] {6.0, -6.0});
-            put(ReefPoses.IJ, new Double[] {6.0, -6.0});
-            put(ReefPoses.KL, new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(0), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(60), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(120), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(180), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -6.0});
         }
     };
+
+    public static final Map<Rotation2d, Double[]> redShiftH = new HashMap<>() {
+        {
+            put(Rotation2d.fromDegrees(0), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(60), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(120), new Double[] {6.0, -6.5});
+            put(Rotation2d.fromDegrees(180), new Double[] {6.0, -7.0});
+            put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -7.0});
+            put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -6.5});
+        }
+    };
+
+    public static final Map<Rotation2d, Double[]> redShiftBall = new HashMap<>() {
+        {
+            put(Rotation2d.fromDegrees(0), new Double[] {6.0, -1.6, -6.0});
+            put(Rotation2d.fromDegrees(60), new Double[] {6.0, -1.6,  -6.0});
+            put(Rotation2d.fromDegrees(120), new Double[] {6.0, -1.6, -6.5});
+            put(Rotation2d.fromDegrees(180), new Double[] {6.0, -1.6, -6.0});
+            put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -1.6, -6.5});
+            put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -1.6, -6.5});
+        }
+    };
+
+    public static final Map<Rotation2d, Double[]> blueShiftBall = new HashMap<>() {
+        {
+            put(Rotation2d.fromDegrees(0), new Double[] {6.0, 0.0, -6.0});
+            put(Rotation2d.fromDegrees(60), new Double[] {6.0, 0.0,  -6.0});
+            put(Rotation2d.fromDegrees(120), new Double[] {6.0, 0.0, -6.0});
+            put(Rotation2d.fromDegrees(180), new Double[] {6.0, 0.0, -6.0});
+            put(Rotation2d.fromDegrees(-120), new Double[] {6.0, 0.0, -6.0});
+            put(Rotation2d.fromDegrees(-60), new Double[] {6.0, 0.0, -6.0});
+        }
+    };
+    // put(Rotation2d.fromDegrees(0), new Double[] {6.0, 0.0, -6.0});
+    //         put(Rotation2d.fromDegrees(60), new Double[] {6.0, 0.0,  -6.0});
+    //         put(Rotation2d.fromDegrees(120), new Double[] {6.0, 0.0, -6.5});
+    //         put(Rotation2d.fromDegrees(180), new Double[] {6.0, 0.0, -7.0});
+    //         put(Rotation2d.fromDegrees(-120), new Double[] {6.0, 0.0, -7.0});
+    //         put(Rotation2d.fromDegrees(-60), new Double[] {6.0, 0.0, -6.5});
+
+    public static final Map<Rotation2d, Double[]> blueShiftH = new HashMap<>() {
+        {
+            put(Rotation2d.fromDegrees(0), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(60), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(120), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(180), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -6.0});
+            put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -6.0});
+        }
+    };
+
+    public static final double robotToReefTagFace = 0.39;
 
 
 
@@ -475,22 +520,22 @@ public class DriveConstants {
 
 
     public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontLeftCompbot =
-        ConstantCreator.createModuleConstants(
+        ConstantCreatorCompbot.createModuleConstants(
             kFrontLeftSteerMotorIdCompbot, kFrontLeftDriveMotorIdCompbot, kFrontLeftEncoderIdCompbot, kFrontLeftEncoderOffsetCompbot,
             kFrontLeftXPosCompbot, kFrontLeftYPosCompbot, kInvertLeftSide, kFrontLeftSteerMotorInvertedCompbot, kFrontLeftEncoderInvertedCompbot
         );
     public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontRightCompbot =
-        ConstantCreator.createModuleConstants(
+        ConstantCreatorCompbot.createModuleConstants(
             kFrontRightSteerMotorIdCompbot, kFrontRightDriveMotorIdCompbot, kFrontRightEncoderIdCompbot, kFrontRightEncoderOffsetCompbot,
             kFrontRightXPosCompbot, kFrontRightYPosCompbot, kInvertRightSide, kFrontRightSteerMotorInvertedCompbot, kFrontRightEncoderInvertedCompbot
         );
     public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> BackLeftCompbot =
-        ConstantCreator.createModuleConstants(
+        ConstantCreatorCompbot.createModuleConstants(
             kBackLeftSteerMotorIdCompbot, kBackLeftDriveMotorIdCompbot, kBackLeftEncoderIdCompbot, kBackLeftEncoderOffsetCompbot,
             kBackLeftXPosCompbot, kBackLeftYPosCompbot, kInvertLeftSide, kBackLeftSteerMotorInvertedCompbot, kBackLeftEncoderInvertedCompbot
         );
     public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> BackRightCompbot =
-        ConstantCreator.createModuleConstants(
+        ConstantCreatorCompbot.createModuleConstants(
             kBackRightSteerMotorIdCompbot, kBackRightDriveMotorIdCompbot, kBackRightEncoderIdCompbot, kBackRightEncoderOffsetCompbot,
             kBackRightXPosCompbot, kBackRightYPosCompbot, kInvertRightSide, kBackRightSteerMotorInvertedCompbot, kBackRightEncoderInvertedCompbot
         );

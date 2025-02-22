@@ -2,6 +2,7 @@ package frc.robot.subsystems.Drivetrain;
 
 
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.Matrix;
@@ -71,4 +72,6 @@ public interface DriveIO {
     default void updateVision(Pose2d calculatedPose, double timestamp, Matrix<N3, N1> stDevs) {}
 
     default void setOperatorPerspective(Rotation2d rotation2d) {}
+
+    default void setNeutralMode(NeutralModeValue neutralModeValue) {}
 }

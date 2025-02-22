@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 16.15485197368421,
-        "y": 7.01735197368421
+        "x": 16.25325,
+        "y": 7.115749999999999
       },
       "prevControl": null,
       "nextControl": {
-        "x": 15.310850013638058,
-        "y": 6.3359670683490315
+        "x": 15.40924803995385,
+        "y": 6.4343650946648205
       },
       "isLocked": false,
       "linkedName": "REDPick2"
     },
     {
       "anchor": {
-        "x": 13.941858552631578,
-        "y": 5.218092105263159
+        "x": 14.020500000000002,
+        "y": 5.350999999999999
       },
       "prevControl": {
-        "x": 14.551201901572563,
-        "y": 5.685902443758353
+        "x": 14.629843348940987,
+        "y": 5.818810338495194
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,6 +30,19 @@
   ],
   "rotationTargets": [],
   "constraintZones": [
+    {
+      "name": "Test",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.6,
+        "unlimited": false
+      }
+    },
     {
       "name": "Constraints Zone",
       "minWaypointRelativePos": 0.5080213903743316,
@@ -56,13 +69,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -119.99999999999999
+    "rotation": -32.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "LRed4",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -125.00000000000001
+    "rotation": -35.0
   },
   "useDefaultConstraints": true
 }

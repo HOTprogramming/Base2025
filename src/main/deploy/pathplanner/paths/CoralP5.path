@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 15.962417763157895,
-        "y": 0.8883223684210532
+        "x": 16.116750000000003,
+        "y": 0.7977499999999997
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.656692676488753,
-        "y": 1.9286294879184056
+        "x": 14.811024913330861,
+        "y": 1.838057119497352
       },
       "isLocked": false,
       "linkedName": "Coral4"
     },
     {
       "anchor": {
-        "x": 13.643585526315787,
-        "y": 2.6779605263157897
+        "x": 13.962,
+        "y": 2.728249999999999
       },
       "prevControl": {
-        "x": 14.568880770895834,
-        "y": 1.9301920332932432
+        "x": 14.887295244580047,
+        "y": 1.9804815069774526
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,8 +47,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 6.0,
-    "maxAcceleration": 8.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -56,13 +56,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -59.99999999999999
+    "rotation": -150.0
   },
   "reversed": false,
-  "folder": "RedCoral4Right",
+  "folder": "RRed4",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -55.0
+    "rotation": -145.0
   },
   "useDefaultConstraints": false
 }
