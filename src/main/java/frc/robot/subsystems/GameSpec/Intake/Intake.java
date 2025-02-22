@@ -117,10 +117,11 @@ public class Intake extends SubsystemBase {
   }
 
   public Command goToPackage(){
-    return intakeCommand(IntakeConstants.intakePackage);
+    return runOnce(() -> {
+      intakeCommandedPos.setDouble(IntakeConstants.intakePackage);
+      io.setIntakeMotorControl(IntakeConstants.intakePackage);
+  });
   }
-
-
 
   public Command stop(){
     return run(() -> {
