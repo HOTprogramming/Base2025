@@ -16,6 +16,7 @@ public class ClimberConstants {
     public static double climberServoLockPos;
     public static double climberServoOpenPos;
     public static double targetClicks;
+    public static double packageClicks;
 
     public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
 
@@ -50,6 +51,7 @@ public class ClimberConstants {
         climberServoLockPos = 0.50;
         climberServoOpenPos = 0.16;
         targetClicks = 80.0;
+        packageClicks = 5.0;
         climberGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
 
     }

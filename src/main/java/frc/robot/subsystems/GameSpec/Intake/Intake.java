@@ -87,6 +87,10 @@ public class Intake extends SubsystemBase {
   });
   }
 
+  public Command intakeClimberOut(){
+    return intakeCommand(IntakeConstants.climberOut);
+  }
+
   public Command runIntakeAlgae(){
     return runOnce(() -> {
       intakeRollerSpeed.setDouble(IntakeConstants.rollerIntakeVoltage);
@@ -113,10 +117,11 @@ public class Intake extends SubsystemBase {
   }
 
   public Command goToPackage(){
-    return intakeCommand(IntakeConstants.intakePackage);
+    return runOnce(() -> {
+      intakeCommandedPos.setDouble(IntakeConstants.intakePackage);
+      io.setIntakeMotorControl(IntakeConstants.intakePackage);
+  });
   }
-
-
 
   public Command stop(){
     return run(() -> {
