@@ -110,12 +110,12 @@ public class Manager extends SubsystemBase{
           PackageMode.notClimbed, Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
           .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()))),
           PackageMode.climbed, Commands.sequence(
-          run(() -> climberSubsystem.setPower(-3.0))
-          .onlyWhile(() -> climberSubsystem.checkClimberPackaged())
-          .andThen(runOnce(() -> climberSubsystem.setPower(0.0)))
-          ,intakeSubsystem.goToPackage()
-          ,elevatorSubsystem.goToPackage()
-          ,armSubsystem.goToPackage()
+          // run(() -> climberSubsystem.setPower(-3.0))
+          // .onlyWhile(() -> climberSubsystem.checkClimberPackaged())
+          // .andThen(runOnce(() -> climberSubsystem.setPower(0.0)))
+          // ,intakeSubsystem.goToPackage()
+          // ,elevatorSubsystem.goToPackage()
+          // ,armSubsystem.goToPackage()
           )
           ),
         this::getPackageMode
@@ -277,6 +277,18 @@ public class Manager extends SubsystemBase{
         ),
         this::getLevel
       );
+    }
+
+    public Command autonL4() {
+      return Commands.parallel(runOnce(() -> {scoringLevel = ScoringLevel.L4;}), elevatorSubsystem.goToL4());
+    }
+
+    public Command autonIntake() {
+      return Commands.parallel(Commands.deadline(manipulatorSubsystem.intake(), armSubsystem.goToFeeder()), elevatorSubsystem.goToFeeder());
+    }
+
+    public Command autonFinishIntake() {
+      return armSubsystem.goToPackage();
     }
 
 

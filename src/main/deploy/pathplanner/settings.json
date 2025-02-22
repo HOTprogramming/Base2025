@@ -9,11 +9,12 @@
     "First",
     "FloorPickupRotation",
     "LRed4",
-    "Third",
+    "BlueR3",
     "Red1",
     "RedCoral4Left",
     "Second",
-    "Slow"
+    "Slow",
+    "Third"
   ],
   "autoFolders": [
     "Tests"

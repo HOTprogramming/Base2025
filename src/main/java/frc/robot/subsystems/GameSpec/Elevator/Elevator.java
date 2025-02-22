@@ -133,7 +133,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public Command L4MiniScore(){
-    return elevatorCommand(ElevatorConstants.L4ScoreHeight);
+    return elevatorCommand(ElevatorConstants.L4MiniScoreHeight);
   }
 
   public Command goToHighAlgae(){

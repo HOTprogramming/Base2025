@@ -103,7 +103,7 @@ public class ElevatorConstants {
         L2ScoreHeight = 9.2;
         HPHeight = 17.0;
         climbHeight = 1.4;
-
+        L4MiniScoreHeight = 40.0;
     }
 
     private static void simBotConstants(){
