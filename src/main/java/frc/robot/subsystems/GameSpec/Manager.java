@@ -253,10 +253,10 @@ public class Manager extends SubsystemBase{
       return new SelectCommand(
         Map.of(
             ScoringLevel.L4, Commands.sequence(
-            armSubsystem.L4Score(), elevatorSubsystem.L4MiniScore()
+            Commands.parallel(armSubsystem.L4Score(), manipulatorSubsystem.goScore()), elevatorSubsystem.L4MiniScore()
           ),
             ScoringLevel.L3, Commands.sequence(
-            armSubsystem.L3Score(), elevatorSubsystem.L3Score()
+            Commands.parallel(armSubsystem.L3Score(), manipulatorSubsystem.goScore()), elevatorSubsystem.L3Score()
           )
           // .onlyWhile(() -> elevatorSubsystem.elevatorGreaterThan(elevator working pose, 0))
           //shut up im coding
