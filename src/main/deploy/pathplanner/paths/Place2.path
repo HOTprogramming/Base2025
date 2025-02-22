@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 12.43125,
-        "y": 5.331659836065573
+        "x": 13.582069672131148,
+        "y": 5.223770491803278
       },
       "prevControl": {
-        "x": 13.073977541052262,
-        "y": 5.594279941766645
+        "x": 14.22479721318341,
+        "y": 5.48639059750435
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -55.0
+    "rotation": -29.999999999999996
   },
   "reversed": false,
   "folder": "RedCoral4Left",

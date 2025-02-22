@@ -31,12 +31,6 @@
                 "data": {
                   "name": "Auton Shoot"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Package"
-                }
               }
             ]
           }
@@ -56,9 +50,15 @@
                 "data": {
                   "commands": [
                     {
+                      "type": "named",
+                      "data": {
+                        "name": "Package"
+                      }
+                    },
+                    {
                       "type": "wait",
                       "data": {
-                        "waitTime": 1.0
+                        "waitTime": 0.7
                       }
                     },
                     {
@@ -93,6 +93,87 @@
                 "type": "named",
                 "data": {
                   "name": "L3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Auton Shoot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Pickup2"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Package"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.2
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "align station intake"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Place3"
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Align Reef Left"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Auton Shoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Package"
                 }
               }
             ]
