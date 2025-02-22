@@ -12,6 +12,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -28,7 +29,7 @@ public abstract class ArmIO {
 
     // Protected TalonFX object accessible to subclasses
     protected TalonFX arm;
-    protected MotionMagicVoltage armMagic;
+    protected PositionTorqueCurrentFOC armControl;
     protected CANcoder armCancoder;
 
     public static class ArmIOStats {
@@ -62,7 +63,7 @@ public abstract class ArmIO {
         this.arm = new TalonFX(ArmConstants.armMotorID, "robot");
         this.armCancoder = new CANcoder(ArmConstants.armEncoderID, "robot");
 
-        armMagic = new MotionMagicVoltage(0);
+        armControl = new PositionTorqueCurrentFOC(0);
         cfg = new TalonFXConfiguration();
         encoderCfg = new CANcoderConfiguration();
 
@@ -169,7 +170,7 @@ public abstract class ArmIO {
 
     /** Apply motion magic control mode */
     public void setArmMotorControl(double commandedPosition) {
-        arm.setControl(armMagic.withPosition(commandedPosition).withSlot(0));
+        arm.setControl(armControl.withPosition(commandedPosition).withSlot(0));
     }
 
     /** Stop motor */
