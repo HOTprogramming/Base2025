@@ -228,8 +228,8 @@ public class RobotContainer {
       operator.rightTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("intake")).onFalse(NamedCommands.getCommand("stop intake"));
 
       operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
-      operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));
-      operator.y().and(this::isClimb).onTrue(NamedCommands.getCommand("open fingers"));
+      operator.y().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));
+      operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("open fingers"));
       //operator.b().and(this::isClimb).onTrue(NamedCommands.getCommand("Climber Package"));
 
       operator.axisLessThan(5, -0.05).or(operator.axisGreaterThan(5, 0.05)).and(this::isClimb).whileTrue(
