@@ -228,7 +228,7 @@ public class Manager extends SubsystemBase{
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
             .andThen(goToL1().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail))))),
           ScoringLevel.Algae, manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeExpelVoltage),
-          ScoringLevel.Barge, manipulatorSubsystem.algaeVoltage(12.0)
+          ScoringLevel.Barge, manipulatorSubsystem.algaeVoltage(16.0)
         ),
         this::getLevel
       );
@@ -332,7 +332,8 @@ public class Manager extends SubsystemBase{
       return Commands.sequence(elevatorSubsystem.goToFloorIntake()
       ,armSubsystem.horizontal()
       ,intakeSubsystem.goToPackage()
-      ,Commands.parallel(armSubsystem.goToPackage(), elevatorSubsystem.goToPackage()));
+      ,Commands.parallel(Commands.waitSeconds(0.2).andThen(armSubsystem.goToPackage())
+      ,elevatorSubsystem.goToPackage()));
     }
 
     public Command algaePackage(){
