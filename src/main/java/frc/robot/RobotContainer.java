@@ -283,6 +283,8 @@ public class RobotContainer {
         autoCommand = new PathPlannerAuto(autoString);
 
       }
+    } else {
+      autoString = chooser.getSelected();
     }
   }
 
