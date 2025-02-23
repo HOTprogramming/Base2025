@@ -54,12 +54,12 @@ public class DriveConstants {
     };
     public static final Map<Rotation2d, Pose2d> bluePoses = new HashMap<>() {
         {
-            put(Rotation2d.fromDegrees(0), new Pose2d(3.165, 4.005, Rotation2d.fromDegrees(0)));
-            put(Rotation2d.fromDegrees(60), new Pose2d(3.877, 3.01, Rotation2d.fromDegrees(60)));
-            put(Rotation2d.fromDegrees(120), new Pose2d(5.155, 3.01, Rotation2d.fromDegrees(120)));
-            put(Rotation2d.fromDegrees(180), new Pose2d(5.647, 4.005, Rotation2d.fromDegrees(180)));
-            put(Rotation2d.fromDegrees(-120), new Pose2d(5.155, 5.040, Rotation2d.fromDegrees(-120)));
-            put(Rotation2d.fromDegrees(-60), new Pose2d(3.877, 5.040, Rotation2d.fromDegrees(-60))); 
+            put(Rotation2d.fromDegrees(0), new Pose2d(3.66, 4.03, Rotation2d.fromDegrees(0)));
+            put(Rotation2d.fromDegrees(60), new Pose2d(4.07, 3.31, Rotation2d.fromDegrees(60)));
+            put(Rotation2d.fromDegrees(120), new Pose2d(4.9, 3.31, Rotation2d.fromDegrees(120)));
+            put(Rotation2d.fromDegrees(180), new Pose2d(5.32, 4.03, Rotation2d.fromDegrees(180)));
+            put(Rotation2d.fromDegrees(-120), new Pose2d(4.90, 4.75, Rotation2d.fromDegrees(-120)));
+            put(Rotation2d.fromDegrees(-60), new Pose2d(4.07,4.75, Rotation2d.fromDegrees(-60))); 
         }
     };
 
@@ -110,12 +110,12 @@ public class DriveConstants {
 
     public static final Map<Rotation2d, Double[]> blueShiftBall = new HashMap<>() {
         {
-            put(Rotation2d.fromDegrees(0), new Double[] {6.0, 0.0, -6.0});
-            put(Rotation2d.fromDegrees(60), new Double[] {6.0, 0.0,  -6.0});
-            put(Rotation2d.fromDegrees(120), new Double[] {6.0, 0.0, -6.0});
-            put(Rotation2d.fromDegrees(180), new Double[] {6.0, 0.0, -6.0});
-            put(Rotation2d.fromDegrees(-120), new Double[] {6.0, 0.0, -6.0});
-            put(Rotation2d.fromDegrees(-60), new Double[] {6.0, 0.0, -6.0});
+            put(Rotation2d.fromDegrees(0), new Double[] {6.0, -1.6, -6.0});
+            put(Rotation2d.fromDegrees(60), new Double[] {6.0, -1.6,  -6.0});
+            put(Rotation2d.fromDegrees(120), new Double[] {6.0, -1.6, -6.0});
+            put(Rotation2d.fromDegrees(180), new Double[] {6.0, -1.6, -6.0});
+            put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -1.6, -6.0});
+            put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -1.6, -6.0});
         }
     };
     // put(Rotation2d.fromDegrees(0), new Double[] {6.0, 0.0, -6.0});
