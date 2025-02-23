@@ -226,7 +226,7 @@ public class Manager extends SubsystemBase{
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
             .andThen(goToL1().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail))))),
           ScoringLevel.Algae, manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeExpelVoltage),
-          ScoringLevel.Barge, manipulatorSubsystem.algaeVoltage(12.0)
+          ScoringLevel.Barge, manipulatorSubsystem.algaeVoltage(16.0)
         ),
         this::getLevel
       );
