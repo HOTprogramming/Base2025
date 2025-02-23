@@ -275,11 +275,6 @@ public class RobotContainer {
       //      .whileTrue(gamespecManager.L3());
 
   public Command getAutonomousCommand() {
-    Timer timer = new Timer();
-    timer.start();
-    String autoName = chooser.getSelected();
-    timer.stop();
-    System.err.println(timer.get());
     return new PathPlannerAuto(autoName).finallyDo(() -> System.out.println("ENDED AUTO COMMAND"));
   }
 }
