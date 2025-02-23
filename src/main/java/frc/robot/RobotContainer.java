@@ -36,6 +36,8 @@ import frc.robot.subsystems.Drivetrain.DriveKraken;
 public class RobotContainer {
 
   private SendableChooser<String> chooser = new SendableChooser<>();
+  private Command autoCommand;
+  private String autoString;
 
   private Drive drivetrain;
   private Camera cameraSubsystem;
@@ -274,12 +276,17 @@ public class RobotContainer {
         //      operator.leftTrigger().and(operator.y())
       //      .whileTrue(gamespecManager.L3());
 
+  public void updateAutonCommand() {
+    if (autoString != null) {
+      if (chooser.getSelected() != autoString) {
+        autoString = chooser.getSelected();
+        autoCommand = new PathPlannerAuto(autoString);
+
+      }
+    }
+  }
+
   public Command getAutonomousCommand() {
-    Timer timer = new Timer();
-    timer.start();
-    String autoName = chooser.getSelected();
-    timer.stop();
-    System.err.println(timer.get());
-    return new PathPlannerAuto(autoName).finallyDo(() -> System.out.println("ENDED AUTO COMMAND"));
+    return autoCommand.finallyDo(() -> System.out.println("ENDED AUTO COMMAND"));
   }
 }
