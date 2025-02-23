@@ -75,8 +75,8 @@ public class ElevatorConstants {
         lowAlgae = 17;
         BargeHeight = 68.5;
         ProcessorHeight = 14.0;
-        FloorIntakeHeight = 20.0;
-        FloorIntakeGrabHeight = 15.0;
+        FloorIntakeHeight = 20.25;
+        FloorIntakeGrabHeight = 13.0;
         L4MiniScoreHeight = 50.0;
 
     }
