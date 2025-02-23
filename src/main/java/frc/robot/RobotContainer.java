@@ -6,6 +6,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.derive;
 
 import java.util.Map;
+import java.util.jar.Attributes.Name;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
@@ -28,7 +29,6 @@ import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
 import frc.robot.subsystems.GameSpec.Manager;
 import frc.robot.subsystems.GameSpec.Climber.Climber;
-import frc.robot.subsystems.Lights.Lights;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
 
 
@@ -39,7 +39,6 @@ public class RobotContainer {
   private Drive drivetrain;
   private Camera cameraSubsystem;
   private Manager gamespecManager;
-  private Lights m_Lights;
 
   private enum Mode {
     coral,
@@ -60,10 +59,8 @@ public class RobotContainer {
     if(!Utils.isSimulation()){
         drivetrain = new Drive(new DriveKraken());
         cameraSubsystem = new Camera(drivetrain);
-        m_Lights = new Lights();
     } else {
       drivetrain = new Drive(new DriveSim());
-      m_Lights = new Lights();
     }
 
     gamespecManager = new Manager();
@@ -104,6 +101,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("Floor Intake Package", gamespecManager.floorIntakePackage());
     NamedCommands.registerCommand("Algae Package", gamespecManager.algaePackage());
     NamedCommands.registerCommand("Climber Package", gamespecManager.packageClimber());
+
+    NamedCommands.registerCommand("Lights Coral", gamespecManager.setLightsCoral());
+    NamedCommands.registerCommand("Lights Algae", gamespecManager.setLightsAlgae());
+    NamedCommands.registerCommand("Lights Climb", gamespecManager.setLightsClimb());
+
 
 
     NamedCommands.registerCommand("Align Reef Left",  drivetrain.autonAlignReefCommand(0));
@@ -218,10 +220,10 @@ public class RobotContainer {
           Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
         }));
 
-       operator.leftBumper().onTrue(gamespecManager.runOnce(() -> mode = Mode.coral));
-       operator.rightBumper().onTrue(gamespecManager.runOnce(() -> mode = Mode.algae));
-       operator.start().onTrue(gamespecManager.runOnce(() -> mode = Mode.climb));
-       operator.back().onTrue(gamespecManager.runOnce(() -> mode = Mode.climb));
+       operator.leftBumper().onTrue(Commands.parallel(gamespecManager.runOnce(() -> mode = Mode.coral), NamedCommands.getCommand("Lights Coral")));
+       operator.rightBumper().onTrue(Commands.parallel(gamespecManager.runOnce(() -> mode = Mode.algae), NamedCommands.getCommand("Lights Algae")));
+       operator.start().onTrue(Commands.parallel(gamespecManager.runOnce(() -> mode = Mode.climb), NamedCommands.getCommand("Lights Climb")));
+       operator.back().onTrue(Commands.parallel(gamespecManager.runOnce(() -> mode = Mode.climb), NamedCommands.getCommand("Lights Climb")));
 
       operator.a().and(this::isCoral).onTrue(NamedCommands.getCommand("L2")).onFalse(Commands.parallel(NamedCommands.getCommand("L2 Package"), NamedCommands.getCommand("done scoring")));
       operator.b().and(this::isCoral).onTrue(NamedCommands.getCommand("L3")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"), NamedCommands.getCommand("done scoring")));
