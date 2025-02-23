@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,6 +36,8 @@ import frc.robot.subsystems.Drivetrain.DriveKraken;
 public class RobotContainer {
 
   private SendableChooser<String> chooser = new SendableChooser<>();
+  private Command autoCommand;
+  private String autoString;
 
   private Drive drivetrain;
   private Camera cameraSubsystem;
@@ -273,8 +276,17 @@ public class RobotContainer {
         //      operator.leftTrigger().and(operator.y())
       //      .whileTrue(gamespecManager.L3());
 
+  public void updateAutonCommand() {
+    if (autoString != null) {
+      if (chooser.getSelected() != autoString) {
+        autoString = chooser.getSelected();
+        autoCommand = new PathPlannerAuto(autoString);
+
+      }
+    }
+  }
+
   public Command getAutonomousCommand() {
-    String autoName = chooser.getSelected();
-    return new PathPlannerAuto(autoName).finallyDo(() -> System.out.println("ENDED AUTO COMMAND"));
+    return autoCommand.finallyDo(() -> System.out.println("ENDED AUTO COMMAND"));
   }
 }
