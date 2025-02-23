@@ -29,6 +29,8 @@ public class Robot extends TimedRobot {
 
   private boolean ppConfigured = false;
 
+  private Command initAuto;
+
   public Robot() {
     m_robotContainer = new RobotContainer();
 
@@ -36,6 +38,8 @@ public class Robot extends TimedRobot {
     matchTimeEntry = tab.add("Match time",0.0).getEntry();
     voltsEntry = tab.add("Volts",0.0).getEntry();
     ampsEntry = tab.add("Amps",0.0).getEntry();
+
+    initAuto = new PathPlannerAuto("initAuto").ignoringDisable(true);
   }
 
   @Override
@@ -50,7 +54,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     if (!ppConfigured) {
-      new PathPlannerAuto("initAuto").ignoringDisable(true).schedule();
+      initAuto.schedule();
       ppConfigured = true;
     }
 
@@ -63,7 +67,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledExit() {}
+  public void disabledExit() {
+    initAuto.cancel();
+  }
 
   @Override
   public void autonomousInit() {
