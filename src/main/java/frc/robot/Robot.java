@@ -26,7 +26,7 @@ public class Robot extends TimedRobot {
   private GenericEntry voltsEntry;
   private GenericEntry ampsEntry;
 
-  private boolean pathPlannerConfigured = false;
+  private boolean ppConfigured = false;
 
   public Robot() {
     m_robotContainer = new RobotContainer();
@@ -48,9 +48,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    if (!pathPlannerConfigured) {
+    if (!ppConfigured) {
       new PathPlannerAuto("initAuto").ignoringDisable(true).schedule();
-      pathPlannerConfigured = true;
+      ppConfigured = true;
     }
   }
 

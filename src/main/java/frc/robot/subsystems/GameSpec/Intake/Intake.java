@@ -91,6 +91,10 @@ public class Intake extends SubsystemBase {
     return intakeCommand(IntakeConstants.climberOut);
   }
 
+  public Command intakeVert(){
+    return intakeCommand(IntakeConstants.vertical);
+  }
+
   public Command runIntakeAlgae(){
     return runOnce(() -> {
       intakeRollerSpeed.setDouble(IntakeConstants.rollerIntakeVoltage);
