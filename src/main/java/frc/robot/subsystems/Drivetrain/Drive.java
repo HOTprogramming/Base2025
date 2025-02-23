@@ -99,6 +99,9 @@ public class Drive extends SubsystemBase {
     private final SwerveRequest.SwerveDriveBrake BRAKE = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.FieldCentric FIELD_CENTRIC = new SwerveRequest.FieldCentric()
     .withDeadband(0.2).withRotationalDeadband(0.0);
+
+    private final SwerveRequest.FieldCentric AUTO_ALIGN = new SwerveRequest.FieldCentric()
+    .withDeadband(0.0).withRotationalDeadband(0.0);
     private final SwerveRequest.RobotCentric ROBOT_CENTRIC = new SwerveRequest.RobotCentric();
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
 
@@ -350,9 +353,9 @@ public class Drive extends SubsystemBase {
     public void alignReefFieldcentric() {
 
         boolean disableTheta = false;
-        driveIO.setSwerveRequest(FIELD_CENTRIC
-            .withVelocityX(!translationControllerX.atGoal() ? -translationControllerX.calculate(iOdata.state.Pose.getX(), currentTarget.getX()) : 0.0)
-            .withVelocityY(!translationControllerY.atGoal() ?-translationControllerY.calculate(iOdata.state.Pose.getY(), currentTarget.getY()) : 0.0)
+        driveIO.setSwerveRequest(AUTO_ALIGN
+            .withVelocityX(!translationControllerX.atGoal() ? translationControllerX.calculate(iOdata.state.Pose.getX(), currentTarget.getX()) : 0.0)
+            .withVelocityY(!translationControllerY.atGoal() ? translationControllerY.calculate(iOdata.state.Pose.getY(), currentTarget.getY()) : 0.0)
             .withRotationalRate(thetaController.calculate(
                 iOdata.state.Pose.getRotation().getRadians(), 
                 currentTarget.getRotation().getRadians() + Math.toRadians(90)
