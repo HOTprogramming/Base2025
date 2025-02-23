@@ -12,6 +12,8 @@ import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -337,7 +339,7 @@ public class Camera extends SubsystemBase {
             estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
         else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
         for (PhotonTrackedTarget target : targets) {
-            for (int id : CameraConstants.REEF_TAGS_RED) {
+            for (int id : DriverStation.getAlliance().get() == Alliance.Blue ? CameraConstants.REEF_TAGS_BLUE : CameraConstants.REEF_TAGS_RED) {
                 if (target.fiducialId == id && avgDist < 2) {
                     estStdDevs = VecBuilder.fill(0.25, 0.25, 2);
                     drivetrain.tagTransform = new Pose3d()

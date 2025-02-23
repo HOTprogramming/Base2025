@@ -345,13 +345,25 @@ public class Drive extends SubsystemBase {
             reefTarget.getY() + (reefTarget.getRotation().getCos() * Units.inchesToMeters(poleShift)) - (reefTarget.getRotation().getSin() * robotToReefTagFace),
             reefTarget.getRotation()
         );
-        translationControllerX.calculate(iOdata.state.Pose.getX(), currentTarget.getX());
-        translationControllerY.calculate(iOdata.state.Pose.getY(), currentTarget.getY());
+
+        
+
         SmartDashboard.putNumberArray("Drive target pose", new double[] {currentTarget.getX(), currentTarget.getY(), currentTarget.getRotation().getRadians()});
     }
 
-    public void alignReefFieldcentric() {
+    public Command resetControllers() {
+        return runOnce(() -> {
+            translationControllerX.reset(iOdata.state.Pose.getX(), -iOdata.state.Speeds.vxMetersPerSecond);
+            translationControllerY.reset(iOdata.state.Pose.getY(), -iOdata.state.Speeds.vyMetersPerSecond);
+        });
+    }
 
+    public void alignReefFieldcentric() {
+        SmartDashboard.putNumber("x_SpeedC", translationControllerX.calculate(iOdata.state.Pose.getX()));
+        SmartDashboard.putNumber("y_SpeedC", translationControllerY.calculate(iOdata.state.Pose.getY()));
+        SmartDashboard.putNumber("cSpeedT", Math.sqrt(Math.pow(translationControllerY.calculate(iOdata.state.Pose.getY()), 2) - Math.pow(translationControllerX.calculate(iOdata.state.Pose.getX()) , 2)));
+        
+        
         boolean disableTheta = false;
         driveIO.setSwerveRequest(AUTO_ALIGN
             .withVelocityX(!translationControllerX.atGoal() ? translationControllerX.calculate(iOdata.state.Pose.getX(), currentTarget.getX()) : 0.0)
@@ -506,8 +518,8 @@ public class Drive extends SubsystemBase {
         this.iOdata = driveIO.update();
         if (this.iOdata.state.Speeds != null) {
             speedEntry.setDouble(Math.hypot(
-                this.iOdata.state.Speeds.vxMetersPerSecond * 3.281,
-                this.iOdata.state.Speeds.vyMetersPerSecond * 3.281));
+                this.iOdata.state.Speeds.vxMetersPerSecond,
+                this.iOdata.state.Speeds.vyMetersPerSecond));
         }
         if (this.iOdata.state.Pose != null) {
             poseEntry.setDoubleArray(new Double[]{
