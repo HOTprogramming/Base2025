@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -64,6 +65,8 @@ public class RobotContainer {
     } else {
       drivetrain = new Drive(new DriveSim());
       m_Lights = new Lights();
+      cameraSubsystem = new Camera(drivetrain);
+
     }
 
     gamespecManager = new Manager();
@@ -269,7 +272,11 @@ public class RobotContainer {
       //      .whileTrue(gamespecManager.L3());
 
   public Command getAutonomousCommand() {
+    Timer timer = new Timer();
+    timer.start();
     String autoName = chooser.getSelected();
+    timer.stop();
+    System.err.println(timer.get());
     return new PathPlannerAuto(autoName).finallyDo(() -> System.out.println("ENDED AUTO COMMAND"));
   }
 }

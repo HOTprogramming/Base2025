@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.hal.simulation.RoboRioDataJNI;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -24,6 +26,8 @@ public class Robot extends TimedRobot {
   private GenericEntry voltsEntry;
   private GenericEntry ampsEntry;
 
+  private boolean pathPlannerConfigured = false;
+
   public Robot() {
     m_robotContainer = new RobotContainer();
 
@@ -43,7 +47,12 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    if (!pathPlannerConfigured) {
+      new PathPlannerAuto("initAuto").ignoringDisable(true).schedule();
+      pathPlannerConfigured = true;
+    }
+  }
 
   @Override
   public void disabledPeriodic() {}

@@ -17,7 +17,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Align Reef Left"
+                  "name": "Align Reef Right"
                 }
               },
               {
@@ -52,7 +52,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.5
+                        "waitTime": 0.4
                       }
                     },
                     {
@@ -100,7 +100,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Align Reef Left"
+                  "name": "Align Reef Right"
                 }
               },
               {
@@ -135,7 +135,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.2
+                        "waitTime": 0.25
                       }
                     },
                     {
@@ -183,7 +183,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Align Reef Right"
+                  "name": "Align Reef Left"
                 }
               },
               {
@@ -199,6 +199,38 @@
           "type": "named",
           "data": {
             "name": "Auton Shoot"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Pickup.3"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.25
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Auton Intake Start"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
