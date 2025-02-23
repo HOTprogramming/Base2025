@@ -36,6 +36,7 @@ import frc.robot.subsystems.GameSpec.Manipulator.Manipulator;
 import frc.robot.subsystems.GameSpec.Manipulator.ManipulatorConstants;
 import frc.robot.subsystems.GameSpec.Manipulator.ManipulatorIOReal;
 import frc.robot.subsystems.GameSpec.Manipulator.ManipulatorIOSim;
+import frc.robot.subsystems.Lights.Lights;
 
 public class Manager extends SubsystemBase{
     private final ShuffleboardTab managerShuffleboard;
@@ -44,6 +45,7 @@ public class Manager extends SubsystemBase{
     public Climber climberSubsystem;
     private Intake intakeSubsystem;
     private Manipulator manipulatorSubsystem;
+    private Lights lightsSubsystem;
 
     public GenericEntry scoringEnum;
 
@@ -73,11 +75,13 @@ public class Manager extends SubsystemBase{
         manipulatorSubsystem = new Manipulator(new ManipulatorIOReal());
         climberSubsystem = new Climber(new ClimberIOReal());
         intakeSubsystem = new Intake(new IntakeIOReal());
+        lightsSubsystem = new Lights();
       } else {
         elevatorSubsystem = new Elevator(new ElevatorIOSim());
         armSubsystem = new Arm(new ArmIOSim());
         manipulatorSubsystem = new Manipulator(new ManipulatorIOSim());
         climberSubsystem = new Climber(new ClimberIOSim());
+        lightsSubsystem = new Lights();
         intakeSubsystem = new Intake(new IntakeIOSim());
 
       } 
@@ -254,8 +258,8 @@ public class Manager extends SubsystemBase{
     public Command autonShoot(){
       return new SelectCommand(
         Map.of(
-            ScoringLevel.L4, Commands.sequence(
-            Commands.parallel(armSubsystem.L4Score(), manipulatorSubsystem.goScore()), elevatorSubsystem.L4MiniScore()
+            ScoringLevel.L4, Commands.parallel(
+            Commands.parallel(armSubsystem.L4Score(), manipulatorSubsystem.goScore()), elevatorSubsystem.L4MiniScore().onlyWhile(() -> armSubsystem.armLessThan(-30.0, 0))
           ),
             ScoringLevel.L3, Commands.sequence(
             Commands.parallel(armSubsystem.L3Score(), manipulatorSubsystem.goScore()), elevatorSubsystem.L3Score()
@@ -383,4 +387,20 @@ public class Manager extends SubsystemBase{
       ,intakeSubsystem.intakeRollerVoltage(0.0));
 
     }
+
+    public Command setLightsCoral() {
+      return lightsSubsystem.setYellow();
+    }
+
+    public Command setLightsAlgae() {
+      return lightsSubsystem.setTeal();
+    }
+
+    public Command setLightsClimb() {
+      return lightsSubsystem.setRed();
+    }
+
+    // public Command setLightsOff() {
+    //   return lightsSubsystem.set
+    // }
 }
