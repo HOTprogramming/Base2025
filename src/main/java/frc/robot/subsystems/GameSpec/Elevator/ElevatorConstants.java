@@ -20,6 +20,7 @@ public class ElevatorConstants {
     public static double L1Height;
     public static double FeederHeight;
     public static double L4ScoreHeight;
+    public static double L4MiniScoreHeight;
     public static double L3ScoreHeight;
     public static double L2ScoreHeight;
     public static double HPHeight;
@@ -72,10 +73,11 @@ public class ElevatorConstants {
         climbHeight = 1.4;
         highAlgae = 35;
         lowAlgae = 17;
-        BargeHeight = 68.5;
+        BargeHeight = 68.75;
         ProcessorHeight = 14.0;
-        FloorIntakeHeight = 20.0;
-        FloorIntakeGrabHeight = 15.0;
+        FloorIntakeHeight = 20.25;
+        FloorIntakeGrabHeight = 13.0;
+        L4MiniScoreHeight = 50.0;
 
     }
 
@@ -101,7 +103,7 @@ public class ElevatorConstants {
         L2ScoreHeight = 9.2;
         HPHeight = 17.0;
         climbHeight = 1.4;
-
+        L4MiniScoreHeight = 40.0;
     }
 
     private static void simBotConstants(){

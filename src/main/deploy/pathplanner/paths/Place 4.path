@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 16.01,
-        "y": 7.4
+        "x": 15.956,
+        "y": 7.398
       },
       "prevControl": null,
       "nextControl": {
-        "x": 15.792939214468888,
-        "y": 7.275965265410791
+        "x": 15.691035870629948,
+        "y": 6.850512976975851
       },
       "isLocked": false,
-      "linkedName": "pickup2"
+      "linkedName": "P3"
     },
     {
       "anchor": {
-        "x": 14.229405737704917,
-        "y": 5.175819672131147
+        "x": 14.648975409836064,
+        "y": 4.216803278688525
       },
       "prevControl": {
-        "x": 14.960655737704919,
-        "y": 5.607377049180328
+        "x": 14.796411539580536,
+        "y": 4.503655681946344
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,19 +33,19 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 6.0,
-    "maxAcceleration": 8.5,
+    "maxVelocity": 4.96,
+    "maxAcceleration": 6.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.6,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -29.999999999999996
+    "velocity": 0.9,
+    "rotation": -90.0
   },
   "reversed": false,
-  "folder": "RedCoral4Left",
+  "folder": "First",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -35.0

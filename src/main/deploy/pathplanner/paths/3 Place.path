@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 13.582069672131148,
-        "y": 5.223770491803278
+        "x": 1.5943647540983608,
+        "y": 7.393545081967213
       },
       "prevControl": null,
       "nextControl": {
-        "x": 13.749897540983607,
-        "y": 6.014959016393443
+        "x": 1.7120118129218904,
+        "y": 7.172956846673095
       },
       "isLocked": false,
-      "linkedName": "dropoff2"
+      "linkedName": "b2"
     },
     {
       "anchor": {
-        "x": 16.01,
-        "y": 7.4
+        "x": 3.668237704918033,
+        "y": 5.391598360655737
       },
       "prevControl": {
-        "x": 15.66235655737705,
-        "y": 7.220184426229508
+        "x": 3.452459016393442,
+        "y": 5.679303278688525
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "pickup2"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -37,18 +37,18 @@
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
-    "nominalVoltage": 12.0,
+    "nominalVoltage": 12.6,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -35.0
+    "velocity": 0.9,
+    "rotation": 29.999999999999996
   },
   "reversed": false,
-  "folder": "RedCoral4Left",
+  "folder": "Second",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -29.999999999999996
+    "rotation": 35.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

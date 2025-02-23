@@ -66,8 +66,14 @@ public class RobotContainer {
     gamespecManager = new Manager();
 
     chooser.setDefaultOption("Auto", "Auto");
-    chooser.addOption("goods", "REDR4Place&Pickup");
-    chooser.addOption("First", "First");
+    
+    chooser.addOption("RedR3", "RedR3"); 
+    chooser.addOption("RedL3", "RedL3");
+    chooser.addOption("BlueR3", "BlueR3");
+    chooser.addOption("BlueL3", "BlueL3");
+
+     
+
     // chooser.addOption("Complex Auto", "m_complexAuto");
     
     NamedCommands.registerCommand("L1", gamespecManager.goToL1());
@@ -93,6 +99,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("stop intake", gamespecManager.algaeStopIntake());
     NamedCommands.registerCommand("L2 Package", gamespecManager.goToL2Package());
     NamedCommands.registerCommand("Floor Intake Package", gamespecManager.floorIntakePackage());
+    NamedCommands.registerCommand("Algae Package", gamespecManager.algaePackage());
+    NamedCommands.registerCommand("Climber Package", gamespecManager.packageClimber());
 
     NamedCommands.registerCommand("Lights Coral", gamespecManager.setLightsCoral());
     NamedCommands.registerCommand("Lights Algae", gamespecManager.setLightsAlgae());
@@ -104,6 +112,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("Align Reef Right",  drivetrain.autonAlignReefCommand(1));
 
     NamedCommands.registerCommand("Auton Shoot",  gamespecManager.autonShoot());
+    NamedCommands.registerCommand("Auton Intake Start", gamespecManager.autonIntake());
+    NamedCommands.registerCommand("Auton Finish Intake", gamespecManager.autonFinishIntake());
+    NamedCommands.registerCommand("AL4", gamespecManager.autonL4());
+
 
     //new EventTrigger("Package").whileTrue(gamespecManager.goToPackage());
 
@@ -220,16 +232,17 @@ public class RobotContainer {
       operator.leftTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align floor intake")); 
       operator.rightTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align station intake")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"))); //, NamedCommands.getCommand("Stop Intake")));
 
-      operator.a().and(this::isAlgae).onTrue(NamedCommands.getCommand("low algae")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
-      operator.b().and(this::isAlgae).onTrue(NamedCommands.getCommand("high algae")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
+      operator.a().and(this::isAlgae).onTrue(NamedCommands.getCommand("low algae")).onFalse(Commands.parallel(NamedCommands.getCommand("Algae Package")));
+      operator.b().and(this::isAlgae).onTrue(NamedCommands.getCommand("high algae")).onFalse(Commands.parallel(NamedCommands.getCommand("Algae Package")));
       operator.x().and(this::isAlgae).onTrue(NamedCommands.getCommand("align processor")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
       operator.y().and(this::isAlgae).onTrue(NamedCommands.getCommand("barge")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
       operator.leftTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("align floor intake")).onFalse(NamedCommands.getCommand("Floor Intake Package"));
       operator.rightTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("intake")).onFalse(NamedCommands.getCommand("stop intake"));
 
       operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
-      operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));
-      operator.y().and(this::isClimb).onTrue(NamedCommands.getCommand("open fingers"));
+      operator.y().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));
+      operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("open fingers"));
+      //operator.b().and(this::isClimb).onTrue(NamedCommands.getCommand("Climber Package"));
 
       operator.axisLessThan(5, -0.05).or(operator.axisGreaterThan(5, 0.05)).and(this::isClimb).whileTrue(
         gamespecManager.climberSubsystem.run(
