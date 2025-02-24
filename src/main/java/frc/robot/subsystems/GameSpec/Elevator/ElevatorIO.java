@@ -82,6 +82,9 @@ public abstract class ElevatorIO {
         this.elevator2 = new TalonFX(ElevatorConstants.elevatorMotor2ID, "robot");
         this.elevatorCancoder = new CANcoder(ElevatorConstants.elevatorEncoderID, "robot");
 
+        //sets up the second elevator motor as a follower
+        elevator2.setControl(new Follower(elevator.getDeviceID(), true));
+
         elevatorMagic = new MotionMagicVoltage(0);
         cfg = new TalonFXConfiguration();
         encoderCfg = new CANcoderConfiguration();
@@ -220,10 +223,9 @@ public abstract class ElevatorIO {
     }
 
 
-    /** Apply motion magic control mode */
+    //applies control mode to the elevator motor
     public void setElevatorMotorControl(double commandedPosition) {
         elevator.setControl(elevatorMagic.withPosition(commandedPosition).withSlot(0));
-        elevator2.setControl(new Follower(elevator.getDeviceID(), true));
     }
 
     /** Stop motor */
