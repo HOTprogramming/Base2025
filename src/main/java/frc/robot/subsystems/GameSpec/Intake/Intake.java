@@ -110,21 +110,11 @@ public class Intake extends SubsystemBase {
   }
 
   public Command processor(){
-    // return intakeCommand(IntakeConstants.intakeGround);
-    return runOnce(() -> {
-      intakeCommandedPos.setDouble(IntakeConstants.intakeGround);
-      intakeRollerSpeed.setDouble(IntakeConstants.rollerIntakeVoltage);
-      
-      io.setIntakeSpinMotorControl(IntakeConstants.rollerIntakeVoltage);
-      io.setIntakeMotorControl(IntakeConstants.intakeGround);
-  });
+    return intakeCommand(IntakeConstants.intakeGround);
   }
 
   public Command goToPackage(){
-    return runOnce(() -> {
-      intakeCommandedPos.setDouble(IntakeConstants.intakePackage);
-      io.setIntakeMotorControl(IntakeConstants.intakePackage);
-  });
+    return intakeCommand(IntakeConstants.intakePackage);
   }
 
   public Command stop(){

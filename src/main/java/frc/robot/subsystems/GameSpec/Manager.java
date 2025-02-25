@@ -346,7 +346,7 @@ public class Manager extends SubsystemBase{
       return Commands.sequence(elevatorSubsystem.goToFloorIntake()
       ,armSubsystem.horizontal()
       ,intakeSubsystem.goToPackage()
-      ,Commands.parallel(Commands.waitSeconds(0.2).andThen(armSubsystem.goToPackage())
+      ,Commands.parallel(armSubsystem.goToPackage()
       ,elevatorSubsystem.goToPackage()));
     }
 
