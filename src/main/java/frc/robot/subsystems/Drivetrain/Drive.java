@@ -115,6 +115,8 @@ public class Drive extends SubsystemBase {
     private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
     /* Keep track if we've ever applied the operator perspective before or not */
 
+    private Pose2d autoStartPose;
+
 
 
     public Drive(DriveIO driveIO) { 
@@ -583,5 +585,13 @@ public class Drive extends SubsystemBase {
     }
     private void setPose(Pose2d pose) {
         this.driveIO.seedFieldRelative(pose);
+    }
+    
+    public double getAutoStartError() {
+        return iOdata.state.Pose.getTranslation().getDistance(autoStartPose.getTranslation());
+    }
+
+    public void setAutonStartPose(Pose2d desiredPose) {
+        autoStartPose = desiredPose;
     }
 }
