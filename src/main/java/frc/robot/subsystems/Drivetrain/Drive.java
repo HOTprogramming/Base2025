@@ -367,14 +367,26 @@ public class Drive extends SubsystemBase {
         
         
         boolean disableTheta = false;
-        driveIO.setSwerveRequest(AUTO_ALIGN
+        if (DriverStation.getAlliance().get() == Alliance.Blue) {
+            driveIO.setSwerveRequest(AUTO_ALIGN
             .withVelocityX(!translationControllerX.atGoal() ? translationControllerX.calculate(iOdata.state.Pose.getX(), currentTarget.getX()) : 0.0)
             .withVelocityY(!translationControllerY.atGoal() ? translationControllerY.calculate(iOdata.state.Pose.getY(), currentTarget.getY()) : 0.0)
             .withRotationalRate(thetaController.calculate(
                 iOdata.state.Pose.getRotation().getRadians(), 
                 currentTarget.getRotation().getRadians() + Math.toRadians(90)
             ))
-        );
+            );
+        } else {
+            driveIO.setSwerveRequest(AUTO_ALIGN
+            .withVelocityX(!translationControllerX.atGoal() ? -translationControllerX.calculate(iOdata.state.Pose.getX(), currentTarget.getX()) : 0.0)
+            .withVelocityY(!translationControllerY.atGoal() ? -translationControllerY.calculate(iOdata.state.Pose.getY(), currentTarget.getY()) : 0.0)
+            .withRotationalRate(thetaController.calculate(
+                iOdata.state.Pose.getRotation().getRadians(), 
+                currentTarget.getRotation().getRadians() + Math.toRadians(90)
+            ))
+            );
+        }
+        
         
     }
 
