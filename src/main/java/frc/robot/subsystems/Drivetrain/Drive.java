@@ -597,5 +597,9 @@ public class Drive extends SubsystemBase {
 
     public void setAutonStartPose(Pose2d desiredPose) {
         autoStartPose = desiredPose;
+        SmartDashboard.putNumberArray("Auto Start Pose", new double[] {
+            autoStartPose.getX(), 
+            autoStartPose.getY(), 
+            autoStartPose.getRotation().getDegrees()});
     }
 }
