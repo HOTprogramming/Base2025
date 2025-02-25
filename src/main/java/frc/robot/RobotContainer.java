@@ -251,10 +251,10 @@ public class RobotContainer {
       operator.axisLessThan(5, -0.05).or(operator.axisGreaterThan(5, 0.05)).and(this::isClimb).whileTrue(
         gamespecManager.climberSubsystem.run(
           () -> gamespecManager.climberSubsystem.setPower(-operator.getRightY())
-        )
-      ).onFalse(gamespecManager.climberSubsystem.run(
+        ).onlyWhile(() -> gamespecManager.climberSubsystem.checkClimberSoftStop())
+      .andThen(gamespecManager.climberSubsystem.run(
         () -> gamespecManager.climberSubsystem.setPower(0.0)
-      ));
+      )));
       operator.leftTrigger().or(operator.rightTrigger()).onFalse(NamedCommands.getCommand("Coral Zero"));
       System.out.println("c");
 

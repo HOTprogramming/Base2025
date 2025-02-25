@@ -122,6 +122,13 @@ public class Climber extends SubsystemBase {
     }
   }
 
+  /**
+   * @return false if climber is at or past softstop
+   */
+  public boolean checkClimberSoftStop(){
+    return stats.climberPosition > ClimberConstants.softStopClicks;
+  }
+
   public Boolean checkClimberPackaged(){
     if(stats.climberPosition < ClimberConstants.packageClicks && stats.climberPosition > 1.0){
       return false;
