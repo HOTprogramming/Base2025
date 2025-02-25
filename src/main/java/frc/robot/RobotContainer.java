@@ -5,14 +5,18 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.derive;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.jar.Attributes.Name;
+
+import org.json.simple.parser.ParseException;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.events.EventTrigger;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -30,6 +34,7 @@ import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
 import frc.robot.subsystems.GameSpec.Manager;
 import frc.robot.subsystems.GameSpec.Climber.Climber;
+import frc.robot.subsystems.Lights.Lights;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
 
 
@@ -110,6 +115,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("Lights Algae", gamespecManager.setLightsAlgae());
     NamedCommands.registerCommand("Lights Climb", gamespecManager.setLightsClimb());
 
+
+    NamedCommands.registerCommand("Lights Auto Bad", gamespecManager.setLightsBad());
+    NamedCommands.registerCommand("Lights Auto Ok", gamespecManager.setLightsOk());
+    NamedCommands.registerCommand("Lights Auto Good", gamespecManager.setLightsGood());
 
 
     NamedCommands.registerCommand("Align Reef Left",  drivetrain.autonAlignReefCommand(0));
@@ -283,10 +292,31 @@ public class RobotContainer {
       if (chooser.getSelected() != autoString) {
         autoString = chooser.getSelected();
         autoCommand = new PathPlannerAuto(autoString);
-
+        try {
+          drivetrain.setAutonStartPose(PathPlannerAuto.getPathGroupFromAutoFile(autoString).get(0).getStartingDifferentialPose());
+        } catch (IOException e) {
+          System.err.println("No Auto File");
+        } catch (ParseException e) {
+          System.err.println("idk good luck");
+        } catch (IndexOutOfBoundsException e) {
+          System.err.println("no auto Paths");
+        }
       }
     } else {
       autoString = chooser.getSelected();
+    }
+  }
+
+  public void updateLights() {
+    if (drivetrain.getAutoStartError() < 0.15) {
+      NamedCommands.getCommand("Lights Auto Good").ignoringDisable(true).schedule();
+      System.err.println("GOOD");
+    } else if (drivetrain.getAutoStartError() < 0.3) {
+      NamedCommands.getCommand("Lights Auto Ok").ignoringDisable(true).schedule();
+      System.err.println("OK");
+    } else {
+      NamedCommands.getCommand("Lights Auto Bad").ignoringDisable(true).schedule();
+      System.err.println("BAD");
     }
   }
 
