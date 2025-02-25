@@ -242,7 +242,6 @@ public class RobotContainer {
       operator.b().and(this::isCoral).onTrue(NamedCommands.getCommand("L3")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"), NamedCommands.getCommand("done scoring")));
       operator.x().and(this::isCoral).onTrue(NamedCommands.getCommand("L1")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"), NamedCommands.getCommand("done scoring")));
       operator.y().and(this::isCoral).onTrue(NamedCommands.getCommand("L4")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"), NamedCommands.getCommand("done scoring")));
-      operator.leftTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align floor intake")); 
       operator.rightTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align station intake")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"))); //, NamedCommands.getCommand("Stop Intake")));
 
       operator.a().and(this::isAlgae).onTrue(NamedCommands.getCommand("low algae")).onFalse(Commands.parallel(NamedCommands.getCommand("Algae Package")));
@@ -267,10 +266,11 @@ public class RobotContainer {
       operator.leftTrigger().or(operator.rightTrigger()).onFalse(NamedCommands.getCommand("Coral Zero"));
       System.out.println("c");
 
-      NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
+       NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
       NamedCommands.registerCommand("R_OTF", drivetrain.runOnTheFly());
 
       new EventTrigger("OTF").onTrue(Commands.runOnce(() -> drivetrain.generateOnTheFly()));
+
   }
 
   public boolean isCoral() {
@@ -316,6 +316,22 @@ public class RobotContainer {
     } else {
       NamedCommands.getCommand("Lights Auto Bad").ignoringDisable(true).schedule();
       System.err.println("BAD");
+    }
+  }
+
+  public void updateLeds() {
+    switch (this.mode) {
+      case coral:
+      NamedCommands.getCommand("Lights Coral").schedule();
+        break;
+    
+      case algae:
+      NamedCommands.getCommand("Lights Algae").schedule();
+        break;
+
+      case climb:
+      NamedCommands.getCommand("Lights Climb").schedule();;
+        break;
     }
   }
 
