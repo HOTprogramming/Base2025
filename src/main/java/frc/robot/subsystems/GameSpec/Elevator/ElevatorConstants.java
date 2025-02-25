@@ -56,8 +56,7 @@ public class ElevatorConstants {
         elevatorEncoderID = 52;
         kReduction = (1.0 / 2.0);
         kMaxAccelerationRpmPerSec = 9000.0; 
-        //elevatorGains = new MMGains(1000, 1500, 4500, 2.5 , 0, 0.0, 0.025, 0.3);
-        elevatorGains = new MMGains(200, 800, 0, 10.0 , 0, 0, 1.0, 0.0, 0.0);
+        elevatorGains = new MMGains(0, 0, 0, 45.0 , 0, 2.25, 30.0, 1.0, 0.0);//torque position pid
         elevatorEncoderOffset = 0.2546;
 
         PackageHeight = 15.0; 
@@ -89,8 +88,7 @@ public class ElevatorConstants {
         elevatorEncoderID = 52;
         kReduction = (1.0 / 2.0);
         kMaxAccelerationRpmPerSec = 9000.0; 
-        //elevatorGains = new MMGains(25000, 20000, 0, 40.0 , 0, 1.75, 20.0, 0.0, 0.0); torque profile on practice bot with motion magic
-        elevatorGains = new MMGains(0, 0, 0, 45.0 , 0, 2.25, 30.0, 1.0, 0.0);
+        elevatorGains = new MMGains(0, 0, 0, 45.0 , 0, 2.25, 30.0, 1.0, 0.0);//torque position pid
         elevatorEncoderOffset = 0.4953;
 
         PackageHeight = 17.9; 

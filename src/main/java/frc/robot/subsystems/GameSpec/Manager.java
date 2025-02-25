@@ -316,18 +316,6 @@ public class Manager extends SubsystemBase{
       return climberSubsystem.servoOpen();
     }
 
-    public Command elevatorL3(){
-      return elevatorSubsystem.goToL3();
-    }
-
-    public Command elevatorPackage(){
-      return elevatorSubsystem.goToPackage();
-    }
-
-    public Command elevatorL4(){
-      return elevatorSubsystem.goToL4();
-    }
-
     //deploys the climber
     public Command climberOut(){
       return Commands.sequence(

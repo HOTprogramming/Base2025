@@ -33,8 +33,6 @@ public abstract class ElevatorIO {
     // Protected TalonFX object accessible to subclasses
     protected TalonFX elevator;
     protected TalonFX elevator2;
-    //protected MotionMagicVoltage elevatorMagic;
-    //protected MotionMagicTorqueCurrentFOC elevatorControl;
     protected PositionTorqueCurrentFOC elevatorControl;
     protected CANcoder elevatorCancoder;
 
@@ -90,16 +88,9 @@ public abstract class ElevatorIO {
         //sets up the second elevator motor as a follower
         elevator2.setControl(new Follower(elevator.getDeviceID(), true));
 
-        //elevatorMagic = new MotionMagicVoltage(0);
-        //elevatorControl = new MotionMagicTorqueCurrentFOC(0);
         elevatorControl = new PositionTorqueCurrentFOC(0);
         cfg = new TalonFXConfiguration();
         encoderCfg = new CANcoderConfiguration();
-
-        // MotionMagicConfigs mm = cfg.MotionMagic;
-        // mm.MotionMagicCruiseVelocity = ElevatorConstants.elevatorGains.CruiseVelocity(); //rps
-        // mm.MotionMagicAcceleration = ElevatorConstants.elevatorGains.Acceleration();
-        // mm.MotionMagicJerk = ElevatorConstants.elevatorGains.Jerk();
 
         Slot0Configs slot0 = cfg.Slot0;
         slot0.kP = ElevatorConstants.elevatorGains.kP();
