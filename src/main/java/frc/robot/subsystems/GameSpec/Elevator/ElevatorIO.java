@@ -121,8 +121,8 @@ public abstract class ElevatorIO {
                 .withSupplyCurrentLimitEnable(true)
         ).withTorqueCurrent(
             new TorqueCurrentConfigs()
-                .withPeakForwardTorqueCurrent(160)
-                .withPeakReverseTorqueCurrent(-160)
+                .withPeakForwardTorqueCurrent(100)
+                .withPeakReverseTorqueCurrent(-100)
         );
         encoderCfg.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
         encoderCfg.MagnetSensor.MagnetOffset = ElevatorConstants.elevatorEncoderOffset;
