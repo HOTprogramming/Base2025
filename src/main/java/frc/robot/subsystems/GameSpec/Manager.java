@@ -268,7 +268,7 @@ public class Manager extends SubsystemBase{
       return new SelectCommand(
         Map.of(
             ScoringLevel.L4, Commands.parallel(
-            Commands.parallel(armSubsystem.L4Score(), manipulatorSubsystem.goScore()), elevatorSubsystem.L4MiniScore().onlyWhile(() -> armSubsystem.armLessThan(-30.0, 0))
+            Commands.parallel(armSubsystem.L4Score(), manipulatorSubsystem.goScore()), elevatorSubsystem.L4MiniScore().onlyWhile(() -> armSubsystem.armLessThan(-50.0, 0))
           ),
             ScoringLevel.L3, Commands.sequence(
             Commands.parallel(armSubsystem.L3Score(), manipulatorSubsystem.goScore()), elevatorSubsystem.L3Score()
@@ -285,7 +285,7 @@ public class Manager extends SubsystemBase{
     }
 
     public Command autonIntake() {
-      return Commands.parallel(Commands.deadline(manipulatorSubsystem.intake(), armSubsystem.goToFeeder()), elevatorSubsystem.goToFeeder());
+      return Commands.parallel(Commands.deadline(manipulatorSubsystem.autonIntake(), armSubsystem.goToFeeder()), elevatorSubsystem.goToFeeder());
     }
 
     public Command autonFinishIntake() {
