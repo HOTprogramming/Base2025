@@ -586,9 +586,13 @@ public class Drive extends SubsystemBase {
     private void setPose(Pose2d pose) {
         this.driveIO.seedFieldRelative(pose);
     }
-    
+
     public double getAutoStartError() {
-        return iOdata.state.Pose.getTranslation().getDistance(autoStartPose.getTranslation());
+        if (iOdata.state.Pose != null && autoStartPose != null) {
+            return iOdata.state.Pose.getTranslation().getDistance(autoStartPose.getTranslation());
+        } else {
+            return -1;
+        }
     }
 
     public void setAutonStartPose(Pose2d desiredPose) {

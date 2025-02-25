@@ -309,10 +309,13 @@ public class RobotContainer {
   public void updateLights() {
     if (drivetrain.getAutoStartError() < 0.15) {
       NamedCommands.getCommand("Lights Auto Good").schedule();
+      System.err.println("GOOD");
     } else if (drivetrain.getAutoStartError() < 0.3) {
       NamedCommands.getCommand("Lights Auto Ok").schedule();
+      System.err.println("OK");
     } else {
       NamedCommands.getCommand("Lights Auto Bad").schedule();
+      System.err.println("BAD");
     }
   }
 
