@@ -121,6 +121,15 @@ public class Manipulator extends SubsystemBase {
         }).onlyWhile(() -> stats.candiPWM1).andThen(Commands.waitSeconds(0.4)).andThen(zero());    
     }
 
+    public Command autonIntake() {
+        return run(() -> {
+            coralCommandedSpeed.setDouble(8);
+            io.setCoralSpinMotorControl(8);
+            io.setCoralAngleMotorControl(ManipulatorConstants.coralWristHP);
+
+        }).onlyWhile(() -> stats.candiPWM1).andThen(Commands.waitSeconds(0.2)).andThen(zero());    
+    }
+
     /** 
      * @apiNote false when it has coral
      */
