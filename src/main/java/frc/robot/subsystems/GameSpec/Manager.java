@@ -310,9 +310,22 @@ public class Manager extends SubsystemBase{
 
     public Command lockFingers(){
       return climberSubsystem.servoLock();
-    }    
+    }   
+
     public Command OpenFingers(){
       return climberSubsystem.servoOpen();
+    }
+
+    public Command elevatorL3(){
+      return elevatorSubsystem.goToL3();
+    }
+
+    public Command elevatorPackage(){
+      return elevatorSubsystem.goToPackage();
+    }
+
+    public Command elevatorL4(){
+      return elevatorSubsystem.goToL4();
     }
 
     //deploys the climber

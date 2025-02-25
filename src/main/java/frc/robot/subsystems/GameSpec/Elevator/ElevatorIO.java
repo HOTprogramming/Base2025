@@ -11,11 +11,14 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -30,7 +33,9 @@ public abstract class ElevatorIO {
     // Protected TalonFX object accessible to subclasses
     protected TalonFX elevator;
     protected TalonFX elevator2;
-    protected MotionMagicVoltage elevatorMagic;
+    //protected MotionMagicVoltage elevatorMagic;
+    //protected MotionMagicTorqueCurrentFOC elevatorControl;
+    protected PositionTorqueCurrentFOC elevatorControl;
     protected CANcoder elevatorCancoder;
 
     public static class ElevatorIOStats {
@@ -85,14 +90,16 @@ public abstract class ElevatorIO {
         //sets up the second elevator motor as a follower
         elevator2.setControl(new Follower(elevator.getDeviceID(), true));
 
-        elevatorMagic = new MotionMagicVoltage(0);
+        //elevatorMagic = new MotionMagicVoltage(0);
+        //elevatorControl = new MotionMagicTorqueCurrentFOC(0);
+        elevatorControl = new PositionTorqueCurrentFOC(0);
         cfg = new TalonFXConfiguration();
         encoderCfg = new CANcoderConfiguration();
 
-        MotionMagicConfigs mm = cfg.MotionMagic;
-        mm.MotionMagicCruiseVelocity = ElevatorConstants.elevatorGains.CruiseVelocity(); //rps
-        mm.MotionMagicAcceleration = ElevatorConstants.elevatorGains.Acceleration();
-        mm.MotionMagicJerk = ElevatorConstants.elevatorGains.Jerk();
+        // MotionMagicConfigs mm = cfg.MotionMagic;
+        // mm.MotionMagicCruiseVelocity = ElevatorConstants.elevatorGains.CruiseVelocity(); //rps
+        // mm.MotionMagicAcceleration = ElevatorConstants.elevatorGains.Acceleration();
+        // mm.MotionMagicJerk = ElevatorConstants.elevatorGains.Jerk();
 
         Slot0Configs slot0 = cfg.Slot0;
         slot0.kP = ElevatorConstants.elevatorGains.kP();
@@ -100,11 +107,14 @@ public abstract class ElevatorIO {
         slot0.kD = ElevatorConstants.elevatorGains.kD();
         slot0.kV = ElevatorConstants.elevatorGains.kV();
         slot0.kS = ElevatorConstants.elevatorGains.kS();
+        slot0.kG = ElevatorConstants.elevatorGains.kG();
+
+        slot0.GravityType = GravityTypeValue.Elevator_Static;
 
         cfg.Feedback.FeedbackRemoteSensorID = elevatorCancoder.getDeviceID();
         cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
         cfg.Feedback.SensorToMechanismRatio = 0.208/24.75; //changes what the cancoder and fx encoder ratio is
-        cfg.Feedback.RotorToSensorRatio = 1; //12.8;
+        cfg.Feedback.RotorToSensorRatio = 1;
         cfg.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         cfg.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
         cfg.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
@@ -114,14 +124,14 @@ public abstract class ElevatorIO {
         cfg.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         cfg.withCurrentLimits(
             new CurrentLimitsConfigs()
-                .withStatorCurrentLimit(80)
+                .withStatorCurrentLimit(100)
                 .withStatorCurrentLimitEnable(true)
-                .withSupplyCurrentLimit(90)
+                .withSupplyCurrentLimit(100)
                 .withSupplyCurrentLimitEnable(true)
         ).withTorqueCurrent(
             new TorqueCurrentConfigs()
-                .withPeakForwardTorqueCurrent(65)
-                .withPeakReverseTorqueCurrent(-65)
+                .withPeakForwardTorqueCurrent(160)
+                .withPeakReverseTorqueCurrent(-160)
         );
         encoderCfg.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
         encoderCfg.MagnetSensor.MagnetOffset = ElevatorConstants.elevatorEncoderOffset;
@@ -225,7 +235,7 @@ public abstract class ElevatorIO {
 
     //applies control mode to the elevator motor
     public void setElevatorMotorControl(double commandedPosition) {
-        elevator.setControl(elevatorMagic.withPosition(commandedPosition).withSlot(0));
+        elevator.setControl(elevatorControl.withPosition(commandedPosition).withSlot(0));
     }
 
     /** Stop motor */
