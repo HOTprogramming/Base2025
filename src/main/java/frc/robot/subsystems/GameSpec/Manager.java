@@ -268,7 +268,7 @@ public class Manager extends SubsystemBase{
       return new SelectCommand(
         Map.of(
             ScoringLevel.L4, Commands.parallel(
-            Commands.parallel(armSubsystem.L4Score(), manipulatorSubsystem.goScore()), elevatorSubsystem.L4MiniScore().onlyWhile(() -> armSubsystem.armLessThan(-30.0, 0))
+            Commands.parallel(armSubsystem.L4Score(), manipulatorSubsystem.goScore()), elevatorSubsystem.L4MiniScore().onlyWhile(() -> armSubsystem.armLessThan(-55.0, 0))
           ),
             ScoringLevel.L3, Commands.sequence(
             Commands.parallel(armSubsystem.L3Score(), manipulatorSubsystem.goScore()), elevatorSubsystem.L3Score()
