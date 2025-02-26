@@ -115,6 +115,8 @@ public class Drive extends SubsystemBase {
     private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
     /* Keep track if we've ever applied the operator perspective before or not */
 
+    private Pose2d autoStartPose;
+
 
 
     public Drive(DriveIO driveIO) { 
@@ -365,14 +367,26 @@ public class Drive extends SubsystemBase {
         
         
         boolean disableTheta = false;
-        driveIO.setSwerveRequest(AUTO_ALIGN
+        if (DriverStation.getAlliance().get() == Alliance.Blue) {
+            driveIO.setSwerveRequest(AUTO_ALIGN
             .withVelocityX(!translationControllerX.atGoal() ? translationControllerX.calculate(iOdata.state.Pose.getX(), currentTarget.getX()) : 0.0)
             .withVelocityY(!translationControllerY.atGoal() ? translationControllerY.calculate(iOdata.state.Pose.getY(), currentTarget.getY()) : 0.0)
             .withRotationalRate(thetaController.calculate(
                 iOdata.state.Pose.getRotation().getRadians(), 
                 currentTarget.getRotation().getRadians() + Math.toRadians(90)
             ))
-        );
+            );
+        } else {
+            driveIO.setSwerveRequest(AUTO_ALIGN
+            .withVelocityX(!translationControllerX.atGoal() ? -translationControllerX.calculate(iOdata.state.Pose.getX(), currentTarget.getX()) : 0.0)
+            .withVelocityY(!translationControllerY.atGoal() ? -translationControllerY.calculate(iOdata.state.Pose.getY(), currentTarget.getY()) : 0.0)
+            .withRotationalRate(thetaController.calculate(
+                iOdata.state.Pose.getRotation().getRadians(), 
+                currentTarget.getRotation().getRadians() + Math.toRadians(90)
+            ))
+            );
+        }
+        
         
     }
 
@@ -583,5 +597,21 @@ public class Drive extends SubsystemBase {
     }
     private void setPose(Pose2d pose) {
         this.driveIO.seedFieldRelative(pose);
+    }
+
+    public double getAutoStartError() {
+        if (iOdata.state.Pose != null && autoStartPose != null) {
+            return iOdata.state.Pose.getTranslation().getDistance(autoStartPose.getTranslation());
+        } else {
+            return -1;
+        }
+    }
+
+    public void setAutonStartPose(Pose2d desiredPose) {
+        autoStartPose = desiredPose;
+        SmartDashboard.putNumberArray("Auto Start Pose", new double[] {
+            autoStartPose.getX(), 
+            autoStartPose.getY(), 
+            autoStartPose.getRotation().getDegrees()});
     }
 }

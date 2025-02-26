@@ -82,7 +82,7 @@ public abstract class ArmIO {
         cfg.Feedback.FeedbackRemoteSensorID = armCancoder.getDeviceID();
         cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
         cfg.Feedback.SensorToMechanismRatio = 1/360.0;//changes what the cancoder and fx encoder ratio is
-        cfg.Feedback.RotorToSensorRatio = 1; //12.8;
+        cfg.Feedback.RotorToSensorRatio = 1;
         cfg.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         cfg.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
         cfg.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;

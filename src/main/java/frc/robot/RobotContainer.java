@@ -5,14 +5,18 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.derive;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.jar.Attributes.Name;
+
+import org.json.simple.parser.ParseException;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.events.EventTrigger;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -30,6 +34,7 @@ import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
 import frc.robot.subsystems.GameSpec.Manager;
 import frc.robot.subsystems.GameSpec.Climber.Climber;
+import frc.robot.subsystems.Lights.Lights;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
 
 
@@ -110,6 +115,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("Lights Algae", gamespecManager.setLightsAlgae());
     NamedCommands.registerCommand("Lights Climb", gamespecManager.setLightsClimb());
 
+
+    NamedCommands.registerCommand("Lights Auto Bad", gamespecManager.setLightsBad());
+    NamedCommands.registerCommand("Lights Auto Ok", gamespecManager.setLightsOk());
+    NamedCommands.registerCommand("Lights Auto Good", gamespecManager.setLightsGood());
 
 
     NamedCommands.registerCommand("Align Reef Left",  drivetrain.autonAlignReefCommand(0));
@@ -200,9 +209,9 @@ public class RobotContainer {
         }
       ));
       // b right y middle x left
-      driver.b().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTargetWBall(2)), cameraSubsystem.setIgnore()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefFieldcentric()))).onFalse(cameraSubsystem.setUnIgnore());
-      driver.y().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTargetWBall(1)), cameraSubsystem.setIgnore()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefFieldcentric()))).onFalse(cameraSubsystem.setUnIgnore());
-      driver.x().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTargetWBall(0)), cameraSubsystem.setIgnore()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefFieldcentric()))).onFalse(cameraSubsystem.setUnIgnore());
+      driver.rightBumper().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTargetWBall(2)), cameraSubsystem.setIgnore(), gamespecManager.setLightsAlign()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefFieldcentric()))).onFalse(cameraSubsystem.setUnIgnore()).onFalse(refreshLights());
+      driver.y().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTargetWBall(1)), cameraSubsystem.setIgnore(), gamespecManager.setLightsAlign()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefFieldcentric()))).onFalse(cameraSubsystem.setUnIgnore()).onFalse(refreshLights());
+      driver.leftBumper().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTargetWBall(0)), cameraSubsystem.setIgnore(), gamespecManager.setLightsAlign()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefFieldcentric()))).onFalse(cameraSubsystem.setUnIgnore()).onFalse(refreshLights());
 
       // driver.b().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));      
       // driver.x().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(0)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));      
@@ -233,7 +242,6 @@ public class RobotContainer {
       operator.b().and(this::isCoral).onTrue(NamedCommands.getCommand("L3")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"), NamedCommands.getCommand("done scoring")));
       operator.x().and(this::isCoral).onTrue(NamedCommands.getCommand("L1")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"), NamedCommands.getCommand("done scoring")));
       operator.y().and(this::isCoral).onTrue(NamedCommands.getCommand("L4")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"), NamedCommands.getCommand("done scoring")));
-      operator.leftTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align floor intake")); 
       operator.rightTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align station intake")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"))); //, NamedCommands.getCommand("Stop Intake")));
 
       operator.a().and(this::isAlgae).onTrue(NamedCommands.getCommand("low algae")).onFalse(Commands.parallel(NamedCommands.getCommand("Algae Package")));
@@ -258,10 +266,11 @@ public class RobotContainer {
       operator.leftTrigger().or(operator.rightTrigger()).onFalse(NamedCommands.getCommand("Coral Zero"));
       System.out.println("c");
 
-      NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
+       NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
       NamedCommands.registerCommand("R_OTF", drivetrain.runOnTheFly());
 
       new EventTrigger("OTF").onTrue(Commands.runOnce(() -> drivetrain.generateOnTheFly()));
+
   }
 
   public boolean isCoral() {
@@ -282,10 +291,50 @@ public class RobotContainer {
       if (chooser.getSelected() != autoString) {
         autoString = chooser.getSelected();
         autoCommand = new PathPlannerAuto(autoString);
-
+        try {
+          drivetrain.setAutonStartPose(PathPlannerAuto.getPathGroupFromAutoFile(autoString).get(0).getStartingDifferentialPose());
+        } catch (IOException e) {
+          System.err.println("No Auto File");
+        } catch (ParseException e) {
+          System.err.println("idk good luck");
+        } catch (IndexOutOfBoundsException e) {
+          System.err.println("no auto Paths");
+        }
       }
     } else {
       autoString = chooser.getSelected();
+    }
+  }
+
+  public Command refreshLights() {
+    return gamespecManager.setLightsAlgae().onlyIf(() -> isAlgae())
+    .andThen(gamespecManager.setLightsClimb().onlyIf(() -> isClimb()))
+    .andThen(gamespecManager.setLightsCoral().onlyIf(() -> isCoral()));
+  }
+
+  public void updateLights() {
+    if (drivetrain.getAutoStartError() < 0.15) {
+      NamedCommands.getCommand("Lights Auto Good").ignoringDisable(true).schedule();
+    } else if (drivetrain.getAutoStartError() < 0.3) {
+      NamedCommands.getCommand("Lights Auto Ok").ignoringDisable(true).schedule();
+    } else {
+      NamedCommands.getCommand("Lights Auto Bad").ignoringDisable(true).schedule();
+    }
+  }
+
+  public void resetLeds() {
+    switch (this.mode) {
+      case coral:
+      NamedCommands.getCommand("Lights Coral").schedule();
+        break;
+    
+      case algae:
+      NamedCommands.getCommand("Lights Algae").schedule();
+        break;
+
+      case climb:
+      NamedCommands.getCommand("Lights Climb").schedule();
+        break;
     }
   }
 

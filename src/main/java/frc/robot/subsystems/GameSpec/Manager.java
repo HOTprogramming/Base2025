@@ -150,7 +150,7 @@ public class Manager extends SubsystemBase{
       , armSubsystem.goToPackage())
       .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L2Height-30.0,2.0)))
       .andThen(Commands.parallel(elevatorSubsystem.goToL2(), Commands.sequence(armSubsystem.goToL2()
-      // .onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), armSubsystem.goToL2Short()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak()
+      .onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), armSubsystem.goToL2Short()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak()
       ))))
       .onlyIf(() -> checkDoneScoring());
     }
@@ -162,7 +162,7 @@ public class Manager extends SubsystemBase{
       , armSubsystem.goToPackage())
       .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L3Height-30.0,2.0)))
       .andThen(Commands.parallel(elevatorSubsystem.goToL3(), Commands.sequence(armSubsystem.goToL3()
-      // .onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), armSubsystem.goToL3Short()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak()
+      .onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), armSubsystem.goToL3Short()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak()
       ))))
       .onlyIf(() -> checkDoneScoring());
     }
@@ -174,10 +174,10 @@ public class Manager extends SubsystemBase{
       ,armSubsystem.goToPackage())
       .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-30.0,2.0)))
       .andThen(Commands.parallel(Commands.sequence(elevatorSubsystem.goToL4()
-      // .onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), elevatorSubsystem.goToL4Long()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak()
+      .onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), elevatorSubsystem.goToL4Long()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak()
       )), 
       Commands.sequence(armSubsystem.goToL4()
-      // .onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), armSubsystem.goToL4Short()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak()
+      .onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), armSubsystem.goToL4Short()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak()
       )))
       .onlyIf(() -> checkDoneScoring());
     }
@@ -285,7 +285,7 @@ public class Manager extends SubsystemBase{
     }
 
     public Command autonIntake() {
-      return Commands.parallel(Commands.deadline(manipulatorSubsystem.intake(), armSubsystem.goToFeeder()), elevatorSubsystem.goToFeeder());
+      return Commands.parallel(Commands.deadline(manipulatorSubsystem.autonIntake(), armSubsystem.goToFeeder()), elevatorSubsystem.goToFeeder());
     }
 
     public Command autonFinishIntake() {
@@ -310,7 +310,8 @@ public class Manager extends SubsystemBase{
 
     public Command lockFingers(){
       return climberSubsystem.servoLock();
-    }    
+    }   
+
     public Command OpenFingers(){
       return climberSubsystem.servoOpen();
     }
@@ -345,7 +346,7 @@ public class Manager extends SubsystemBase{
       return Commands.sequence(elevatorSubsystem.goToFloorIntake()
       ,armSubsystem.horizontal()
       ,intakeSubsystem.goToPackage()
-      ,Commands.parallel(Commands.waitSeconds(0.2).andThen(armSubsystem.goToPackage())
+      ,Commands.parallel(armSubsystem.goToPackage()
       ,elevatorSubsystem.goToPackage()));
     }
 
@@ -407,6 +408,22 @@ public class Manager extends SubsystemBase{
 
     public Command setLightsClimb() {
       return lightsSubsystem.setRed();
+    }
+
+    public Command setLightsGood() {
+      return lightsSubsystem.setGreen();
+    }
+
+    public Command setLightsOk() {
+      return lightsSubsystem.setYellow();
+    }
+
+    public Command setLightsBad() {
+      return lightsSubsystem.setRed();
+    }
+
+    public Command setLightsAlign() {
+      return lightsSubsystem.setGreen();
     }
 
     // public Command setLightsOff() {

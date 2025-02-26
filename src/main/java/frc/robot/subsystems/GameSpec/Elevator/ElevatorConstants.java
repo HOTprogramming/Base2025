@@ -33,7 +33,7 @@ public class ElevatorConstants {
     public static double FloorIntakeGrabHeight;
 
 
-    public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
+    public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS, double kG) {} 
 
     static {
         switch (Constants.getRobot()) {
@@ -56,7 +56,8 @@ public class ElevatorConstants {
         elevatorEncoderID = 52;
         kReduction = (1.0 / 2.0);
         kMaxAccelerationRpmPerSec = 9000.0; 
-        elevatorGains = new MMGains(1000, 1500, 4500, 2.5 , 0, 0.0, 0.025, 0.3);
+        elevatorGains = new MMGains(1000, 1500, 4500, 2.5 , 0, 0.0, 0.025, 0.3, 0.0);
+        //elevatorGains = new MMGains(0, 0, 0, 45.0 , 0, 2.25, 30.0, 1.0, 0.0);//torque position pid
         elevatorEncoderOffset = 0.2546;
 
         PackageHeight = 15.0; 
@@ -88,7 +89,7 @@ public class ElevatorConstants {
         elevatorEncoderID = 52;
         kReduction = (1.0 / 2.0);
         kMaxAccelerationRpmPerSec = 9000.0; 
-        elevatorGains = new MMGains(1000, 1500, 4500, 2.5 , 0, 0.0, 0.025, 0.3);
+        elevatorGains = new MMGains(0, 0, 0, 45.0 , 0, 2.25, 30.0, 1.0, 0.0);//torque position pid
         elevatorEncoderOffset = 0.4953;
 
         PackageHeight = 17.9; 
@@ -113,7 +114,7 @@ public class ElevatorConstants {
         elevatorEncoderID = 52;
         kReduction = (1.0 / 2.0);
         kMaxAccelerationRpmPerSec = 9000.0; 
-        elevatorGains = new MMGains(1000, 1500, 4500, 2.5 , 0, 0.0, 0.025, 0.3);
+        elevatorGains = new MMGains(1000, 1500, 4500, 2.5 , 0, 0.0, 0.025, 0.3, 0.0);
         
         PackageHeight = 17.9;
     

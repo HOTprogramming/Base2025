@@ -64,6 +64,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     m_robotContainer.updateAutonCommand();
+    m_robotContainer.updateLights();
   }
 
   @Override
@@ -91,6 +92,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    m_robotContainer.resetLeds();
   }
 
   @Override
