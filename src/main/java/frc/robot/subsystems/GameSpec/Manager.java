@@ -354,6 +354,14 @@ public class Manager extends SubsystemBase{
       .andThen(runOnce(() -> climberSubsystem.setPower(0.0)));
     }
 
+    public Command testRatchetServoOut(){
+      return climberSubsystem.ratchetServoPosition(0);
+    }
+
+    public Command testRatchetServoIn(){
+      return climberSubsystem.ratchetServoPosition(1);
+    }
+
 
     //picks up an algae from the ground
     public Command alignFloorIntake(){
