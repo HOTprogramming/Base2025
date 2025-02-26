@@ -93,7 +93,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    m_robotContainer.updateLeds();
+    m_robotContainer.resetLeds();
   }
 
   @Override
