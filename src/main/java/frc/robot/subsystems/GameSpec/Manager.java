@@ -422,6 +422,10 @@ public class Manager extends SubsystemBase{
       return lightsSubsystem.setRed();
     }
 
+    public Command setLightsAlign() {
+      return lightsSubsystem.setGreen();
+    }
+
     // public Command setLightsOff() {
     //   return lightsSubsystem.set
     // }

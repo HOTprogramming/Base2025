@@ -209,9 +209,9 @@ public class RobotContainer {
         }
       ));
       // b right y middle x left
-      driver.rightBumper().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTargetWBall(2)), cameraSubsystem.setIgnore()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefFieldcentric()))).onFalse(cameraSubsystem.setUnIgnore());
-      driver.y().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTargetWBall(1)), cameraSubsystem.setIgnore()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefFieldcentric()))).onFalse(cameraSubsystem.setUnIgnore());
-      driver.leftBumper().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTargetWBall(0)), cameraSubsystem.setIgnore()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefFieldcentric()))).onFalse(cameraSubsystem.setUnIgnore());
+      driver.rightBumper().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTargetWBall(2)), cameraSubsystem.setIgnore(), gamespecManager.setLightsAlign()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefFieldcentric()))).onFalse(cameraSubsystem.setUnIgnore()).onFalse(refreshLights());
+      driver.y().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTargetWBall(1)), cameraSubsystem.setIgnore(), gamespecManager.setLightsAlign()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefFieldcentric()))).onFalse(cameraSubsystem.setUnIgnore()).onFalse(refreshLights());
+      driver.leftBumper().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTargetWBall(0)), cameraSubsystem.setIgnore(), gamespecManager.setLightsAlign()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefFieldcentric()))).onFalse(cameraSubsystem.setUnIgnore()).onFalse(refreshLights());
 
       // driver.b().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));      
       // driver.x().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(0)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));      
@@ -306,20 +306,23 @@ public class RobotContainer {
     }
   }
 
+  public Command refreshLights() {
+    return gamespecManager.setLightsAlgae().onlyIf(() -> isAlgae())
+    .andThen(gamespecManager.setLightsClimb().onlyIf(() -> isClimb()))
+    .andThen(gamespecManager.setLightsCoral().onlyIf(() -> isCoral()));
+  }
+
   public void updateLights() {
     if (drivetrain.getAutoStartError() < 0.15) {
       NamedCommands.getCommand("Lights Auto Good").ignoringDisable(true).schedule();
-      System.err.println("GOOD");
     } else if (drivetrain.getAutoStartError() < 0.3) {
       NamedCommands.getCommand("Lights Auto Ok").ignoringDisable(true).schedule();
-      System.err.println("OK");
     } else {
       NamedCommands.getCommand("Lights Auto Bad").ignoringDisable(true).schedule();
-      System.err.println("BAD");
     }
   }
 
-  public void updateLeds() {
+  public void resetLeds() {
     switch (this.mode) {
       case coral:
       NamedCommands.getCommand("Lights Coral").schedule();
@@ -330,7 +333,7 @@ public class RobotContainer {
         break;
 
       case climb:
-      NamedCommands.getCommand("Lights Climb").schedule();;
+      NamedCommands.getCommand("Lights Climb").schedule();
         break;
     }
   }
