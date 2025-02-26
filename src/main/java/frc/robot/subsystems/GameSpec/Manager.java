@@ -407,6 +407,10 @@ public class Manager extends SubsystemBase{
     public Command setLightsCoral() {
       return lightsSubsystem.setYellow();
     }
+    
+    public Command setLightsShoot(){
+      return lightsSubsystem.setPurple();
+    }
 
     public Command setLightsAlgae() {
       return lightsSubsystem.setTeal();
