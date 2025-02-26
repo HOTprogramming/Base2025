@@ -147,23 +147,29 @@ public class Manager extends SubsystemBase{
       return Commands.parallel(Commands.parallel(
       run(() -> {scoringLevel = ScoringLevel.L2;})
       ,elevatorSubsystem.goToL2().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
-      , armSubsystem.goToPackage())
+      ,armSubsystem.goToPackage())
       .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L2Height-30.0,2.0)))
-      .andThen(Commands.parallel(elevatorSubsystem.goToL2(), Commands.sequence(armSubsystem.goToL2()
+      .andThen(Commands.parallel(Commands.sequence(elevatorSubsystem.goToL2()
+      .onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), elevatorSubsystem.goToL2Long()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak()
+      )), 
+      Commands.sequence(armSubsystem.goToL2()
       .onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), armSubsystem.goToL2Short()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak()
-      ))))
+      )))
       .onlyIf(() -> checkDoneScoring());
     }
 
     public Command goToL3(){
-      return Commands.parallel(Commands.parallel(      
+      return Commands.parallel(Commands.parallel(
       run(() -> {scoringLevel = ScoringLevel.L3;})
       ,elevatorSubsystem.goToL3().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
-      , armSubsystem.goToPackage())
+      ,armSubsystem.goToPackage())
       .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L3Height-30.0,2.0)))
-      .andThen(Commands.parallel(elevatorSubsystem.goToL3(), Commands.sequence(armSubsystem.goToL3()
+      .andThen(Commands.parallel(Commands.sequence(elevatorSubsystem.goToL3()
+      .onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), elevatorSubsystem.goToL3Long()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak()
+      )), 
+      Commands.sequence(armSubsystem.goToL3()
       .onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), armSubsystem.goToL3Short()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak()
-      ))))
+      )))
       .onlyIf(() -> checkDoneScoring());
     }
 

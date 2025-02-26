@@ -80,7 +80,7 @@ public class ArmConstants {
         PackageAngle = 0;
         FeederAngle = 50.8;
         L1Angle = -104.0;
-        L2Angle = -52.2;
+        L2Angle = -33.66;
         L3Angle = -31.6;
         L4Angle = -36;
         L4Score = -65;
@@ -90,12 +90,12 @@ public class ArmConstants {
         Intermediate = -49.0;
         CurrentFail = 60.0;
         L3short = -20.6;
-        L2Short = -20.6;
+        L2Short = -29.6;
         L4Short = -22.5;
         IntakeAlgae = -61.0;
         Processor = 35.0;
         GetAlgaeFromReef = 109;
-        Barge = 128;
+        Barge = -170;
 
     }
 
