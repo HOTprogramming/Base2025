@@ -298,7 +298,6 @@ public class Manager extends SubsystemBase{
       return armSubsystem.goToPackage();
     }
 
-
     public Command alignStationIntake(){
       return Commands.parallel(
         Commands.deadline(manipulatorSubsystem.intake(), armSubsystem.goToFeeder())
@@ -322,20 +321,39 @@ public class Manager extends SubsystemBase{
       return climberSubsystem.servoOpen();
     }
 
-    //deploys the climber
+    // //deploys the climber
+    // public Command climberOut(){
+    //   return Commands.sequence(
+    //   elevatorSubsystem.goToFloorIntake()
+    //   ,armSubsystem.horizontal()
+    //   ,intakeSubsystem.intakeClimberOut()
+    //   ,run(() -> climberSubsystem.setPower(16.0))
+    //   .onlyWhile(() -> climberSubsystem.checkClimberDeployed())
+    //   .andThen(runOnce(() -> climberSubsystem.setPower(0.0)))
+    //   ,elevatorSubsystem.climbDown()
+    //   ,intakeSubsystem.intakeVert()
+    //   );
+    // }
+
     public Command climberOut(){
       return Commands.sequence(
       elevatorSubsystem.goToFloorIntake()
       ,armSubsystem.horizontal()
       ,intakeSubsystem.intakeClimberOut()
-      ,run(() -> climberSubsystem.setPower(16.0))
-      .onlyWhile(() -> climberSubsystem.checkClimberDeployed())
-      .andThen(runOnce(() -> climberSubsystem.setPower(0.0)))
+      ,climberSubsystem.ratchetServoPositionClimber(0, -1.0).andThen(Commands.waitSeconds(0.5))
+      ,climberDeploy()
+      ,climberSubsystem.ratchetServoPositionClimber(1, 0).andThen(Commands.waitSeconds(0.5))
       ,elevatorSubsystem.climbDown()
       ,intakeSubsystem.intakeVert()
-      )
-      ;
+      );
     }
+
+    public Command climberDeploy(){
+    return run(() -> climberSubsystem.setPower(4.0))
+      .onlyWhile(() -> climberSubsystem.checkClimberDeployed())
+      .andThen(runOnce(() -> climberSubsystem.setPower(0.0)));
+    }
+
 
     //picks up an algae from the ground
     public Command alignFloorIntake(){

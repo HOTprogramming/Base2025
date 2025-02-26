@@ -10,6 +10,7 @@ public class ClimberConstants {
     public static MMGains climberGains;
     public static int ServoPort;
     public static int ServoPort2;
+    public static int ServoPort3;
     public static double UnspoolDistance;
     public static double SpoolDistance;
     public static double ServoClampDistance;
@@ -44,6 +45,7 @@ public class ClimberConstants {
         climberMotor2ID = 12;
         ServoPort = 8;
         ServoPort2 = 9;
+        ServoPort3 = 10;
         kReduction = (1.0 / 2.0);
         kMaxAccelerationRpmPerSec = 9000.0;
         UnspoolDistance = -2;
