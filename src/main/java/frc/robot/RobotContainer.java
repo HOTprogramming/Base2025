@@ -114,6 +114,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Lights Coral", gamespecManager.setLightsCoral());
     NamedCommands.registerCommand("Lights Algae", gamespecManager.setLightsAlgae());
     NamedCommands.registerCommand("Lights Climb", gamespecManager.setLightsClimb());
+    NamedCommands.registerCommand("Lights Shoot", gamespecManager.setLightsShoot());
 
 
     NamedCommands.registerCommand("Lights Auto Bad", gamespecManager.setLightsBad());
@@ -222,6 +223,7 @@ public class RobotContainer {
       // driver.b().onTrue(NamedCommands.getCommand("expel"));
       driver.rightTrigger().onTrue(NamedCommands.getCommand("shoot")
       .onlyIf(operator.b().or(operator.a()).or(operator.x()).or(operator.y())))
+
       .onFalse(NamedCommands.getCommand("cancel shoot")
       .onlyIf(operator.b().or(operator.a()).or(operator.x()).or(operator.y())));
       // driver.leftTrigger().onTrue(NamedCommands.getCommand("Intake"));
