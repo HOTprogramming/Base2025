@@ -340,9 +340,9 @@ public class Manager extends SubsystemBase{
       elevatorSubsystem.goToFloorIntake()
       ,armSubsystem.horizontal()
       ,intakeSubsystem.intakeClimberOut()
-      ,climberSubsystem.ratchetServoPositionClimber(0, -1.0).andThen(Commands.waitSeconds(0.5))
+      ,climberSubsystem.ratchetServoPositionClimber(0, -1.0).andThen(Commands.waitSeconds(1.0))
       ,climberDeploy()
-      ,climberSubsystem.ratchetServoPositionClimber(1, 0).andThen(Commands.waitSeconds(0.5))
+      ,climberSubsystem.ratchetServoPosition(1).andThen(Commands.waitSeconds(1.0))
       ,elevatorSubsystem.climbDown()
       ,intakeSubsystem.intakeVert()
       );
