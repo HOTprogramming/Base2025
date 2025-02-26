@@ -51,9 +51,9 @@ public class ClimberConstants {
         ServoClampDistance = 0.5;
         climberServoLockPos = 0.50;
         climberServoOpenPos = 0.16;
-        targetClicks = 90.0;
+        targetClicks = 100.0;
         packageClicks = 5.0;
-        softStopClicks = 45.0;
+        softStopClicks = 25.0;
         climberGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
 
     }
