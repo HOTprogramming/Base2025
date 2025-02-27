@@ -16,6 +16,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 
+import edu.wpi.first.wpilibj.DataLogManager;
+
+
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
@@ -34,6 +37,10 @@ public class Robot extends TimedRobot {
   public Robot() {
     m_robotContainer = new RobotContainer();
 
+    // DataLogManager.start();
+    // DriverStation.startDataLog(DataLogManager.getLog(), true);
+
+    
     tab = Shuffleboard.getTab("tab");
     matchTimeEntry = tab.add("Match time",0.0).getEntry();
     voltsEntry = tab.add("Volts",0.0).getEntry();

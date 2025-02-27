@@ -298,7 +298,6 @@ public class Manager extends SubsystemBase{
       return armSubsystem.goToPackage();
     }
 
-
     public Command alignStationIntake(){
       return Commands.parallel(
         Commands.deadline(manipulatorSubsystem.intake(), armSubsystem.goToFeeder())
@@ -322,21 +321,54 @@ public class Manager extends SubsystemBase{
       return climberSubsystem.servoOpen();
     }
 
-    //deploys the climber
+    // //deploys the climber
+    // public Command climberOut(){
+    //   return Commands.sequence(
+    //   elevatorSubsystem.goToFloorIntake()
+    //   ,armSubsystem.horizontal()
+    //   ,intakeSubsystem.intakeClimberOut()
+    //   ,run(() -> climberSubsystem.setPower(16.0))
+    //   .onlyWhile(() -> climberSubsystem.checkClimberDeployed())
+    //   .andThen(runOnce(() -> climberSubsystem.setPower(0.0)))
+    //   ,elevatorSubsystem.climbDown()
+    //   ,intakeSubsystem.intakeVert()
+    //   );
+    // }
+
     public Command climberOut(){
       return Commands.sequence(
-      elevatorSubsystem.goToFloorIntake()
+      lockFingers()
+      ,elevatorSubsystem.goToFloorIntake()
       ,armSubsystem.horizontal()
       ,intakeSubsystem.intakeClimberOut()
-      ,run(() -> climberSubsystem.setPower(16.0))
-      .onlyWhile(() -> climberSubsystem.checkClimberDeployed())
-      .andThen(runOnce(() -> climberSubsystem.setPower(0.0)))
+      ,unlatchServo()
+      ,Commands.waitSeconds(0.2)
+      ,climberDeploy()
+      ,latchServo()
       ,elevatorSubsystem.climbDown()
       ,intakeSubsystem.intakeVert()
-      )
-      ;
+      );
     }
 
+    public Command climberDeploy(){
+    return run(() -> climberSubsystem.setPower(4.0))
+      .onlyWhile(() -> climberSubsystem.checkClimberDeployed())
+      .andThen(runOnce(() -> climberSubsystem.setPower(0.0)));
+    }
+
+    public Command unlatchServo(){
+      return climberSubsystem.ratchetServoPositionClimber(0.38, -3.0)
+      .andThen(Commands.waitSeconds(0.2));
+    }
+
+    public Command latchServo(){
+      return climberSubsystem.ratchetServoPosition(0.59)
+      .andThen(Commands.waitSeconds(0.2));
+    }
+
+    public Command testRatchetServoIn2(){
+      return climberSubsystem.ratchetServoPosition(0.59);
+    }
     //picks up an algae from the ground
     public Command alignFloorIntake(){
       return Commands.sequence(

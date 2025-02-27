@@ -221,10 +221,10 @@ public class RobotContainer {
       // driver.b().whileTrue(NamedCommands.getCommand("Align Reef Left"));
       // driver.x().whileTrue(NamedCommands.getCommand("Align Reef Right"));
       // driver.b().onTrue(NamedCommands.getCommand("expel"));
-      driver.rightTrigger().onTrue(NamedCommands.getCommand("shoot")
+      driver.rightTrigger().onTrue(Commands.parallel(NamedCommands.getCommand("shoot"), gamespecManager.setLightsShoot())
       .onlyIf(operator.b().or(operator.a()).or(operator.x()).or(operator.y())))
 
-      .onFalse(NamedCommands.getCommand("cancel shoot")
+      .onFalse(Commands.parallel(NamedCommands.getCommand("cancel shoot"), refreshLights())
       .onlyIf(operator.b().or(operator.a()).or(operator.x()).or(operator.y())));
       // driver.leftTrigger().onTrue(NamedCommands.getCommand("Intake"));
 
@@ -256,15 +256,23 @@ public class RobotContainer {
       operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
       operator.y().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));
       operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("open fingers"));
+      operator.b().and(this::isClimb).onTrue(gamespecManager.latchServo());
+
       //operator.b().and(this::isClimb).onTrue(NamedCommands.getCommand("Climber Package"));
 
+      operator.povUp().or(operator.povLeft().or(operator.povDown().or(operator.povRight()))).onTrue(NamedCommands.getCommand("Package").unless(this::isClimb));
+
       operator.axisLessThan(5, -0.05).or(operator.axisGreaterThan(5, 0.05)).and(this::isClimb).whileTrue(
+      Commands.sequence(
         gamespecManager.climberSubsystem.run(
-          () -> gamespecManager.climberSubsystem.setPower(-operator.getRightY())
-        )
-      ).onFalse(gamespecManager.climberSubsystem.run(
+        () -> gamespecManager.climberSubsystem.setPower(-operator.getRightY())
+      ).onlyWhile(() -> gamespecManager.climberSubsystem.checkClimberSoftStop())
+      ,gamespecManager.climberSubsystem.run(
         () -> gamespecManager.climberSubsystem.setPower(0.0)
-      ));
+      ).onlyIf(() -> !gamespecManager.climberSubsystem.checkClimberSoftStop())))
+      .whileFalse(gamespecManager.climberSubsystem.runOnce(
+        () -> gamespecManager.climberSubsystem.setPower(0.0)));
+
       operator.leftTrigger().or(operator.rightTrigger()).onFalse(NamedCommands.getCommand("Coral Zero"));
       System.out.println("c");
 

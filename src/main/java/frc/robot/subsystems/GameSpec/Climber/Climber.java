@@ -96,9 +96,22 @@ public class Climber extends SubsystemBase {
     }
 
     public Command servoLock(){
-      return run(() -> {
+      return runOnce(() -> {
        io.climberServo.set(ClimberConstants.climberServoLockPos);
        io.climberServo2.set(1 - ClimberConstants.climberServoLockPos);
+      });
+    }
+
+    public Command ratchetServoPositionClimber(double position, double climberVoltage){
+      return runOnce(() -> {
+        io.ratchetServo.set(position);
+        io.setPower(climberVoltage);
+      });
+    }
+
+    public Command ratchetServoPosition(double position){
+      return runOnce(() -> {
+        io.ratchetServo.set(position);
       });
     }
 
@@ -120,6 +133,13 @@ public class Climber extends SubsystemBase {
     else{
       return true;
     }
+  }
+
+  /**
+   * @return false if climber is at or past softstop
+   */
+  public boolean checkClimberSoftStop(){
+    return stats.climberPosition > ClimberConstants.softStopClicks;
   }
 
   public Boolean checkClimberPackaged(){
