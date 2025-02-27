@@ -337,7 +337,8 @@ public class Manager extends SubsystemBase{
 
     public Command climberOut(){
       return Commands.sequence(
-      elevatorSubsystem.goToFloorIntake()
+      lockFingers()
+      ,elevatorSubsystem.goToFloorIntake()
       ,armSubsystem.horizontal()
       ,intakeSubsystem.intakeClimberOut()
       ,unlatchServo()
