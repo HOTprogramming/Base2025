@@ -340,9 +340,10 @@ public class Manager extends SubsystemBase{
       elevatorSubsystem.goToFloorIntake()
       ,armSubsystem.horizontal()
       ,intakeSubsystem.intakeClimberOut()
-      ,climberSubsystem.ratchetServoPositionClimber(0.29, -1.0).andThen(Commands.waitSeconds(1.0))
+      ,unlatchServo()
+      ,Commands.waitSeconds(0.2)
       ,climberDeploy()
-      ,climberSubsystem.ratchetServoPosition(0.59).andThen(Commands.waitSeconds(1.0))
+      ,latchServo()
       ,elevatorSubsystem.climbDown()
       ,intakeSubsystem.intakeVert()
       );
@@ -354,14 +355,19 @@ public class Manager extends SubsystemBase{
       .andThen(runOnce(() -> climberSubsystem.setPower(0.0)));
     }
 
-    public Command testRatchetServoOut(){
-      return climberSubsystem.ratchetServoPosition(0.29);
+    public Command unlatchServo(){
+      return climberSubsystem.ratchetServoPositionClimber(0.38, -3.0)
+      .andThen(Commands.waitSeconds(0.2));
     }
 
-    public Command testRatchetServoIn(){
+    public Command latchServo(){
+      return climberSubsystem.ratchetServoPosition(0.59)
+      .andThen(Commands.waitSeconds(0.2));
+    }
+
+    public Command testRatchetServoIn2(){
       return climberSubsystem.ratchetServoPosition(0.59);
     }
-
     //picks up an algae from the ground
     public Command alignFloorIntake(){
       return Commands.sequence(

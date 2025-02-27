@@ -103,14 +103,14 @@ public class Climber extends SubsystemBase {
     }
 
     public Command ratchetServoPositionClimber(double position, double climberVoltage){
-      return run(() -> {
+      return runOnce(() -> {
         io.ratchetServo.set(position);
         io.setPower(climberVoltage);
       });
     }
 
     public Command ratchetServoPosition(double position){
-      return run(() -> {
+      return runOnce(() -> {
         io.ratchetServo.set(position);
       });
     }
