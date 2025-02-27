@@ -146,7 +146,7 @@ public class Lights implements Subsystem {
         return runOnce(()-> {rightCANdle.setLEDs(0, 0, 225, 0, start2, count); });
         //blue    
     }
-public Command setBlue3(){ 
+  public Command setBlue3(){ 
     return runOnce(()-> {rightCANdle.setLEDs(0, 0, 225, 0, start3, count); });
             //blue
    }

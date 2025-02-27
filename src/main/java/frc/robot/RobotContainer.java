@@ -256,11 +256,13 @@ public class RobotContainer {
       // operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
       // operator.y().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));
       // operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("open fingers"));
-      
+
       //operator.b().and(this::isClimb).onTrue(NamedCommands.getCommand("Climber Package"));
 
       operator.a().and(this::isClimb).onTrue(gamespecManager.testRatchetServoIn());     
       operator.b().and(this::isClimb).onTrue(gamespecManager.testRatchetServoOut());  
+
+      operator.povUp().or(operator.povLeft().or(operator.povDown().or(operator.povDownRight()))).onTrue(NamedCommands.getCommand("Package"));
 
       operator.axisLessThan(5, -0.05).or(operator.axisGreaterThan(5, 0.05)).and(this::isClimb).whileTrue(
         gamespecManager.climberSubsystem.run(

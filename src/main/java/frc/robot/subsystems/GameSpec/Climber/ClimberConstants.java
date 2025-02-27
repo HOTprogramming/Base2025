@@ -45,7 +45,7 @@ public class ClimberConstants {
         climberMotor2ID = 12;
         ServoPort = 8;
         ServoPort2 = 9;
-        ServoPort3 = 10;
+        ServoPort3 = 7;
         kReduction = (1.0 / 2.0);
         kMaxAccelerationRpmPerSec = 9000.0;
         UnspoolDistance = -2;
