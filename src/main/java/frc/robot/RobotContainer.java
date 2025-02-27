@@ -269,17 +269,10 @@ public class RobotContainer {
       ).onlyWhile(() -> gamespecManager.climberSubsystem.checkClimberSoftStop())
       ,gamespecManager.climberSubsystem.run(
         () -> gamespecManager.climberSubsystem.setPower(0.0)
-      ).onlyWhile(() -> !gamespecManager.climberSubsystem.checkClimberSoftStop())))
+      ).onlyIf(() -> !gamespecManager.climberSubsystem.checkClimberSoftStop())))
       .whileFalse(gamespecManager.climberSubsystem.runOnce(
         () -> gamespecManager.climberSubsystem.setPower(0.0)));
 
-
-      //   gamespecManager.climberSubsystem.run(
-      //     () -> gamespecManager.climberSubsystem.setPower(-operator.getRightY())
-      //   ).onlyIf(() -> gamespecManager.climberSubsystem.checkClimberSoftStop())
-      // .andThen(gamespecManager.climberSubsystem.runOnce(
-      //   () -> gamespecManager.climberSubsystem.setPower(0.0)
-      // )));
       operator.leftTrigger().or(operator.rightTrigger()).onFalse(NamedCommands.getCommand("Coral Zero"));
       System.out.println("c");
 
