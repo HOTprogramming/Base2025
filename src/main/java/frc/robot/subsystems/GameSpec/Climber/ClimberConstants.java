@@ -55,7 +55,7 @@ public class ClimberConstants {
         climberServoOpenPos = 0.16;
         targetClicks = 100.0;
         packageClicks = 5.0;
-        softStopClicks = 27.0;
+        softStopClicks = 25.0;
         climberGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
 
     }
