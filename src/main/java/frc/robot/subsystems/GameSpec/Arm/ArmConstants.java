@@ -78,7 +78,7 @@ public class ArmConstants {
         armEncoderOffset = 0.08618178125;
     
         PackageAngle = 0;
-        FeederAngle = 48.0;
+        FeederAngle = 49.0;
         L1Angle = -104.0;
         L2Angle = -33.66;
         L3Angle = -31.6;
@@ -88,7 +88,7 @@ public class ArmConstants {
         L2Score = -87.8;
         Horizontal = 90;
         Intermediate = -49.0;
-        CurrentFail = 60.0;
+        CurrentFail = 80.0;//60
         L3short = -20.6;
         L2Short = -29.6;
         L4Short = -22.5;

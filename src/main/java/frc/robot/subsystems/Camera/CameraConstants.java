@@ -63,7 +63,7 @@ public class CameraConstants {
     public static final int[] REEF_TAGS_RED = new int[] {6, 7, 8, 9, 10, 11};
     public static final int[] REEF_TAGS_BLUE = new int[] {17, 18, 19, 20, 21, 22};
 
-    public static final int[] IGNORE_ALWAYS = new int[] {3, 16};
+    public static final int[] IGNORE_ALWAYS = new int[] {3, 16, 4, 5, 14, 15};
     
     public Map<CameraPositions, CameraConstant> cameraConstants = null;
     
