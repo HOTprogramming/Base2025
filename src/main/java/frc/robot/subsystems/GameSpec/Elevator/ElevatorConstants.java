@@ -64,8 +64,8 @@ public class ElevatorConstants {
 
         PackageHeight = 15.0; 
         L4Height = 57.0;
-        L4LongHeight = 53.0;
-        L3Height = 25.35;
+        L4LongHeight = 51.0;
+        L3Height = 25.55;
         L3LongHeight = 22.35;
         L2Height = 10.6;
         L2LongHeight = 9.73;
@@ -75,7 +75,7 @@ public class ElevatorConstants {
         L3ScoreHeight = 19.8;
         L2ScoreHeight = 9.8;
         HPHeight = 17.0;
-        climbHeight = 1.0;
+        climbHeight = 0.25;
         highAlgae = 35;
         lowAlgae = 17;
         BargeHeight = 68.75;

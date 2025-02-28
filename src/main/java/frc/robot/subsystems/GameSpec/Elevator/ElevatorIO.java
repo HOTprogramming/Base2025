@@ -122,14 +122,14 @@ public abstract class ElevatorIO {
         cfg.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         cfg.withCurrentLimits(
             new CurrentLimitsConfigs()
-                .withStatorCurrentLimit(100)
+                .withStatorCurrentLimit(120)
                 .withStatorCurrentLimitEnable(true)
-                .withSupplyCurrentLimit(100)
+                .withSupplyCurrentLimit(120)
                 .withSupplyCurrentLimitEnable(true)
         ).withTorqueCurrent(
             new TorqueCurrentConfigs()
-                .withPeakForwardTorqueCurrent(100)
-                .withPeakReverseTorqueCurrent(-100)
+                .withPeakForwardTorqueCurrent(120)
+                .withPeakReverseTorqueCurrent(-120)
         );
         encoderCfg.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
         encoderCfg.MagnetSensor.MagnetOffset = ElevatorConstants.elevatorEncoderOffset;

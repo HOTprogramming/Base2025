@@ -340,13 +340,13 @@ public class Manager extends SubsystemBase{
       lockFingers()
       ,elevatorSubsystem.goToFloorIntake()
       ,armSubsystem.horizontal()
-      ,intakeSubsystem.intakeClimberOut()
+      //,intakeSubsystem.intakeClimberOut()
       ,unlatchServo()
       ,Commands.waitSeconds(0.2)
       ,climberDeploy()
       ,latchServo()
       ,elevatorSubsystem.climbDown()
-      ,intakeSubsystem.intakeVert()
+      //,intakeSubsystem.intakeVert()
       );
     }
 
@@ -388,6 +388,13 @@ public class Manager extends SubsystemBase{
       ,elevatorSubsystem.goToPackage()));
     }
 
+    public Command bargePackage(){
+      return Commands.sequence(
+        elevatorSubsystem.goToPackage()
+        ,armSubsystem.goToPackage()
+      );
+    }
+
     public Command algaePackage(){
       return armSubsystem.goToPackage();
     }
@@ -423,7 +430,8 @@ public class Manager extends SubsystemBase{
           AlgaeIntakeEnum.pluck, manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage),
           AlgaeIntakeEnum.floor, Commands.parallel(
            manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage)
-          ,intakeSubsystem.intakeRollerVoltage(IntakeConstants.rollerIntakeVoltage))
+          //,intakeSubsystem.intakeRollerVoltage(IntakeConstants.rollerIntakeVoltage)
+          )
           ),
         this::getAlgaeIntakeEnum
       );
