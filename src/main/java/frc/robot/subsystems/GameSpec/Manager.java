@@ -134,7 +134,8 @@ public class Manager extends SubsystemBase{
     }
 
     public Command goToL1(){
-      return Commands.parallel(Commands.parallel(
+      return Commands.parallel(
+      Commands.parallel(
       run(() -> {scoringLevel = ScoringLevel.L1;})
       ,elevatorSubsystem.goToL1().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
       ,armSubsystem.goToPackage())
@@ -144,7 +145,9 @@ public class Manager extends SubsystemBase{
     }
 
     public Command goToL2(){
-      return Commands.parallel(Commands.parallel(
+      return Commands.parallel(
+      manipulatorSubsystem.goScore()
+      ,Commands.parallel(
       run(() -> {scoringLevel = ScoringLevel.L2;})
       ,elevatorSubsystem.goToL2().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
       ,armSubsystem.goToPackage())
@@ -159,7 +162,9 @@ public class Manager extends SubsystemBase{
     }
 
     public Command goToL3(){
-      return Commands.parallel(Commands.parallel(
+      return Commands.parallel(
+      manipulatorSubsystem.goScore()
+      ,Commands.parallel(
       run(() -> {scoringLevel = ScoringLevel.L3;})
       ,elevatorSubsystem.goToL3().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
       ,armSubsystem.goToPackage())
@@ -174,7 +179,9 @@ public class Manager extends SubsystemBase{
     }
 
     public Command goToL4(){
-      return Commands.parallel(Commands.parallel(
+      return Commands.parallel(
+      manipulatorSubsystem.goScore()
+      ,Commands.parallel(
       run(() -> {scoringLevel = ScoringLevel.L4;})
       ,elevatorSubsystem.goToL4().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
       ,armSubsystem.goToPackage())
@@ -289,7 +296,7 @@ public class Manager extends SubsystemBase{
     public Command autonL4() {
       return Commands.sequence(
         Commands.parallel(runOnce(() -> {scoringLevel = ScoringLevel.L4;}), elevatorSubsystem.goToL4()), 
-        manipulatorSubsystem.goScore()
+        manipulatorSubsystem.goScore().withTimeout(0.3)
        );
     }
 
