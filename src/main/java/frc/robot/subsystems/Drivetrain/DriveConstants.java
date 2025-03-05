@@ -24,8 +24,6 @@ import frc.robot.subsystems.Drivetrain.DriveConstants.DriveConfig;
 
 public class DriveConstants {
     public static final double slowModeMultiplier = 0.5;
-    private static final boolean seedpose_auton_sim = true;
-    private static final boolean seedpose_auton_real = true;
 
     public static final double OTF_end_tolerance = 0.2;
 
@@ -54,6 +52,7 @@ public class DriveConstants {
             put(Rotation2d.fromDegrees(-60), new Pose2d(12.64, 4.75, Rotation2d.fromDegrees(-60))); 
         }
     };
+
     public static final Map<Rotation2d, Pose2d> bluePoses = new HashMap<>() {
         {
             put(Rotation2d.fromDegrees(0), new Pose2d(3.66, 4.03, Rotation2d.fromDegrees(0)));
@@ -65,8 +64,7 @@ public class DriveConstants {
         }
     };
 
-    
-    public static final Map<Rotation2d, Double[]> redShiftBall = new HashMap<>() {
+    public static final Map<Rotation2d, Double[]> redPoleShift = new HashMap<>() {
         {   //                                                  left center right
             put(Rotation2d.fromDegrees(0), new Double[] {6.0, -1.6, -6.0});
             put(Rotation2d.fromDegrees(60), new Double[] {6.0, -1.6,  -6.0});
@@ -77,7 +75,7 @@ public class DriveConstants {
         }
     };
 
-    public static final Map<Rotation2d, Double[]> blueShiftBall = new HashMap<>() {
+    public static final Map<Rotation2d, Double[]> bluePoleShift = new HashMap<>() {
         {   //                                                  left center right
             put(Rotation2d.fromDegrees(0), new Double[] {6.0, -1.6, -6.0});
             put(Rotation2d.fromDegrees(60), new Double[] {6.0, -1.6,  -6.0});
@@ -85,59 +83,6 @@ public class DriveConstants {
             put(Rotation2d.fromDegrees(180), new Double[] {6.0, -1.6, -6.0});
             put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -1.6, -6.0});
             put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -1.6, -6.0});
-        }
-    };
-    // put(Rotation2d.fromDegrees(0), new Double[] {6.0, 0.0, -6.0});
-    //         put(Rotation2d.fromDegrees(60), new Double[] {6.0, 0.0,  -6.0});
-    //         put(Rotation2d.fromDegrees(120), new Double[] {6.0, 0.0, -6.5});
-    //         put(Rotation2d.fromDegrees(180), new Double[] {6.0, 0.0, -7.0});
-    //         put(Rotation2d.fromDegrees(-120), new Double[] {6.0, 0.0, -7.0});
-    //         put(Rotation2d.fromDegrees(-60), new Double[] {6.0, 0.0, -6.5});
-
-    public static final Map<Rotation2d, Double[]> blueShift = new HashMap<>() {
-        {
-            put(Rotation2d.fromDegrees(0), new Double[] {6.0, -6.0});
-            put(Rotation2d.fromDegrees(60), new Double[] {6.0, -6.0});
-            put(Rotation2d.fromDegrees(120), new Double[] {6.0, -6.0});
-            put(Rotation2d.fromDegrees(180), new Double[] {6.0, -6.0});
-            put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -6.0});
-            put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -6.0});
-        }
-    };
-
-    public static final Map<Rotation2d, Double[]> redShiftH = new HashMap<>() {
-        {
-            put(Rotation2d.fromDegrees(0), new Double[] {6.0, -6.0});
-            put(Rotation2d.fromDegrees(60), new Double[] {6.0, -6.0});
-            put(Rotation2d.fromDegrees(120), new Double[] {6.0, -6.5});
-            put(Rotation2d.fromDegrees(180), new Double[] {6.0, -7.0});
-            put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -7.0});
-            put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -6.5});
-        }
-    };
-
-
-    public static final Map<Rotation2d, Double[]> blueShiftH = new HashMap<>() {
-        {
-            put(Rotation2d.fromDegrees(0), new Double[] {6.0, -6.0});
-            put(Rotation2d.fromDegrees(60), new Double[] {6.0, -6.0});
-            put(Rotation2d.fromDegrees(120), new Double[] {6.0, -6.0});
-            put(Rotation2d.fromDegrees(180), new Double[] {6.0, -6.0});
-            put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -6.0});
-            put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -6.0});
-        }
-    };
-
-    
-    public static final Map<Integer, Double[]> redShift = new HashMap<>() {
-        {
-            put(6, new Double[] {6.0, -6.0});
-            put(7, new Double[] {6.0, -6.0});
-            put(8, new Double[] {6.0, -6.0});
-            put(9, new Double[] {6.0, -6.0});
-            put(10, new Double[] {6.0, -6.0});
-            put(11, new Double[] {6.0, -6.0});
-
         }
     };
 
@@ -558,7 +503,6 @@ public class DriveConstants {
                 kMaxAngularVelocity.in(RadiansPerSecond),
                 driveInitialConfigs.CurrentLimits,
                 steerInitialConfigs.CurrentLimits,
-                seedpose_auton_real,
                 autoPidConstantsTranslation,
                 autoPidConstantsTheta,
                 teleopPidConstantsTheta
@@ -573,7 +517,6 @@ public class DriveConstants {
                 kMaxAngularVelocity.in(RadiansPerSecond),
                 driveInitialConfigs.CurrentLimits,
                 steerInitialConfigs.CurrentLimits,
-                seedpose_auton_real,
                 autoPidConstantsTranslation,
                 autoPidConstantsTheta,
                 teleopPidConstantsTheta
@@ -588,7 +531,6 @@ public class DriveConstants {
                 kMaxAngularVelocity.in(RadiansPerSecond),
                 driveInitialConfigs.CurrentLimits,
                 steerInitialConfigs.CurrentLimits,
-                seedpose_auton_real,
                 autoPidConstantsTranslation,
                 autoPidConstantsTheta,
                 teleopPidConstantsTheta
@@ -606,7 +548,6 @@ public class DriveConstants {
         double MAX_ANGULAR_VELOCITY,
         CurrentLimitsConfigs DRIVE_CURRENT,
         CurrentLimitsConfigs AZIMUTH_CURRENT,
-        boolean seedPoseAuton,
         PIDConstants AUTON_TRANSLATION_PID,
         PIDConstants AUTON_ROTATION_PID,
         PIDConstants TELEOP_ROTATION_PID
