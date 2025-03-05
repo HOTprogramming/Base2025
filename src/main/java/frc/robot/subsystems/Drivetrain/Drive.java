@@ -42,9 +42,10 @@ import java.util.stream.IntStream;
 import org.json.simple.parser.ParseException;
 import org.opencv.ml.RTrees;
 
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest.ForwardReference;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.PIDConstants;
@@ -107,6 +108,7 @@ public class Drive extends SubsystemBase {
     .withDeadband(0.0).withRotationalDeadband(0.0);
     private final SwerveRequest.RobotCentric ROBOT_CENTRIC = new SwerveRequest.RobotCentric();
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
+    private final SwerveRequest.FieldCentricFacingAngle a = new SwerveRequest.FieldCentricFacingAngle();
 
     private int currentPathIndex;
     private List<PathPlannerPath> pathGroup;
@@ -364,20 +366,25 @@ public class Drive extends SubsystemBase {
     }
 
     public void alignReefRobotcentric() {
-        double rotationDegrees = currentTarget.getRotation().getDegrees();
+        double cosine = Math.cos(currentTarget.getRotation().getRadians());
+        double sine = Math.cos(currentTarget.getRotation().getRadians());
+        double x = iOdata.state.Pose.getX();
+        double y = iOdata.state.Pose.getY();
+        double cy = currentTarget.getY();
+        double cx = currentTarget.getX();
 
-        translationControllerIn.calculate(iOdata.state.Pose.getX(), currentTarget.getX());
-        translationControllerAcross.calculate(iOdata.state.Pose.getY(), currentTarget.getY());
 
+        double in = translationControllerIn.calculate((cosine * x) + (sine * y), (cosine * cx) + (sine * cy));
+        double across = translationControllerAcross.calculate((cosine * y) + (sine * x), (cosine * cy) + (sine * cx));
 
         driveIO.setSwerveRequest(AUTO_ALIGN
-            .withVelocityX(!translationControllerX.atGoal() ? translationControllerX.calculate(iOdata.state.Pose.getX(), currentTarget.getX()) : 0.0)
-            .withVelocityY(!translationControllerY.atGoal() ? translationControllerY.calculate(iOdata.state.Pose.getY(), currentTarget.getY()) : 0.0)
+            .withVelocityX((in * cosine) + (across * sine))
+            .withVelocityY((across * cosine) + (in * sine))
             .withRotationalRate(thetaController.calculate(
                 iOdata.state.Pose.getRotation().getRadians(), 
                 currentTarget.getRotation().getRadians() + Math.toRadians(90)
             ))
-            );
+        );
     }
 
     public void alignReefFieldcentric() {
