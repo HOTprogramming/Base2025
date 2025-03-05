@@ -94,6 +94,9 @@ public class Drive extends SubsystemBase {
     private ProfiledPIDController translationControllerY = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
     private ProfiledPIDController translationControllerX = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
 
+    private ProfiledPIDController translationControllerIn = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
+    private ProfiledPIDController translationControllerAcross = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
+
 
 
     private final SwerveRequest.SwerveDriveBrake BRAKE = new SwerveRequest.SwerveDriveBrake();
@@ -358,6 +361,23 @@ public class Drive extends SubsystemBase {
             translationControllerX.reset(iOdata.state.Pose.getX(), -iOdata.state.Speeds.vxMetersPerSecond);
             translationControllerY.reset(iOdata.state.Pose.getY(), -iOdata.state.Speeds.vyMetersPerSecond);
         });
+    }
+
+    public void alignReefRobotcentric() {
+        double rotationDegrees = currentTarget.getRotation().getDegrees();
+
+        translationControllerIn.calculate(iOdata.state.Pose.getX(), currentTarget.getX());
+        translationControllerAcross.calculate(iOdata.state.Pose.getY(), currentTarget.getY());
+
+
+        driveIO.setSwerveRequest(AUTO_ALIGN
+            .withVelocityX(!translationControllerX.atGoal() ? translationControllerX.calculate(iOdata.state.Pose.getX(), currentTarget.getX()) : 0.0)
+            .withVelocityY(!translationControllerY.atGoal() ? translationControllerY.calculate(iOdata.state.Pose.getY(), currentTarget.getY()) : 0.0)
+            .withRotationalRate(thetaController.calculate(
+                iOdata.state.Pose.getRotation().getRadians(), 
+                currentTarget.getRotation().getRadians() + Math.toRadians(90)
+            ))
+            );
     }
 
     public void alignReefFieldcentric() {
