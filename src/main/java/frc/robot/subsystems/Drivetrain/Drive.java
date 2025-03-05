@@ -111,6 +111,8 @@ public class Drive extends SubsystemBase {
 
         translationControllerX.setTolerance(0.005);
         translationControllerY.setTolerance(0.005);
+        translationControllerIn.setTolerance(0.005);
+
 
 
         heading = Rotation2d.fromDegrees(0);
@@ -183,6 +185,10 @@ public class Drive extends SubsystemBase {
         return seesReefTag;
     }
 
+    // private double getNearestReefAngle() {
+    //     return 60*Math.round(Math.toDegrees(Math.atan2(REEF_CENTER.getY() - iOdata.state.Pose.getY(), (DriverStation.getAlliance().get() == Alliance.Blue ? REEF_CENTER.getX(): REEF_CENTER.getX() + OFFSET_TO_RED) - iOdata.state.Pose.getX()))/60);
+    // }
+
     private Rotation2d getNearestReefAngle() {
         return Rotation2d.fromDegrees(60*Math.round(Math.toDegrees(Math.atan2(REEF_CENTER.getY() - iOdata.state.Pose.getY(), (DriverStation.getAlliance().get() == Alliance.Blue ? REEF_CENTER.getX(): REEF_CENTER.getX() + OFFSET_TO_RED) - iOdata.state.Pose.getX()))/60));
     }
@@ -251,31 +257,11 @@ public class Drive extends SubsystemBase {
     public void updateReefTarget(int leftRight) {
         Alliance curAlliance = DriverStation.getAlliance().get();
 
-        // switch ((int) (getNearestReefAngle().getDegrees())) {
-        //     case 0:
-        //         heading = Rotation2d.fromDegrees(0);
-        //         break;
-        //     case 60:
-        //         heading = Rotation2d.fromDegrees(60);
-        //         break;
-        //     case 120:
-        //         heading = Rotation2d.fromDegrees(120);
-        //         break;
-        //     case -180:
-        //         heading = Rotation2d.fromDegrees(180);
-        //         break;
-        //     case 180:
-        //         heading = Rotation2d.fromDegrees(180);
-        //         break;
-        //     case -120:
-        //         heading = Rotation2d.fromDegrees(-120);
-        //         break;
-        //     case -60:
-        //         heading = Rotation2d.fromDegrees(-60);
-        //         break;
-        // }
+        heading = getNearestReefAngle();
 
-        heading = Rotation2d.fromDegrees((int) (getNearestReefAngle().getDegrees()));
+        heading = heading.getDegrees() == -180.0 ? Rotation2d.fromDegrees(180.0) : heading;
+
+        System.err.println(heading.getDegrees());
 
         reefTarget = curAlliance == Alliance.Blue ? bluePoses.get(heading) : redPoses.get(heading);
 
@@ -295,26 +281,54 @@ public class Drive extends SubsystemBase {
         return runOnce(() -> {
             translationControllerX.reset(iOdata.state.Pose.getX(), -iOdata.state.Speeds.vxMetersPerSecond);
             translationControllerY.reset(iOdata.state.Pose.getY(), -iOdata.state.Speeds.vyMetersPerSecond);
+
+            double cosine = Math.abs(Math.cos(currentTarget.getRotation().getRadians()));
+            double sine = Math.abs(Math.sin(currentTarget.getRotation().getRadians()));
+            double x = iOdata.state.Pose.getX();
+            double y = iOdata.state.Pose.getY();
+
+            double vx = iOdata.state.Speeds.vxMetersPerSecond;
+            double vy = iOdata.state.Speeds.vyMetersPerSecond;
+            
+
+            translationControllerIn.reset((cosine * x) + (sine * y), -((cosine * vx) + (sine * vy)));
+            translationControllerAcross.reset((cosine * y) + (sine * x), -((cosine * vy) + (sine * vx)));
+
         });
     }
 
     public void alignReefRobotcentric() {
-        double cosine = Math.cos(currentTarget.getRotation().getRadians());
-        double sine = Math.cos(currentTarget.getRotation().getRadians());
+        double cosine = Math.abs(Math.cos(currentTarget.getRotation().getRadians()));
+        double sine = Math.abs(Math.sin(currentTarget.getRotation().getRadians()));
         double x = iOdata.state.Pose.getX();
         double y = iOdata.state.Pose.getY();
         double cy = currentTarget.getY();
         double cx = currentTarget.getX();
 
-
+        // 60 and -120 are slow lr, -60 120 are slow in/out
+        // when cosine is small, when sine is small
         double in = translationControllerIn.calculate((cosine * x) + (sine * y), (cosine * cx) + (sine * cy));
         double across = translationControllerAcross.calculate((cosine * y) + (sine * x), (cosine * cy) + (sine * cx));
+        // double across = 0.0;
 
+        translationControllerIn.calculate((cosine * x) + (sine * y));
+        translationControllerIn.calculate((cosine * x) + (sine * y));
+
+        translationControllerAcross.calculate((cosine * y) + (sine * x));
+        translationControllerAcross.calculate((cosine * y) + (sine * x));
+
+
+
+
+        // double in = translationControllerIn.calculate((cosine * x), (cosine * cx));
+        // double across = 0.0;
+        SmartDashboard.putNumber("shitfuck_y", ((across * cosine) + (in * sine)));
+        SmartDashboard.putNumber("shitfuck_x", ((in * cosine) + (across * sine)));
         boolean disableTheta = Math.abs(translationControllerIn.getPositionError()) < auto_align_theta_disable;
 
         driveIO.setSwerveRequest(AUTO_ALIGN
-            .withVelocityX((in * cosine) + (across * sine))
-            .withVelocityY((across * cosine) + (in * sine))
+            .withVelocityX(((in * cosine) + (across * sine)))
+            .withVelocityY(((across * cosine) + (in * sine)))
             .withRotationalRate(thetaController.calculate(
                 iOdata.state.Pose.getRotation().getRadians(), 
                 currentTarget.getRotation().getRadians() + Math.toRadians(90)
