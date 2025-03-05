@@ -202,15 +202,6 @@ public class Drive extends SubsystemBase {
         return seesReefTag;
     }
 
-    public boolean notAtTarget() {
-        if (currentTarget != null) {
-        return Math.abs(this.iOdata.state.Pose.getTranslation().getDistance(currentTarget.getTranslation())) > 0.015 ||
-                Math.abs(Math.hypot(this.iOdata.state.Speeds.vxMetersPerSecond, this.iOdata.state.Speeds.vyMetersPerSecond)) > 0.1 ||
-                iOdata.state.Speeds.omegaRadiansPerSecond > 0.1;
-        }
-        return false;
-    }
-
     private Rotation2d getNearestReefAngle() {
         return Rotation2d.fromDegrees(60*Math.round(Math.toDegrees(Math.atan2(REEF_CENTER.getY() - iOdata.state.Pose.getY(), (DriverStation.getAlliance().get() == Alliance.Blue ? REEF_CENTER.getX(): REEF_CENTER.getX() + OFFSET_TO_RED) - iOdata.state.Pose.getX()))/60));
     }
@@ -275,72 +266,29 @@ public class Drive extends SubsystemBase {
         Alliance curAlliance = DriverStation.getAlliance().get();
         translationControllerX.reset(iOdata.state.Pose.getX());
         translationControllerY.reset(iOdata.state.Pose.getY());
-        switch ((int) (60*Math.round(Math.toDegrees(Math.atan2(REEF_CENTER.getY() - iOdata.state.Pose.getY(), (DriverStation.getAlliance().get() == Alliance.Blue ? REEF_CENTER.getX(): REEF_CENTER.getX() + OFFSET_TO_RED) - iOdata.state.Pose.getX()))/60))) {
-            case 0:
-                heading = Rotation2d.fromDegrees(0);
-                break;
-            case 60:
-                heading = Rotation2d.fromDegrees(60);
-                break;
-            case 120:
-                heading = Rotation2d.fromDegrees(120);
-                break;
-            case -180:
-                heading = Rotation2d.fromDegrees(180);
-                break;
-            case 180:
-                heading = Rotation2d.fromDegrees(180);
-                break;
-            case -120:
-                heading = Rotation2d.fromDegrees(-120);
-                break;
-            case -60:
-                heading = Rotation2d.fromDegrees(-60);
-                break;
-        }
-
-        reefTarget = curAlliance == Alliance.Blue ? bluePoses.get(heading) : redPoses.get(heading);
-
-        double poleShift = curAlliance == Alliance.Blue ? blueShiftH.get(heading)[leftRight] : redShiftH.get(heading)[leftRight];
-
-        currentTarget = new Pose2d(
-            //                                               Pole shift                                                 Bumper shift
-            reefTarget.getX() - (reefTarget.getRotation().getSin() * Units.inchesToMeters(poleShift)) - (reefTarget.getRotation().getCos() * robotToReefTagFace),
-            reefTarget.getY() + (reefTarget.getRotation().getCos() * Units.inchesToMeters(poleShift)) - (reefTarget.getRotation().getSin() * robotToReefTagFace),
-            reefTarget.getRotation()
-        );
-        translationControllerX.calculate(iOdata.state.Pose.getX(), currentTarget.getX());
-        translationControllerY.calculate(iOdata.state.Pose.getY(), currentTarget.getY());
-        SmartDashboard.putNumberArray("Drive target pose", new double[] {currentTarget.getX(), currentTarget.getY(), currentTarget.getRotation().getRadians()});
-    }
-
-    public void updateReefTargetWBall(int leftRight) {
-        Alliance curAlliance = DriverStation.getAlliance().get();
-        translationControllerX.reset(iOdata.state.Pose.getX());
-        translationControllerY.reset(iOdata.state.Pose.getY());
-        switch ((int) (60*Math.round(Math.toDegrees(Math.atan2(REEF_CENTER.getY() - iOdata.state.Pose.getY(), (DriverStation.getAlliance().get() == Alliance.Blue ? REEF_CENTER.getX(): REEF_CENTER.getX() + OFFSET_TO_RED) - iOdata.state.Pose.getX()))/60))) {
-            case 0:
-                heading = Rotation2d.fromDegrees(0);
-                break;
-            case 60:
-                heading = Rotation2d.fromDegrees(60);
-                break;
-            case 120:
-                heading = Rotation2d.fromDegrees(120);
-                break;
-            case -180:
-                heading = Rotation2d.fromDegrees(180);
-                break;
-            case 180:
-                heading = Rotation2d.fromDegrees(180);
-                break;
-            case -120:
-                heading = Rotation2d.fromDegrees(-120);
-                break;
-            case -60:
-                heading = Rotation2d.fromDegrees(-60);
-                break;
-        }
+        // switch ((int) (getNearestReefAngle().getDegrees())) {
+        //     case 0:
+        //         heading = Rotation2d.fromDegrees(0);
+        //         break;
+        //     case 60:
+        //         heading = Rotation2d.fromDegrees(60);
+        //         break;
+        //     case 120:
+        //         heading = Rotation2d.fromDegrees(120);
+        //         break;
+        //     case -180:
+        //         heading = Rotation2d.fromDegrees(180);
+        //         break;
+        //     case 180:
+        //         heading = Rotation2d.fromDegrees(180);
+        //         break;
+        //     case -120:
+        //         heading = Rotation2d.fromDegrees(-120);
+        //         break;
+        //     case -60:
+        //         heading = Rotation2d.fromDegrees(-60);
+        //         break;
+        // }
 
         reefTarget = curAlliance == Alliance.Blue ? bluePoses.get(heading) : redPoses.get(heading);
 
@@ -376,6 +324,8 @@ public class Drive extends SubsystemBase {
 
         double in = translationControllerIn.calculate((cosine * x) + (sine * y), (cosine * cx) + (sine * cy));
         double across = translationControllerAcross.calculate((cosine * y) + (sine * x), (cosine * cy) + (sine * cx));
+
+        boolean disableTheta = Math.abs(translationControllerIn.getPositionError()) < auto_align_theta_disable;
 
         driveIO.setSwerveRequest(AUTO_ALIGN
             .withVelocityX((in * cosine) + (across * sine))
@@ -428,11 +378,11 @@ public class Drive extends SubsystemBase {
     }
 
     public Command setCoast() {
-        return runOnce(() ->driveIO.setNeutralMode(NeutralModeValue.Coast));
+        return runOnce(() -> driveIO.setNeutralMode(NeutralModeValue.Coast));
     }
 
     public Command setBrake() {
-        return runOnce(() ->driveIO.setNeutralMode(NeutralModeValue.Brake));
+        return runOnce(() -> driveIO.setNeutralMode(NeutralModeValue.Brake));
     }
 
     public void teleopDrive(double driveX, double driveY, double driveTheta)  {
@@ -528,9 +478,6 @@ public class Drive extends SubsystemBase {
 
     @Override
     public void periodic() {
-
-        SmartDashboard.putBoolean("not at target", notAtTarget());
-
         try{
             SmartDashboard.putNumber("Drive tag x", tagTransform.getX());
             SmartDashboard.putNumber("Drive  tag y", tagTransform.getY());
@@ -622,6 +569,7 @@ public class Drive extends SubsystemBase {
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
         }
     }
+
     private void setPose(Pose2d pose) {
         this.driveIO.seedFieldRelative(pose);
     }

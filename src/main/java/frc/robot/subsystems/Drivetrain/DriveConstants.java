@@ -29,6 +29,8 @@ public class DriveConstants {
 
     public static final double OTF_end_tolerance = 0.2;
 
+    public static final double auto_align_theta_disable = .1;
+
     private static final PIDConstants autoPidConstantsTranslation = new PIDConstants(5, 0, 0);
     private static final PIDConstants autoPidConstantsTheta = new PIDConstants (7, 0, 0); 
     private static final PIDConstants teleopPidConstantsTheta = new PIDConstants (10, 0, 0.5); 
