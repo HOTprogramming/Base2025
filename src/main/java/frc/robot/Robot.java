@@ -39,8 +39,8 @@ public class Robot extends TimedRobot {
 
     
 
-    // DataLogManager.start();
-    // DriverStation.startDataLog(DataLogManager.getLog(), true);
+    DataLogManager.start();
+    DriverStation.startDataLog(DataLogManager.getLog(), true);
 
     
     tab = Shuffleboard.getTab("tab");
@@ -84,6 +84,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = Commands.waitSeconds(0.01).andThen(m_robotContainer.getAutonomousCommand());
+    m_robotContainer.turnOnTopCam().ignoringDisable(true).schedule();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -101,7 +102,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
+    
+    m_robotContainer.turnOffTopCam().ignoringDisable(true).schedule();
     m_robotContainer.resetLeds();
   }
 

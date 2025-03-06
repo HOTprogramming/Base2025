@@ -115,7 +115,8 @@ public class Manager extends SubsystemBase{
     }
 
     public Command goToL1(){
-      return Commands.parallel(Commands.parallel(
+      return Commands.parallel(
+      Commands.parallel(
       run(() -> {scoringLevel = ScoringLevel.L1;})
       ,elevatorSubsystem.goToL1().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
       ,armSubsystem.goToPackage())
@@ -125,7 +126,9 @@ public class Manager extends SubsystemBase{
     }
 
     public Command goToL2(){
-      return Commands.parallel(Commands.parallel(
+      return Commands.parallel(
+      manipulatorSubsystem.goScore()
+      ,Commands.parallel(
       run(() -> {scoringLevel = ScoringLevel.L2;})
       ,elevatorSubsystem.goToL2().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
       ,armSubsystem.goToPackage())
@@ -140,7 +143,9 @@ public class Manager extends SubsystemBase{
     }
 
     public Command goToL3(){
-      return Commands.parallel(Commands.parallel(
+      return Commands.parallel(
+      manipulatorSubsystem.goScore()
+      ,Commands.parallel(
       run(() -> {scoringLevel = ScoringLevel.L3;})
       ,elevatorSubsystem.goToL3().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
       ,armSubsystem.goToPackage())
@@ -155,7 +160,9 @@ public class Manager extends SubsystemBase{
     }
 
     public Command goToL4(){
-      return Commands.parallel(Commands.parallel(
+      return Commands.parallel(
+      manipulatorSubsystem.goScore()
+      ,Commands.parallel(
       run(() -> {scoringLevel = ScoringLevel.L4;})
       ,elevatorSubsystem.goToL4().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
       ,armSubsystem.goToPackage())
@@ -255,7 +262,7 @@ public class Manager extends SubsystemBase{
       return new SelectCommand(
         Map.of(
             ScoringLevel.L4, Commands.parallel(
-            Commands.parallel(armSubsystem.L4Score(), manipulatorSubsystem.goScore()), elevatorSubsystem.L4MiniScore().onlyWhile(() -> armSubsystem.armLessThan(-30.0, 0))
+            armSubsystem.L4Score(), elevatorSubsystem.L4MiniScore().onlyWhile(() -> armSubsystem.armLessThan(-30.0, 0))
           ),
             ScoringLevel.L3, Commands.sequence(
             Commands.parallel(armSubsystem.L3Score(), manipulatorSubsystem.goScore()), elevatorSubsystem.L3Score()
@@ -268,7 +275,10 @@ public class Manager extends SubsystemBase{
     }
 
     public Command autonL4() {
-      return Commands.parallel(runOnce(() -> {scoringLevel = ScoringLevel.L4;}), elevatorSubsystem.goToL4());
+      return Commands.sequence(
+        Commands.parallel(runOnce(() -> {scoringLevel = ScoringLevel.L4;}), elevatorSubsystem.goToL4()), 
+        manipulatorSubsystem.goScore().withTimeout(0.3)
+       );
     }
 
     public Command autonIntake() {
