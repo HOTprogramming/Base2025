@@ -100,7 +100,8 @@ public abstract class ElevatorIO {
         MotionMagicConfigs mm = cfg.MotionMagic;
         mm.MotionMagicCruiseVelocity = ElevatorConstants.elevatorGains.CruiseVelocity(); //rps
         mm.MotionMagicAcceleration = ElevatorConstants.elevatorGains.Acceleration();
-        mm.MotionMagicJerk = ElevatorConstants.elevatorGains.Jerk();
+        mm.MotionMagicExpo_kA = ElevatorConstants.elevatorGains.ExpoKA();
+        mm.MotionMagicExpo_kV = ElevatorConstants.elevatorGains.ExpoKV();
 
         Slot0Configs slot0 = cfg.Slot0;
         slot0.kP = ElevatorConstants.elevatorGains.kP();

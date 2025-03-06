@@ -109,7 +109,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("L2 Package", gamespecManager.goToL2Package());
     NamedCommands.registerCommand("Floor Intake Package", gamespecManager.floorIntakePackage());
     NamedCommands.registerCommand("Algae Package", gamespecManager.algaePackage());
-    NamedCommands.registerCommand("Climber Package", gamespecManager.packageClimber());
     NamedCommands.registerCommand("Barge Package", gamespecManager.bargePackage());
 
     NamedCommands.registerCommand("Lights Coral", gamespecManager.setLightsCoral());

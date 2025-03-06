@@ -96,17 +96,6 @@ public class Manager extends SubsystemBase{
     
     }
 
-    public Command packageClimber(){
-    return Commands.sequence(
-    run(() -> climberSubsystem.setPower(-3.0))
-        .onlyWhile(() -> climberSubsystem.checkClimberPackaged())
-        .andThen((runOnce(() -> climberSubsystem.setPower(0.0))))
-        ,intakeSubsystem.goToPackage()
-        ,elevatorSubsystem.goToPackage()
-        ,armSubsystem.goToPackage()
-    );
-    }
-
     public Command goToL2Package(){
       return Commands.parallel(elevatorSubsystem.goToPackage())
       .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore())));
@@ -210,7 +199,7 @@ public class Manager extends SubsystemBase{
           ScoringLevel.L4, Commands.sequence(Commands.sequence(
             armSubsystem.L4Score()
             ,elevatorSubsystem.L4Score()
-            ,manipulatorSubsystem.goScore())
+            ,manipulatorSubsystem.goScore().withTimeout(0.1))
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
             .andThen(goToL4().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))),
             Commands.sequence(Commands.parallel(goToPackage().onlyIf(() -> (manipulatorSubsystem.returnBeamBreak()))
@@ -219,7 +208,7 @@ public class Manager extends SubsystemBase{
           ScoringLevel.L3, Commands.sequence(Commands.sequence(
             armSubsystem.L3Score()
             ,elevatorSubsystem.L3Score()
-            ,manipulatorSubsystem.goScore())
+            ,manipulatorSubsystem.goScore().withTimeout(0.1))
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
             .andThen(goToL3().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))),
             Commands.sequence(Commands.parallel(goToPackage().onlyIf(() -> (manipulatorSubsystem.returnBeamBreak()))
@@ -228,7 +217,7 @@ public class Manager extends SubsystemBase{
           ScoringLevel.L2, Commands.sequence(Commands.sequence(
             armSubsystem.L2Score()
             ,elevatorSubsystem.L2Score()
-            ,manipulatorSubsystem.goScore())
+            ,manipulatorSubsystem.goScore().withTimeout(0.1))
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
             .andThen(goToL2().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))),
             Commands.sequence(Commands.parallel(Commands.parallel(armSubsystem.L2Score(), elevatorSubsystem.L2Score()).onlyIf(() -> (manipulatorSubsystem.returnBeamBreak()))

@@ -35,7 +35,7 @@ public class ElevatorConstants {
     public static double FloorIntakeGrabHeight;
 
 
-    public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS, double kG) {} 
+    public record MMGains(double CruiseVelocity, double Acceleration, double ExpoKV, double ExpoKA, double kP, double kI, double kD, double kV, double kS, double kG) {} 
 
     static {
         switch (Constants.getRobot()) {
@@ -58,7 +58,8 @@ public class ElevatorConstants {
         elevatorEncoderID = 52;
         kReduction = (1.0 / 2.0);
         kMaxAccelerationRpmPerSec = 9000.0; 
-        elevatorGains = new MMGains(1000, 1500, 4500, 2.5 , 0, 0.0, 0.025, 0.3, 0.0);
+        elevatorGains = new MMGains(1000, 1500, 0, 0,
+         2.5, 0, 0.0, 0.025, 0.3, 0.0);
         //elevatorGains = new MMGains(0, 0, 0, 45.0 , 0, 2.25, 30.0, 1.0, 0.0);//torque position pid
         elevatorEncoderOffset = 0.2546;
 
@@ -93,7 +94,10 @@ public class ElevatorConstants {
         elevatorEncoderID = 52;
         kReduction = (1.0 / 2.0);
         kMaxAccelerationRpmPerSec = 9000.0; 
-        elevatorGains = new MMGains(50, 100, 0, 45.0 , 0, 2.25, 30.0, 1.0, 0.0);//torque position pid
+        //expo does not use the acceleration or jerk configs, cruise velocity is optional. 
+        //The lower the KV and KA, the faster the mechanism moves.
+        elevatorGains = new MMGains(0, 0, 0.0, 0.001, 
+        20.0 , 0, 1.3, 0.0, 0.0, 5.0);
         elevatorEncoderOffset = 0.4953;
 
         PackageHeight = 17.9; 
@@ -120,7 +124,7 @@ public class ElevatorConstants {
         elevatorEncoderID = 52;
         kReduction = (1.0 / 2.0);
         kMaxAccelerationRpmPerSec = 9000.0; 
-        elevatorGains = new MMGains(1000, 1500, 4500, 2.5 , 0, 0.0, 0.025, 0.3, 0.0);
+        elevatorGains = new MMGains(1000, 1500, 4500, 2.5,0, 0, 0.0, 0.025, 0.3, 0.0);
         
         PackageHeight = 17.9;
     
