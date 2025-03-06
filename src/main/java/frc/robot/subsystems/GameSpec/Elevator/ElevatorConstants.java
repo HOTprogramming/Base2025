@@ -93,7 +93,7 @@ public class ElevatorConstants {
         elevatorEncoderID = 52;
         kReduction = (1.0 / 2.0);
         kMaxAccelerationRpmPerSec = 9000.0; 
-        elevatorGains = new MMGains(0, 0, 0, 45.0 , 0, 2.25, 30.0, 1.0, 0.0);//torque position pid
+        elevatorGains = new MMGains(50, 100, 0, 45.0 , 0, 2.25, 30.0, 1.0, 0.0);//torque position pid
         elevatorEncoderOffset = 0.4953;
 
         PackageHeight = 17.9; 

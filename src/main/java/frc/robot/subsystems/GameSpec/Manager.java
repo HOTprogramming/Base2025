@@ -39,7 +39,6 @@ import frc.robot.subsystems.GameSpec.Manipulator.ManipulatorIOSim;
 import frc.robot.subsystems.Lights.Lights;
 
 public class Manager extends SubsystemBase{
-    private final ShuffleboardTab managerShuffleboard;
     private Arm armSubsystem;
     private Elevator elevatorSubsystem;
     public Climber climberSubsystem;
@@ -88,15 +87,8 @@ public class Manager extends SubsystemBase{
 
       scoringLevel = ScoringLevel.L1;
       algaeIntakeEnum = AlgaeIntakeEnum.pluck;
-
-      this.managerShuffleboard = Shuffleboard.getTab("Manager");
-
-      scoringEnum = this.managerShuffleboard.add("manager enum", 0.0).getEntry();
     }
 
-    private void UpdateTelemetry() {
-      scoringEnum.setString(scoringLevel.name());
-    }
 
     public Command goToPackage(){
       return Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
@@ -321,20 +313,6 @@ public class Manager extends SubsystemBase{
       return climberSubsystem.servoOpen();
     }
 
-    // //deploys the climber
-    // public Command climberOut(){
-    //   return Commands.sequence(
-    //   elevatorSubsystem.goToFloorIntake()
-    //   ,armSubsystem.horizontal()
-    //   ,intakeSubsystem.intakeClimberOut()
-    //   ,run(() -> climberSubsystem.setPower(16.0))
-    //   .onlyWhile(() -> climberSubsystem.checkClimberDeployed())
-    //   .andThen(runOnce(() -> climberSubsystem.setPower(0.0)))
-    //   ,elevatorSubsystem.climbDown()
-    //   ,intakeSubsystem.intakeVert()
-    //   );
-    // }
-
     public Command climberOut(){
       return Commands.sequence(
       lockFingers()
@@ -397,17 +375,6 @@ public class Manager extends SubsystemBase{
 
     public Command algaePackage(){
       return armSubsystem.goToPackage();
-    }
-
-    public Command climberPackage(){
-      return Commands.sequence(
-        packageClimber()
-        ,
-        intakeSubsystem.goToPackage()
-        ,
-        elevatorSubsystem.goToPackage()
-        ,armSubsystem.goToPackage()
-        );
     }
 
     public Command alignProcessor(){

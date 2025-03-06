@@ -11,6 +11,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -35,7 +36,8 @@ public abstract class ElevatorIO {
     protected TalonFX elevator;
     protected TalonFX elevator2;
     //protected PositionTorqueCurrentFOC elevatorControl;
-    protected MotionMagicVoltage elevatorControl;
+    //protected MotionMagicVoltage elevatorControl;
+    protected MotionMagicExpoTorqueCurrentFOC elevatorControl;
     protected CANcoder elevatorCancoder;
 
     public static class ElevatorIOStats {
@@ -90,7 +92,8 @@ public abstract class ElevatorIO {
         //sets up the second elevator motor as a follower
         elevator2.setControl(new Follower(elevator.getDeviceID(), true));
 
-        elevatorControl = new MotionMagicVoltage(0);
+        //elevatorControl = new MotionMagicVoltage(0);
+        elevatorControl = new MotionMagicExpoTorqueCurrentFOC(0);
         cfg = new TalonFXConfiguration();
         encoderCfg = new CANcoderConfiguration();
 
