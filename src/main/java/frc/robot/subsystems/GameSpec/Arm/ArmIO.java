@@ -29,7 +29,8 @@ public abstract class ArmIO {
 
     // Protected TalonFX object accessible to subclasses
     protected TalonFX arm;
-    protected PositionTorqueCurrentFOC armControl;
+    //protected PositionTorqueCurrentFOC armControl;
+    protected MotionMagicVoltage armControl;
     protected CANcoder armCancoder;
 
     public static class ArmIOStats {
@@ -63,7 +64,8 @@ public abstract class ArmIO {
         this.arm = new TalonFX(ArmConstants.armMotorID, "robot");
         this.armCancoder = new CANcoder(ArmConstants.armEncoderID, "robot");
 
-        armControl = new PositionTorqueCurrentFOC(0);
+        //armControl = new PositionTorqueCurrentFOC(0);
+        armControl = new MotionMagicVoltage(0);
         cfg = new TalonFXConfiguration();
         encoderCfg = new CANcoderConfiguration();
 

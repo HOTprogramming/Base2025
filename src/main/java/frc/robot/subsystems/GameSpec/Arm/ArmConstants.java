@@ -113,6 +113,7 @@ public class ArmConstants {
         startingAngle = Units.degreesToRadians(0);
         measurementSTDDEVS = 2.0 * Math.PI / 4096.0;
         armGains = new MMGains(3000, 3000, 6500, 0.2, 0.0, 0.01, 0.025, 0.3);//Voltage
+        //armGains = new MMGains(0, 0, 0, 1.0, 0.0, 0.14, 0.0, 0.0);
         simGearBox = DCMotor.getKrakenX60Foc(1);
         gravity = false;
         armEncoderOffset = -0.1977;
@@ -127,7 +128,7 @@ public class ArmConstants {
         L3Score = -81.5;
         L2Score = -71.5;
         Horizontal = 90;
-        Intermediate = -20.0;
+        Intermediate = -49.0;
         CurrentFail = 17.0;
         L3short = -20.6;
         L2Short = -20.6;
