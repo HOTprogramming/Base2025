@@ -97,7 +97,7 @@ public class ElevatorConstants {
         //expo does not use the acceleration or jerk configs, cruise velocity is optional. 
         //The lower the KV and KA, the faster the mechanism moves.
         elevatorGains = new MMGains(0, 0, 0.0, 0.001, 
-        20.0 , 0, 1.3, 0.0, 0.0, 5.0);
+        20.0 , 0, 1.3, 0.0, 0.0, 8.0);
         elevatorEncoderOffset = 0.4953;
 
         PackageHeight = 17.9; 

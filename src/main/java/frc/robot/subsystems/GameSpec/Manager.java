@@ -127,7 +127,7 @@ public class Manager extends SubsystemBase{
 
     public Command goToL2(){
       return Commands.parallel(
-      manipulatorSubsystem.goScore()
+      manipulatorSubsystem.goScore().withTimeout(0.1)
       ,Commands.parallel(
       run(() -> {scoringLevel = ScoringLevel.L2;})
       ,elevatorSubsystem.goToL2().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
@@ -144,7 +144,7 @@ public class Manager extends SubsystemBase{
 
     public Command goToL3(){
       return Commands.parallel(
-      manipulatorSubsystem.goScore()
+      manipulatorSubsystem.goScore().withTimeout(0.1)
       ,Commands.parallel(
       run(() -> {scoringLevel = ScoringLevel.L3;})
       ,elevatorSubsystem.goToL3().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
@@ -161,7 +161,7 @@ public class Manager extends SubsystemBase{
 
     public Command goToL4(){
       return Commands.parallel(
-      manipulatorSubsystem.goScore()
+      manipulatorSubsystem.goScore().withTimeout(0.1)
       ,Commands.parallel(
       run(() -> {scoringLevel = ScoringLevel.L4;})
       ,elevatorSubsystem.goToL4().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
