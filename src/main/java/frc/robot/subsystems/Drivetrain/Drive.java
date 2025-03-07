@@ -239,18 +239,22 @@ public class Drive extends SubsystemBase {
             AutoBuilder.followPath(path).unless(this::drivetrainAtTarget));
     }
 
-    public void chaseObject(int leftRight) {
-        objectAbsolute = new Pose2d(
-            (iOdata.state.Pose.getX() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getCos() * objectRelative.getTranslation().getNorm())) - (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getSin() * 0.1524 * leftRight) - (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getCos() * 0.1524),
-            (iOdata.state.Pose.getY() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getSin() * objectRelative.getTranslation().getNorm())) + (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getCos() * 0.1524 * leftRight) + (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getSin() * 0.1524),
-            iOdata.state.Pose.getRotation().plus(objectRelative.getRotation())
-        );
+    public void chaseObjectField() {
+        objectAbsolute = objectRelative.relativeTo(iOdata.state.Pose);
         heading = objectAbsolute.getRotation();
 
         driveIO.setSwerveRequest(FIELD_CENTRIC
             .withVelocityX(translationControllerX.calculate(iOdata.state.Pose.getX(), objectAbsolute.getX()))
             .withVelocityY(translationControllerY.calculate(iOdata.state.Pose.getY(), objectAbsolute.getY()))
             .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getDegrees(), objectAbsolute.getRotation().getDegrees()))
+        );
+    }
+
+    public void chaseObject() {
+        driveIO.setSwerveRequest(ROBOT_CENTRIC
+            .withVelocityX(translationControllerX.calculate(objectRelative.getX(), 0))
+            .withVelocityY(translationControllerY.calculate(objectRelative.getY(), 0))
+
         );
     }
 
