@@ -83,14 +83,14 @@ public class ManipulatorConstants {
 
       // CORAL AND ALGEA IDS ARE WRONG
       coralMotorID = 16;//flipped
-      coralEncoderID = 54;
+      coralEncoderID = 45;
       coralCandiID = 53;//sweetbox 6
       coralWristID = 13;
       kReduction = (1.0 / 2.0);
       kMaxAccelerationRpmPerSec = 9000.0; 
       coralWristGains = new MMGains(3000, 4000, 14000, 0.2, 0.0, 0.002, 0.1, 0.0);
       coralSpinGains = new VVGains(10.0, 0.0, 0.0, 0, 1);
-      coralWristEncoderOffset = -0.472;
+      coralWristEncoderOffset = -0.330078;
   
       algaeArmID = 17;
       algaeRollerID = 25;
@@ -98,7 +98,7 @@ public class ManipulatorConstants {
       algaeGains = new MMGains(100, 100, 200, 1.0 , 0.0, 0.0, 0, 0);
       
       coralWristHP = -90;
-      coralWristScore = 0;
+      coralWristScore = 8;
   
       algaeExtend = 0;
       algaePackage = 0;
