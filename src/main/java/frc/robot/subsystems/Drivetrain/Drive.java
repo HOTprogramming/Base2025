@@ -84,15 +84,27 @@ public class Drive extends SubsystemBase {
 
     private PathPlannerPath path;
     private Pose2d reefTarget;
-    private Pose2d objectAbsolute;
-    private Pose2d objectRelative;
 
     private Alert alert;
+
+    int pixelX = 0;
+    int pixelY = 0;
+    int boundingBoxHeight = 0;
+    int boundingBoxWidth = 0;
+
+    int middleXPixel;
+    double goalRatio;
+
+    double pixelError;
+    double rationError;
+
 
     private PIDController thetaController = new PIDController(10, 0, 0.2);
     private PIDController translationController = new PIDController(5, 0, 0);
     private ProfiledPIDController translationControllerY = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
     private ProfiledPIDController translationControllerX = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
+    private ProfiledPIDController translationChaseObjectController = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
+    private ProfiledPIDController thetaChaseObjectController = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
 
 
 
@@ -149,7 +161,6 @@ public class Drive extends SubsystemBase {
 
         constraints = PathConstraints.unlimitedConstraints(12.0);
         reefTarget = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
-        objectRelative = new Pose2d(2, 3, Rotation2d.fromDegrees(0));
 
         try {
             this.pathGroup.addAll(PathPlannerAuto.getPathGroupFromAutoFile("OTF_TESTING"));
@@ -239,23 +250,26 @@ public class Drive extends SubsystemBase {
             AutoBuilder.followPath(path).unless(this::drivetrainAtTarget));
     }
 
-    public void chaseObjectField() {
-        objectAbsolute = objectRelative.relativeTo(iOdata.state.Pose);
-        heading = objectAbsolute.getRotation();
+    public Command testObjectRotation() {
+        return Commands.sequence(//runOnce(() -> intialRatio = boundingBoxHeight/boundingBoxWidth),
+            Commands.race(run(() -> driveIO.setSwerveRequest(ROBOT_CENTRIC.withRotationalRate(0.2))), Commands.waitSeconds(0.2)));
+    }
 
-        driveIO.setSwerveRequest(FIELD_CENTRIC
-            .withVelocityX(translationControllerX.calculate(iOdata.state.Pose.getX(), objectAbsolute.getX()))
-            .withVelocityY(translationControllerY.calculate(iOdata.state.Pose.getY(), objectAbsolute.getY()))
-            .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getDegrees(), objectAbsolute.getRotation().getDegrees()))
+    public void alignObject() {
+        driveIO.setSwerveRequest(ROBOT_CENTRIC
+        .withVelocityX(translationChaseObjectController.calculate(pixelX, middleXPixel))
+        .withRotationalRate(thetaChaseObjectController.calculate(boundingBoxHeight/boundingBoxWidth, goalRatio))
         );
     }
 
-    public void chaseObject() {
-        driveIO.setSwerveRequest(ROBOT_CENTRIC
-            .withVelocityX(translationControllerX.calculate(objectRelative.getX(), 0))
-            .withVelocityY(translationControllerY.calculate(objectRelative.getY(), 0))
+    private boolean alignedToObject() {
+        return Math.abs((boundingBoxHeight / boundingBoxWidth) - goalRatio) < rationError && 
+               Math.abs(pixelX - middleXPixel) < pixelError;
+    }
 
-        );
+    public Command chaseObject() {
+        return Commands.sequence(run(() -> alignObject()).until(() -> alignedToObject()),
+        run(() -> driveIO.setSwerveRequest(ROBOT_CENTRIC.withVelocityY(1))));
     }
 
     public void alignReef(int leftRight) {

@@ -131,6 +131,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Auton Finish Intake", gamespecManager.autonFinishIntake());
     NamedCommands.registerCommand("AL4", gamespecManager.autonL4());
 
+    NamedCommands.registerCommand("Chase Object", drivetrain.chaseObject());//.until());  
+
 
     //new EventTrigger("Package").whileTrue(gamespecManager.goToPackage());
 
