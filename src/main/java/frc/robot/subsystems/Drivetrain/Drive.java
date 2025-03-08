@@ -6,6 +6,8 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -26,6 +28,7 @@ import frc.robot.subsystems.Drivetrain.DriveIO.DriveIOdata;
 import static frc.robot.subsystems.Drivetrain.DriveConstants.*;
 
 import java.io.IOException;
+import java.net.Inet4Address;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -281,54 +284,49 @@ public class Drive extends SubsystemBase {
         return runOnce(() -> {
             translationControllerX.reset(iOdata.state.Pose.getX(), -iOdata.state.Speeds.vxMetersPerSecond);
             translationControllerY.reset(iOdata.state.Pose.getY(), -iOdata.state.Speeds.vyMetersPerSecond);
+            Pose2d Error = currentTarget.relativeTo(new Pose2d(iOdata.state.Pose.getTranslation(), currentTarget.getRotation()));
 
-            double cosine = Math.abs(Math.cos(currentTarget.getRotation().getRadians()));
-            double sine = Math.abs(Math.sin(currentTarget.getRotation().getRadians()));
-            double x = iOdata.state.Pose.getX();
-            double y = iOdata.state.Pose.getY();
+            Translation2d speeds = new Translation2d(iOdata.state.Speeds.vyMetersPerSecond, iOdata.state.Speeds.vxMetersPerSecond);
+            speeds.rotateBy(currentTarget.getRotation());
+            SmartDashboard.putNumberArray("Relative Speeds", new double[] {speeds.getX(), -speeds.getY(), 0.0});
 
-            double vx = iOdata.state.Speeds.vxMetersPerSecond;
-            double vy = iOdata.state.Speeds.vyMetersPerSecond;
-            
 
-            translationControllerIn.reset((cosine * x) + (sine * y), -((cosine * vx) + (sine * vy)));
-            translationControllerAcross.reset((cosine * y) + (sine * x), -((cosine * vy) + (sine * vx)));
+            translationControllerIn.reset(Error.getX());
+            translationControllerAcross.reset(Error.getY());
 
         });
     }
 
     public void alignReefRobotcentric() {
-        double cosine = Math.abs(Math.cos(currentTarget.getRotation().getRadians()));
-        double sine = Math.abs(Math.sin(currentTarget.getRotation().getRadians()));
-        double x = iOdata.state.Pose.getX();
-        double y = iOdata.state.Pose.getY();
-        double cy = currentTarget.getY();
-        double cx = currentTarget.getX();
+        double cosine = Math.cos(currentTarget.getRotation().getRadians());
+        double sine = Math.sin(currentTarget.getRotation().getRadians());
+        
+        Pose2d Error = currentTarget.relativeTo(new Pose2d(iOdata.state.Pose.getTranslation(), currentTarget.getRotation()));
 
-        // 60 and -120 are slow lr, -60 120 are slow in/out
-        // when cosine is small, when sine is small
-        double in = translationControllerIn.calculate((cosine * x) + (sine * y), (cosine * cx) + (sine * cy));
-        double across = translationControllerAcross.calculate((cosine * y) + (sine * x), (cosine * cy) + (sine * cx));
+        // double inError = (Error.getX() * cosine) + (Error.getY() * sine);
+        // double acrossError = (Error.getY() * cosine) + (Error.getX() * sine);
+        // in = translationControllerIn.calculate((cosine * x) + (sine * y), (cosine * cx) + (sine * cy));
+        // across = translationControllerAcross.calculate((cosine * y) + (sine * x), (cosine * cy) + (sine * cx));
+
+        double in = -translationControllerIn.calculate(Error.getX(), 0.0);
+        double across = translationControllerAcross.calculate(Error.getY(), 0.0);
         // double across = 0.0;
 
-        translationControllerIn.calculate((cosine * x) + (sine * y));
-        translationControllerIn.calculate((cosine * x) + (sine * y));
+        Translation2d speeds = new Translation2d(iOdata.state.Speeds.vyMetersPerSecond, iOdata.state.Speeds.vxMetersPerSecond);
+            speeds.rotateBy(currentTarget.getRotation());
+            SmartDashboard.putNumberArray("Relative Speeds", new double[] {speeds.getX(), -speeds.getY(), 0.0});
 
-        translationControllerAcross.calculate((cosine * y) + (sine * x));
-        translationControllerAcross.calculate((cosine * y) + (sine * x));
-
-
+        SmartDashboard.putNumberArray("Drive Error", new double[] {Error.getX(), Error.getY(), Error.getRotation().getRadians()});
 
 
-        // double in = translationControllerIn.calculate((cosine * x), (cosine * cx));
-        // double across = 0.0;
-        SmartDashboard.putNumber("shitfuck_y", ((across * cosine) + (in * sine)));
-        SmartDashboard.putNumber("shitfuck_x", ((in * cosine) + (across * sine)));
+        // SmartDashboard.putNumber("In P", inError);
+        // SmartDashboard.putNumber("Acr P", acrossError);
+
         boolean disableTheta = Math.abs(translationControllerIn.getPositionError()) < auto_align_theta_disable;
 
         driveIO.setSwerveRequest(AUTO_ALIGN
             .withVelocityX(((in * cosine) + (across * sine)))
-            .withVelocityY(((across * cosine) + (in * sine)))
+            .withVelocityY(((across * -cosine) + (in * sine)))
             .withRotationalRate(thetaController.calculate(
                 iOdata.state.Pose.getRotation().getRadians(), 
                 currentTarget.getRotation().getRadians() + Math.toRadians(90)
