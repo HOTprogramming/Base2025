@@ -81,10 +81,9 @@ public class ManipulatorConstants {
 
     private static void practiceBotConstants(){
 
-      // CORAL AND ALGEA IDS ARE WRONG
-      coralMotorID = 16;//flipped
+      coralMotorID = 16;
       coralEncoderID = 45;
-      coralCandiID = 53;//sweetbox 6
+      coralCandiID = 53;
       coralWristID = 13;
       kReduction = (1.0 / 2.0);
       kMaxAccelerationRpmPerSec = 9000.0; 
@@ -93,7 +92,7 @@ public class ManipulatorConstants {
       coralWristEncoderOffset = -0.330078;
   
       algaeArmID = 17;
-      algaeRollerID = 25;
+      algaeRollerID = 15;
       algaeEncoderID = 46;
       algaeGains = new MMGains(100, 100, 200, 1.0 , 0.0, 0.0, 0, 0);
       
@@ -103,6 +102,8 @@ public class ManipulatorConstants {
       algaeExtend = 0;
       algaePackage = 0;
 
+      algaeIntakeVoltage = -8.0;
+      algaeExpelVoltage = 16.0;
     }
 
     private static void simBotConstants(){
