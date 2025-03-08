@@ -118,21 +118,41 @@ public class ArmConstants {
         gravity = false;
         armEncoderOffset = -0.1977;
     
+        // PackageAngle = 0;
+        // FeederAngle = 52.4;
+        // L1Angle = -104.0;
+        // L2Angle = -31.6;
+        // L3Angle = -31.6;
+        // L4Angle = -36;
+        // L4Score = -65;
+        // L3Score = -81.5;
+        // L2Score = -71.5;
+        // Horizontal = 90;
+        // Intermediate = -49.0;
+        // CurrentFail = 17.0;
+        // L3short = -20.6;
+        // L2Short = -20.6;
+        // L4Short = -22.5;
+
         PackageAngle = 0;
-        FeederAngle = 52.4;
+        FeederAngle = 49.0;
         L1Angle = -104.0;
-        L2Angle = -31.6;
+        L2Angle = -33.66;
         L3Angle = -31.6;
-        L4Angle = -36;
+        L4Angle = -34;//36
         L4Score = -65;
         L3Score = -81.5;
-        L2Score = -71.5;
+        L2Score = -87.8;
         Horizontal = 90;
         Intermediate = -49.0;
-        CurrentFail = 17.0;
+        CurrentFail = 80.0;//60
         L3short = -20.6;
-        L2Short = -20.6;
+        L2Short = -29.6;
         L4Short = -22.5;
+        IntakeAlgae = -61.0;
+        Processor = 35.0;
+        GetAlgaeFromReef = 109;
+        Barge = -170;
 
     }
 

@@ -100,21 +100,43 @@ public class ElevatorConstants {
         20.0 , 0, 1.3, 0.0, 0.0, 8.0);
         elevatorEncoderOffset = 0.4953;
 
-        PackageHeight = 17.9; 
-        L4Height = 57.0;
-        L4LongHeight = 53.0;
-        L3Height = 28.35;
-        L3LongHeight = 26.35;
-        L2Height = 13.2;
-        L2LongHeight = 12.6;
-        L1Height = 18.79;
-        FeederHeight = 17.9;
+        // PackageHeight = 17.9; 
+        // L4Height = 57.0;
+        // L4LongHeight = 53.0;
+        // L3Height = 28.35;
+        // L3LongHeight = 26.35;
+        // L2Height = 13.2;
+        // L2LongHeight = 12.6;
+        // L1Height = 18.79;
+        // FeederHeight = 17.9;
+        // L4ScoreHeight = 40.0;
+        // L3ScoreHeight = 22.8;
+        // L2ScoreHeight = 9.2;
+        // HPHeight = 17.0;
+        // climbHeight = 1.4;
+        // L4MiniScoreHeight = 40.0;
+
+        PackageHeight = 15.0; 
+        L4Height = 56.0;//57
+        L4LongHeight = 51.0;
+        L3Height = 25.55;
+        L3LongHeight = 22.35;
+        L2Height = 10.6;
+        L2LongHeight = 9.73;
+        L1Height = 14.79;
+        FeederHeight = 13.2;
         L4ScoreHeight = 40.0;
-        L3ScoreHeight = 22.8;
-        L2ScoreHeight = 9.2;
+        L3ScoreHeight = 19.8;
+        L2ScoreHeight = 9.8;
         HPHeight = 17.0;
-        climbHeight = 1.4;
-        L4MiniScoreHeight = 40.0;
+        climbHeight = 0.25;
+        highAlgae = 35;
+        lowAlgae = 17;
+        BargeHeight = 68.75;
+        ProcessorHeight = 14.0;
+        FloorIntakeHeight = 20.25;
+        FloorIntakeGrabHeight = 13.0;
+        L4MiniScoreHeight = 50.0;
     }
 
     private static void simBotConstants(){
