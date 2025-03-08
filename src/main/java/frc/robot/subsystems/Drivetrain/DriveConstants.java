@@ -39,7 +39,7 @@ public class DriveConstants {
 
 
     public static final TrapezoidProfile.Constraints DEFAULT_XY_CONSTRAINTS = new TrapezoidProfile.Constraints(
-        .8,
+        1.6,
         kSpeedAt12Volts.in(MetersPerSecond) * .7);
 
     public static final Map<Rotation2d, Pose2d> redPoses = new HashMap<>() {

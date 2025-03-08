@@ -77,6 +77,8 @@ public class Drive extends SubsystemBase {
     private Alert alert;
 
     private PIDController thetaController = new PIDController(10, 0, 0.2);
+    private PIDController testIN = new PIDController(5, 0, 0);
+    private PIDController testAcross = new PIDController(5, 0, 0);
     private ProfiledPIDController translationControllerY = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
     private ProfiledPIDController translationControllerX = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
 
@@ -291,6 +293,8 @@ public class Drive extends SubsystemBase {
             SmartDashboard.putNumberArray("Relative Speeds", new double[] {speeds.getX(), -speeds.getY(), 0.0});
 
 
+            // translationControllerIn.reset(Error.getX(), speeds.getX());
+            // translationControllerAcross.reset(Error.getY(), -speeds.getY());
             translationControllerIn.reset(Error.getX());
             translationControllerAcross.reset(Error.getY());
 
@@ -302,27 +306,17 @@ public class Drive extends SubsystemBase {
         double sine = Math.sin(currentTarget.getRotation().getRadians());
         
         Pose2d Error = currentTarget.relativeTo(new Pose2d(iOdata.state.Pose.getTranslation(), currentTarget.getRotation()));
-
-        // double inError = (Error.getX() * cosine) + (Error.getY() * sine);
-        // double acrossError = (Error.getY() * cosine) + (Error.getX() * sine);
-        // in = translationControllerIn.calculate((cosine * x) + (sine * y), (cosine * cx) + (sine * cy));
-        // across = translationControllerAcross.calculate((cosine * y) + (sine * x), (cosine * cy) + (sine * cx));
+        SmartDashboard.putNumberArray("Drive Error", new double[] {Error.getX(), Error.getY(), Error.getRotation().getRadians()});
 
         double in = -translationControllerIn.calculate(Error.getX(), 0.0);
         double across = translationControllerAcross.calculate(Error.getY(), 0.0);
-        // double across = 0.0;
 
         Translation2d speeds = new Translation2d(iOdata.state.Speeds.vyMetersPerSecond, iOdata.state.Speeds.vxMetersPerSecond);
-            speeds.rotateBy(currentTarget.getRotation());
-            SmartDashboard.putNumberArray("Relative Speeds", new double[] {speeds.getX(), -speeds.getY(), 0.0});
-
-        SmartDashboard.putNumberArray("Drive Error", new double[] {Error.getX(), Error.getY(), Error.getRotation().getRadians()});
+        speeds.rotateBy(currentTarget.getRotation());
+        SmartDashboard.putNumberArray("Relative Speeds", new double[] {speeds.getX(), -speeds.getY(), 0.0});
 
 
-        // SmartDashboard.putNumber("In P", inError);
-        // SmartDashboard.putNumber("Acr P", acrossError);
-
-        boolean disableTheta = Math.abs(translationControllerIn.getPositionError()) < auto_align_theta_disable;
+        boolean disableTheta = Error.getX() < auto_align_theta_disable;
 
         driveIO.setSwerveRequest(AUTO_ALIGN
             .withVelocityX(((in * cosine) + (across * sine)))
