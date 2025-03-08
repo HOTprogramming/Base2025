@@ -293,6 +293,9 @@ public class Drive extends SubsystemBase {
         speeds.rotateBy(currentTarget.getRotation());
         SmartDashboard.putNumberArray("Relative Speeds", new double[] {speeds.getX(), -speeds.getY(), 0.0});
 
+        translationControllerIn.calculate(Error.getX(), 0.0);
+        translationControllerAcross.calculate(Error.getY(), 0.0);
+
         double in = !translationControllerIn.atSetpoint() ? -translationControllerIn.calculate(Error.getX(), 0.0) : 0.0;
         double across = !translationControllerAcross.atSetpoint() ? translationControllerAcross.calculate(Error.getY(), 0.0) : 0.0;
         double cosine = Math.cos(currentTarget.getRotation().getRadians());
