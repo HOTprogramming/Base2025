@@ -92,11 +92,14 @@ public class Drive extends SubsystemBase {
     int boundingBoxHeight = 0;
     int boundingBoxWidth = 0;
 
-    int middleXPixel;
-    double goalRatio;
-
     double pixelError;
+    int middleXPixel;
+
+    double initialRatio;
+    double goalRatio;
     double rationError;
+
+    boolean objectRotatedLeft;
 
 
     private PIDController thetaController = new PIDController(10, 0, 0.2);
@@ -251,14 +254,15 @@ public class Drive extends SubsystemBase {
     }
 
     public Command testObjectRotation() {
-        return Commands.sequence(//runOnce(() -> intialRatio = boundingBoxHeight/boundingBoxWidth),
-            Commands.race(run(() -> driveIO.setSwerveRequest(ROBOT_CENTRIC.withRotationalRate(0.2))), Commands.waitSeconds(0.2)));
+        return Commands.sequence(runOnce(() -> initialRatio = boundingBoxHeight/boundingBoxWidth),
+            Commands.race(run(() -> driveIO.setSwerveRequest(ROBOT_CENTRIC.withRotationalRate(0.2))), Commands.waitSeconds(0.2)),
+            runOnce(() -> objectRotatedLeft = initialRatio > boundingBoxHeight/boundingBoxWidth));
     }
 
     public void alignObject() {
         driveIO.setSwerveRequest(ROBOT_CENTRIC
         .withVelocityX(translationChaseObjectController.calculate(pixelX, middleXPixel))
-        .withRotationalRate(thetaChaseObjectController.calculate(boundingBoxHeight/boundingBoxWidth, goalRatio))
+        .withRotationalRate(thetaChaseObjectController.calculate(boundingBoxHeight/boundingBoxWidth, goalRatio) * (objectRotatedLeft ? 1 : -1))
         );
     }
 
@@ -268,8 +272,11 @@ public class Drive extends SubsystemBase {
     }
 
     public Command chaseObject() {
-        return Commands.sequence(run(() -> alignObject()).until(() -> alignedToObject()),
-        run(() -> driveIO.setSwerveRequest(ROBOT_CENTRIC.withVelocityY(1))));
+        return Commands.sequence(testObjectRotation(),
+        run(() -> alignObject()).
+        until(() -> alignedToObject()),
+        run(() -> driveIO.setSwerveRequest(ROBOT_CENTRIC.withVelocityY(1))).
+        until(() -> false)); //when object leave object detection or intake beam break is triggered
     }
 
     public void alignReef(int leftRight) {
