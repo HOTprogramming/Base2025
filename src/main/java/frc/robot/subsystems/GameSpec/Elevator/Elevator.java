@@ -109,8 +109,8 @@ public class Elevator extends SubsystemBase {
     return elevatorCommand(ElevatorConstants.L1Height);
   }
 
-  public Command L4Score(){
-    return elevatorCommand(ElevatorConstants.L4ScoreHeight);
+  public Command L4ReturnScore(){
+    return elevatorCommand(ElevatorConstants.L4ReturnScoreHeight);
   }
 
   public Command L3Score(){
@@ -199,11 +199,9 @@ public class Elevator extends SubsystemBase {
 
   public boolean elevatorGreaterThan(double desiredPos, double threshHold){
     if(stats.elevatorPosition > desiredPos - Math.abs(threshHold)){
-      System.out.println(true);
       return true;
     }
     else{
-      System.out.println(false);
       return false;
     }
   }
