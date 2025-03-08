@@ -93,12 +93,16 @@ public class Manager extends SubsystemBase{
     public Command goToPackage(){
       return Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
       .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore())));
-    
     }
 
     public Command goToL2Package(){
       return Commands.parallel(elevatorSubsystem.goToPackage())
       .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore())));
+    }
+
+    public Command gotoL4Package(){
+      return Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
+      .andThen(Commands.parallel(elevatorSubsystem.goToPackage()));
     }
 
     public Command doneScoring(){
@@ -205,32 +209,31 @@ public class Manager extends SubsystemBase{
         Map.of(
           ScoringLevel.L4, Commands.sequence(
             runOnce(() -> {doneScoring = true;}),
+            armSubsystem.L4Score(),
+            Commands.parallel(
+            manipulatorSubsystem.L4Spit(),
+            gotoL4Package()),
+            manipulatorSubsystem.zero()
+            ),
+          ScoringLevel.L3, Commands.sequence(
+            runOnce(() -> {doneScoring = true;}),
             Commands.sequence(
-            armSubsystem.L4Score()
-            ,elevatorSubsystem.L4Score()
-            ,manipulatorSubsystem.goScore().withTimeout(0.1))
-            .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
-            .andThen(goToL4().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))),
-            Commands.sequence(Commands.parallel(
-            goToPackage().onlyIf(() -> (manipulatorSubsystem.returnBeamBreak())))),    
-            goToL4().onlyIf(() -> (!manipulatorSubsystem.returnBeamBreak()))),
-          ScoringLevel.L3, Commands.sequence(Commands.sequence(
             armSubsystem.L3Score()
             ,elevatorSubsystem.L3Score()
             ,manipulatorSubsystem.goScore().withTimeout(0.1))
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
             .andThen(goToL3().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))),
-            Commands.sequence(Commands.parallel(goToPackage().onlyIf(() -> (manipulatorSubsystem.returnBeamBreak()))
-            ,(run(() -> {doneScoring = true;}).onlyIf(() -> (manipulatorSubsystem.returnBeamBreak()))))),    
+            Commands.sequence(Commands.parallel(goToPackage().onlyIf(() -> (manipulatorSubsystem.returnBeamBreak())))),    
             goToL3().onlyIf(() -> (!manipulatorSubsystem.returnBeamBreak()))),
-          ScoringLevel.L2, Commands.sequence(Commands.sequence(
+          ScoringLevel.L2, Commands.sequence(
+            runOnce(() -> {doneScoring = true;}),
+            Commands.sequence(
             armSubsystem.L2Score()
             ,elevatorSubsystem.L2Score()
             ,manipulatorSubsystem.goScore().withTimeout(0.1))
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
             .andThen(goToL2().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))),
-            Commands.sequence(Commands.parallel(Commands.parallel(armSubsystem.L2Score(), elevatorSubsystem.L2Score()).onlyIf(() -> (manipulatorSubsystem.returnBeamBreak()))
-            ,(run(() -> {doneScoring = true;}).onlyIf(() -> (manipulatorSubsystem.returnBeamBreak()))))),    
+            Commands.sequence(Commands.parallel(Commands.parallel(armSubsystem.L2Score(), elevatorSubsystem.L2Score()).onlyIf(() -> (manipulatorSubsystem.returnBeamBreak())))),    
             goToL2().onlyIf(() -> (!manipulatorSubsystem.returnBeamBreak()))),
           ScoringLevel.L1, Commands.sequence(
             manipulatorSubsystem.shoot()
@@ -249,8 +252,8 @@ public class Manager extends SubsystemBase{
       return new SelectCommand(
         Map.of(
           ScoringLevel.L4, shoot(),
-          ScoringLevel.L3, goToL3(),
-          ScoringLevel.L2, goToL2(),
+          ScoringLevel.L3, shoot(),
+          ScoringLevel.L2, shoot(),
           ScoringLevel.L1, Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goHP()),
           ScoringLevel.Algae, manipulatorSubsystem.algaeVoltage(0.0),
           ScoringLevel.Barge, manipulatorSubsystem.algaeVoltage(0.0)
