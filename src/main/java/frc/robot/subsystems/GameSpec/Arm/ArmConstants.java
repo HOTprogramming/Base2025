@@ -125,7 +125,7 @@ public class ArmConstants {
         L2Angle = -33.66;
         L3Angle = -31.6;
         L4Angle = -34;
-        L4Score = -65;
+        L4Score = -80;
         L3Score = -81.5;
         L2Score = -87.8;
         Horizontal = 90;

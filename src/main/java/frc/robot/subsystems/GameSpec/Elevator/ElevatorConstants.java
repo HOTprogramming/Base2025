@@ -21,7 +21,7 @@ public class ElevatorConstants {
     public static double L2LongHeight;
     public static double L1Height;
     public static double FeederHeight;
-    public static double L4ScoreHeight;
+    public static double L4ReturnScoreHeight;
     public static double L4MiniScoreHeight;
     public static double L3ScoreHeight;
     public static double L2ScoreHeight;
@@ -72,7 +72,7 @@ public class ElevatorConstants {
         L2LongHeight = 9.73;
         L1Height = 14.79;
         FeederHeight = 13.2;
-        L4ScoreHeight = 38.0;
+        //L4ScoreHeight = 38.0;
         L3ScoreHeight = 19.8;
         L2ScoreHeight = 9.8;
         HPHeight = 17.0;
@@ -102,14 +102,14 @@ public class ElevatorConstants {
 
         PackageHeight = 15.0; 
         L4Height = 56.0;
-        L4LongHeight = 51.0;
+        L4LongHeight = 52.0;
         L3Height = 25.55;
         L3LongHeight = 22.35;
         L2Height = 10.6;
         L2LongHeight = 9.73;
         L1Height = 14.79;
         FeederHeight = 13.2;
-        L4ScoreHeight = 40.0;
+        L4ReturnScoreHeight = 50.0;
         L3ScoreHeight = 19.8;
         L2ScoreHeight = 9.8;
         HPHeight = 17.0;
@@ -140,7 +140,7 @@ public class ElevatorConstants {
         L2Height = 13.2;
         L1Height = 18.79;
         FeederHeight = 1.25;
-        L4ScoreHeight = 40.0;
+        //L4ScoreHeight = 40.0;
         L3ScoreHeight = 22.8;
         L2ScoreHeight = 9.2;
         HPHeight = 17.0;

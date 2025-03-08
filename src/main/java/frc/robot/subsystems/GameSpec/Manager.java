@@ -101,8 +101,9 @@ public class Manager extends SubsystemBase{
     }
 
     public Command gotoL4Package(){
-      return Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
-      .andThen(Commands.parallel(elevatorSubsystem.goToPackage()));
+      return Commands.parallel(
+      elevatorSubsystem.goToPackage(),
+      armSubsystem.goToPackage().unless(() -> !elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-6,0.5)));
     }
 
     public Command doneScoring(){
@@ -170,7 +171,7 @@ public class Manager extends SubsystemBase{
       run(() -> {scoringLevel = ScoringLevel.L4;})
       ,elevatorSubsystem.goToL4().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
       ,armSubsystem.goToPackage())
-      .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-30.0,2.0)))
+      .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-20.0,2.0)))
       .andThen(Commands.parallel(Commands.sequence(elevatorSubsystem.goToL4()
       .onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), elevatorSubsystem.goToL4Long()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak()
       )), 
@@ -209,7 +210,7 @@ public class Manager extends SubsystemBase{
         Map.of(
           ScoringLevel.L4, Commands.sequence(
             runOnce(() -> {doneScoring = true;}),
-            armSubsystem.L4Score(),
+            armSubsystem.L4Score().withTimeout(0.75),
             Commands.parallel(
             manipulatorSubsystem.L4Spit(),
             gotoL4Package()),
@@ -242,22 +243,6 @@ public class Manager extends SubsystemBase{
           ScoringLevel.Algae, manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeExpelVoltage),
           ScoringLevel.Barge, manipulatorSubsystem.algaeVoltage(16.0)
         ),
-        this::getLevel
-      );
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public Command cancelShoot(){
-
-      return new SelectCommand(
-        Map.of(
-          ScoringLevel.L4, shoot(),
-          ScoringLevel.L3, shoot(),
-          ScoringLevel.L2, shoot(),
-          ScoringLevel.L1, Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goHP()),
-          ScoringLevel.Algae, manipulatorSubsystem.algaeVoltage(0.0),
-          ScoringLevel.Barge, manipulatorSubsystem.algaeVoltage(0.0)
-          ),
         this::getLevel
       );
     }

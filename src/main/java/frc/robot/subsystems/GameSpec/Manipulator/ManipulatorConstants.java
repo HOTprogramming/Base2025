@@ -98,7 +98,7 @@ public class ManipulatorConstants {
       algaeGains = new MMGains(100, 100, 200, 1.0 , 0.0, 0.0, 0, 0);
       
       coralWristHP = -90;
-      coralWristScore = 0;
+      coralWristScore = 2;
   
       algaeExtend = 0;
       algaePackage = 0;
