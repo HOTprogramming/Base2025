@@ -31,7 +31,7 @@ public class DriveConstants {
     public static final double auto_align_command = 0.035;
 
     public static final double distance_safe_from_reef = 1.1;
-
+    public static final double feild_center_line = 4.025;
 
 
     private static final PIDConstants autoPidConstantsTranslation = new PIDConstants(5, 0, 0);

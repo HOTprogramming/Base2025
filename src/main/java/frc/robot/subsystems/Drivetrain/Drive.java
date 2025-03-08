@@ -444,6 +444,15 @@ public class Drive extends SubsystemBase {
         return this.iOdata.state.Pose.getTranslation().getDistance(DriverStation.getAlliance().get() == Alliance.Blue ? BLUE_REEF.getTranslation() : RED_REEF.getTranslation()) < distance_safe_from_reef;
     }
 
+    public boolean getReverseIntake() {
+        double robotRotation = this.iOdata.state.Pose.getRotation().getDegrees(); 
+        boolean flip = robotRotation <= -35 + 90 && robotRotation >= -35 - 90;
+        if (this.iOdata.state.Pose.getY() > feild_center_line) {
+            flip = !flip;
+        }
+        return flip;
+    }
+    // -35 +- 90 
     public void setSelectedAutoName(String name) {
         try {
             this.pathGroup.addAll(PathPlannerAuto.getPathGroupFromAutoFile("OTF_TESTING"));
