@@ -297,6 +297,8 @@ public class Drive extends SubsystemBase {
             // translationControllerAcross.reset(Error.getY(), -speeds.getY());
             translationControllerIn.reset(Error.getX());
             translationControllerAcross.reset(Error.getY());
+            testIN.reset();
+            testAcross.reset();
 
         });
     }
@@ -308,8 +310,15 @@ public class Drive extends SubsystemBase {
         Pose2d Error = currentTarget.relativeTo(new Pose2d(iOdata.state.Pose.getTranslation(), currentTarget.getRotation()));
         SmartDashboard.putNumberArray("Drive Error", new double[] {Error.getX(), Error.getY(), Error.getRotation().getRadians()});
 
-        double in = -translationControllerIn.calculate(Error.getX(), 0.0);
-        double across = translationControllerAcross.calculate(Error.getY(), 0.0);
+        double in = -testIN.calculate(Error.getX(), 0.0);
+        double across = testAcross.calculate(Error.getY(), 0.0);
+
+        in = in < -auto_align_top_speed ? -auto_align_top_speed : in;
+        in = in > auto_align_top_speed ? auto_align_top_speed : in;
+
+        across = across < -auto_align_top_speed ? -auto_align_top_speed : across;
+        across = across > auto_align_top_speed ? auto_align_top_speed : across;
+
 
         Translation2d speeds = new Translation2d(iOdata.state.Speeds.vyMetersPerSecond, iOdata.state.Speeds.vxMetersPerSecond);
         speeds.rotateBy(currentTarget.getRotation());
@@ -318,6 +327,7 @@ public class Drive extends SubsystemBase {
 
         boolean disableTheta = Error.getX() < auto_align_theta_disable;
 
+        
         driveIO.setSwerveRequest(AUTO_ALIGN
             .withVelocityX(((in * cosine) + (across * sine)))
             .withVelocityY(((across * -cosine) + (in * sine)))
