@@ -72,7 +72,7 @@ public class ElevatorConstants {
         L2LongHeight = 9.73;
         L1Height = 14.79;
         FeederHeight = 13.2;
-        L4ScoreHeight = 40.0;
+        L4ScoreHeight = 38.0;
         L3ScoreHeight = 19.8;
         L2ScoreHeight = 9.8;
         HPHeight = 17.0;

@@ -203,14 +203,16 @@ public class Manager extends SubsystemBase{
 
       return new SelectCommand(
         Map.of(
-          ScoringLevel.L4, Commands.sequence(Commands.sequence(
+          ScoringLevel.L4, Commands.sequence(
+            runOnce(() -> {doneScoring = true;}),
+            Commands.sequence(
             armSubsystem.L4Score()
             ,elevatorSubsystem.L4Score()
             ,manipulatorSubsystem.goScore().withTimeout(0.1))
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
             .andThen(goToL4().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))),
-            Commands.sequence(Commands.parallel(goToPackage().onlyIf(() -> (manipulatorSubsystem.returnBeamBreak()))
-            ,(run(() -> {doneScoring = true;}).onlyIf(() -> (manipulatorSubsystem.returnBeamBreak()))))),    
+            Commands.sequence(Commands.parallel(
+            goToPackage().onlyIf(() -> (manipulatorSubsystem.returnBeamBreak())))),    
             goToL4().onlyIf(() -> (!manipulatorSubsystem.returnBeamBreak()))),
           ScoringLevel.L3, Commands.sequence(Commands.sequence(
             armSubsystem.L3Score()
@@ -246,7 +248,7 @@ public class Manager extends SubsystemBase{
 
       return new SelectCommand(
         Map.of(
-          ScoringLevel.L4, goToL4(),
+          ScoringLevel.L4, shoot(),
           ScoringLevel.L3, goToL3(),
           ScoringLevel.L2, goToL2(),
           ScoringLevel.L1, Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goHP()),
