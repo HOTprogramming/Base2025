@@ -82,7 +82,7 @@ public class ArmConstants {
         L1Angle = -104.0;
         L2Angle = -33.66;
         L3Angle = -31.6;
-        L4Angle = -36;
+        L4Angle = -34;//36
         L4Score = -65;
         L3Score = -81.5;
         L2Score = -87.8;
@@ -112,26 +112,32 @@ public class ArmConstants {
         simMaxAngle = Units.degreesToRadians(90);
         startingAngle = Units.degreesToRadians(0);
         measurementSTDDEVS = 2.0 * Math.PI / 4096.0;
-        armGains = new MMGains(3000, 3000, 6500, 0.2, 0.0, 0.01, 0.025, 0.3);//Voltage
+        //armGains = new MMGains(3000, 3000, 6500, 0.2, 0.0, 0.01, 0.025, 0.3);//Voltage
+        armGains = new MMGains(0, 0, 0, 0.8,
+        0.0, 0.08, 0.0, 0.0);//torque position pid
         simGearBox = DCMotor.getKrakenX60Foc(1);
         gravity = false;
         armEncoderOffset = -0.1977;
-    
+
         PackageAngle = 0;
-        FeederAngle = 52.4;
+        FeederAngle = 45.0;
         L1Angle = -104.0;
-        L2Angle = -31.6;
+        L2Angle = -33.66;
         L3Angle = -31.6;
-        L4Angle = -36;
-        L4Score = -65;
+        L4Angle = -34;
+        L4Score = -80;
         L3Score = -81.5;
-        L2Score = -71.5;
+        L2Score = -87.8;
         Horizontal = 90;
-        Intermediate = -20.0;
-        CurrentFail = 17.0;
+        Intermediate = -49.0;
+        CurrentFail = 80.0;
         L3short = -20.6;
-        L2Short = -20.6;
+        L2Short = -29.6;
         L4Short = -22.5;
+        IntakeAlgae = -61.0;
+        Processor = 35.0;
+        GetAlgaeFromReef = 109;
+        Barge = -170;
 
     }
 

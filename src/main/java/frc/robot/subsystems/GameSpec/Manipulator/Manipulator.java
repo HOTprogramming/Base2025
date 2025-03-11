@@ -130,6 +130,10 @@ public class Manipulator extends SubsystemBase {
         }).onlyWhile(() -> stats.candiPWM1).andThen(Commands.waitSeconds(0.2)).andThen(zero());    
     }
 
+    public Command L4Spit(){
+        return runOnce(() -> io.setCoralSpinMotorControl(-5));
+    }
+
     /** 
      * @apiNote false when it has coral
      */
