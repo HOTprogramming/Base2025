@@ -110,8 +110,8 @@ public class ElevatorConstants {
         L1Height = 17.0;
         FeederHeight = 16.0;
         L4ReturnScoreHeight = 50.0;
-        L3ScoreHeight = 19.8;
-        L2ScoreHeight = 9.8;
+        L3ScoreHeight = 21.2;//was 19.8
+        L2ScoreHeight = 11.0; //was 9.8
         HPHeight = 17.0;
         climbHeight = 0.25;
         highAlgae = 35;

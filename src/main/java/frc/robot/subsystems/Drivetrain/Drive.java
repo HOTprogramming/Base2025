@@ -1,20 +1,6 @@
 package frc.robot.subsystems.Drivetrain;
 
-import static frc.robot.subsystems.Drivetrain.DriveConstants.DEFAULT_XY_CONSTRAINTS;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.DriveConfig;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.OFFSET_TO_RED;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.OTF_end_tolerance;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.REEF_CENTER;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.auto_align_command;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.auto_align_theta_disable;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.auto_align_tolerance;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.auto_align_top_speed;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.bluePoleShift;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.bluePoses;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.redPoleShift;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.redPoses;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.robotToReefTagFace;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.slowModeMultiplier;
+import static frc.robot.subsystems.Drivetrain.DriveConstants.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -332,7 +318,6 @@ public class Drive extends SubsystemBase {
         SmartDashboard.putNumber("cSpeedT", Math.sqrt(Math.pow(translationControllerY.calculate(iOdata.state.Pose.getY()), 2) - Math.pow(translationControllerX.calculate(iOdata.state.Pose.getX()) , 2)));
         
         
-        boolean disableTheta = false;
         if (DriverStation.getAlliance().get() == Alliance.Blue) {
             driveIO.setSwerveRequest(AUTO_ALIGN
             .withVelocityX(!translationControllerX.atGoal() ? translationControllerX.calculate(iOdata.state.Pose.getX(), currentTarget.getX()) : 0.0)
@@ -455,6 +440,19 @@ public class Drive extends SubsystemBase {
         heading = new Rotation2d (Math.toRadians(60*Math.round(joystickDeg/60)));
     }
 
+    public boolean getNearReef() {
+        return this.iOdata.state.Pose.getTranslation().getDistance(DriverStation.getAlliance().get() == Alliance.Blue ? BLUE_REEF.getTranslation() : RED_REEF.getTranslation()) < distance_safe_from_reef;
+    }
+
+    public boolean getReverseIntake() {
+        double robotRotation = this.iOdata.state.Pose.getRotation().getDegrees(); 
+        boolean flip = robotRotation <= -35 + 90 && robotRotation >= -35 - 90;
+        if (this.iOdata.state.Pose.getY() > feild_center_line) {
+            flip = !flip;
+        }
+        return flip;
+    }
+    // -35 +- 90 
     public void setSelectedAutoName(String name) {
         try {
             this.pathGroup.addAll(PathPlannerAuto.getPathGroupFromAutoFile("OTF_TESTING"));
