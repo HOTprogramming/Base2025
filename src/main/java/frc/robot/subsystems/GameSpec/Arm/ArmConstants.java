@@ -75,7 +75,7 @@ public class ArmConstants {
         armGains = new MMGains(0, 0, 0, 1.0, 0.0, 0.14, 0.0, 0.0);
         simGearBox = DCMotor.getKrakenX60Foc(1);
         gravity = false;
-        armEncoderOffset = 0.08618178125;
+        armEncoderOffset = 0.8538889;
     
         PackageAngle = 0;
         FeederAngle = 49.0;

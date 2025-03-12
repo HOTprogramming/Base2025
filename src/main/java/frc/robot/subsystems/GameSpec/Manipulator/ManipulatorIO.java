@@ -6,12 +6,16 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.FovParamsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.ProximityParamsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
+import com.ctre.phoenix6.configs.ToFParamsConfigs;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -19,16 +23,19 @@ import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.CANdi;
+import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.ExternalFeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.UpdateModeValue;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.CAN;
@@ -49,6 +56,7 @@ public abstract class ManipulatorIO {
     protected MotionMagicVoltage algaeMagic;
     protected DigitalInput algaeBeamBreak;
     protected CANcoder algaeCancoder;
+    protected CANrange canRange;
     
         public static class ManipulatorIOStats {
             public boolean coralMotorConnected = true;
@@ -73,6 +81,8 @@ public abstract class ManipulatorIO {
             public double algaeTorqueCurrentAmps = 0.0;
             public double algaeTempCelsius = 0.0;
 
+            public double algaeDistance = 0.0;
+
             public boolean candiPWM2;
             public boolean candiPWM3;
         }
@@ -96,9 +106,11 @@ public abstract class ManipulatorIO {
 
         private final StatusSignal<Boolean> CANdiPWM2;
         private final StatusSignal<Boolean> CANdiPWM3;
+        private final StatusSignal<Distance> CANrangeDistance;
         private TalonFXConfiguration cfg;
         private TalonFXSConfiguration cFXS;
         private CANcoderConfiguration eCfg;
+        private CANrangeConfiguration rangeConfig;
         
     
         /** Constructor to initialize the TalonFX */
@@ -107,6 +119,7 @@ public abstract class ManipulatorIO {
             this.coralCandi = new CANdi(ManipulatorConstants.coralCandiID, "robot");
             this.coralWrist = new TalonFXS(ManipulatorConstants.coralWristID,"robot");
             this.coralCancoder = new CANcoder(ManipulatorConstants.coralEncoderID, "robot");
+            this.canRange = new CANrange(ManipulatorConstants.canRangeID, "robot");
 
             this.algaeRoller = new TalonFX(ManipulatorConstants.algaeRollerID, "robot");
     
@@ -166,6 +179,19 @@ public abstract class ManipulatorIO {
             eCfg.MagnetSensor.MagnetOffset = ManipulatorConstants.coralWristEncoderOffset;
             //score -0.246
 
+            rangeConfig = new CANrangeConfiguration();
+
+            rangeConfig.FovParams = new FovParamsConfigs()
+                .withFOVCenterX(0.0)
+                .withFOVCenterY(0.0)
+                .withFOVRangeX(10.0)
+                .withFOVRangeY(10.0);
+
+            rangeConfig.ProximityParams = new ProximityParamsConfigs()
+                .withMinSignalStrengthForValidMeasurement(7500);
+
+            rangeConfig.ToFParams = new ToFParamsConfigs()
+                .withUpdateMode(UpdateModeValue.LongRangeUserFreq);
 
     
             setConfig();
@@ -190,6 +216,9 @@ public abstract class ManipulatorIO {
 
             CANdiPWM2 = coralCandi.getS2Closed();
             CANdiPWM3 = coralCandi.getS2Closed();
+
+            CANrangeDistance = canRange.getDistance();
+
             BaseStatusSignal.setUpdateFrequencyForAll(
                 100.0,
                 CoralPosition,
@@ -206,7 +235,8 @@ public abstract class ManipulatorIO {
                 AlgaeTorqueCurrent,
                 AlgaeTempCelsius,
                 CANdiPWM2,
-                CANdiPWM3
+                CANdiPWM3,
+                CANrangeDistance
                 );
         }
     
@@ -228,7 +258,8 @@ public abstract class ManipulatorIO {
                 AlgaeTorqueCurrent,
                 AlgaeTempCelsius,
                 CANdiPWM3,
-                CANdiPWM2)
+                CANdiPWM2,
+                CANrangeDistance)
                 .isOK();
     
             stats.coralPosition = CoralPosition.getValueAsDouble();
@@ -248,6 +279,8 @@ public abstract class ManipulatorIO {
     
             stats.candiPWM3 = CANdiPWM3.getValue();
             stats.candiPWM2 = CANdiPWM2.getValue();
+
+            stats.algaeDistance = CANrangeDistance.getValueAsDouble();
         }
     
         public void setConfig(){
@@ -275,6 +308,14 @@ public abstract class ManipulatorIO {
             if (algaeStatus.isOK()) break;}
             if (!algaeStatus.isOK()) {
                 System.out.println("Could not configure device. Error: " + algaeStatus.toString());
+            }
+
+            StatusCode RangeStatus = StatusCode.StatusCodeNotInitialized;
+            for(int i = 0; i < 5; ++i) {
+                RangeStatus = canRange.getConfigurator().apply(rangeConfig);
+            if (RangeStatus.isOK()) break;}
+            if (!RangeStatus.isOK()) {
+                System.out.println("Could not configure device. Error: " + RangeStatus.toString());
             }
         }
     
