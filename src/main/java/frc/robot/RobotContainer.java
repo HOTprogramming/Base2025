@@ -98,7 +98,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("shoot", gamespecManager.shoot());
     NamedCommands.registerCommand("lock fingers", gamespecManager.lockFingers()); 
     NamedCommands.registerCommand("open fingers", gamespecManager.OpenFingers());
-    NamedCommands.registerCommand("cancel shoot", gamespecManager.cancelShoot());
     NamedCommands.registerCommand("done scoring", gamespecManager.doneScoring());
     NamedCommands.registerCommand("climb", gamespecManager.climberOut());
     NamedCommands.registerCommand("high algae", gamespecManager.highAlgae());
@@ -111,7 +110,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("L2 Package", gamespecManager.goToL2Package());
     NamedCommands.registerCommand("Floor Intake Package", gamespecManager.floorIntakePackage());
     NamedCommands.registerCommand("Algae Package", gamespecManager.algaePackage());
-    NamedCommands.registerCommand("Climber Package", gamespecManager.packageClimber());
     NamedCommands.registerCommand("Barge Package", gamespecManager.bargePackage());
 
     NamedCommands.registerCommand("Lights Coral", gamespecManager.setLightsCoral());
@@ -228,9 +226,6 @@ public class RobotContainer {
       // driver.x().whileTrue(NamedCommands.getCommand("Align Reef Right"));
       // driver.b().onTrue(NamedCommands.getCommand("expel"));
       driver.rightTrigger().onTrue(Commands.parallel(NamedCommands.getCommand("shoot"), gamespecManager.setLightsShoot())
-      .onlyIf(operator.b().or(operator.a()).or(operator.x()).or(operator.y())))
-
-      .onFalse(Commands.parallel(NamedCommands.getCommand("cancel shoot"), refreshLights())
       .onlyIf(operator.b().or(operator.a()).or(operator.x()).or(operator.y())));
       // driver.leftTrigger().onTrue(NamedCommands.getCommand("Intake"));
 
@@ -297,6 +292,14 @@ public class RobotContainer {
   }
   public boolean isClimb() {
     return mode == Mode.climb;
+  }
+
+  public Command turnOffTopCam() {
+    return cameraSubsystem.setIgnore();
+  }
+
+  public Command turnOnTopCam() {
+    return cameraSubsystem.setUnIgnore();
   }
 
         //      operator.leftTrigger().and(operator.y())
