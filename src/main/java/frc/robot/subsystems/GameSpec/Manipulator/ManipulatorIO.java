@@ -335,7 +335,20 @@ public abstract class ManipulatorIO {
     /** Stop motor */
     public void stop() {
         coral.setVoltage(0);
-        algaeRoller.setVoltage(0);
+        if(stats.algaeDistance > ManipulatorConstants.algaeTriggerDistance){
+            algaeRoller.setVoltage(0.0);
+        }else{
+            algaeRoller.setVoltage(ManipulatorConstants.algaeHoldVoltage);
+        }
+        coralWrist.setControl(positionVoltage.withPosition(ManipulatorConstants.coralWristScore).withSlot(0));
+    }
+
+    public void goScore() {
+        if(stats.algaeDistance > ManipulatorConstants.algaeTriggerDistance){
+            algaeRoller.setVoltage(0.0);
+        }else{
+            algaeRoller.setVoltage(ManipulatorConstants.algaeHoldVoltage);
+        }
         coralWrist.setControl(positionVoltage.withPosition(ManipulatorConstants.coralWristScore).withSlot(0));
     }
 

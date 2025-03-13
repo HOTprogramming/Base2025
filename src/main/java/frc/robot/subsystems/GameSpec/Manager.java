@@ -185,14 +185,30 @@ public class Manager extends SubsystemBase{
     public Command highAlgae(){
       return Commands.sequence(
         runOnce(() -> {algaeIntakeEnum = AlgaeIntakeEnum.pluck;})
-        ,Commands.parallel(elevatorSubsystem.goToHighAlgae(), armSubsystem.getAlgaeFromReef())
+        ,Commands.parallel(elevatorSubsystem.goToHighAlgae()
+        ,armSubsystem.getAlgaeFromReef()
+        ,
+        Commands.sequence(
+        manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage)
+        .onlyWhile(() -> manipulatorSubsystem.returnAlgaeIn())
+        ,manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeHoldVoltage)
+        .onlyWhile(() -> !manipulatorSubsystem.returnAlgaeIn()))
+      )
       );
     }
 
     public Command lowAlgae(){
       return Commands.sequence(
         runOnce(() -> {algaeIntakeEnum = AlgaeIntakeEnum.pluck;})
-        ,Commands.parallel(elevatorSubsystem.goToLowAlgae(), armSubsystem.getAlgaeFromReef())
+        ,Commands.parallel(elevatorSubsystem.goToLowAlgae()
+        ,armSubsystem.getAlgaeFromReef()
+        ,
+        Commands.sequence(
+        manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage)
+        .onlyWhile(() -> manipulatorSubsystem.returnAlgaeIn())
+        ,manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeHoldVoltage)
+        .onlyWhile(() -> !manipulatorSubsystem.returnAlgaeIn()))
+      )
       );
     }
 
@@ -367,7 +383,8 @@ public class Manager extends SubsystemBase{
       return Commands.parallel(armSubsystem.goToPackage(), cancelAlgaeHolding());
     }
 
-    public Command algaePackage2(){
+    //does the normal package like in coral mode, but stops the holding voltage for the algae instead of moving the wrist.
+    public Command algaePackageElevator(){
       return Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
       .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), cancelAlgaeHolding()));
     }
@@ -395,7 +412,7 @@ public class Manager extends SubsystemBase{
         Map.of(
           AlgaeIntakeEnum.pluck,
             manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage)
-            .until(() -> !manipulatorSubsystem.returnAlgaeIn())
+            .until(() -> manipulatorSubsystem.returnAlgaeIn())
             .andThen(manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeHoldVoltage))
             ,
           AlgaeIntakeEnum.floor, Commands.parallel(

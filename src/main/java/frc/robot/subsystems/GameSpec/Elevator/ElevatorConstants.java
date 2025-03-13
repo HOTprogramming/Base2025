@@ -61,20 +61,20 @@ public class ElevatorConstants {
         elevatorGains = new MMGains(0, 0, 0.0, 0.001, 
         20.0 , 0, 1.3, 0.0, 0.0, 8.0);
         //elevatorGains = new MMGains(0, 0, 0, 45.0 , 0, 2.25, 30.0, 1.0, 0.0);//torque position pid
+        
         elevatorEncoderOffset = 0.2546;
-
         PackageHeight = 15.0; 
-        L4Height = 56.0;//57
-        L4LongHeight = 51.0;
+        L4Height = 56.0;
+        L4LongHeight = 52.0;
         L3Height = 25.55;
         L3LongHeight = 22.35;
         L2Height = 10.6;
         L2LongHeight = 9.73;
-        L1Height = 14.79;
-        FeederHeight = 13.2;
-        //L4ScoreHeight = 38.0;
-        L3ScoreHeight = 19.8;
-        L2ScoreHeight = 9.8;
+        L1Height = 17.0;
+        FeederHeight = 16.0;
+        L4ReturnScoreHeight = 50.0;
+        L3ScoreHeight = 21.2;//was 19.8
+        L2ScoreHeight = 11.0; //was 9.8
         HPHeight = 17.0;
         climbHeight = 0.25;
         highAlgae = 35;
