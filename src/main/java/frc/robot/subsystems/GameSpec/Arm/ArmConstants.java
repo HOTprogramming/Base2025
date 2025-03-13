@@ -120,7 +120,7 @@ public class ArmConstants {
         armEncoderOffset = -0.1977;
 
         PackageAngle = 0;
-        FeederAngle = 45.0;
+        FeederAngle = 35.0;
         L1Angle = -104.0;
         L2Angle = -33.66;
         L3Angle = -31.6;
