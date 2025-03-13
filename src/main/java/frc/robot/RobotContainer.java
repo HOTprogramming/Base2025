@@ -250,7 +250,7 @@ public class RobotContainer {
       operator.x().and(this::isAlgae).onTrue(NamedCommands.getCommand("align processor")).onFalse(gamespecManager.algaePackageElevator());
       operator.y().and(this::isAlgae).onTrue(NamedCommands.getCommand("barge")).onFalse(gamespecManager.bargePackage());
       //operator.leftTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("align floor intake")).onFalse(NamedCommands.getCommand("Floor Intake Package"));
-      operator.rightTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("pluck intake"))
+      //operator.rightTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("pluck intake"))
       // .onFalse(NamedCommands.getCommand("stop intake"))
       ;
 

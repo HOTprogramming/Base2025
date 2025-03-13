@@ -376,7 +376,8 @@ public class Manager extends SubsystemBase{
     public Command bargePackage(){
       return Commands.parallel(
         elevatorSubsystem.goToPackage(),
-        armSubsystem.goToPackage().unless(() -> !elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.BargeHeight-10,0.5)));
+        armSubsystem.goToPackage(),
+        cancelAlgaeHolding());
     }
 
     public Command algaePackage(){
