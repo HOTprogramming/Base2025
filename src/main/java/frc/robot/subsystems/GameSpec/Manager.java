@@ -87,6 +87,14 @@ public class Manager extends SubsystemBase{
 
       scoringLevel = ScoringLevel.L1;
       algaeIntakeEnum = AlgaeIntakeEnum.pluck;
+
+      // manipulatorSubsystem.setDefaultCommand(manipulatorSubsystem.run(() -> manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeHoldVoltage).schedule())
+      //   .onlyIf(() -> !manipulatorSubsystem.returnAlgaeIn())
+      //   .onlyWhile(() -> !manipulatorSubsystem.returnAlgaeIn())
+      //   .andThen(manipulatorSubsystem.algaeVoltage(0.0)
+      //     .onlyIf(() -> manipulatorSubsystem.returnAlgaeIn()))
+      //     .onlyWhile(() -> manipulatorSubsystem.returnAlgaeIn())
+      //   );
     }
 
 
@@ -383,7 +391,13 @@ public class Manager extends SubsystemBase{
 
       return new SelectCommand(
         Map.of(
-          AlgaeIntakeEnum.pluck, manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage),
+          AlgaeIntakeEnum.pluck, manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage)
+            .onlyIf(() -> manipulatorSubsystem.returnAlgaeIn())
+            // .onlyWhile(() -> true)
+            .andThen(algaeStopIntake()
+              .onlyIf(() -> !manipulatorSubsystem.returnAlgaeIn())),
+              // .onlyWhile(() -> false)),
+        
           AlgaeIntakeEnum.floor, Commands.parallel(
            manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage)
           //,intakeSubsystem.intakeRollerVoltage(IntakeConstants.rollerIntakeVoltage)
