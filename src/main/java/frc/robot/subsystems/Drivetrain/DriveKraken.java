@@ -13,6 +13,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -86,6 +87,12 @@ public class DriveKraken extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
 
         if (currentState != null) {
             this.iOdata.state = this.currentState;
+
+            for (int i = 0; i < 4; i++) {
+                SmartDashboard.putNumberArray("Module " + i, new double[] {
+                    getModule(i).getSteerMotor().getPosition().getValueAsDouble() % 1, 
+                    getModule(i).getSteerMotor().getClosedLoopReference().getValueAsDouble() % 1});
+            }
         }
 
         this.iOdata.pigeon = m_Pigeon2.getRotation3d();

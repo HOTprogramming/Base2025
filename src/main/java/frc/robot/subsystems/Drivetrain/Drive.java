@@ -1,20 +1,6 @@
 package frc.robot.subsystems.Drivetrain;
 
-import static frc.robot.subsystems.Drivetrain.DriveConstants.DEFAULT_XY_CONSTRAINTS;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.DriveConfig;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.OFFSET_TO_RED;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.OTF_end_tolerance;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.REEF_CENTER;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.auto_align_command;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.auto_align_theta_disable;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.auto_align_tolerance;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.auto_align_top_speed;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.bluePoleShift;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.bluePoses;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.redPoleShift;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.redPoses;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.robotToReefTagFace;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.slowModeMultiplier;
+import static frc.robot.subsystems.Drivetrain.DriveConstants.*;
 
 import java.io.IOException;
 import java.util.ArrayList;

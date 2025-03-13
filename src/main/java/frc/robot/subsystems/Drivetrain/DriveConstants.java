@@ -177,14 +177,16 @@ public class DriveConstants {
     public static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
     .withCurrentLimits(
         new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(50)
+            .withStatorCurrentLimit(60)
             .withStatorCurrentLimitEnable(true)
-            .withSupplyCurrentLimit(40)
+            .withSupplyCurrentLimit(60)
             .withSupplyCurrentLimitEnable(true)
+            .withSupplyCurrentLowerLimit(60)
+            .withSupplyCurrentLowerTime(0.0)
     ).withTorqueCurrent(
         new TorqueCurrentConfigs()
-            .withPeakForwardTorqueCurrent(50)
-            .withPeakReverseTorqueCurrent(-50)
+            .withPeakForwardTorqueCurrent(60)
+            .withPeakReverseTorqueCurrent(-60)
     );
 
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
