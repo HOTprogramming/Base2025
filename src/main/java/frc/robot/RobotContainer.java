@@ -247,8 +247,8 @@ public class RobotContainer {
 
       operator.a().and(this::isAlgae).onTrue(NamedCommands.getCommand("low algae")).onFalse(Commands.parallel(NamedCommands.getCommand("Algae Package")));
       operator.b().and(this::isAlgae).onTrue(NamedCommands.getCommand("high algae")).onFalse(Commands.parallel(NamedCommands.getCommand("Algae Package")));
-      operator.x().and(this::isAlgae).onTrue(NamedCommands.getCommand("align processor")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
-      operator.y().and(this::isAlgae).onTrue(NamedCommands.getCommand("barge")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
+      operator.x().and(this::isAlgae).onTrue(NamedCommands.getCommand("align processor")).onFalse(gamespecManager.algaePackage2());
+      operator.y().and(this::isAlgae).onTrue(NamedCommands.getCommand("barge")).onFalse(gamespecManager.bargePackage());
       //operator.leftTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("align floor intake")).onFalse(NamedCommands.getCommand("Floor Intake Package"));
       operator.rightTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("pluck intake"))
       // .onFalse(NamedCommands.getCommand("stop intake"))

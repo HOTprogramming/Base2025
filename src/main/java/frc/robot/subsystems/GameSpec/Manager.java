@@ -93,7 +93,7 @@ public class Manager extends SubsystemBase{
 
     public Command goToPackage(){
       return Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
-      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()), cancelAlgaeHolding()));
+      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore())));
     }
 
     public Command goToL2Package(){
@@ -365,6 +365,11 @@ public class Manager extends SubsystemBase{
 
     public Command algaePackage(){
       return Commands.parallel(armSubsystem.goToPackage(), cancelAlgaeHolding());
+    }
+
+    public Command algaePackage2(){
+      return Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
+      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), cancelAlgaeHolding()));
     }
 
     public Command cancelAlgaeHolding(){
