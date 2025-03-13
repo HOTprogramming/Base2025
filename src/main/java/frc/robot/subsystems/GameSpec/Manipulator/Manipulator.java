@@ -166,7 +166,7 @@ public class Manipulator extends SubsystemBase {
         return coralCommand(ManipulatorConstants.coralWristScore);
     }
 
-      /**
+    /**
    * 
    * @return negative voltage if intake, positive voltage if expel
    */

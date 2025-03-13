@@ -88,19 +88,12 @@ public class Manager extends SubsystemBase{
       scoringLevel = ScoringLevel.L1;
       algaeIntakeEnum = AlgaeIntakeEnum.pluck;
 
-      // manipulatorSubsystem.setDefaultCommand(manipulatorSubsystem.run(() -> manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeHoldVoltage).schedule())
-      //   .onlyIf(() -> !manipulatorSubsystem.returnAlgaeIn())
-      //   .onlyWhile(() -> !manipulatorSubsystem.returnAlgaeIn())
-      //   .andThen(manipulatorSubsystem.algaeVoltage(0.0)
-      //     .onlyIf(() -> manipulatorSubsystem.returnAlgaeIn()))
-      //     .onlyWhile(() -> manipulatorSubsystem.returnAlgaeIn())
-      //   );
     }
 
 
     public Command goToPackage(){
       return Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
-      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore())));
+      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()), cancelAlgaeHolding()));
     }
 
     public Command goToL2Package(){
@@ -344,6 +337,7 @@ public class Manager extends SubsystemBase{
     public Command testRatchetServoIn2(){
       return climberSubsystem.ratchetServoPosition(0.59);
     }
+
     //picks up an algae from the ground
     public Command alignFloorIntake(){
       return Commands.sequence(
@@ -364,14 +358,17 @@ public class Manager extends SubsystemBase{
     }
 
     public Command bargePackage(){
-      return Commands.sequence(
-        elevatorSubsystem.goToPackage()
-        ,armSubsystem.goToPackage()
-      );
+      return Commands.parallel(
+        elevatorSubsystem.goToPackage(),
+        armSubsystem.goToPackage().unless(() -> !elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.BargeHeight-10,0.5)));
     }
 
     public Command algaePackage(){
-      return armSubsystem.goToPackage();
+      return Commands.parallel(armSubsystem.goToPackage(), cancelAlgaeHolding());
+    }
+
+    public Command cancelAlgaeHolding(){
+      return manipulatorSubsystem.algaeVoltage(0.0).onlyIf(() -> manipulatorSubsystem.returnAlgaeIn());
     }
 
     public Command alignProcessor(){
@@ -391,16 +388,13 @@ public class Manager extends SubsystemBase{
 
       return new SelectCommand(
         Map.of(
-          AlgaeIntakeEnum.pluck, manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage)
-            .onlyIf(() -> manipulatorSubsystem.returnAlgaeIn())
-            // .onlyWhile(() -> true)
-            .andThen(algaeStopIntake()
-              .onlyIf(() -> !manipulatorSubsystem.returnAlgaeIn())),
-              // .onlyWhile(() -> false)),
-        
+          AlgaeIntakeEnum.pluck,
+            manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage)
+            .until(() -> !manipulatorSubsystem.returnAlgaeIn())
+            .andThen(manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeHoldVoltage))
+            ,
           AlgaeIntakeEnum.floor, Commands.parallel(
            manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage)
-          //,intakeSubsystem.intakeRollerVoltage(IntakeConstants.rollerIntakeVoltage)
           )
           ),
         this::getAlgaeIntakeEnum
