@@ -74,8 +74,8 @@ public class ManipulatorConstants {
       algaeEncoderID = 46;
       algaeGains = new MMGains(100, 100, 200, 1.0 , 0.0, 0.0, 0, 0);
       
-      coralWristHP = -90;
-      coralWristScore = 0;
+      coralWristHP = -97;
+      coralWristScore = -7;
   
       algaeExtend = 0;
       algaePackage = 0;
