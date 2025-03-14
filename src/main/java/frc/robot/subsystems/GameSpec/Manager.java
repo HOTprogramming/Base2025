@@ -103,10 +103,12 @@ public class Manager extends SubsystemBase{
 
     public Command gotoL4Package(){
       return Commands.parallel(
-      elevatorSubsystem.goToPackage(),
-      Commands.sequence(
-        armSubsystem.L4Score().onlyWhile(() -> elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-10.0,0.5))
-      ,armSubsystem.goToPackage().onlyWhile(() -> !elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-10.0,0.5))
+        elevatorSubsystem.goToPackage(),
+        armSubsystem.L4Score()
+      ).until(() -> !elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-6.0, 0.1))
+      .andThen(Commands.parallel(
+        armSubsystem.goToPackage(),
+        elevatorSubsystem.goToPackage()
       ));
     }
 

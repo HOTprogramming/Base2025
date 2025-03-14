@@ -197,6 +197,10 @@ public class Elevator extends SubsystemBase {
            (stats.elevatorPosition <= elevatorCommandedPos.getDouble(0) + deadband);
   }
 
+
+  /**
+   * @return true if elevator is higher than the desiredPos 
+   */
   public boolean elevatorGreaterThan(double desiredPos, double threshHold){
     if(stats.elevatorPosition > desiredPos - Math.abs(threshHold)){
       return true;
