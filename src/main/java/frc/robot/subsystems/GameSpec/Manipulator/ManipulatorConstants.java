@@ -90,15 +90,15 @@ public class ManipulatorConstants {
       //coralWristGains = new MMGains(3000, 4000, 14000, 0.2, 0.0, 0.002, 0.1, 0.0);
       coralWristGains = new MMGains(0, 0, 0, 0.725, 0.0, 0.01, 0.0, 0.0);
       coralSpinGains = new VVGains(10.0, 0.0, 0.0, 0, 1);
-      coralWristEncoderOffset = -0.330078;
+      coralWristEncoderOffset = -0.180176;
   
       algaeArmID = 17;
       algaeRollerID = 15;
       algaeEncoderID = 46;
       algaeGains = new MMGains(100, 100, 200, 1.0 , 0.0, 0.0, 0, 0);
       
-      coralWristHP = -90;
-      coralWristScore = 2;
+      coralWristHP = -99;
+      coralWristScore = 0;
   
       algaeExtend = 0;
       algaePackage = 0;
