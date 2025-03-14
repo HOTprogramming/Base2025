@@ -104,8 +104,21 @@ public class Manipulator extends SubsystemBase {
     private FunctionalCommand coralCommand(double position){
         return new FunctionalCommand(
             () -> this.coralCommandedPos.setDouble(position),
-            () -> io.setCoralAngleMotorControl(position),
-            interrupted -> io.setCoralAngleMotorControl(position), 
+            () -> 
+            {io.setCoralAngleMotorControl(position);
+            if(stats.algaeDistance > ManipulatorConstants.algaeTriggerDistance){
+                io.algaeRoller.setVoltage(0.0);
+            }else{
+                io.algaeRoller.setVoltage(ManipulatorConstants.algaeHoldVoltage);
+            }}
+            ,
+            interrupted -> {io.setCoralAngleMotorControl(position);
+            if(stats.algaeDistance > ManipulatorConstants.algaeTriggerDistance){
+                io.algaeRoller.setVoltage(0.0);
+            }else{
+                io.algaeRoller.setVoltage(ManipulatorConstants.algaeHoldVoltage);
+            }
+            }, 
             () -> stats.coralCancoderPosition <= position + .01 && stats.coralCancoderPosition >= position - .01,
             this
         );
@@ -164,14 +177,15 @@ public class Manipulator extends SubsystemBase {
 
     public  Command goScore() {
         return coralCommand(ManipulatorConstants.coralWristScore);
+
     }
 
-      /**
+    /**
    * 
    * @return negative voltage if intake, positive voltage if expel
    */
     public Command algaeVoltage(double voltage){
-            return runOnce(() -> {
+            return run(() -> {
                 algaeCommandedSpeed.setDouble(voltage);
                 io.setAlgaeSpinMotorControl(voltage);
             });

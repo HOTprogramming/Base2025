@@ -245,12 +245,12 @@ public class RobotContainer {
       operator.y().and(this::isCoral).onTrue(NamedCommands.getCommand("L4")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"), NamedCommands.getCommand("done scoring")));
       operator.rightTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align station intake")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"))); //, NamedCommands.getCommand("Stop Intake")));
 
-      operator.a().and(this::isAlgae).onTrue(NamedCommands.getCommand("low algae")).onFalse(Commands.parallel(NamedCommands.getCommand("Algae Package")));
-      operator.b().and(this::isAlgae).onTrue(NamedCommands.getCommand("high algae")).onFalse(Commands.parallel(NamedCommands.getCommand("Algae Package")));
-      operator.x().and(this::isAlgae).onTrue(NamedCommands.getCommand("align processor")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
-      operator.y().and(this::isAlgae).onTrue(NamedCommands.getCommand("barge")).onFalse(Commands.parallel(NamedCommands.getCommand("Package")));
+      operator.a().and(this::isAlgae).whileTrue(NamedCommands.getCommand("low algae")).onFalse(Commands.parallel(NamedCommands.getCommand("Algae Package")));
+      operator.b().and(this::isAlgae).whileTrue(NamedCommands.getCommand("high algae")).onFalse(Commands.parallel(NamedCommands.getCommand("Algae Package")));
+      operator.x().and(this::isAlgae).onTrue(NamedCommands.getCommand("align processor")).onFalse(gamespecManager.algaePackageElevator());
+      operator.y().and(this::isAlgae).onTrue(NamedCommands.getCommand("barge")).onFalse(gamespecManager.bargePackage());
       //operator.leftTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("align floor intake")).onFalse(NamedCommands.getCommand("Floor Intake Package"));
-      operator.rightTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("pluck intake"))
+      //operator.rightTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("pluck intake"))
       // .onFalse(NamedCommands.getCommand("stop intake"))
       ;
 
