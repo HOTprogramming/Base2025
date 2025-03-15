@@ -38,7 +38,6 @@ public class ArmConstants {
     public static double L3short;
     public static double L2Short;
     public static double L4Short;
-    public static double IntakeAlgae;
     public static double Processor;
     public static double GetAlgaeFromReef;
     public static double Barge;
@@ -92,7 +91,6 @@ public class ArmConstants {
         L3short = -20.6;
         L2Short = -29.6;
         L4Short = -22.5;
-        IntakeAlgae = -61.0;
         Processor = 35.0;
         GetAlgaeFromReef = 109;
         Barge = -170;
@@ -134,7 +132,6 @@ public class ArmConstants {
         L3short = -20.6;
         L2Short = -29.6;
         L4Short = -22.5;
-        IntakeAlgae = -61.0;
         Processor = 35.0;
         GetAlgaeFromReef = 109;
         Barge = -170;

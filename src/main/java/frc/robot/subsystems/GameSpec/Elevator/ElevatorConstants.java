@@ -32,7 +32,6 @@ public class ElevatorConstants {
     public static double BargeHeight;
     public static double ProcessorHeight;
     public static double FloorIntakeHeight;
-    public static double FloorIntakeGrabHeight;
 
 
     public record MMGains(double CruiseVelocity, double Acceleration, double ExpoKV, double ExpoKA, double kP, double kI, double kD, double kV, double kS, double kG) {} 
@@ -82,7 +81,6 @@ public class ElevatorConstants {
         BargeHeight = 68.75;
         ProcessorHeight = 14.0;
         FloorIntakeHeight = 20.25;
-        FloorIntakeGrabHeight = 13.0;
         L4MiniScoreHeight = 50.0;
 
     }
@@ -119,7 +117,6 @@ public class ElevatorConstants {
         BargeHeight = 68.75;
         ProcessorHeight = 14.0;
         FloorIntakeHeight = 20.25;
-        FloorIntakeGrabHeight = 13.0;
         L4MiniScoreHeight = 50.0;
     }
 

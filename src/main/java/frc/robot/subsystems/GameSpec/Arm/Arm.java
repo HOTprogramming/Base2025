@@ -131,10 +131,6 @@ public class Arm extends SubsystemBase {
     return armCommand(ArmConstants.Processor);
   }
 
-  public Command intakeAlgae(){
-    return armCommand(ArmConstants.IntakeAlgae);
-  }
-
   public boolean checkRange(double deadband){
     return (stats.armPosition >= armCommandedPos.getDouble(0) - deadband) && 
            (stats.armPosition <= armCommandedPos.getDouble(0) + deadband);

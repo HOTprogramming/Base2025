@@ -102,11 +102,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("climb", gamespecManager.climberOut());
     NamedCommands.registerCommand("high algae", gamespecManager.highAlgae());
     NamedCommands.registerCommand("low algae", gamespecManager.lowAlgae());
-    NamedCommands.registerCommand("align floor intake", gamespecManager.alignFloorIntake());
     NamedCommands.registerCommand("align processor", gamespecManager.alignProcessor());
     NamedCommands.registerCommand("barge", gamespecManager.barge());
-    NamedCommands.registerCommand("pluck intake", gamespecManager.algaeIntake());
-    NamedCommands.registerCommand("stop intake", gamespecManager.algaeStopIntake());
     NamedCommands.registerCommand("L2 Package", gamespecManager.goToL2Package());
     NamedCommands.registerCommand("Floor Intake Package", gamespecManager.floorIntakePackage());
     NamedCommands.registerCommand("Algae Package", gamespecManager.algaePackage());
@@ -249,10 +246,6 @@ public class RobotContainer {
       operator.b().and(this::isAlgae).whileTrue(NamedCommands.getCommand("high algae")).onFalse(Commands.parallel(NamedCommands.getCommand("Algae Package")));
       operator.x().and(this::isAlgae).onTrue(NamedCommands.getCommand("align processor")).onFalse(gamespecManager.algaePackageElevator());
       operator.y().and(this::isAlgae).onTrue(NamedCommands.getCommand("barge")).onFalse(gamespecManager.bargePackage());
-      //operator.leftTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("align floor intake")).onFalse(NamedCommands.getCommand("Floor Intake Package"));
-      //operator.rightTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("pluck intake"))
-      // .onFalse(NamedCommands.getCommand("stop intake"))
-      ;
 
       operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
       operator.y().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));

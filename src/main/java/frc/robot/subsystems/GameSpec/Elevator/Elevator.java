@@ -133,10 +133,6 @@ public class Elevator extends SubsystemBase {
     return elevatorCommand(ElevatorConstants.FloorIntakeHeight);
   }
 
-  public Command goToFloorIntakeGrab(){
-    return elevatorCommand(ElevatorConstants.FloorIntakeGrabHeight);
-  }
-
   public Command goToProcessor(){
     return elevatorCommand(ElevatorConstants.ProcessorHeight);
   }
