@@ -41,7 +41,7 @@ public abstract class IntakeIO {
     protected TalonFX intakeRotation;
     protected CANcoder intakeCancoder;
     protected PositionVoltage voltageControl;
-    protected DigitalInput beambreak;
+    public DigitalInput beambreak;
 
     public static class IntakeIOStats {
         public boolean intakeMotorConnected = true;

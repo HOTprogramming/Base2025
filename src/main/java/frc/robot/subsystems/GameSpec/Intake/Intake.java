@@ -110,9 +110,15 @@ public class Intake extends SubsystemBase {
             intakeCommandedPos.setDouble(IntakeConstants.intakeGround);
             io.setIntakeMotorControl(IntakeConstants.intakeGround);
             io.setIntakeSpinMotorControl(8, 10);
+           }); 
+  }
 
-        }).onlyWhile(() -> !io.beambreak.get()).andThen(Commands.waitSeconds(0.1))
-        .andThen(clearance());  
+  /**
+   * @return: false if nothing in the beambreak, true if it detects
+   */
+
+  public boolean getBeamBreak(){
+    return io.beambreak.get();
   }
 
   public boolean checkRange(double deadband){

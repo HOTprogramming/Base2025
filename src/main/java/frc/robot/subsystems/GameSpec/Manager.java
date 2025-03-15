@@ -343,11 +343,27 @@ public class Manager extends SubsystemBase{
     }
 
     public Command floorIntakeDeploy(){
-      return intakeSubsystem.deploy();
+      return Commands.parallel(
+          armSubsystem.horizontal(),
+          intakeSubsystem.deploy(),
+          manipulatorSubsystem.goScore())
+        .until(() -> intakeSubsystem.getBeamBreak())
+        .andThen(
+        Commands.parallel(
+          armSubsystem.horizontal(),
+          intakeSubsystem.goToPackage(),
+          manipulatorSubsystem.intakeGround())
+        .until(() -> !manipulatorSubsystem.returnBeamBreak()) //coral beambreak true/false is flipped from intake beambreak
+        .andThen(
+        Commands.parallel(
+          armSubsystem.goToPackage(),
+          intakeSubsystem.clearance(),
+          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()))
+        ));
     }
 
     public Command floorIntakeClearance(){
-      return intakeSubsystem.clearance();
+      return Commands.parallel(armSubsystem.goToPackage(), intakeSubsystem.clearance());
     }
 
     public Command bargePackage(){

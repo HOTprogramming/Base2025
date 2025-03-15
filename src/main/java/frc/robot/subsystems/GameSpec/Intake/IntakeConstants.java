@@ -48,7 +48,7 @@ public class IntakeConstants {
         kMaxAccelerationRpmPerSec = 9000.0; 
         intakeGains = new MMGains(0.19,0,0);
         
-        intakePackage = 140.0;
+        intakePackage = 130.0;
         intakeClearance = 90;
         intakeGround = 15;
         rollerIntakeVoltage = 10;
