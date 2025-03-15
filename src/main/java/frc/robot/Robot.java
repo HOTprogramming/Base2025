@@ -66,14 +66,13 @@ public class Robot extends TimedRobot {
       initAuto.schedule();
       ppConfigured = true;
     }
-
     
+    m_robotContainer.lightsDisable();
   }
 
   @Override
   public void disabledPeriodic() {
     m_robotContainer.updateAutonCommand();
-    m_robotContainer.updateLights();
   }
 
   @Override

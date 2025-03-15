@@ -331,14 +331,8 @@ public class RobotContainer {
     .andThen(gamespecManager.setLightsCoral().onlyIf(() -> isCoral()));
   }
 
-  public void updateLights() {
-    if (drivetrain.getAutoStartError() < 0.15) {
-      NamedCommands.getCommand("Lights Auto Good").ignoringDisable(true).schedule();
-    } else if (drivetrain.getAutoStartError() < 0.3) {
-      NamedCommands.getCommand("Lights Auto Ok").ignoringDisable(true).schedule();
-    } else {
-      NamedCommands.getCommand("Lights Auto Bad").ignoringDisable(true).schedule();
-    }
+  public Command lightsDisable() {
+    return gamespecManager.setLightsBad();
   }
 
   public void resetLeds() {
