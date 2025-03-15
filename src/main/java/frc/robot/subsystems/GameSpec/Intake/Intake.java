@@ -97,12 +97,16 @@ public class Intake extends SubsystemBase {
       this);
   }
 
-  public Command goToPackage(){
-    return intakeCommand(IntakeConstants.intakePackage, 0.0, 0.0);
+  public Command goToHandoff(){
+    return intakeCommand(IntakeConstants.intakeHandoff, 0.0, 0.0);
   }
 
   public Command clearance(){
     return intakeCommand(IntakeConstants.intakeClearance, 0.0, 0.0);
+  }
+
+  public Command handoffAndSpin(){
+    return intakeCommand(IntakeConstants.intakeHandoff, -2.0, -2.0);
   }
 
   public Command bump(){

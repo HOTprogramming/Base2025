@@ -341,6 +341,7 @@ public class Manager extends SubsystemBase{
       return climberSubsystem.ratchetServoPosition(0.59);
     }
 
+    //handoff code
     public Command floorIntakeDeploy(){
       return Commands.parallel(
           armSubsystem.horizontal(),
@@ -349,20 +350,31 @@ public class Manager extends SubsystemBase{
           elevatorSubsystem.intakeCoral()
           )
         .until(() -> intakeSubsystem.getBeamBreak())
-        .andThen(
+        .andThen(Commands.sequence(
+        Commands.waitSeconds(0.2),
         Commands.parallel(
           armSubsystem.horizontal(),
-          intakeSubsystem.goToPackage(),
+          intakeSubsystem.goToHandoff(),
           manipulatorSubsystem.intakeGround(),
           elevatorSubsystem.intakeCoral()
-          )
+          ))
         .until(() -> !manipulatorSubsystem.returnBeamBreak()) //coral beambreak true/false is flipped from intake beambreak
         .andThen(
         Commands.sequence(
+        Commands.waitSeconds(0.1),
         Commands.parallel(
           armSubsystem.goToPackage(),
+          elevatorSubsystem.intakeCoral(),
+          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
+          intakeSubsystem.handoffAndSpin())
+          .until(() -> armSubsystem.returnArmPos() < ArmConstants.Horizontal-5.0)
+          .andThen(
+          Commands.parallel(
+          armSubsystem.goToPackage(),
           elevatorSubsystem.goToPackage(),
-          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore())),
+          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
+          intakeSubsystem.goToHandoff())
+          ),
         intakeSubsystem.clearance())
         ));
     }
