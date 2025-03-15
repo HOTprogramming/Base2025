@@ -285,8 +285,8 @@ public class Manager extends SubsystemBase{
 
     public Command alignStationIntake(){
       return Commands.parallel(
-        Commands.deadline(manipulatorSubsystem.intake(), armSubsystem.goToFeeder())
-        .andThen(armSubsystem.goToPackage()), 
+        Commands.deadline(manipulatorSubsystem.intake(), armSubsystem.goToFeeder(), intakeSubsystem.goToHandoff())
+        .andThen(armSubsystem.goToPackage(), intakeSubsystem.clearance()), 
         elevatorSubsystem.goToFeeder());
     }
 
