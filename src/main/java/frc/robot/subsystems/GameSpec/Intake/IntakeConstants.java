@@ -12,7 +12,7 @@ public class IntakeConstants {
     public static double kMaxAccelerationRpmPerSec;
     public static MMGains intakeGains;
 
-    public static double intakePackage;
+    public static double intakeHandoff;
     public static double intakeGround;
     public static double intakeClearance;
     public static double intakeBump;
@@ -49,7 +49,7 @@ public class IntakeConstants {
         kMaxAccelerationRpmPerSec = 9000.0; 
         intakeGains = new MMGains(0.19,0,0);
         
-        intakePackage = 140.0;
+        intakeHandoff = 145.0;
         intakeClearance = 120;
         intakeBump = 75;
         intakeGround = 4;
