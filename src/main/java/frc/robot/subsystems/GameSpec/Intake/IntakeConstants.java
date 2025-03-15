@@ -50,7 +50,7 @@ public class IntakeConstants {
         
         intakePackage = 140.0;
         intakeClearance = 90;
-        intakeGround = 10;
+        intakeGround = 15;
         rollerIntakeVoltage = 10;
         rollerExpelVoltage = 1.5;
         climberOut = -120;

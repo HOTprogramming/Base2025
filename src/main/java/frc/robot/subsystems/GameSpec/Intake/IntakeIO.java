@@ -1,5 +1,6 @@
 package frc.robot.subsystems.GameSpec.Intake;
 
+import com.ctre.phoenix.CANifier.PWMChannel;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
@@ -7,6 +8,7 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.PWM1Configs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
@@ -28,6 +30,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.subsystems.GameSpec.Arm.ArmConstants;
 
 public abstract class IntakeIO {
@@ -38,6 +41,7 @@ public abstract class IntakeIO {
     protected TalonFX intakeRotation;
     protected CANcoder intakeCancoder;
     protected PositionVoltage voltageControl;
+    protected DigitalInput beambreak;
 
     public static class IntakeIOStats {
         public boolean intakeMotorConnected = true;
@@ -51,6 +55,8 @@ public abstract class IntakeIO {
 
         public double intakeCancoderPosition = 0.0;
         public double intakeCancoderVelocity = 0.0;
+
+        public boolean PWM1;
     }
 
     protected static IntakeIOStats stats = new IntakeIOStats();
@@ -75,6 +81,7 @@ public abstract class IntakeIO {
         this.blackWheels = new TalonFX(IntakeConstants.blackWheelsID, "robot");
         this.intakeRotation = new TalonFX(IntakeConstants.intakeRotationID, "robot");
         this.intakeCancoder = new CANcoder(IntakeConstants.intakeEncoderID, "robot");
+        this.beambreak = new DigitalInput(9);
 
         voltageControl = new PositionVoltage(0);
         cfg = new TalonFXConfiguration();

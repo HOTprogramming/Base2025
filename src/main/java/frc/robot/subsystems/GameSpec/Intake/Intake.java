@@ -9,9 +9,11 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.GameSpec.Intake.IntakeIO.IntakeIOStats;
+import frc.robot.subsystems.GameSpec.Manipulator.ManipulatorConstants;
 
 public class Intake extends SubsystemBase {
   public FunctionalCommand testCommand;
@@ -32,6 +34,7 @@ public class Intake extends SubsystemBase {
   private GenericEntry intakeCancoderPosition;
   private GenericEntry IntakeCancoderVelocity;
   public GenericEntry intakeCommandedPos;
+  public GenericEntry beamBreakStatus;
   
   public Intake(IntakeIO io) {
     this.io = io; 
@@ -49,6 +52,7 @@ public class Intake extends SubsystemBase {
     intakeCancoderPosition = this.intakeShuffleboard.add("Intake Cancoder Position", 0.0).getEntry();
     IntakeCancoderVelocity = this.intakeShuffleboard.add("Intake Cancoder Speed", 0.0).getEntry();
     intakeCommandedPos = this.intakeShuffleboard.add("Arm Commanded Position", 0.0).getEntry();
+    beamBreakStatus = this.intakeShuffleboard.add("BeamBreak", false).getEntry();
   }
 
 
@@ -69,6 +73,7 @@ public class Intake extends SubsystemBase {
     intakeTemp.setDouble(stats.TempCelsius);
     intakeCancoderPosition.setDouble(stats.intakeCancoderPosition);
     IntakeCancoderVelocity.setDouble(stats.intakeCancoderVelocity);
+    beamBreakStatus.setBoolean(io.beambreak.get());
   }
 
   public FunctionalCommand intakeCommand(double position, double orangeVoltage, double blackVoltage){
@@ -80,11 +85,13 @@ public class Intake extends SubsystemBase {
       },
       () -> {
       io.setIntakeMotorControl(position);
-      io.setIntakeSpinMotorControl(orangeVoltage, blackVoltage);
+      io.setIntakeSpinMotorControl(0.0, 0.0);
+      
       },
       interrupted -> {
       io.setIntakeMotorControl(position);
       io.setIntakeSpinMotorControl(orangeVoltage, blackVoltage);
+      io.setIntakeSpinMotorControl(0.0, 0.0);
       }, 
       () -> checkRange(5),
       this);
@@ -99,7 +106,13 @@ public class Intake extends SubsystemBase {
   }
 
   public Command deploy(){
-    return intakeCommand(IntakeConstants.intakeGround, 8, 10);
+            return run(() -> {
+            intakeCommandedPos.setDouble(IntakeConstants.intakeGround);
+            io.setIntakeMotorControl(IntakeConstants.intakeGround);
+            io.setIntakeSpinMotorControl(8, 10);
+
+        }).onlyWhile(() -> !io.beambreak.get()).andThen(Commands.waitSeconds(0.1))
+        .andThen(clearance());  
   }
 
   public boolean checkRange(double deadband){
