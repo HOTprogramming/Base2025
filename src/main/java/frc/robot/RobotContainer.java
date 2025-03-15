@@ -212,10 +212,13 @@ public class RobotContainer {
         }
       ));
       // b right y middle x left
-      driver.rightBumper().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTarget(2)), cameraSubsystem.setIgnore(), gamespecManager.setLightsAlign()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefRobotcentric()))).onFalse(cameraSubsystem.setUnIgnore()).onFalse(refreshLights());
-      driver.y().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1)), cameraSubsystem.setIgnore(), gamespecManager.setLightsAlign()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefRobotcentric()))).onFalse(cameraSubsystem.setUnIgnore()).onFalse(refreshLights());
-      driver.leftBumper().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTarget(0)), cameraSubsystem.setIgnore(), gamespecManager.setLightsAlign()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefRobotcentric()))).onFalse(cameraSubsystem.setUnIgnore()).onFalse(refreshLights());
-
+      driver.rightBumper().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTarget(2)), gamespecManager.setLightsAligning()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefRobotcentric()))).onFalse(refreshLights());
+      driver.y().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1)), gamespecManager.setLightsAligning()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefRobotcentric()))).onFalse(refreshLights());
+      driver.leftBumper().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTarget(0)), gamespecManager.setLightsAligning()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefRobotcentric()))).onFalse(refreshLights());
+      
+      driver.rightBumper().and(() -> drivetrain.getAutoAlignGood()).whileTrue(gamespecManager.setLightsAlignGood());
+      driver.y().and(() -> drivetrain.getAutoAlignGood()).whileTrue(gamespecManager.setLightsAlignGood());
+      driver.leftBumper().and(() -> drivetrain.getAutoAlignGood()).whileTrue(gamespecManager.setLightsAlignGood());
       // driver.b().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));      
       // driver.x().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(0)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));      
 

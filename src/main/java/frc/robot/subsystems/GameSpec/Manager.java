@@ -460,8 +460,12 @@ public class Manager extends SubsystemBase{
       return lightsSubsystem.setRed();
     }
 
-    public Command setLightsAlign() {
+    public Command setLightsAligning() {
       return lightsSubsystem.setGreen();
+    }
+
+    public Command setLightsAlignGood() {
+      return Commands.sequence(lightsSubsystem.changeAnimation(AnimationTypes.AutoAlign), lightsSubsystem.animate());
     }
 
     public Command setFancyLights() {
