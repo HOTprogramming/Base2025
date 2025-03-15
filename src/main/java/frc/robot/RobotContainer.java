@@ -332,7 +332,7 @@ public class RobotContainer {
   }
 
   public Command lightsDisable() {
-    return gamespecManager.setLightsBad();
+    return gamespecManager.setFancyLights();
   }
 
   public void resetLeds() {
