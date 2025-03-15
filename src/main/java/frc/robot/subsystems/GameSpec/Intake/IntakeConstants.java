@@ -14,6 +14,7 @@ public class IntakeConstants {
 
     public static double intakePackage;
     public static double intakeGround;
+    public static double intakeClearance;
     public static double rollerIntakeVoltage;
     public static double rollerExpelVoltage;
     public static double climberOut;
@@ -45,21 +46,22 @@ public class IntakeConstants {
         intakeEncoderID = 46;
         kReduction = (1.0 / 2.0);
         kMaxAccelerationRpmPerSec = 9000.0; 
-        intakeGains = new MMGains(0,0,0);
+        intakeGains = new MMGains(0.19,0,0);
         
-        intakePackage = -5.0;
-        intakeGround = -150.0;
+        intakePackage = 140.0;
+        intakeClearance = 90;
+        intakeGround = 10;
         rollerIntakeVoltage = 10;
         rollerExpelVoltage = 1.5;
         climberOut = -120;
         vertical = -90;
 
-        intakeEncoderOffset = 0.313232421875;
+        intakeEncoderOffset = -0.104;
 
     }
 
     private static void practiceBotConstants(){
-      
+
     }
 
     private static void simBotConstants(){

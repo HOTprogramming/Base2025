@@ -27,7 +27,6 @@ public class Intake extends SubsystemBase {
   private GenericEntry intakeSupplyCurrent;
   private GenericEntry intakeStatorCurrent;
   private GenericEntry intakeTemp;
-  private GenericEntry intakeRotationPos;
   private GenericEntry blackRollerVoltage;
   private GenericEntry orangeRollerVoltage;
   private GenericEntry intakeCancoderPosition;
@@ -45,7 +44,6 @@ public class Intake extends SubsystemBase {
     intakeSupplyCurrent = this.intakeShuffleboard.add("Intake Supply Current", 0.0).getEntry();
     intakeStatorCurrent = this.intakeShuffleboard.add("Intake Stator Current", 0.0).getEntry();
     intakeTemp = this.intakeShuffleboard.add("Intake Temp", 0.0).getEntry();
-    intakeRotationPos = this.intakeShuffleboard.add("Intake Rotation Position", 0.0).getEntry();
     blackRollerVoltage = this.intakeShuffleboard.add("Black Roller Voltage", 0.0).getEntry();
     orangeRollerVoltage = this.intakeShuffleboard.add("Orange Roller Voltage", 0.0).getEntry();
     intakeCancoderPosition = this.intakeShuffleboard.add("Intake Cancoder Position", 0.0).getEntry();
@@ -92,17 +90,21 @@ public class Intake extends SubsystemBase {
       this);
   }
 
-  public Command intakeClimberOut(){
-    return intakeCommand(IntakeConstants.climberOut, 0.0, 0.0);
-  }
-
   public Command goToPackage(){
     return intakeCommand(IntakeConstants.intakePackage, 0.0, 0.0);
   }
 
+  public Command clearance(){
+    return intakeCommand(IntakeConstants.intakeClearance, 0.0, 0.0);
+  }
+
+  public Command deploy(){
+    return intakeCommand(IntakeConstants.intakeGround, 8, 10);
+  }
+
   public boolean checkRange(double deadband){
-    return (stats.intakePosition >= intakeRotationPos.getDouble(0) - deadband) && 
-           (stats.intakePosition <= intakeRotationPos.getDouble(0) + deadband);
+    return (stats.intakePosition >= intakePosition.getDouble(0) - deadband) && 
+           (stats.intakePosition <= intakePosition.getDouble(0) + deadband);
   }
 
   @Override

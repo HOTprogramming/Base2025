@@ -343,16 +343,11 @@ public class Manager extends SubsystemBase{
     }
 
     public Command floorIntakeDeploy(){
-      return Commands.sequence(Commands.parallel(elevatorSubsystem.goToFloorIntake()
-      ,armSubsystem.horizontal()));
+      return intakeSubsystem.deploy();
     }
 
-    public Command floorIntakePackage(){
-      return Commands.sequence(elevatorSubsystem.goToFloorIntake()
-      ,armSubsystem.horizontal()
-      ,intakeSubsystem.goToPackage()
-      ,Commands.parallel(armSubsystem.goToPackage()
-      ,elevatorSubsystem.goToPackage()));
+    public Command floorIntakeClearance(){
+      return intakeSubsystem.clearance();
     }
 
     public Command bargePackage(){

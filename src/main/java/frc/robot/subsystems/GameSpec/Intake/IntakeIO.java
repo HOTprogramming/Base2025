@@ -37,7 +37,7 @@ public abstract class IntakeIO {
     protected TalonFX blackWheels;
     protected TalonFX intakeRotation;
     protected CANcoder intakeCancoder;
-    protected PositionTorqueCurrentFOC torqueControl;
+    protected PositionVoltage voltageControl;
 
     public static class IntakeIOStats {
         public boolean intakeMotorConnected = true;
@@ -76,7 +76,7 @@ public abstract class IntakeIO {
         this.intakeRotation = new TalonFX(IntakeConstants.intakeRotationID, "robot");
         this.intakeCancoder = new CANcoder(IntakeConstants.intakeEncoderID, "robot");
 
-        torqueControl = new PositionTorqueCurrentFOC(0);
+        voltageControl = new PositionVoltage(0);
         cfg = new TalonFXConfiguration();
         orangeCFG = new TalonFXConfiguration();
         blackCFG = new TalonFXConfiguration();
@@ -100,6 +100,8 @@ public abstract class IntakeIO {
         cfg.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
         cfg.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 1.0;
         cfg.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        cfg.Voltage.PeakForwardVoltage = 8;
+        cfg.Voltage.PeakReverseVoltage = -8;
 
          cfg.withCurrentLimits(
             new CurrentLimitsConfigs()
@@ -174,8 +176,6 @@ public abstract class IntakeIO {
           );
     }
 
-
-
     /** Update stats */
     public void updateStats() {
         stats.intakeMotorConnected =
@@ -202,7 +202,7 @@ public abstract class IntakeIO {
 
     /** Apply motion magic control mode */
     public void setIntakeMotorControl(double rotationPosition) {
-        intakeRotation.setControl(torqueControl.withPosition(rotationPosition).withSlot(0));
+        intakeRotation.setControl(voltageControl.withPosition(rotationPosition).withSlot(0));
     }
 
     public void setIntakeSpinMotorControl(double orangeVoltage, double blackVoltage){

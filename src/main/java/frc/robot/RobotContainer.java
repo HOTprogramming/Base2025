@@ -105,7 +105,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("align processor", gamespecManager.alignProcessor());
     NamedCommands.registerCommand("barge", gamespecManager.barge());
     NamedCommands.registerCommand("L2 Package", gamespecManager.goToL2Package());
-    NamedCommands.registerCommand("Floor Intake Package", gamespecManager.floorIntakePackage());
     NamedCommands.registerCommand("Algae Package", gamespecManager.algaePackage());
     NamedCommands.registerCommand("Barge Package", gamespecManager.bargePackage());
 
@@ -188,14 +187,6 @@ public class RobotContainer {
       //     Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
       //   })));
 
-      driver.leftTrigger().whileTrue
-      (drivetrain.run(() -> {
-        drivetrain.lockReef(
-          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
-          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0);
-        }
-      ));
-
       driver.y()
       .and(driver.axisLessThan(4, -0.15).or(driver.axisGreaterThan(4, 0.15))
       .or(driver.axisLessThan(5, -0.15)).or(driver.axisGreaterThan(5, 0.15)))
@@ -222,7 +213,6 @@ public class RobotContainer {
       // driver.b().onTrue(NamedCommands.getCommand("expel"));
       driver.rightTrigger().onTrue(Commands.parallel(NamedCommands.getCommand("shoot"), gamespecManager.setLightsShoot())
       .onlyIf(operator.b().or(operator.a()).or(operator.x()).or(operator.y())));
-      // driver.leftTrigger().onTrue(NamedCommands.getCommand("Intake"));
 
       driver.start().onTrue(drivetrain.resetPidgeon()).onFalse(drivetrain.run(() -> {
         drivetrain.teleopDrive(
@@ -252,8 +242,8 @@ public class RobotContainer {
       operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("open fingers"));
       operator.b().and(this::isClimb).onTrue(gamespecManager.latchServo());
 
-      //operator.b().and(this::isClimb).onTrue(NamedCommands.getCommand("Climber Package"));
-
+      driver.leftTrigger().whileTrue(gamespecManager.floorIntakeDeploy()).onFalse(gamespecManager.floorIntakeClearance());
+      
       operator.povUp().or(operator.povLeft().or(operator.povDown().or(operator.povRight()))).onTrue(NamedCommands.getCommand("Package").unless(this::isClimb));
 
       operator.axisLessThan(5, -0.05).or(operator.axisGreaterThan(5, 0.05)).and(this::isClimb).whileTrue(
