@@ -157,6 +157,10 @@ public class Elevator extends SubsystemBase {
     return elevatorCommand(ElevatorConstants.BargeHeight);
   }
 
+  public Command intakeCoral(){
+    return elevatorCommand(ElevatorConstants.intakeCoralHeight);
+  }
+
   public Command climbDown(){
     return elevatorCommand(ElevatorConstants.climbHeight);
   }

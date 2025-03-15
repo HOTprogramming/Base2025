@@ -32,6 +32,7 @@ public class ElevatorConstants {
     public static double BargeHeight;
     public static double ProcessorHeight;
     public static double FloorIntakeHeight;
+    public static double intakeCoralHeight;
 
 
     public record MMGains(double CruiseVelocity, double Acceleration, double ExpoKV, double ExpoKA, double kP, double kI, double kD, double kV, double kS, double kG) {} 
@@ -82,6 +83,7 @@ public class ElevatorConstants {
         ProcessorHeight = 14.0;
         FloorIntakeHeight = 20.25;
         L4MiniScoreHeight = 50.0;
+        intakeCoralHeight = 9.6;
 
     }
 

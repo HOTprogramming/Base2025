@@ -49,10 +49,10 @@ public class IntakeConstants {
         kMaxAccelerationRpmPerSec = 9000.0; 
         intakeGains = new MMGains(0.19,0,0);
         
-        intakePackage = 130.0;
-        intakeClearance = 90;
-        intakeBump = 70;
-        intakeGround = 15;
+        intakePackage = 140.0;
+        intakeClearance = 120;
+        intakeBump = 75;
+        intakeGround = 4;
         rollerIntakeVoltage = 10;
         rollerExpelVoltage = 1.5;
         climberOut = -120;

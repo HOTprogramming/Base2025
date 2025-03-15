@@ -97,7 +97,7 @@ public class Manager extends SubsystemBase{
       return Commands.parallel(
         elevatorSubsystem.goToPackage(),
         armSubsystem.L4Score()
-      ).until(() -> !elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-6.0, 0.1))
+      ).until(() -> !elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-3.0, 0.1))
       .andThen(Commands.parallel(
         armSubsystem.goToPackage(),
         elevatorSubsystem.goToPackage()
@@ -345,24 +345,34 @@ public class Manager extends SubsystemBase{
       return Commands.parallel(
           armSubsystem.horizontal(),
           intakeSubsystem.deploy(),
-          manipulatorSubsystem.goScore())
+          manipulatorSubsystem.goScore(),
+          elevatorSubsystem.intakeCoral()
+          )
         .until(() -> intakeSubsystem.getBeamBreak())
         .andThen(
         Commands.parallel(
           armSubsystem.horizontal(),
           intakeSubsystem.goToPackage(),
-          manipulatorSubsystem.intakeGround())
+          manipulatorSubsystem.intakeGround(),
+          elevatorSubsystem.intakeCoral()
+          )
         .until(() -> !manipulatorSubsystem.returnBeamBreak()) //coral beambreak true/false is flipped from intake beambreak
         .andThen(
+        Commands.sequence(
         Commands.parallel(
           armSubsystem.goToPackage(),
-          intakeSubsystem.clearance(),
-          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()))
+          elevatorSubsystem.goToPackage(),
+          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore())),
+        intakeSubsystem.clearance())
         ));
     }
 
     public Command floorIntakeClearance(){
-      return Commands.parallel(armSubsystem.goToPackage(), intakeSubsystem.clearance());
+      return Commands.parallel(
+        armSubsystem.goToPackage(), 
+        intakeSubsystem.clearance(), 
+        manipulatorSubsystem.zero(),
+        elevatorSubsystem.goToPackage());
     }
 
     public Command bargePackage(){
