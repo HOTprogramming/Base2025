@@ -1,360 +1,209 @@
 package frc.robot.subsystems.Lights;
 
-import com.ctre.phoenix.led.Animation;
-import com.ctre.phoenix.led.CANdle;
-import com.ctre.phoenix.led.CANdle.LEDStripType;
-import com.ctre.phoenix.led.CANdle.VBatOutputMode; 
-import com.ctre.phoenix.led.CANdleConfiguration;
-import com.ctre.phoenix.led.RainbowAnimation;
-
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.Constants;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import static frc.robot.subsystems.Lights.LEDsConstants.*;
+import com.ctre.phoenix.led.*;
+import com.ctre.phoenix.led.CANdle.LEDStripType;
+import com.ctre.phoenix.led.CANdle.VBatOutputMode;
+import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
+import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
+import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
+import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
 
-public class Lights implements Subsystem {
-    
-    CANdle rightCANdle;
-    CANdle leftCANdle;
-          
+public class Lights extends SubsystemBase {
+    private final CANdle leftCANdle = new CANdle(51, "rio");
+    private final CANdle rightCANdle = new CANdle(55, "rio");
 
+    int start = 0;
+    int count = 30;
 
+    int repeats;
 
-    
-    public Lights (){      
+    private final int LedCount = 17;
+
+    private Animation m_toAnimate = null;
+
+    public enum AnimationTypes {
+        ColorFlow,
+        Fire,
+        Larson,
+        Rainbow,
+        RgbFade,
+        SingleFade,
+        Strobe,
+        Twinkle,
+        TwinkleOff,
+        AutoAlign,
+        SetAll
+    }
+    private AnimationTypes m_currentAnimation;
+
+    public Lights() {
+        changeAnimation(AnimationTypes.SetAll);
         CANdleConfiguration configAll = new CANdleConfiguration();
-       // changeAnimation(AnimationTypes.SetAll); 
-        rightCANdle = new CANdle(55, "rio");
-        leftCANdle = new CANdle(54, "rio"); 
-
         configAll.statusLedOffWhenActive = false;
         configAll.disableWhenLOS = false;
         configAll.stripType = LEDStripType.RGB;
-        configAll.brightnessScalar = 0.5;
+        configAll.brightnessScalar = 1;
         configAll.vBatOutputMode = VBatOutputMode.Modulated;
-        rightCANdle.configAllSettings(configAll);}
-        private Animation m_toAnimate = null;
-        
+        leftCANdle.configAllSettings(configAll);
+        rightCANdle.configAllSettings(configAll);
+    }
 
+    public void incrementAnimation() {
+        switch(m_currentAnimation) {
+            case ColorFlow: changeAnimation(AnimationTypes.Fire); break;
+            case Fire: changeAnimation(AnimationTypes.Larson); break;
+            case Larson: changeAnimation(AnimationTypes.Rainbow); break;
+            case Rainbow: changeAnimation(AnimationTypes.RgbFade); break;
+            case RgbFade: changeAnimation(AnimationTypes.SingleFade); break;
+            case SingleFade: changeAnimation(AnimationTypes.Strobe); break;
+            case Strobe: changeAnimation(AnimationTypes.Twinkle); break;
+            case Twinkle: changeAnimation(AnimationTypes.TwinkleOff); break;
+            case TwinkleOff: changeAnimation(AnimationTypes.ColorFlow); break;
+            case SetAll: changeAnimation(AnimationTypes.ColorFlow); break;
+            case AutoAlign: changeAnimation(AnimationTypes.Strobe); break;
+          default:
+            break;
+        }
+    }
+    public void decrementAnimation() {
+        switch(m_currentAnimation) {
+            case ColorFlow: changeAnimation(AnimationTypes.TwinkleOff); break;
+            case Fire: changeAnimation(AnimationTypes.ColorFlow); break;
+            case Larson: changeAnimation(AnimationTypes.Fire); break;
+            case Rainbow: changeAnimation(AnimationTypes.Larson); break;
+            case RgbFade: changeAnimation(AnimationTypes.Rainbow); break;
+            case SingleFade: changeAnimation(AnimationTypes.RgbFade); break;
+            case Strobe: changeAnimation(AnimationTypes.SingleFade); break;
+            case Twinkle: changeAnimation(AnimationTypes.Strobe); break;
+            case TwinkleOff: changeAnimation(AnimationTypes.Twinkle); break;
+            case SetAll: changeAnimation(AnimationTypes.ColorFlow); break;
+            case AutoAlign: changeAnimation(AnimationTypes.Strobe); break;
+          default:
+            break;
+        }
+    }
+    public void setColors() {
+        changeAnimation(AnimationTypes.SetAll);
+    }
+
+    public Command changeAnimation(AnimationTypes toChange) {
+      return runOnce(() -> {
+        m_currentAnimation = toChange;
+        switch(toChange)
+        {
+            case ColorFlow:
+                m_toAnimate = new ColorFlowAnimation(128, 20, 70, 0, 0.7, LedCount, Direction.Forward);
+                break;
+            case Fire:
+                m_toAnimate = new FireAnimation(0.5, 0.7, LedCount, 0.7, 0.5);
+                break;
+            case Larson:
+                m_toAnimate = new LarsonAnimation(0, 255, 46, 0, 1, LedCount, BounceMode.Front, 3);
+                break;
+            case Rainbow:
+                m_toAnimate = new RainbowAnimation(1, 5, LedCount);
+                break;
+            case RgbFade:
+                m_toAnimate = new RgbFadeAnimation(0.7, 0.4, LedCount);
+                break;
+            case SingleFade:
+                m_toAnimate = new SingleFadeAnimation(50, 2, 200, 0, 0.5, LedCount);
+                break;
+            case Strobe:
+                m_toAnimate = new StrobeAnimation(240, 10, 180, 0, 0.5, LedCount);
+                break;
+            case Twinkle:
+                m_toAnimate = new TwinkleAnimation(30, 70, 60, 0, 0.4, LedCount, TwinklePercent.Percent6);
+                break;
+            case TwinkleOff:
+                m_toAnimate = new TwinkleOffAnimation(70, 90, 175, 0, 0.8, LedCount, TwinkleOffPercent.Percent100);
+                break;
+            case AutoAlign:
+                m_toAnimate = new StrobeAnimation(0, 255, 0, 0, 5, LedCount);
+            case SetAll:
+                m_toAnimate = null;
+                break;
+        }
+
+        rightCANdle.animate(m_toAnimate);
+        leftCANdle.animate(m_toAnimate);
+
+        System.out.println("Changed to " + m_currentAnimation.toString());
+    });
+  } 
+
+    public Command animate() {
+      return runOnce(() -> {
+        rightCANdle.animate(m_toAnimate);
+        leftCANdle.animate(m_toAnimate);
+      });
+    }
+
+    @Override
+    public void periodic() {
+
+    }
+
+    public void leftCameraLights(int r, int g, int b) {
+      leftCANdle.setLEDs(r, g, b, 0, 8, 10);
+    }
+
+    public void rightCameraLights(int r, int g, int b) {
+      rightCANdle.setLEDs(r, g, b, 0, 8, 10);
+    }
+
+    public Command autoAlignLights() {
+      return runOnce(() -> changeAnimation(AnimationTypes.AutoAlign));
+    }
+
+    @Override
+    public void simulationPeriodic() {
+        // This method will be called once per scheduler run during simulation
+    }
+
+  public Command blink(AnimationTypes anim, int repeats, double time) { 
+    return Commands.sequence(changeAnimation(anim), Commands.waitSeconds(time), changeAnimation(AnimationTypes.SetAll), Commands.waitSeconds(time));
+  }
+    
   public Command setGreen(){
    return runOnce(()-> {
       rightCANdle.setLEDs(0, 255, 0, 0, start, count); 
       leftCANdle.setLEDs(0, 255, 0, 0, start, count); 
-
     });
-    //return  rightCANdle.setLEDs(0, 255, 0, 0, start, count); //green
   }
-  public Command setGreen2(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 255, 0, 0, start2, count); });
-     //return  rightCANdle.setLEDs(0, 255, 225, 0, start, count); //green
-   }
-   public Command setGreen3(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 255, 0, 0, start3, count); });
-     //return  rightCANdle.setLEDs(0, 255, 0, 0, start, count); //green
-   }
-   public Command setGreen4(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 255, 0, 0, start4, count); });
-     //return  rightCANdle.setLEDs(0, 255, 0, 0, start, count); //green
-   }
-   public Command setGreenAll(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 255, 0, 0, start, countAll); });
-     //return  rightCANdle.setLEDs(0, 255, 0, 0, start, count); //green
-   }
-   
-     
-  
   
   public Command setRed(){
     return runOnce(()-> {
       rightCANdle.setLEDs(225, 0, 0, 0, start, count);
       leftCANdle.setLEDs(255, 0, 0, 0, start, count); 
-
     });
-    
-   }//red
-   public Command setRed2(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 0, 0, 0, start2, count); });
-    
-   }//red
-   public Command setRed3(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 0, 0, 0, start3, count); });
-    
-   }//red
-   public Command setRed4(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 0, 0, 0, start4, count); });
-    
-   }//red
-   public Command setRedAll(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 0, 0, 0, start, countAll); });
-    
-   }//red
-   
-
-   
+   }
+  
    public Command setYellow(){
     return runOnce(()-> {
       rightCANdle.setLEDs(225, 150, 0, 0, start, count);
       leftCANdle.setLEDs(225, 150, 0, 0, start, count);
     });
-   
-   }//yellow
+   }  
 
-   public Command setYellow2(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 150, 0, 0, start2, count); });
-   
-   }//yellow
-   public Command setYellow3(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 150, 0, 0, start3, count); });
-   
-   }//yellow
-   public Command setYellow4(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 150, 0, 0, start4, count); });
-   
-   }//yellow
-   public Command setYellowAll(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 150, 0, 0, start, countAll); });
-   
-   }//yellow
-   
-   
-   public Command setWhite(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 255, 225, 0, start, count); });
-   }//white
-   public Command setWhite2(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 255, 225, 0, start2, count); });
-   }//white
-   public Command setWhite3(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 255, 225, 0, start3, count); });
-   }//white
-   public Command setWhite4(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 255, 225, 0, start4, count); });
-   }//white
-   public Command setWhiteAll(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 255, 225, 0, start, countAll); });
-   }//white
-
-
-
-   public Command setBlue(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 0, 225, 0, start, count); });
-    //blue 
-    }
-    public Command setBlue2(){
-        return runOnce(()-> {rightCANdle.setLEDs(0, 0, 225, 0, start2, count); });
-        //blue    
-    }
-  public Command setBlue3(){ 
-    return runOnce(()-> {rightCANdle.setLEDs(0, 0, 225, 0, start3, count); });
-            //blue
-   }
-   public Command setBlue4(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 0, 225, 0, start4, count); });
-    //blue
-   }public Command setBlueAll(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 0, 225, 0, start, countAll); });
-    //blue
-   }
-
-
-
-   public Command setOff(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 0, 0, 0, start, countAll); });
-    //off?
-   }
    public Command setPurple(){
-    return runOnce(()-> {rightCANdle.setLEDs(170, 0, 255, 0, start, count);
-      leftCANdle.setLEDs(170, 0, 255, 0, start, count); });
-    //purple
-   }
-   public Command setPurple2(){
-    return runOnce(()-> {rightCANdle.setLEDs(170, 0, 255, 0, start2, count); });
-    //purple
+    return runOnce(()-> {
+      rightCANdle.setLEDs(0, 150, 255, 0, start, count);
+      leftCANdle.setLEDs(0, 150, 255, 0, start, count);
+    });
    }  
-   public Command setPurple3(){
-    return runOnce(()-> {rightCANdle.setLEDs(170, 0, 255, 0, start3, count); });
-    //purple
-   }  
-   public Command setPurple4(){
-    return runOnce(()-> {rightCANdle.setLEDs(170, 0, 255, 0, start4, count); });
-    //purple
-   }  
-   public Command setPurpleAll(){
-    return runOnce(()-> {rightCANdle.setLEDs(170, 0, 255, 0, start, countAll); });
-    //purple
-   }  
-     
-   
-   public Command setOrange(){
-    return runOnce(()-> {rightCANdle.setLEDs(255, 110, 0, 0, start, count); });
-    //orange
-   }
-   public Command setOrange2(){
-    return runOnce(()-> {rightCANdle.setLEDs(255, 110, 0, 0, start2, count); });
-    //orange
-   }
-   public Command setOrange3(){
-    return runOnce(()-> {rightCANdle.setLEDs(255, 110, 0, 0, start3, count); });
-    //orange
-   }
-   public Command setOrange4(){
-    return runOnce(()-> {rightCANdle.setLEDs(255, 110, 0, 0, start4, count); });
-    //orange
-   }
-   public Command setOrangeAll(){
-    return runOnce(()-> {rightCANdle.setLEDs(255, 110, 0, 0, start, countAll); });
-    //orange
-   }
-
-
-   public Command setAwsomeRed(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 50, 0, 0, start, count); });
-    //awsome red
-   }
-   public Command setAwsomeRed2(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 50, 0, 0, start2, count); });
-    //awsome red
-   }
-   public Command setAwsomeRed3(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 50, 0, 0, start3, count); });
-    //awsome red
-   }
-   public Command setAwsomeRed4(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 50, 0, 0, start4, count); });
-    //awsome red
-   }
-   public Command setAwsomeRedAll(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 50, 0, 0, start, countAll); });
-    //awsome red
-   }
 
    public Command setTeal(){
     return runOnce(()-> {
-      rightCANdle.setLEDs(0, 255, 120, 0, start, count);
-      leftCANdle.setLEDs(0, 255, 120, 0, start, count); 
-
+      rightCANdle.setLEDs(0, 128, 128, 0, start, count);
+      leftCANdle.setLEDs(0, 128, 128, 0, start, count);
     });
-    //its teal dude
-   }
-   public Command setTeal2(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 255, 120, 0, start2, count); });
-    //its teal dude
-   }
-   public Command setTeal3(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 255, 120, 0, start3, count); });
-    //its teal dude
-   }
-   public Command setTeal4(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 255, 120, 0, start4, count); });
-    //its teal dude
-   }
-   public Command setTealAll(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 255, 120, 0, start, countAll); });
-    //its teal dude
-   }
-   
-   
-   
-   
-   
-   
-   public Command setTealOne(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 255, 120, 0, startOne, countOne); });
-    //its teal dude
-   }
-
-   public Command setTealThree(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 255, 120, 0, startThree, countOne); });
-    //its teal dude
-   }
-   public Command setTealFive(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 255, 120, 0, startFive, countOne); });
-    //its teal bro
-   }
-   public Command setTealSeven(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 255, 120, 0, startSeven, countOne); });
-    //its teal dude
-   }
-   public Command setTealNine(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 255, 120, 0, startNine, countOne); });
-    //its teal dudep
-   }
-   public Command setTeal11(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 255, 120, 0, start11, countOne); });
-    //its teal brosky
-   }
-   public Command setAwsomeRedTwo(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 50, 0, 0, startTwo, count); });
-    //nice red noble
-   }
-   public Command setAwsomeRedFour(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 50, 0, 0, startFour, count); });
-    //nice red noble
-   }
-   public Command setAwsomeRedSix(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 50, 0, 0, startSix, count); });
-    //nice red noble
-   }
-   public Command setAwsomeRedEight(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 50, 0, 0, startEight, count); });
-    //nice red noble
-   }
-   public Command setAwsomeRedTen(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 50, 0, 0, startTen, count); });
-    //nice red noble
-   }
-   
-   
-   public Command setTealTwo(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 50, 0, 0, startTwo, count); });
-    //nice red noble
-   }
-   public Command setTealFour(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 50, 0, 0, startFour, count); });
-    //nice red noble
-   }
-   public Command setTealSix(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 50, 0, 0, startSix, count); });
-    //nice red noble
-   }
-   public Command setTealEight(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 50, 0, 0, startEight, count); });
-    //nice red noble
-   }
-   public Command setTealTen(){
-    return runOnce(()-> {rightCANdle.setLEDs(225, 50, 0, 0, startTen, count); });
-    //nice red noble
-   }
-   
-   
-   public Command setAwsomeRedOne(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 255, 120, 0, startOne, countOne); });
-    //its teal dude
-   }
-
-   public Command setAwsomeRedThree(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 255, 120, 0, startThree, countOne); });
-    //its teal dude
-   }
-   public Command setAwsomeRedFive(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 255, 120, 0, startFive, countOne); });
-    //its teal bro
-   }
-   public Command setAwsomeRedSeven(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 255, 120, 0, startSeven, countOne); });
-    //its teal dude
-   }
-   public Command setAwsomeRedNine(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 255, 120, 0, startNine, countOne); });
-    //its teal dudep
-   }
-   public Command setAwsomeRed11(){
-    return runOnce(()-> {rightCANdle.setLEDs(0, 255, 120, 0, start11, countOne); });
-    //its teal brosky
+   }  
    }
 
 
-   }
 

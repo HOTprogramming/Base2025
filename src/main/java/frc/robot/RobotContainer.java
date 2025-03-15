@@ -223,7 +223,7 @@ public class RobotContainer {
       // driver.b().whileTrue(NamedCommands.getCommand("Align Reef Left"));
       // driver.x().whileTrue(NamedCommands.getCommand("Align Reef Right"));
       // driver.b().onTrue(NamedCommands.getCommand("expel"));
-      driver.rightTrigger().onTrue(Commands.parallel(NamedCommands.getCommand("shoot"), gamespecManager.setLightsShoot())
+      driver.rightTrigger().onTrue(NamedCommands.getCommand("shoot")
       .onlyIf(operator.b().or(operator.a()).or(operator.x()).or(operator.y())));
       // driver.leftTrigger().onTrue(NamedCommands.getCommand("Intake"));
 
