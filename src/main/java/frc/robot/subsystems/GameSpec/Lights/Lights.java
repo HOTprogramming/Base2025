@@ -3,6 +3,7 @@ package frc.robot.subsystems.GameSpec.Lights;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import static frc.robot.subsystems.GameSpec.Lights.LEDsConstants.*;
 
 import com.ctre.phoenix.led.*;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
@@ -15,9 +16,6 @@ import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
 public class Lights extends SubsystemBase {
     private final CANdle leftCANdle = new CANdle(51, "rio");
     private final CANdle rightCANdle = new CANdle(55, "rio");
-
-    int start = 0;
-    int count = 30;
 
     int repeats;
 
@@ -171,38 +169,46 @@ public class Lights extends SubsystemBase {
     
   public Command setGreen(){
    return runOnce(()-> {
-      rightCANdle.setLEDs(0, 255, 0, 0, start, count); 
-      leftCANdle.setLEDs(0, 255, 0, 0, start, count); 
+      rightCANdle.setLEDs(0, 255, 0, 0, RightStart, count); 
+      leftCANdle.setLEDs(0, 255, 0, 0, RightStart, count); 
     });
   }
   
   public Command setRed(){
     return runOnce(()-> {
-      rightCANdle.setLEDs(225, 0, 0, 0, start, count);
-      leftCANdle.setLEDs(255, 0, 0, 0, start, count); 
+      rightCANdle.setLEDs(225, 0, 0, 0, RightStart, count);
+      leftCANdle.setLEDs(255, 0, 0, 0, LeftStart, count); 
     });
    }
   
    public Command setYellow(){
     return runOnce(()-> {
-      rightCANdle.setLEDs(225, 150, 0, 0, start, count);
-      leftCANdle.setLEDs(225, 150, 0, 0, start, count);
+      rightCANdle.setLEDs(225, 150, 0, 0, RightStart, count);
+      leftCANdle.setLEDs(225, 150, 0, 0, LeftStart, count);
     });
    }  
 
    public Command setPurple(){
     return runOnce(()-> {
-      rightCANdle.setLEDs(0, 150, 255, 0, start, count);
-      leftCANdle.setLEDs(0, 150, 255, 0, start, count);
+      rightCANdle.setLEDs(0, 150, 255, 0, RightStart, count);
+      leftCANdle.setLEDs(0, 150, 255, 0, LeftStart, count);
     });
    }  
 
    public Command setTeal(){
     return runOnce(()-> {
-      rightCANdle.setLEDs(0, 128, 128, 0, start, count);
-      leftCANdle.setLEDs(0, 128, 128, 0, start, count);
+      rightCANdle.setLEDs(0, 128, 128, 0, RightStart, count);
+      leftCANdle.setLEDs(0, 128, 128, 0, LeftStart, count);
     });
    }  
+
+   public Command setOne(int ledNum, boolean good){
+    return runOnce(()-> {
+      rightCANdle.setLEDs(0, good ? 128 : 0, 128, 0, ledNum, 1);
+    
+    });
+   }  
+
    }
 
 

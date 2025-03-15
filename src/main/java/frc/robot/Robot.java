@@ -67,7 +67,7 @@ public class Robot extends TimedRobot {
       ppConfigured = true;
     }
     
-    m_robotContainer.lightsDisable();
+    m_robotContainer.lightsDisable().ignoringDisable(true);
   }
 
   @Override

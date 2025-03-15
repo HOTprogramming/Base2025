@@ -449,7 +449,7 @@ public class Manager extends SubsystemBase{
       return Commands.sequence(lightsSubsystem.changeAnimation(AnimationTypes.ColorFlow), lightsSubsystem.animate());
     }
 
-    // public Command setLightsOff() {
-    //   return lightsSubsystem.set
-    // }
+    public Command setOneLights(int light, Boolean good) {
+      return lightsSubsystem.setOne(light, good);
+    }
 }
