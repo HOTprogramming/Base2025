@@ -39,10 +39,10 @@ import frc.robot.subsystems.GameSpec.Manipulator.ManipulatorIOSim;
 import frc.robot.subsystems.Lights.Lights;
 
 public class Manager extends SubsystemBase{
-    private Arm armSubsystem;
-    private Elevator elevatorSubsystem;
+    public Arm armSubsystem;
+    public Elevator elevatorSubsystem;
     public Climber climberSubsystem;
-    private Intake intakeSubsystem;
+    public Intake intakeSubsystem;
     private Manipulator manipulatorSubsystem;
     private Lights lightsSubsystem;
 
@@ -57,15 +57,9 @@ public class Manager extends SubsystemBase{
       Barge
     }
 
-    private enum AlgaeIntakeEnum{
-      floor,
-      pluck
-    }
-
     public boolean doneScoring = false;
 
     private ScoringLevel scoringLevel;
-    private AlgaeIntakeEnum algaeIntakeEnum;
   
     public Manager() {
       if (!Utils.isSimulation()){
@@ -86,8 +80,6 @@ public class Manager extends SubsystemBase{
       } 
 
       scoringLevel = ScoringLevel.L1;
-      algaeIntakeEnum = AlgaeIntakeEnum.pluck;
-
     }
 
 
@@ -103,8 +95,13 @@ public class Manager extends SubsystemBase{
 
     public Command gotoL4Package(){
       return Commands.parallel(
-      elevatorSubsystem.goToPackage(),
-      armSubsystem.goToPackage().unless(() -> !elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-6,0.5)));
+        elevatorSubsystem.goToPackage(),
+        armSubsystem.L4Score()
+      ).until(() -> !elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-3.0, 0.1))
+      .andThen(Commands.parallel(
+        armSubsystem.goToPackage(),
+        elevatorSubsystem.goToPackage()
+      ));
     }
 
     public Command doneScoring(){
@@ -183,24 +180,19 @@ public class Manager extends SubsystemBase{
     }
 
     public Command highAlgae(){
-      return Commands.sequence(
-        runOnce(() -> {algaeIntakeEnum = AlgaeIntakeEnum.pluck;})
-        ,Commands.parallel(elevatorSubsystem.goToHighAlgae()
+      return Commands.parallel(
+        elevatorSubsystem.goToHighAlgae()
         ,armSubsystem.getAlgaeFromReef()
-        ,
-        Commands.sequence(
+        ,Commands.sequence(
         manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage)
         .onlyWhile(() -> manipulatorSubsystem.returnAlgaeIn())
         ,manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeHoldVoltage)
         .onlyWhile(() -> !manipulatorSubsystem.returnAlgaeIn()))
-      )
-      );
+        );
     }
 
     public Command lowAlgae(){
-      return Commands.sequence(
-        runOnce(() -> {algaeIntakeEnum = AlgaeIntakeEnum.pluck;})
-        ,Commands.parallel(elevatorSubsystem.goToLowAlgae()
+      return Commands.parallel(elevatorSubsystem.goToLowAlgae()
         ,armSubsystem.getAlgaeFromReef()
         ,
         Commands.sequence(
@@ -208,16 +200,11 @@ public class Manager extends SubsystemBase{
         .onlyWhile(() -> manipulatorSubsystem.returnAlgaeIn())
         ,manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeHoldVoltage)
         .onlyWhile(() -> !manipulatorSubsystem.returnAlgaeIn()))
-      )
       );
     }
 
     public ScoringLevel getLevel(){
       return scoringLevel;
-    }
-
-    public AlgaeIntakeEnum getAlgaeIntakeEnum(){
-      return algaeIntakeEnum;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -354,23 +341,38 @@ public class Manager extends SubsystemBase{
       return climberSubsystem.ratchetServoPosition(0.59);
     }
 
-    //picks up an algae from the ground
-    public Command alignFloorIntake(){
-      return Commands.sequence(
-      runOnce(() -> {algaeIntakeEnum = AlgaeIntakeEnum.floor;})
-      ,Commands.parallel(elevatorSubsystem.goToFloorIntake()
-      ,armSubsystem.horizontal())
-      ,intakeSubsystem.intakeAlgaeGround()
-      ,Commands.parallel(armSubsystem.intakeAlgae(), elevatorSubsystem.goToFloorIntakeGrab())
-      );
+    public Command floorIntakeDeploy(){
+      return Commands.parallel(
+          armSubsystem.horizontal(),
+          intakeSubsystem.deploy(),
+          manipulatorSubsystem.goScore(),
+          elevatorSubsystem.intakeCoral()
+          )
+        .until(() -> intakeSubsystem.getBeamBreak())
+        .andThen(
+        Commands.parallel(
+          armSubsystem.horizontal(),
+          intakeSubsystem.goToPackage(),
+          manipulatorSubsystem.intakeGround(),
+          elevatorSubsystem.intakeCoral()
+          )
+        .until(() -> !manipulatorSubsystem.returnBeamBreak()) //coral beambreak true/false is flipped from intake beambreak
+        .andThen(
+        Commands.sequence(
+        Commands.parallel(
+          armSubsystem.goToPackage(),
+          elevatorSubsystem.goToPackage(),
+          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore())),
+        intakeSubsystem.clearance())
+        ));
     }
 
-    public Command floorIntakePackage(){
-      return Commands.sequence(elevatorSubsystem.goToFloorIntake()
-      ,armSubsystem.horizontal()
-      ,intakeSubsystem.goToPackage()
-      ,Commands.parallel(armSubsystem.goToPackage()
-      ,elevatorSubsystem.goToPackage()));
+    public Command floorIntakeClearance(){
+      return Commands.parallel(
+        armSubsystem.goToPackage(), 
+        intakeSubsystem.clearance(), 
+        manipulatorSubsystem.zero(),
+        elevatorSubsystem.goToPackage());
     }
 
     public Command bargePackage(){
@@ -404,31 +406,6 @@ public class Manager extends SubsystemBase{
       return Commands.parallel(
         Commands.parallel(elevatorSubsystem.goToBarge(), runOnce(() -> {scoringLevel = ScoringLevel.Barge;}))
         ,armSubsystem.barge());
-    }
-
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public Command algaeIntake(){
-
-      return new SelectCommand(
-        Map.of(
-          AlgaeIntakeEnum.pluck,
-            manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage)
-            .until(() -> manipulatorSubsystem.returnAlgaeIn())
-            .andThen(manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeHoldVoltage))
-            ,
-          AlgaeIntakeEnum.floor, Commands.parallel(
-           manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage)
-          )
-          ),
-        this::getAlgaeIntakeEnum
-      );
-    }
-
-    public Command algaeStopIntake(){
-      return Commands.parallel(
-      manipulatorSubsystem.algaeVoltage(0.0)
-      ,intakeSubsystem.intakeRollerVoltage(0.0));
-
     }
 
     public Command setLightsCoral() {
