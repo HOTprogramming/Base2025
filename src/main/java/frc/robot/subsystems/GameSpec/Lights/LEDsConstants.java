@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Lights;
+package frc.robot.subsystems.GameSpec.Lights;
 
 public class LEDsConstants {
     public static int start = 0;

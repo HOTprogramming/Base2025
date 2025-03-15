@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Lights;
+package frc.robot.subsystems.GameSpec.Lights;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
