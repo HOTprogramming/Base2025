@@ -343,7 +343,9 @@ public class Manager extends SubsystemBase{
 
     //handoff code
     public Command floorIntakeDeploy(){
-      return Commands.parallel(
+      return Commands.sequence(
+      elevatorSubsystem.goToPackage(),
+      Commands.parallel(
           armSubsystem.horizontal(),
           intakeSubsystem.deploy(),
           manipulatorSubsystem.goScore(),
@@ -376,7 +378,7 @@ public class Manager extends SubsystemBase{
           intakeSubsystem.goToHandoff())
           ),
         intakeSubsystem.clearance())
-        ));
+        )));
     }
 
     public Command floorIntakeClearance(){
