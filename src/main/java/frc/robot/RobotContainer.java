@@ -132,7 +132,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Auton Finish Intake", gamespecManager.autonFinishIntake());
     NamedCommands.registerCommand("AL4", gamespecManager.autonL4());
 
-    NamedCommands.registerCommand("Chase Object", drivetrain.chaseObject());//.until());  
+    NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.alignObject()).until(() -> drivetrain.alignedToObject()));
 
 
     //new EventTrigger("Package").whileTrue(gamespecManager.goToPackage());
@@ -149,7 +149,9 @@ public class RobotContainer {
     configureBindings();
   }
 
-  private void configureBindings() {    
+  private void configureBindings() {   
+    
+    driver.b().onTrue(NamedCommands.getCommand("Chase Object"));
 
     // drivetrain.setDefaultCommand
     //   (drivetrain.run(() -> {

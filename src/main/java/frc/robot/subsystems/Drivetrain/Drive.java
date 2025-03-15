@@ -96,17 +96,17 @@ public class Drive extends SubsystemBase {
     
     double pixelX;   // 640 x 480, origin top left
     double pixelY;
+    double pixelYmax = 640;
 
-    double initialRatio; 
-    double boundingBoxRatio;
+    int bestCoral = 0;
 
-    double targetXPixel = 240;
-    double pixelError = 5;
+    double targetXPixel = 320;
+    double pixelError = 10;
 
-    double goalRatio = 0.379; //coral diameter/length 
-    double ratioError = 0.1;
+    double goalRatio = 1.2;
+    double ratioError = 0.7; //big error, only wants coral slightly rotated
 
-    boolean objectRotatedClockwise = false;
+    boolean objectRotatedClockwise = true;
 
     NetworkTable objectDetection;
     ArrayList<DoubleArraySubscriber> coralSubs = new ArrayList<>();
@@ -116,9 +116,9 @@ public class Drive extends SubsystemBase {
     private PIDController translationControllerAcross = new PIDController(5, 0, 0);
     private ProfiledPIDController translationControllerY = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
     private ProfiledPIDController translationControllerX = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
-    private ProfiledPIDController xChaseObjectController = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
-    private ProfiledPIDController yChaseObjectController = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
-    private ProfiledPIDController thetaChaseObjectController = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
+    private PIDController xChaseObjectController = new PIDController(0.008, 0, 0);
+    private PIDController yChaseObjectController = new PIDController(0.008, 0, 0);
+    private PIDController thetaChaseObjectController = new PIDController(0.005, 0, 0);
 
 
 
@@ -165,11 +165,11 @@ public class Drive extends SubsystemBase {
         pathRotEntry = driveTab.add("Path Rot", 0.0).getEntry();
 
         objectDetection = NetworkTableInstance.getDefault().getTable("ObjectDetection/coralDetections");
-        // for (int i=0; i<6; ++i) {
-        //     coralSubs.add(objectDetection.getDoubleArrayTopic("Coral_"+i).subscribe(new double[] {}));
-        // }
-
-        coralSubs.add(objectDetection.getDoubleArrayTopic("Coral_0").subscribe(new double[] {}));
+        for (int i=0; i<6; ++i) {
+            coralSubs.add(objectDetection.getDoubleArrayTopic("Coral_"+i).subscribe(new double[] {0, 0, 0, 0}));
+            SmartDashboard.putString("corals/Coral_"+i, ""+i);
+        }
+        // coralSubs.add(objectDetection.getDoubleArrayTopic("Coral_0").subscribe(new double[] {}));
 
         double driveBaseRadius = 0;
         for (var moduleLocation : this.iOdata.m_moduleLocations) {
@@ -266,65 +266,62 @@ public class Drive extends SubsystemBase {
 
     private void getObjectMeasurements() {
 
-        // for (int i=0; i<6; ++i) {
-        //     if (coralSubs[i] != null) {
-        //         if ((coral[3] - coral[1]) * (coral[2] - coral[0]) <= ((coralSubs[i].get()[3] - coralSubs[i].get()[1]) * (coralSubs[i].get()[2] - coralSubs[i].get()[0]))) { 
-        //             coral = coralSubs[i].get();  //coral with greatest area
-        //             SmartDashboard.putNumber("best coral", i);
-        //         }
-        //     } else {
-        //         break;
-        //     }
-        // }
-        coral = coralSubs.get(0).get(new double[] {0, 0, 0, 0});
+        for (int i=0; i<6; ++i) {
+            if (coralSubs.get(i) != null) {
+                if (coralSubs.get(i).get()[3] > coralSubs.get(bestCoral).get()[3]) { 
+                    bestCoral = i;
+                    SmartDashboard.putNumber("best coral", i);
+                }
+            } else {
+                break;
+            }
+        }
+        if (coralSubs.get(bestCoral) != null) {
+            coral = coralSubs.get(bestCoral).get();
+        }
 
         double pixelXmin = coral[0];
         double pixelXmax = coral[2];
         double pixelYmin = coral[1];
-        double pixelYmax = coral[3];
+        pixelYmax = coral[3];
 
         pixelX = (pixelXmin + pixelXmax) / 2;
         pixelY = (pixelYmin + pixelYmax) / 2;
 
-        boundingBoxRatio = (pixelYmax - pixelYmin) / (pixelXmax - pixelXmin);
-
         SmartDashboard.putNumberArray("corners", coral);
         SmartDashboard.putNumber("pixel X", pixelX);
         SmartDashboard.putNumber("pixel Y", pixelY);
-        SmartDashboard.putBoolean("rotated clockwise", objectRotatedClockwise);
-        SmartDashboard.putNumber("side ratio h/w", boundingBoxRatio);
-    }
 
-    private Command testObjectRotation() {
-        initialRatio = boundingBoxRatio;
-        return Commands.sequence(
-            //Commands.race(run(() -> driveIO.setSwerveRequest(ROBOT_CENTRIC.withRotationalRate(pixelX < targetXPixel ? 0.2 : -0.2))), Commands.waitSeconds(0.2)).until(() -> Math.abs(boundingBoxRatio - goalRatio) < ratioError),
-            runOnce(() -> objectRotatedClockwise = (initialRatio > boundingBoxRatio) ^ (pixelX < targetXPixel)));
-    }
+        SmartDashboard.putNumber("error distance", Math.abs(pixelX - targetXPixel));
 
-    private boolean alignedToObject() {
-        SmartDashboard.putNumber("rotation error", Math.abs(boundingBoxRatio - goalRatio));
-        SmartDashboard.putNumber("distance error", Math.abs(pixelX - targetXPixel));
-
-        return Math.abs(boundingBoxRatio - goalRatio) < ratioError && 
-               Math.abs(pixelX - targetXPixel) < pixelError;
-    }
-
-    private void alignObject() {
-        SmartDashboard.putNumber("Command rotation", thetaChaseObjectController.calculate(boundingBoxRatio, goalRatio) * (objectRotatedClockwise ? 1 : -1));
         SmartDashboard.putNumber("commanded Y", xChaseObjectController.calculate(pixelX, targetXPixel));
+    }
 
-        // driveIO.setSwerveRequest(ROBOT_CENTRIC
-        // .withVelocityY(xChaseObjectController.calculate(pixelX, targetXPixel))
-        // .withRotationalRate(thetaChaseObjectController.calculate(boundingBoxRatio, goalRatio) * (objectRotatedClockwise ? 1 : -1))
-        // );
+    // private Command testObjectRotation() {
+    //     initialRatio = boundingBoxRatio;
+    //     return Commands.sequence(
+    //         Commands.race(run(() -> driveIO.setSwerveRequest(ROBOT_CENTRIC.withRotationalRate(pixelX < targetXPixel ? 0.2 : -0.2))), Commands.waitSeconds(0.2)).until(() -> Math.abs(boundingBoxRatio - goalRatio) < ratioError),
+    //         runOnce(() -> objectRotatedClockwise = (initialRatio > boundingBoxRatio) ^ (pixelX < targetXPixel)));
+    // }
+
+    public boolean alignedToObject() {
+        return (coral[2] - coral[0]) > 600;
+    }
+
+    public void alignObject() {
+        driveIO.setSwerveRequest(ROBOT_CENTRIC
+        .withRotationalRate(Math.abs(pixelX - targetXPixel) < pixelError ? 0 : thetaChaseObjectController.calculate(pixelX, targetXPixel))
+        .withVelocityY(yChaseObjectController.calculate(pixelYmax, 400)/Math.ceil(Math.abs(pixelX - targetXPixel)/5))
+        //.withVelocityX(-xChaseObjectController.calculate(pixelX, targetXPixel))
+        //.withRotationalRate(Math.abs(boundingBoxRatio - goalRatio) > ratioError ? thetaChaseObjectController.calculate(boundingBoxRatio, goalRatio) : 0)
+        );
     }
 
     public Command chaseObject() {
-        return Commands.sequence(//testObjectRotation(),
-        run(() -> alignObject()).unless(() -> Math.abs(boundingBoxRatio - goalRatio) < ratioError).
-        until(() -> alignedToObject()),
-        run(() -> driveIO.setSwerveRequest(ROBOT_CENTRIC.withVelocityY(yChaseObjectController.calculate(pixelY, 240)))).
+        return Commands.sequence(
+        run(() -> alignObject())
+        .until(() -> alignedToObject()),
+        run(() -> driveIO.setSwerveRequest(ROBOT_CENTRIC.withVelocityX(yChaseObjectController.calculate(pixelY, 240)))).
         until(() -> false)); //when object leave object detection or intake beam break is triggered
     }
 
