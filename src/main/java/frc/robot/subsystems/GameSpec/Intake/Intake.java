@@ -105,12 +105,16 @@ public class Intake extends SubsystemBase {
     return intakeCommand(IntakeConstants.intakeClearance, 0.0, 0.0);
   }
 
+  public Command bump(){
+    return intakeCommand(IntakeConstants.intakeBump, 0.0, 0.0);
+  }
+
   public Command deploy(){
-            return run(() -> {
-            intakeCommandedPos.setDouble(IntakeConstants.intakeGround);
-            io.setIntakeMotorControl(IntakeConstants.intakeGround);
-            io.setIntakeSpinMotorControl(8, 10);
-           }); 
+    return run(() -> {
+      intakeCommandedPos.setDouble(IntakeConstants.intakeGround);
+      io.setIntakeMotorControl(IntakeConstants.intakeGround);
+      io.setIntakeSpinMotorControl(8, 10);
+     }); 
   }
 
   /**

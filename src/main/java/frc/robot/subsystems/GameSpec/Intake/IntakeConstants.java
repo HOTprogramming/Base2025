@@ -15,6 +15,7 @@ public class IntakeConstants {
     public static double intakePackage;
     public static double intakeGround;
     public static double intakeClearance;
+    public static double intakeBump;
     public static double rollerIntakeVoltage;
     public static double rollerExpelVoltage;
     public static double climberOut;
@@ -50,6 +51,7 @@ public class IntakeConstants {
         
         intakePackage = 130.0;
         intakeClearance = 90;
+        intakeBump = 70;
         intakeGround = 15;
         rollerIntakeVoltage = 10;
         rollerExpelVoltage = 1.5;

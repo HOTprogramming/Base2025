@@ -159,6 +159,13 @@ public class RobotContainer {
       //   .or(driver.axisGreaterThan(1, 0.00))
       //   .and(driver.y().negate())
       //   .whileTrue
+
+      gamespecManager.intakeSubsystem.setDefaultCommand(
+        Commands.either(gamespecManager.intakeSubsystem.bump(), gamespecManager.intakeSubsystem.clearance(), 
+        () -> (((gamespecManager.armSubsystem.returnArmCommandedPos() < 0.0) && (gamespecManager.elevatorSubsystem.returnElevatorPos() <= 28.0)) 
+        || ((Math.abs(gamespecManager.armSubsystem.returnArmPos()) > 5.0) && (gamespecManager.elevatorSubsystem.returnElevatorCommandedPos() <= 28.0)))) 
+      );
+
       drivetrain.setDefaultCommand
       (drivetrain.run(() -> {
         drivetrain.teleopDrive(

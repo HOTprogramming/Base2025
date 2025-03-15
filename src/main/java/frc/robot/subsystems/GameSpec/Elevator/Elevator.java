@@ -169,6 +169,14 @@ public class Elevator extends SubsystemBase {
       return false;
     }
   }
+
+  public double returnElevatorCommandedPos(){
+    return this.elevatorCommandedPos.getDouble(0);
+  }
+
+  public double returnElevatorPos(){
+    return this.elevatorPosition.getDouble(0);
+  }
   
 
   public Command managerElevatorTest(){

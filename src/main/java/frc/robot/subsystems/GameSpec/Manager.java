@@ -39,10 +39,10 @@ import frc.robot.subsystems.GameSpec.Manipulator.ManipulatorIOSim;
 import frc.robot.subsystems.Lights.Lights;
 
 public class Manager extends SubsystemBase{
-    private Arm armSubsystem;
-    private Elevator elevatorSubsystem;
+    public Arm armSubsystem;
+    public Elevator elevatorSubsystem;
     public Climber climberSubsystem;
-    private Intake intakeSubsystem;
+    public Intake intakeSubsystem;
     private Manipulator manipulatorSubsystem;
     private Lights lightsSubsystem;
 
@@ -80,7 +80,6 @@ public class Manager extends SubsystemBase{
       } 
 
       scoringLevel = ScoringLevel.L1;
-
     }
 
 

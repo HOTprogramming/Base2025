@@ -131,6 +131,14 @@ public class Arm extends SubsystemBase {
     return armCommand(ArmConstants.Processor);
   }
 
+  public double returnArmCommandedPos(){
+    return this.armCommandedPos.getDouble(0);
+  }
+
+  public double returnArmPos(){
+    return this.armPosition.getDouble(0);
+  }
+
   public boolean checkRange(double deadband){
     return (stats.armPosition >= armCommandedPos.getDouble(0) - deadband) && 
            (stats.armPosition <= armCommandedPos.getDouble(0) + deadband);
