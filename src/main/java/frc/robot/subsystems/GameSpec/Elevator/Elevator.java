@@ -133,10 +133,6 @@ public class Elevator extends SubsystemBase {
     return elevatorCommand(ElevatorConstants.FloorIntakeHeight);
   }
 
-  public Command goToFloorIntakeGrab(){
-    return elevatorCommand(ElevatorConstants.FloorIntakeGrabHeight);
-  }
-
   public Command goToProcessor(){
     return elevatorCommand(ElevatorConstants.ProcessorHeight);
   }
@@ -161,6 +157,10 @@ public class Elevator extends SubsystemBase {
     return elevatorCommand(ElevatorConstants.BargeHeight);
   }
 
+  public Command intakeCoral(){
+    return elevatorCommand(ElevatorConstants.intakeCoralHeight);
+  }
+
   public Command climbDown(){
     return elevatorCommand(ElevatorConstants.climbHeight);
   }
@@ -172,6 +172,14 @@ public class Elevator extends SubsystemBase {
     else{
       return false;
     }
+  }
+
+  public double returnElevatorCommandedPos(){
+    return this.elevatorCommandedPos.getDouble(0);
+  }
+
+  public double returnElevatorPos(){
+    return this.elevatorPosition.getDouble(0);
   }
   
 
@@ -197,6 +205,10 @@ public class Elevator extends SubsystemBase {
            (stats.elevatorPosition <= elevatorCommandedPos.getDouble(0) + deadband);
   }
 
+
+  /**
+   * @return true if elevator is higher than the desiredPos 
+   */
   public boolean elevatorGreaterThan(double desiredPos, double threshHold){
     if(stats.elevatorPosition > desiredPos - Math.abs(threshHold)){
       return true;

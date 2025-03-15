@@ -207,7 +207,6 @@ public abstract class ManipulatorIO {
             //getPWM1Position, getRisetoRise
             CANdiPWM1 = coralCandi.getS1Closed();
 
-
             AlgaePosition = algaeRoller.getPosition();
             AlgaeVelocity = algaeRoller.getVelocity();
             AlgaeSupplyCurrent = algaeRoller.getSupplyCurrent();

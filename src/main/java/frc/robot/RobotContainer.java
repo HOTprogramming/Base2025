@@ -102,13 +102,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("climb", gamespecManager.climberOut());
     NamedCommands.registerCommand("high algae", gamespecManager.highAlgae());
     NamedCommands.registerCommand("low algae", gamespecManager.lowAlgae());
-    NamedCommands.registerCommand("align floor intake", gamespecManager.alignFloorIntake());
     NamedCommands.registerCommand("align processor", gamespecManager.alignProcessor());
     NamedCommands.registerCommand("barge", gamespecManager.barge());
-    NamedCommands.registerCommand("pluck intake", gamespecManager.algaeIntake());
-    NamedCommands.registerCommand("stop intake", gamespecManager.algaeStopIntake());
     NamedCommands.registerCommand("L2 Package", gamespecManager.goToL2Package());
-    NamedCommands.registerCommand("Floor Intake Package", gamespecManager.floorIntakePackage());
     NamedCommands.registerCommand("Algae Package", gamespecManager.algaePackage());
     NamedCommands.registerCommand("Barge Package", gamespecManager.bargePackage());
 
@@ -163,6 +159,13 @@ public class RobotContainer {
       //   .or(driver.axisGreaterThan(1, 0.00))
       //   .and(driver.y().negate())
       //   .whileTrue
+
+      gamespecManager.intakeSubsystem.setDefaultCommand(
+        Commands.either(gamespecManager.intakeSubsystem.bump(), gamespecManager.intakeSubsystem.clearance(), 
+        () -> (((gamespecManager.armSubsystem.returnArmCommandedPos() < 0.0) && (gamespecManager.elevatorSubsystem.returnElevatorPos() <= 28.0)) 
+        || ((Math.abs(gamespecManager.armSubsystem.returnArmPos()) > 5.0) && (gamespecManager.elevatorSubsystem.returnElevatorCommandedPos() <= 28.0)))) 
+      );
+
       drivetrain.setDefaultCommand
       (drivetrain.run(() -> {
         drivetrain.teleopDrive(
@@ -190,14 +193,6 @@ public class RobotContainer {
       //     Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
       //     Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
       //   })));
-
-      driver.leftTrigger().whileTrue
-      (drivetrain.run(() -> {
-        drivetrain.lockReef(
-          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
-          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0);
-        }
-      ));
 
       driver.y()
       .and(driver.axisLessThan(4, -0.15).or(driver.axisGreaterThan(4, 0.15))
@@ -228,7 +223,6 @@ public class RobotContainer {
       // driver.b().onTrue(NamedCommands.getCommand("expel"));
       driver.rightTrigger().onTrue(NamedCommands.getCommand("shoot")
       .onlyIf(operator.b().or(operator.a()).or(operator.x()).or(operator.y())));
-      // driver.leftTrigger().onTrue(NamedCommands.getCommand("Intake"));
 
       driver.start().onTrue(drivetrain.resetPidgeon()).onFalse(drivetrain.run(() -> {
         drivetrain.teleopDrive(
@@ -252,18 +246,14 @@ public class RobotContainer {
       operator.b().and(this::isAlgae).whileTrue(NamedCommands.getCommand("high algae")).onFalse(Commands.parallel(NamedCommands.getCommand("Algae Package")));
       operator.x().and(this::isAlgae).onTrue(NamedCommands.getCommand("align processor")).onFalse(gamespecManager.algaePackageElevator());
       operator.y().and(this::isAlgae).onTrue(NamedCommands.getCommand("barge")).onFalse(gamespecManager.bargePackage());
-      //operator.leftTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("align floor intake")).onFalse(NamedCommands.getCommand("Floor Intake Package"));
-      //operator.rightTrigger().and(this::isAlgae).whileTrue(NamedCommands.getCommand("pluck intake"))
-      // .onFalse(NamedCommands.getCommand("stop intake"))
-      ;
 
       operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
       operator.y().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));
       operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("open fingers"));
       operator.b().and(this::isClimb).onTrue(gamespecManager.latchServo());
 
-      //operator.b().and(this::isClimb).onTrue(NamedCommands.getCommand("Climber Package"));
-
+      driver.leftTrigger().whileTrue(gamespecManager.floorIntakeDeploy()).onFalse(gamespecManager.floorIntakeClearance());
+      
       operator.povUp().or(operator.povLeft().or(operator.povDown().or(operator.povRight()))).onTrue(NamedCommands.getCommand("Package").unless(this::isClimb));
 
       operator.axisLessThan(5, -0.05).or(operator.axisGreaterThan(5, 0.05)).and(this::isClimb).whileTrue(
