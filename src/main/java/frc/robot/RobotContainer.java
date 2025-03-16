@@ -131,8 +131,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Auton Finish Intake", gamespecManager.autonFinishIntake());
     NamedCommands.registerCommand("AL4", gamespecManager.autonL4());
 
-    NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.alignObject()).until(() -> drivetrain.alignedToObject()));
-
+    NamedCommands.registerCommand("Chase Object", Commands.sequence(drivetrain.run(() -> drivetrain.chaseObject()).until(() -> drivetrain.chaseObjectDone())));
 
     //new EventTrigger("Package").whileTrue(gamespecManager.goToPackage());
 
@@ -151,6 +150,8 @@ public class RobotContainer {
   private void configureBindings() {   
     
     driver.b().onTrue(NamedCommands.getCommand("Chase Object"));
+    driver.a().onTrue(NamedCommands.getCommand("Align Object"));
+
 
     // drivetrain.setDefaultCommand
     //   (drivetrain.run(() -> {
@@ -200,6 +201,14 @@ public class RobotContainer {
       //     Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
       //     Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
       //   })));
+
+      driver.a().whileTrue(
+        drivetrain.run(() -> {drivetrain.alignObjectTeleop(
+          (Math.abs(driver.getLeftX()) >= 0.1 ? driver.getLeftX() : 0) * 0.5,
+          (Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0) * 0.5);
+        }
+      ));
+
 
       driver.y()
       .and(driver.axisLessThan(4, -0.15).or(driver.axisGreaterThan(4, 0.15))
