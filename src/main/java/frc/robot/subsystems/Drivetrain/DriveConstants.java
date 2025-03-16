@@ -26,7 +26,7 @@ public class DriveConstants {
     public static final double OTF_end_tolerance = 0.2;
 
     public static final double auto_align_theta_disable = .1;
-    public static final double auto_align_top_speed = 2.4;
+    public static final double auto_align_top_speed = 1.8;
     public static final double auto_align_tolerance = 0.01;
     public static final double auto_align_lights_tolerance = 0.01;
     public static final double auto_align_command = 0.035;
@@ -100,9 +100,9 @@ public class DriveConstants {
             put(Rotation2d.fromDegrees(0), new Double[] {6.0, -0.25, -6.5});
             put(Rotation2d.fromDegrees(60), new Double[] {7.0, -0.25,  -7.0});
             put(Rotation2d.fromDegrees(120), new Double[] {5.0, -0.25, -7.0});
-            put(Rotation2d.fromDegrees(180), new Double[] {6.0, -0.25, -6.0});
-            put(Rotation2d.fromDegrees(-120), new Double[] {5.5, -0.25, -6.0}); // bad post on right (5")
-            put(Rotation2d.fromDegrees(-60), new Double[] {5.5, -0.25, -6.5});
+            put(Rotation2d.fromDegrees(180), new Double[] {6.0, -0.25, -7.0});
+            put(Rotation2d.fromDegrees(-120), new Double[] {6.5, -0.25, -7.0}); // bad post on right (5")
+            put(Rotation2d.fromDegrees(-60), new Double[] {5.5, -0.25, -7.5});
         }
     };
 
@@ -187,7 +187,7 @@ public class DriveConstants {
             .withStatorCurrentLimitEnable(true)
             .withSupplyCurrentLimit(60)
             .withSupplyCurrentLimitEnable(true)
-            .withSupplyCurrentLowerLimit(40)
+            .withSupplyCurrentLowerLimit(60)
             .withSupplyCurrentLowerTime(1)
     ).withTorqueCurrent(
         new TorqueCurrentConfigs()
