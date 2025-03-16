@@ -31,7 +31,7 @@ public class ElevatorConstants {
     public static double lowAlgae;
     public static double BargeHeight;
     public static double ProcessorHeight;
-    public static double FloorIntakeHeight;
+    public static double initialClimbHeight;
     public static double intakeCoralHeight;
 
 
@@ -81,7 +81,7 @@ public class ElevatorConstants {
         lowAlgae = 17;
         BargeHeight = 68.75;
         ProcessorHeight = 14.0;
-        FloorIntakeHeight = 20.25;
+        initialClimbHeight = 20.25;
         L4MiniScoreHeight = 50.0;
         intakeCoralHeight = 9.6;
 
@@ -118,7 +118,7 @@ public class ElevatorConstants {
         lowAlgae = 17;
         BargeHeight = 68.75;
         ProcessorHeight = 14.0;
-        FloorIntakeHeight = 20.25;
+        initialClimbHeight = 20.25;
         L4MiniScoreHeight = 50.0;
     }
 

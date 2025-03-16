@@ -129,8 +129,8 @@ public class Elevator extends SubsystemBase {
     return elevatorCommand(ElevatorConstants.PackageHeight);
   }
 
-  public Command goToFloorIntake(){
-    return elevatorCommand(ElevatorConstants.FloorIntakeHeight);
+  public Command initialClimbHeight(){
+    return elevatorCommand(ElevatorConstants.initialClimbHeight);
   }
 
   public Command goToProcessor(){

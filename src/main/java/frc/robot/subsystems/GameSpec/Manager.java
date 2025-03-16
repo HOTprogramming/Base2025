@@ -310,15 +310,15 @@ public class Manager extends SubsystemBase{
     public Command climberOut(){
       return Commands.sequence(
       lockFingers()
-      ,elevatorSubsystem.goToFloorIntake()
+      ,Commands.parallel(
+      elevatorSubsystem.initialClimbHeight()
       ,armSubsystem.horizontal()
-      //,intakeSubsystem.intakeClimberOut()
+      ,intakeSubsystem.climb())
       ,unlatchServo()
       ,Commands.waitSeconds(0.2)
       ,climberDeploy()
       ,latchServo()
       ,elevatorSubsystem.climbDown()
-      //,intakeSubsystem.intakeVert()
       );
     }
 
@@ -382,6 +382,7 @@ public class Manager extends SubsystemBase{
         )));
     }
 
+    //packages the floor intake after a deploy
     public Command floorIntakeClearance(){
       return Commands.parallel(
         armSubsystem.goToPackage(), 
