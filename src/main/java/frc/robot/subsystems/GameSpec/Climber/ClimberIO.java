@@ -14,6 +14,8 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -29,6 +31,8 @@ public abstract class ClimberIO {
     protected Servo ratchetServo;
     protected TalonFX climber;
     protected TalonFX climber2;
+    protected DigitalInput switch1;
+    protected DigitalInput switch2;
     protected MotionMagicVoltage climberMagic;
 
     public static class ClimberIOStats {
@@ -80,6 +84,8 @@ public abstract class ClimberIO {
         this.climberServo = new Servo(ClimberConstants.ServoPort);
         this.climberServo2 = new Servo(ClimberConstants.ServoPort2);
         this.ratchetServo = new Servo(ClimberConstants.ServoPort3);
+        this.switch1 = new DigitalInput(0);
+        this.switch2 = new DigitalInput(1);
         climberMagic = new MotionMagicVoltage(0);
         TalonFXConfiguration cfg = new TalonFXConfiguration();
 
