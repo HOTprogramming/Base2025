@@ -188,7 +188,7 @@ public class DriveConstants {
             .withSupplyCurrentLimit(60)
             .withSupplyCurrentLimitEnable(true)
             .withSupplyCurrentLowerLimit(60)
-            .withSupplyCurrentLowerTime(1)
+            .withSupplyCurrentLowerTime(1.0)
     ).withTorqueCurrent(
         new TorqueCurrentConfigs()
             .withPeakForwardTorqueCurrent(60)
