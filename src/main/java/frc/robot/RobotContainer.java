@@ -131,6 +131,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("Auton Intake Start", gamespecManager.autonIntake());
     NamedCommands.registerCommand("Auton Finish Intake", gamespecManager.autonFinishIntake());
     NamedCommands.registerCommand("AL4", gamespecManager.autonL4());
+    NamedCommands.registerCommand("Intake Clearence", gamespecManager.intakeSubsystem.clearance());
+    NamedCommands.registerCommand("Half Height", gamespecManager.autonHalfL4());
+
 
 
     //new EventTrigger("Package").whileTrue(gamespecManager.goToPackage());

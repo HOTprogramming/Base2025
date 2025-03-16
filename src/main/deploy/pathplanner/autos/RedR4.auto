@@ -19,6 +19,12 @@
                 "data": {
                   "pathName": "Place 1"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Clearence"
+                }
               }
             ]
           }
@@ -117,6 +123,18 @@
                       "type": "named",
                       "data": {
                         "name": "Auton Finish Intake"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.2
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Half Height"
                       }
                     }
                   ]
@@ -220,6 +238,18 @@
                       "data": {
                         "name": "Auton Finish Intake"
                       }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.2
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Half Height"
+                      }
                     }
                   ]
                 }
@@ -321,6 +351,18 @@
                       "type": "named",
                       "data": {
                         "name": "Auton Finish Intake"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.2
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Half Height"
                       }
                     }
                   ]

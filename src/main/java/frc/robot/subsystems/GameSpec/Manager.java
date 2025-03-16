@@ -305,6 +305,10 @@ public class Manager extends SubsystemBase{
         intakeSubsystem.clearance());
     }
 
+    public Command autonHalfL4() {
+      return elevatorSubsystem.halfHeight();
+    }
+
     public Command alignStationIntake(){
       return Commands.parallel(
         Commands.deadline(manipulatorSubsystem.intake(), armSubsystem.goToFeeder(), intakeSubsystem.goToHandoff())
