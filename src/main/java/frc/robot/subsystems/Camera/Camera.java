@@ -247,7 +247,15 @@ public class Camera extends SubsystemBase {
                 est.estimatedPose.toPose2d().getRotation().getDegrees()});
             });
             return visionEst;
-     }
+    }
+
+    public boolean getCameraAlive(CameraPositions camera) {
+        return cameras.get(camera).isConnected();
+    }
+
+    // public boolean getCameraSeesTag(CameraPositions camera) {
+    //     return 
+    // }
 
      @Override
     public void periodic() {

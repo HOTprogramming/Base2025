@@ -121,7 +121,7 @@ public class Drive extends SubsystemBase {
         heading = Rotation2d.fromDegrees(0);
 
         driveTab = Shuffleboard.getTab("Drive");
-        speedEntry = driveTab.add("Speed", 0.0).getEntry();
+        speedEntry = driveTab.add("Speed (RJU)", 0.0).getEntry();
         poseEntry = driveTab.add("Pose", new Double[] {0.0, 0.0, 0.0}).getEntry();
         pathXEntry = driveTab.add("Path X", 0.0).getEntry();
         pathYEntry = driveTab.add("Path Y", 0.0).getEntry();
@@ -481,13 +481,18 @@ public class Drive extends SubsystemBase {
         if (this.iOdata.state.Speeds != null) {
             speedEntry.setDouble(Math.hypot(
                 this.iOdata.state.Speeds.vxMetersPerSecond,
-                this.iOdata.state.Speeds.vyMetersPerSecond));
+                this.iOdata.state.Speeds.vyMetersPerSecond) / 5.0);
         }
         if (this.iOdata.state.Pose != null) {
             poseEntry.setDoubleArray(new Double[]{
                 this.iOdata.state.Pose.getX(), 
                 this.iOdata.state.Pose.getY(), 
                 this.iOdata.state.Pose.getRotation().getRadians()});
+
+            if (this.currentTarget != null) {
+                SmartDashboard.putBoolean("Auto Align On Target", 
+                this.iOdata.state.Pose.getTranslation().getDistance(currentTarget.getTranslation()) < auto_align_lights_tolerance);
+            }
         }
 
         if (pathGroup != null) {
@@ -498,6 +503,14 @@ public class Drive extends SubsystemBase {
         }
 
         alert.set(true);
+    }
+
+    public boolean getAutoAlignGood() {
+        if (this.iOdata.state.Pose != null && currentTarget != null) {
+            return this.iOdata.state.Pose.getTranslation().getDistance(currentTarget.getTranslation()) < auto_align_lights_tolerance;
+        } else {
+            return false;
+        }
     }
 
     public void addVisionMeasurement(Pose2d calculatedPose, double timestamp, Matrix<N3, N1> stDevs) {

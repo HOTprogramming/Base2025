@@ -32,11 +32,12 @@ import frc.robot.subsystems.GameSpec.Intake.Intake;
 import frc.robot.subsystems.GameSpec.Intake.IntakeConstants;
 import frc.robot.subsystems.GameSpec.Intake.IntakeIOReal;
 import frc.robot.subsystems.GameSpec.Intake.IntakeIOSim;
+import frc.robot.subsystems.GameSpec.Lights.Lights;
+import frc.robot.subsystems.GameSpec.Lights.Lights.AnimationTypes;
 import frc.robot.subsystems.GameSpec.Manipulator.Manipulator;
 import frc.robot.subsystems.GameSpec.Manipulator.ManipulatorConstants;
 import frc.robot.subsystems.GameSpec.Manipulator.ManipulatorIOReal;
 import frc.robot.subsystems.GameSpec.Manipulator.ManipulatorIOSim;
-import frc.robot.subsystems.Lights.Lights;
 
 public class Manager extends SubsystemBase{
     public Arm armSubsystem;
@@ -448,11 +449,19 @@ public class Manager extends SubsystemBase{
       return lightsSubsystem.setRed();
     }
 
-    public Command setLightsAlign() {
+    public Command setLightsAligning() {
       return lightsSubsystem.setGreen();
     }
 
-    // public Command setLightsOff() {
-    //   return lightsSubsystem.set
-    // }
+    public Command setLightsAlignGood() {
+      return Commands.sequence(lightsSubsystem.changeAnimation(AnimationTypes.AutoAlign), lightsSubsystem.animate());
+    }
+
+    public Command setFancyLights() {
+      return Commands.sequence(lightsSubsystem.changeAnimation(AnimationTypes.ColorFlow), lightsSubsystem.animate());
+    }
+
+    public Command setOneLights(int light, Boolean good) {
+      return lightsSubsystem.setOne(light, good);
+    }
 }

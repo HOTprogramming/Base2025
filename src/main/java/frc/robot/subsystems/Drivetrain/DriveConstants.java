@@ -28,6 +28,7 @@ public class DriveConstants {
     public static final double auto_align_theta_disable = .1;
     public static final double auto_align_top_speed = 2.4;
     public static final double auto_align_tolerance = 0.01;
+    public static final double auto_align_lights_tolerance = 0.01;
     public static final double auto_align_command = 0.035;
 
     public static final double distance_safe_from_reef = 1.1;
