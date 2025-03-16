@@ -308,18 +308,20 @@ public class Manager extends SubsystemBase{
     }
 
     public Command climberOut(){
-      return Commands.sequence(
+      return 
+      Commands.parallel(
+      intakeSubsystem.climb(),
+      Commands.sequence(
       lockFingers()
-      ,elevatorSubsystem.goToFloorIntake()
-      ,armSubsystem.horizontal()
-      //,intakeSubsystem.intakeClimberOut()
+      ,Commands.parallel(
+      elevatorSubsystem.initialClimbHeight()
+      ,armSubsystem.horizontal())
       ,unlatchServo()
       ,Commands.waitSeconds(0.2)
       ,climberDeploy()
       ,latchServo()
       ,elevatorSubsystem.climbDown()
-      //,intakeSubsystem.intakeVert()
-      );
+      ));
     }
 
     public Command climberDeploy(){
@@ -382,6 +384,7 @@ public class Manager extends SubsystemBase{
         )));
     }
 
+    //packages the floor intake after a deploy
     public Command floorIntakeClearance(){
       return Commands.parallel(
         armSubsystem.goToPackage(), 

@@ -166,7 +166,8 @@ public class RobotContainer {
       gamespecManager.intakeSubsystem.setDefaultCommand(
         Commands.either(gamespecManager.intakeSubsystem.bump(), gamespecManager.intakeSubsystem.clearance(), 
         () -> (((gamespecManager.armSubsystem.returnArmCommandedPos() < 0.0) && (gamespecManager.elevatorSubsystem.returnElevatorPos() <= 28.0)) 
-        || (((gamespecManager.armSubsystem.returnArmPos() < -5.0) && (gamespecManager.armSubsystem.returnArmCommandedPos() <= 0)) && (gamespecManager.elevatorSubsystem.returnElevatorCommandedPos() <= 28.0)))) 
+        || (((gamespecManager.armSubsystem.returnArmPos() < -5.0) && (gamespecManager.armSubsystem.returnArmCommandedPos() <= 0)) && (gamespecManager.elevatorSubsystem.returnElevatorCommandedPos() <= 28.0))))
+        .unless(this::isClimb) 
       );
 
       drivetrain.setDefaultCommand
