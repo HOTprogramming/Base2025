@@ -26,7 +26,7 @@ public class DriveConstants {
     public static final double OTF_end_tolerance = 0.2;
 
     public static final double auto_align_theta_disable = .1;
-    public static final double auto_align_top_speed = 1.0;
+    public static final double auto_align_top_speed = 2.4;
     public static final double auto_align_tolerance = 0.01;
     public static final double auto_align_command = 0.035;
 
@@ -186,8 +186,8 @@ public class DriveConstants {
             .withStatorCurrentLimitEnable(true)
             .withSupplyCurrentLimit(60)
             .withSupplyCurrentLimitEnable(true)
-            .withSupplyCurrentLowerLimit(60)
-            .withSupplyCurrentLowerTime(0.0)
+            .withSupplyCurrentLowerLimit(40)
+            .withSupplyCurrentLowerTime(1.0)
     ).withTorqueCurrent(
         new TorqueCurrentConfigs()
             .withPeakForwardTorqueCurrent(60)
