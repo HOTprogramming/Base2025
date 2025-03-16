@@ -5,9 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Place 1"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Package"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Place 1"
+                }
+              }
+            ]
           }
         },
         {
@@ -30,25 +43,38 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Auton Shoot"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "Pickup 1"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Pickup 1"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "sequential",
                 "data": {
                   "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Auton Shoot"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Auton Finish Shoot"
+                      }
+                    },
                     {
                       "type": "wait",
                       "data": {
@@ -113,25 +139,38 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Auton Shoot"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "Pickup 2"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Pickup 2"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "sequential",
                 "data": {
                   "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Auton Shoot"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Auton Finish Shoot"
+                      }
+                    },
                     {
                       "type": "wait",
                       "data": {
@@ -196,25 +235,38 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Auton Shoot"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "Pickup 3"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Pickup 3"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "sequential",
                 "data": {
                   "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Auton Shoot"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Auton Finish Shoot"
+                      }
+                    },
                     {
                       "type": "wait",
                       "data": {
@@ -224,7 +276,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Auton Intake Start"
+                        "name": "Auton Finish Shoot"
                       }
                     }
                   ]
@@ -282,6 +334,12 @@
           "type": "named",
           "data": {
             "name": "Auton Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auton Finish Shoot"
           }
         }
       ]

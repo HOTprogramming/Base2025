@@ -80,11 +80,11 @@ public class RobotContainer {
 
     chooser.setDefaultOption("Auto", "Auto");
     
-    chooser.addOption("RedR3", "RedR3"); 
-    chooser.addOption("RedL3", "RedL3");
-    chooser.addOption("BlueR3", "BlueR3");
-    chooser.addOption("BlueL3", "BlueL3");
-    chooser.addOption(" Copy of BlueL3", "Copy of BlueL3");
+    chooser.addOption("RedR4", "RedR4"); 
+    // chooser.addOption("RedL3", "RedL3");
+    // chooser.addOption("BlueR3", "BlueR3");
+    // chooser.addOption("BlueL3", "BlueL3");
+    // chooser.addOption("Copy of BlueL3", "Copy of BlueL3");
 
      
 
@@ -127,6 +127,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Align Reef Right",  drivetrain.autonAlignReefCommand(2));
 
     NamedCommands.registerCommand("Auton Shoot",  gamespecManager.autonShoot());
+    NamedCommands.registerCommand("Auton Finish Shoot",  gamespecManager.autonFinishShoot());
     NamedCommands.registerCommand("Auton Intake Start", gamespecManager.autonIntake());
     NamedCommands.registerCommand("Auton Finish Intake", gamespecManager.autonFinishIntake());
     NamedCommands.registerCommand("AL4", gamespecManager.autonL4());

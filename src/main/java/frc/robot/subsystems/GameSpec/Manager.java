@@ -252,36 +252,57 @@ public class Manager extends SubsystemBase{
       );
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public Command autonShoot(){
-      return new SelectCommand(
-        Map.of(
-            ScoringLevel.L4, Commands.parallel(
-            armSubsystem.L4Score(), elevatorSubsystem.L4MiniScore().onlyWhile(() -> armSubsystem.armLessThan(-30.0, 0))
-          ),
-            ScoringLevel.L3, Commands.sequence(
-            Commands.parallel(armSubsystem.L3Score(), manipulatorSubsystem.goScore()), elevatorSubsystem.L3Score()
-          )
-          // .onlyWhile(() -> elevatorSubsystem.elevatorGreaterThan(elevator working pose, 0))
-          //shut up im coding
-        ),
-        this::getLevel
-      );
+    public Command autonShoot() {
+      return 
+      Commands.sequence(
+        armSubsystem.L4Score().withTimeout(0.75),
+        Commands.parallel(
+          manipulatorSubsystem.L4Spit(),
+          gotoL4Package()),
+        manipulatorSubsystem.zero());
     }
 
-    public Command autonL4() {
-      return Commands.sequence(
-        Commands.parallel(runOnce(() -> {scoringLevel = ScoringLevel.L4;}), elevatorSubsystem.goToL4()), 
-        manipulatorSubsystem.goScore().withTimeout(0.3)
-       );
+    public Command autonFinishShoot() {
+      return
+      Commands.sequence(
+        Commands.parallel(
+          manipulatorSubsystem.L4Spit(),
+          gotoL4Package()
+        ),
+        manipulatorSubsystem.zero());
+    }
+
+    public Command autonL4(){
+      return Commands.parallel(
+      manipulatorSubsystem.goScore().withTimeout(0.1)
+      ,Commands.parallel(
+      run(() -> {scoringLevel = ScoringLevel.L4;})
+      ,elevatorSubsystem.goToL4().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
+      ,armSubsystem.goToPackage())
+      .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-20.0,2.0)))
+      .andThen(Commands.parallel(Commands.sequence(elevatorSubsystem.goToL4()
+      .onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), elevatorSubsystem.goToL4Long()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak()
+      )), 
+      Commands.sequence(armSubsystem.goToL4()
+      .onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), armSubsystem.goToL4Short()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak()
+      )));
     }
 
     public Command autonIntake() {
-      return Commands.parallel(Commands.deadline(manipulatorSubsystem.autonIntake(), armSubsystem.goToFeeder()), elevatorSubsystem.goToFeeder());
+      return 
+      Commands.parallel(
+        Commands.deadline(
+          manipulatorSubsystem.autonIntake(), 
+          armSubsystem.goToFeeder(),
+          intakeSubsystem.goToHandoff()), 
+        elevatorSubsystem.goToFeeder());
     }
 
     public Command autonFinishIntake() {
-      return armSubsystem.goToPackage();
+      return 
+      Commands.parallel(
+        armSubsystem.goToPackage(),
+        intakeSubsystem.clearance());
     }
 
     public Command alignStationIntake(){
