@@ -9,9 +9,11 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.GameSpec.Intake.IntakeIO.IntakeIOStats;
+import frc.robot.subsystems.GameSpec.Manipulator.ManipulatorConstants;
 
 public class Intake extends SubsystemBase {
   public FunctionalCommand testCommand;
@@ -27,11 +29,12 @@ public class Intake extends SubsystemBase {
   private GenericEntry intakeSupplyCurrent;
   private GenericEntry intakeStatorCurrent;
   private GenericEntry intakeTemp;
-  private GenericEntry intakeRotationPos;
-  private GenericEntry intakeRollerSpeed;
+  private GenericEntry blackRollerVoltage;
+  private GenericEntry orangeRollerVoltage;
   private GenericEntry intakeCancoderPosition;
   private GenericEntry IntakeCancoderVelocity;
   public GenericEntry intakeCommandedPos;
+  public GenericEntry beamBreakStatus;
   
   public Intake(IntakeIO io) {
     this.io = io; 
@@ -44,11 +47,12 @@ public class Intake extends SubsystemBase {
     intakeSupplyCurrent = this.intakeShuffleboard.add("Intake Supply Current", 0.0).getEntry();
     intakeStatorCurrent = this.intakeShuffleboard.add("Intake Stator Current", 0.0).getEntry();
     intakeTemp = this.intakeShuffleboard.add("Intake Temp", 0.0).getEntry();
-    intakeRotationPos = this.intakeShuffleboard.add("Intake Rotation Position", 0.0).getEntry();
-    intakeRollerSpeed = this.intakeShuffleboard.add("Intake Roller Speed", 0.0).getEntry();
+    blackRollerVoltage = this.intakeShuffleboard.add("Black Roller Voltage", 0.0).getEntry();
+    orangeRollerVoltage = this.intakeShuffleboard.add("Orange Roller Voltage", 0.0).getEntry();
     intakeCancoderPosition = this.intakeShuffleboard.add("Intake Cancoder Position", 0.0).getEntry();
     IntakeCancoderVelocity = this.intakeShuffleboard.add("Intake Cancoder Speed", 0.0).getEntry();
     intakeCommandedPos = this.intakeShuffleboard.add("Arm Commanded Position", 0.0).getEntry();
+    beamBreakStatus = this.intakeShuffleboard.add("BeamBreak", false).getEntry();
   }
 
 
@@ -69,63 +73,65 @@ public class Intake extends SubsystemBase {
     intakeTemp.setDouble(stats.TempCelsius);
     intakeCancoderPosition.setDouble(stats.intakeCancoderPosition);
     IntakeCancoderVelocity.setDouble(stats.intakeCancoderVelocity);
+    beamBreakStatus.setBoolean(io.beambreak.get());
   }
 
-  public FunctionalCommand intakeCommand(double position){
+  public FunctionalCommand intakeCommand(double position, double orangeVoltage, double blackVoltage){
     return new FunctionalCommand(
-      () -> this.intakeCommandedPos.setDouble(position),
-      () -> io.setIntakeMotorControl(position),
-      interrupted -> io.setIntakeMotorControl(position), 
+      () ->{
+      this.intakeCommandedPos.setDouble(position);
+      this.orangeRollerVoltage.setDouble(orangeVoltage);
+      this.blackRollerVoltage.setDouble(blackVoltage);
+      },
+      () -> {
+      io.setIntakeMotorControl(position);
+      io.setIntakeSpinMotorControl(0.0, 0.0);
+      
+      },
+      interrupted -> {
+      io.setIntakeMotorControl(position);
+      io.setIntakeSpinMotorControl(orangeVoltage, blackVoltage);
+      io.setIntakeSpinMotorControl(0.0, 0.0);
+      }, 
       () -> checkRange(5),
       this);
   }
 
-  public Command intakeAlgaeGround(){
-    return runOnce(() -> {
+  public Command goToHandoff(){
+    return intakeCommand(IntakeConstants.intakeHandoff, 0.0, 0.0);
+  }
+
+  public Command clearance(){
+    return intakeCommand(IntakeConstants.intakeClearance, 0.0, 0.0);
+  }
+
+  public Command handoffAndSpin(){
+    return intakeCommand(IntakeConstants.intakeHandoff, -2.0, -2.0);
+  }
+
+  public Command bump(){
+    return intakeCommand(IntakeConstants.intakeBump, 0.0, 0.0);
+  }
+
+  public Command deploy(){
+    return run(() -> {
       intakeCommandedPos.setDouble(IntakeConstants.intakeGround);
       io.setIntakeMotorControl(IntakeConstants.intakeGround);
-  });
+      io.setIntakeSpinMotorControl(8, 10);
+     }); 
   }
 
-  public Command intakeClimberOut(){
-    return intakeCommand(IntakeConstants.climberOut);
-  }
+  /**
+   * @return: false if nothing in the beambreak, true if it detects
+   */
 
-  public Command intakeVert(){
-    return intakeCommand(IntakeConstants.vertical);
-  }
-
-  public Command runIntakeAlgae(){
-    return runOnce(() -> {
-      intakeRollerSpeed.setDouble(IntakeConstants.rollerIntakeVoltage);
-      io.setIntakeSpinMotorControl(IntakeConstants.rollerIntakeVoltage);
-  });
-  }
-
-  public Command intakeRollerVoltage(double voltage){
-    return runOnce(() -> {
-      intakeRollerSpeed.setDouble(voltage);
-      io.setIntakeSpinMotorControl(voltage);
-  });
-  }
-
-  public Command processor(){
-    return intakeCommand(IntakeConstants.intakeGround);
-  }
-
-  public Command goToPackage(){
-    return intakeCommand(IntakeConstants.intakePackage);
-  }
-
-  public Command stop(){
-    return run(() -> {
-        io.stop();
-    });  
+  public boolean getBeamBreak(){
+    return io.beambreak.get();
   }
 
   public boolean checkRange(double deadband){
-    return (stats.intakePosition >= intakeRotationPos.getDouble(0) - deadband) && 
-           (stats.intakePosition <= intakeRotationPos.getDouble(0) + deadband);
+    return (stats.intakePosition >= intakePosition.getDouble(0) - deadband) && 
+           (stats.intakePosition <= intakePosition.getDouble(0) + deadband);
   }
 
   @Override

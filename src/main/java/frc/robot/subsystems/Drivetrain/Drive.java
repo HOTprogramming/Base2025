@@ -1,20 +1,6 @@
 package frc.robot.subsystems.Drivetrain;
 
-import static frc.robot.subsystems.Drivetrain.DriveConstants.DEFAULT_XY_CONSTRAINTS;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.DriveConfig;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.OFFSET_TO_RED;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.OTF_end_tolerance;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.REEF_CENTER;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.auto_align_command;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.auto_align_theta_disable;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.auto_align_tolerance;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.auto_align_top_speed;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.bluePoleShift;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.bluePoses;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.redPoleShift;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.redPoses;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.robotToReefTagFace;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.slowModeMultiplier;
+import static frc.robot.subsystems.Drivetrain.DriveConstants.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -158,7 +144,7 @@ public class Drive extends SubsystemBase {
         heading = Rotation2d.fromDegrees(0);
 
         driveTab = Shuffleboard.getTab("Drive");
-        speedEntry = driveTab.add("Speed", 0.0).getEntry();
+        speedEntry = driveTab.add("Speed (RJU)", 0.0).getEntry();
         poseEntry = driveTab.add("Pose", new Double[] {0.0, 0.0, 0.0}).getEntry();
         pathXEntry = driveTab.add("Path X", 0.0).getEntry();
         pathYEntry = driveTab.add("Path Y", 0.0).getEntry();
@@ -415,7 +401,6 @@ public class Drive extends SubsystemBase {
         SmartDashboard.putNumber("cSpeedT", Math.sqrt(Math.pow(translationControllerY.calculate(iOdata.state.Pose.getY()), 2) - Math.pow(translationControllerX.calculate(iOdata.state.Pose.getX()) , 2)));
         
         
-        boolean disableTheta = false;
         if (DriverStation.getAlliance().get() == Alliance.Blue) {
             driveIO.setSwerveRequest(AUTO_ALIGN
             .withVelocityX(!translationControllerX.atGoal() ? translationControllerX.calculate(iOdata.state.Pose.getX(), currentTarget.getX()) : 0.0)
@@ -536,6 +521,19 @@ public class Drive extends SubsystemBase {
         heading = new Rotation2d (Math.toRadians(60*Math.round(joystickDeg/60)));
     }
 
+    public boolean getNearReef() {
+        return this.iOdata.state.Pose.getTranslation().getDistance(DriverStation.getAlliance().get() == Alliance.Blue ? BLUE_REEF.getTranslation() : RED_REEF.getTranslation()) < distance_safe_from_reef;
+    }
+
+    public boolean getReverseIntake() {
+        double robotRotation = this.iOdata.state.Pose.getRotation().getDegrees(); 
+        boolean flip = robotRotation <= -35 + 90 && robotRotation >= -35 - 90;
+        if (this.iOdata.state.Pose.getY() > feild_center_line) {
+            flip = !flip;
+        }
+        return flip;
+    }
+    // -35 +- 90 
     public void setSelectedAutoName(String name) {
         try {
             this.pathGroup.addAll(PathPlannerAuto.getPathGroupFromAutoFile("OTF_TESTING"));
@@ -566,13 +564,18 @@ public class Drive extends SubsystemBase {
         if (this.iOdata.state.Speeds != null) {
             speedEntry.setDouble(Math.hypot(
                 this.iOdata.state.Speeds.vxMetersPerSecond,
-                this.iOdata.state.Speeds.vyMetersPerSecond));
+                this.iOdata.state.Speeds.vyMetersPerSecond) / 5.0);
         }
         if (this.iOdata.state.Pose != null) {
             poseEntry.setDoubleArray(new Double[]{
                 this.iOdata.state.Pose.getX(), 
                 this.iOdata.state.Pose.getY(), 
                 this.iOdata.state.Pose.getRotation().getRadians()});
+
+            if (this.currentTarget != null) {
+                SmartDashboard.putBoolean("Auto Align On Target", 
+                this.iOdata.state.Pose.getTranslation().getDistance(currentTarget.getTranslation()) < auto_align_lights_tolerance);
+            }
         }
 
         if (pathGroup != null) {
@@ -583,6 +586,14 @@ public class Drive extends SubsystemBase {
         }
 
         alert.set(true);
+    }
+
+    public boolean getAutoAlignGood() {
+        if (this.iOdata.state.Pose != null && currentTarget != null) {
+            return this.iOdata.state.Pose.getTranslation().getDistance(currentTarget.getTranslation()) < auto_align_lights_tolerance;
+        } else {
+            return false;
+        }
     }
 
     public void addVisionMeasurement(Pose2d calculatedPose, double timestamp, Matrix<N3, N1> stDevs) {

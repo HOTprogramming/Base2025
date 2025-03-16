@@ -2,15 +2,13 @@ package frc.robot.subsystems.Drivetrain;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.security.PublicKey;
-import java.util.EnumMap;
+
 import java.util.HashMap;
 import java.util.Map;
 
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
-import com.ctre.phoenix6.signals.*;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 import com.pathplanner.lib.config.PIDConstants;
@@ -28,10 +26,13 @@ public class DriveConstants {
     public static final double OTF_end_tolerance = 0.2;
 
     public static final double auto_align_theta_disable = .1;
-    public static final double auto_align_top_speed = 1.0;
+    public static final double auto_align_top_speed = 2.4;
     public static final double auto_align_tolerance = 0.01;
+    public static final double auto_align_lights_tolerance = 0.01;
     public static final double auto_align_command = 0.035;
 
+    public static final double distance_safe_from_reef = 1.1;
+    public static final double feild_center_line = 4.025;
 
 
     private static final PIDConstants autoPidConstantsTranslation = new PIDConstants(5, 0, 0);
@@ -96,25 +97,30 @@ public class DriveConstants {
     //                              GM GAINS
     public static final Map<Rotation2d, Double[]> redPoleShift = new HashMap<>() {
         {   //                                                  left center right
-            put(Rotation2d.fromDegrees(0), new Double[] {6.0, -1.6, -6.5});
-            put(Rotation2d.fromDegrees(60), new Double[] {7.0, -1.6,  -7.0});
-            put(Rotation2d.fromDegrees(120), new Double[] {5.0, -1.6, -7.0});
-            put(Rotation2d.fromDegrees(180), new Double[] {6.0, -1.6, -6.0});
-            put(Rotation2d.fromDegrees(-120), new Double[] {5.5, -1.6, -5.0});
-            put(Rotation2d.fromDegrees(-60), new Double[] {5.5, -1.6, -6.5});
+            put(Rotation2d.fromDegrees(0), new Double[] {6.0, -0.25, -6.5});
+            put(Rotation2d.fromDegrees(60), new Double[] {7.0, -0.25,  -7.0});
+            put(Rotation2d.fromDegrees(120), new Double[] {5.0, -0.25, -7.0});
+            put(Rotation2d.fromDegrees(180), new Double[] {6.0, -0.25, -6.0});
+            put(Rotation2d.fromDegrees(-120), new Double[] {5.5, -0.25, -5.0});
+            put(Rotation2d.fromDegrees(-60), new Double[] {5.5, -0.25, -6.5});
         }
     };
 
     public static final Map<Rotation2d, Double[]> bluePoleShift = new HashMap<>() {
         {   //                                                  left center right
-            put(Rotation2d.fromDegrees(0), new Double[] {6.0, -1.6, -8.0});
-            put(Rotation2d.fromDegrees(60), new Double[] {6.0, -1.6,  -6.0});
-            put(Rotation2d.fromDegrees(120), new Double[] {5.0, -1.6, -7.0});
-            put(Rotation2d.fromDegrees(180), new Double[] {7.0, -1.6, -6.0});
-            put(Rotation2d.fromDegrees(-120), new Double[] {8.0, -1.6, -6.0});
-            put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -1.6, -6.0});
+            put(Rotation2d.fromDegrees(0), new Double[] {6.0, -0.25, -8.0});
+            put(Rotation2d.fromDegrees(60), new Double[] {6.0, -0.25,  -6.0});
+            put(Rotation2d.fromDegrees(120), new Double[] {5.0, -0.25, -7.0});
+            put(Rotation2d.fromDegrees(180), new Double[] {7.0, -0.25, -6.0});
+            put(Rotation2d.fromDegrees(-120), new Double[] {8.0, -0.25, -6.0});
+            put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -0.25, -6.0});
         }
     };
+
+    public static final Pose2d BLUE_REEF = new Pose2d(4.483, 4.025, Rotation2d.fromDegrees(0));
+    public static final Pose2d RED_REEF = new Pose2d(13.066, 4.025, Rotation2d.fromDegrees(0));
+
+
 
     public static final double OFFSET_TO_RED = 8.583;
     public static final Pose2d REEF_CENTER = new Pose2d(4.483, 4.025, Rotation2d.fromDegrees(0));
@@ -125,7 +131,7 @@ public class DriveConstants {
     // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
     private static final Slot0Configs steerGains = new Slot0Configs()
         .withKP(100).withKI(0).withKD(0.5)
-        .withKS(0.1).withKV(1.5).withKA(0)
+        .withKS(0.15).withKV(1.5).withKA(0)
         // .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign)
         ;
     // When using closed-loop control, the drive motor uses the control
@@ -142,7 +148,7 @@ public class DriveConstants {
     private static final ClosedLoopOutputType kSteerClosedLoopOutput = ClosedLoopOutputType.Voltage;
     // The closed-loop output type to use for the drive motors;
     // This affects the PID/FF gains for the drive motors
-    private static final ClosedLoopOutputType kDriveClosedLoopOutput = ClosedLoopOutputType.TorqueCurrentFOC;
+    private static final ClosedLoopOutputType kDriveClosedLoopOutput = ClosedLoopOutputType.Voltage;
     private static final ClosedLoopOutputType kDriveClosedLoopOutputCambot = ClosedLoopOutputType.Voltage;
 
 
@@ -177,14 +183,16 @@ public class DriveConstants {
     public static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
     .withCurrentLimits(
         new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(50)
+            .withStatorCurrentLimit(60)
             .withStatorCurrentLimitEnable(true)
-            .withSupplyCurrentLimit(40)
+            .withSupplyCurrentLimit(60)
             .withSupplyCurrentLimitEnable(true)
+            .withSupplyCurrentLowerLimit(40)
+            .withSupplyCurrentLowerTime(1)
     ).withTorqueCurrent(
         new TorqueCurrentConfigs()
-            .withPeakForwardTorqueCurrent(50)
-            .withPeakReverseTorqueCurrent(-50)
+            .withPeakForwardTorqueCurrent(60)
+            .withPeakReverseTorqueCurrent(-60)
     );
 
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();

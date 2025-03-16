@@ -14,6 +14,7 @@ public class ManipulatorConstants {
       public static int coralEncoderID;
       public static int coralCandiID;
       public static int coralWristID;
+      public static int canRangeID;
       public static double kReduction;
       public static double kMaxAccelerationRpmPerSec;
       public static MMGains coralWristGains;
@@ -33,6 +34,9 @@ public class ManipulatorConstants {
 
       public static double algaeIntakeVoltage;
       public static double algaeExpelVoltage;
+      public static double algaeHoldVoltage;
+
+      public static double algaeTriggerDistance;
 
       public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
       public record VVGains(double kP, double kI, double kD, double kV, double kS) {}
@@ -58,25 +62,29 @@ public class ManipulatorConstants {
       coralEncoderID = 45;
       coralCandiID = 53;
       coralWristID = 13;
+      canRangeID = 55;
       kReduction = (1.0 / 2.0);
       kMaxAccelerationRpmPerSec = 9000.0; 
       coralWristGains = new MMGains(0, 0, 0, 0.725, 0.0, 0.01, 0.0, 0.0);
       coralSpinGains = new VVGains(10.0, 0.0, 0.0, 0, 1);
-      coralWristEncoderOffset = -0.330078;
+      coralWristEncoderOffset = 0.14502;
   
       algaeArmID = 17;
       algaeRollerID = 15;
       algaeEncoderID = 46;
       algaeGains = new MMGains(100, 100, 200, 1.0 , 0.0, 0.0, 0, 0);
       
-      coralWristHP = -90;
-      coralWristScore = 8;
+      coralWristHP = -93;
+      coralWristScore = 0;
   
       algaeExtend = 0;
       algaePackage = 0;
 
       algaeIntakeVoltage = -8.0;
       algaeExpelVoltage = 16.0;
+      algaeHoldVoltage = -0.4;
+
+      algaeTriggerDistance = 0.05;
     }
 
     private static void practiceBotConstants(){
@@ -85,26 +93,30 @@ public class ManipulatorConstants {
       coralEncoderID = 45;
       coralCandiID = 53;
       coralWristID = 13;
+      canRangeID = 55;
       kReduction = (1.0 / 2.0);
       kMaxAccelerationRpmPerSec = 9000.0; 
       //coralWristGains = new MMGains(3000, 4000, 14000, 0.2, 0.0, 0.002, 0.1, 0.0);
       coralWristGains = new MMGains(0, 0, 0, 0.725, 0.0, 0.01, 0.0, 0.0);
       coralSpinGains = new VVGains(10.0, 0.0, 0.0, 0, 1);
-      coralWristEncoderOffset = -0.330078;
+      coralWristEncoderOffset = -0.180176;
   
       algaeArmID = 17;
       algaeRollerID = 15;
       algaeEncoderID = 46;
       algaeGains = new MMGains(100, 100, 200, 1.0 , 0.0, 0.0, 0, 0);
       
-      coralWristHP = -90;
-      coralWristScore = 2;
+      coralWristHP = -99;
+      coralWristScore = 0;
   
       algaeExtend = 0;
       algaePackage = 0;
 
       algaeIntakeVoltage = -8.0;
       algaeExpelVoltage = 16.0;
+      algaeHoldVoltage = -0.4;
+
+      algaeTriggerDistance = 0.05;
     }
 
     private static void simBotConstants(){
@@ -113,6 +125,7 @@ public class ManipulatorConstants {
       coralEncoderID = 54;
       coralCandiID = 53;
       coralWristID = 13;
+      canRangeID = 55;
       kReduction = (1.0 / 2.0);
       kMaxAccelerationRpmPerSec = 9000.0; 
       coralWristGains = new MMGains(3000, 4000, 14000, 0.2, 0.0, 0.002, 0.1, 0.0);
@@ -128,6 +141,9 @@ public class ManipulatorConstants {
   
       algaeExtend = 0;
       algaePackage = 0;
+      algaeHoldVoltage = -0.4;
+
+      algaeTriggerDistance = 0.12;
     }
 
 }
