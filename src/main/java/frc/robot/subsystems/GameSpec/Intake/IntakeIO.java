@@ -95,9 +95,6 @@ public abstract class IntakeIO {
         slot0.kI = IntakeConstants.intakeGains.kI();
         slot0.kD = IntakeConstants.intakeGains.kD();
 
-        FeedbackConfigs fdb = cfg.Feedback;
-        fdb.SensorToMechanismRatio = 1;
-
         cfg.Feedback.FeedbackRemoteSensorID = intakeCancoder.getDeviceID();
         cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
         cfg.Feedback.SensorToMechanismRatio = 1/360.0;//changes what the cancoder and fx encoder ratio is
