@@ -286,8 +286,8 @@ public class Manager extends SubsystemBase{
 
     public Command alignStationIntake(){
       return Commands.parallel(
-        Commands.deadline(manipulatorSubsystem.intake(), armSubsystem.goToFeeder())
-        .andThen(armSubsystem.goToPackage()), 
+        Commands.deadline(manipulatorSubsystem.intake(), armSubsystem.goToFeeder(), intakeSubsystem.goToHandoff())
+        .andThen(armSubsystem.goToPackage(), intakeSubsystem.clearance()), 
         elevatorSubsystem.goToFeeder());
     }
 
@@ -344,7 +344,9 @@ public class Manager extends SubsystemBase{
 
     //handoff code
     public Command floorIntakeDeploy(){
-      return Commands.parallel(
+      return Commands.sequence(
+      elevatorSubsystem.goToPackage(),
+      Commands.parallel(
           armSubsystem.horizontal(),
           intakeSubsystem.deploy(),
           manipulatorSubsystem.goScore(),
@@ -377,7 +379,7 @@ public class Manager extends SubsystemBase{
           intakeSubsystem.goToHandoff())
           ),
         intakeSubsystem.clearance())
-        ));
+        )));
     }
 
     public Command floorIntakeClearance(){
