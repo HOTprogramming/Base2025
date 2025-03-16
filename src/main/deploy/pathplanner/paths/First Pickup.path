@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.25061475409836,
-        "y": 2.9461065573770493
+        "x": 12.287397540983607,
+        "y": 5.079918032786885
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.598258196721312,
-        "y": 2.1908811475409844
+        "x": 11.412295081967214,
+        "y": 6.410553278688525
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.6543032786885246,
-        "y": 0.6804303278688519
+        "x": 14.601024590163934,
+        "y": 6.026946721311476
       },
       "prevControl": {
-        "x": 1.8820696721311478,
-        "y": 0.788319672131147
+        "x": 13.9297131147541,
+        "y": 6.242725409836065
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "z"
+      "linkedName": "f1"
     }
   ],
   "rotationTargets": [],
@@ -33,23 +33,10 @@
     {
       "name": "Constraints Zone",
       "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.28359216745442295,
+      "maxWaypointRelativePos": 0.22147197839297794,
       "constraints": {
         "maxVelocity": 4.96,
         "maxAcceleration": 3.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.6,
-        "unlimited": false
-      }
-    },
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.561782579338285,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 4.96,
-        "maxAcceleration": 4.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.6,
@@ -69,13 +56,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 145.0
+    "rotation": -45.0
   },
   "reversed": false,
-  "folder": "BlueR",
+  "folder": "Floor Pickup",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -150.0
+    "rotation": 29.999999999999996
   },
   "useDefaultConstraints": true
 }

@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Place.1"
+            "pathName": "First Place"
           }
         },
         {
@@ -42,7 +42,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pickup.1"
+                  "pathName": "First Pickup"
                 }
               },
               {
@@ -68,13 +68,19 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Chase Object"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Place.2"
+                  "pathName": "Second Place"
                 }
               },
               {
@@ -125,7 +131,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pickup.2"
+                  "pathName": "Second Pickup"
                 }
               },
               {
@@ -151,13 +157,19 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Chase Object"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Place.3"
+                  "pathName": "Third Place"
                 }
               },
               {
@@ -208,7 +220,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pickup.3"
+                  "pathName": "Third Pickup"
                 }
               },
               {
@@ -234,13 +246,19 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Chase Object"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Place.4"
+                  "pathName": "Fourth Place"
                 }
               },
               {
@@ -258,11 +276,36 @@
               }
             ]
           }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Align Reef Right"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AL4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auton Shoot"
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Blue Autos",
+  "folder": "Red Autos",
   "choreoAuto": false
 }

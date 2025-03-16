@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 16.06,
-        "y": 7.39
+        "x": 15.956,
+        "y": 7.398
       },
       "prevControl": null,
       "nextControl": {
-        "x": 15.842939214468885,
-        "y": 7.265965265410791
+        "x": 15.738939214468886,
+        "y": 7.273965265410791
       },
       "isLocked": false,
       "linkedName": "pickup2"
@@ -45,7 +45,7 @@
     "rotation": -29.999999999999996
   },
   "reversed": false,
-  "folder": "RedCoral4Left",
+  "folder": "RedR",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -35.0

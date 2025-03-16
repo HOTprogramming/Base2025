@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 16.06,
-        "y": 7.39
+        "x": 15.956,
+        "y": 7.398
       },
       "prevControl": {
-        "x": 15.712356557377047,
-        "y": 7.210184426229508
+        "x": 15.608356557377048,
+        "y": 7.218184426229508
       },
       "nextControl": null,
       "isLocked": false,
@@ -58,7 +58,14 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Lights",
+      "waypointRelativePos": 0.8345712356515853,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.96,
     "maxAcceleration": 6.0,
@@ -72,7 +79,7 @@
     "rotation": -35.0
   },
   "reversed": false,
-  "folder": "RedCoral4Left",
+  "folder": "RedR",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -29.999999999999996

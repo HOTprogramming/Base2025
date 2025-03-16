@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Place.1"
+            "pathName": "Place 1"
           }
         },
         {
@@ -42,7 +42,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pickup.1"
+                  "pathName": "Pickup 1"
                 }
               },
               {
@@ -74,7 +74,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Place.2"
+                  "pathName": "Place 2"
                 }
               },
               {
@@ -125,7 +125,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pickup.2"
+                  "pathName": "Pickup 2"
                 }
               },
               {
@@ -157,7 +157,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Place.3"
+                  "pathName": "Place 3"
                 }
               },
               {
@@ -208,7 +208,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pickup.3"
+                  "pathName": "Pickup 3"
                 }
               },
               {
@@ -240,7 +240,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Place.4"
+                  "pathName": "Place 4"
                 }
               },
               {
@@ -258,11 +258,36 @@
               }
             ]
           }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Align Reef Right"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AL4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auton Shoot"
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Blue Autos",
+  "folder": "Red Autos",
   "choreoAuto": false
 }
