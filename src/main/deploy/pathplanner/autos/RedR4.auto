@@ -147,6 +147,12 @@
                 "data": {
                   "commands": [
                     {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
                       "type": "path",
                       "data": {
                         "pathName": "Pickup 2"
@@ -243,6 +249,12 @@
                 "data": {
                   "commands": [
                     {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
                       "type": "path",
                       "data": {
                         "pathName": "Pickup 3"
@@ -276,7 +288,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Auton Finish Shoot"
+                        "name": "Auton Intake Start"
                       }
                     }
                   ]
