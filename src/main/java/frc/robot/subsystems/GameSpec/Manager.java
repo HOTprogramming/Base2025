@@ -485,7 +485,7 @@ public class Manager extends SubsystemBase{
     }
 
     public Command setFancyLights() {
-      return Commands.sequence(lightsSubsystem.changeAnimation(AnimationTypes.ColorFlow), lightsSubsystem.animate());
+      return Commands.sequence(lightsSubsystem.changeAnimation(AnimationTypes.Twinkle), lightsSubsystem.animate());
     }
 
     public Command setOneLights(int light, Boolean good) {
