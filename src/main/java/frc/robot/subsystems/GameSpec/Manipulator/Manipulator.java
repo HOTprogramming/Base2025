@@ -31,14 +31,6 @@ public class Manipulator extends SubsystemBase {
     private GenericEntry coralCommandedSpeed;
     private GenericEntry CANdiPWM1;
 
-    public GenericEntry algaePosition;
-    public GenericEntry algaeDirection;
-    private GenericEntry algaeVelocity;
-    private GenericEntry algaeSupplyCurrent;
-    private GenericEntry algaeStatorCurrent;
-    private GenericEntry algaeTemp;
-    private GenericEntry algaeCommandedPos;
-    private GenericEntry algaeCommandedSpeed;
     private GenericEntry CANdiPWM2;
     private GenericEntry CANdiPWM3;
     private GenericEntry CANrange;
@@ -59,13 +51,6 @@ public class Manipulator extends SubsystemBase {
         coralCommandedSpeed = this.coralShuffleboard.add("Coral Commanded Speed", 0.0).getEntry();
         CANdiPWM1 = this.coralShuffleboard.add("CANdi Coral Beambreak",false).getEntry();//false when there is no object, true when it detects object
 
-        algaeVelocity = this.coralShuffleboard.add("Algae RPM", 0.0).getEntry();
-        algaePosition = this.coralShuffleboard.add("Algae Position", 0.0).getEntry();;
-        algaeSupplyCurrent = this.coralShuffleboard.add("Algae Supply Current", 0.0).getEntry();
-        algaeStatorCurrent = this.coralShuffleboard.add("Algae Stator Current", 0.0).getEntry();
-        algaeTemp = this.coralShuffleboard.add("Algae Temp", 0.0).getEntry();
-        algaeCommandedPos = this.coralShuffleboard.add("Algae Commanded Position", 0.0).getEntry();
-        algaeCommandedSpeed = this.coralShuffleboard.add("algae commanded speed", 0.0).getEntry();
         CANdiPWM2 = this.coralShuffleboard.add("CANdi Algae Beambreak",false).getEntry();//false when there is no object, true when it detects object
         CANdiPWM3 = this.coralShuffleboard.add("Outer BeamBreak",false).getEntry();//false when there is no object, true when it detects object
 
@@ -90,34 +75,17 @@ public class Manipulator extends SubsystemBase {
         coralTemp.setDouble(stats.coralTempCelsius);
         CANdiPWM1.setBoolean(stats.candiPWM1);
 
-        algaeVelocity.setDouble(stats.algaeVelocity);
-        algaePosition.setDouble(stats.algaePosition);
-        algaeSupplyCurrent.setDouble(stats.algaeSupplyCurrentAmps);
-        algaeStatorCurrent.setDouble(stats.algaeTorqueCurrentAmps);
-        algaeTemp.setDouble(stats.algaeTempCelsius);
         CANdiPWM2.setBoolean(stats.candiPWM2);
         CANdiPWM3.setBoolean(stats.candiPWM3);
-
-        CANrange.setDouble(stats.algaeDistance);
     }
 
     private FunctionalCommand coralCommand(double position){
         return new FunctionalCommand(
             () -> this.coralCommandedPos.setDouble(position),
             () -> 
-            {io.setCoralAngleMotorControl(position);
-            if(this.returnAlgaeIn()){
-                io.algaeRoller.setVoltage(0.0);
-            }else{
-                io.algaeRoller.setVoltage(ManipulatorConstants.algaeHoldVoltage);
-            }}
+            {io.setCoralAngleMotorControl(position);}
             ,
             interrupted -> {io.setCoralAngleMotorControl(position);
-            if(this.returnAlgaeIn()){
-                io.algaeRoller.setVoltage(0.0);
-            }else{
-                io.algaeRoller.setVoltage(ManipulatorConstants.algaeHoldVoltage);
-            }
             }, 
             () -> stats.coralCancoderPosition <= position + .01 && stats.coralCancoderPosition >= position - .01,
             this
@@ -172,13 +140,6 @@ public class Manipulator extends SubsystemBase {
     public Boolean returnOuterBeamBreak(){
         return stats.candiPWM3;
     }
-
-    /**
-     * @return true if algae is farther than the trigger / dont have one
-     */
-    public Boolean returnAlgaeIn(){
-        return stats.algaeDistance > ManipulatorConstants.algaeTriggerDistance;
-    }
     
     public  Command goHP() {
         return coralCommand(ManipulatorConstants.coralWristHP);
@@ -186,17 +147,6 @@ public class Manipulator extends SubsystemBase {
 
     public  Command goScore() {
         return coralCommand(ManipulatorConstants.coralWristScore);
-    }
-
-    /**
-   * 
-   * @return negative voltage if intake, positive voltage if expel
-   */
-    public Command algaeVoltage(double voltage){
-            return run(() -> {
-                algaeCommandedSpeed.setDouble(voltage);
-                io.setAlgaeSpinMotorControl(voltage);
-            });
     }
 
     public Command zero(){
@@ -211,15 +161,7 @@ public class Manipulator extends SubsystemBase {
             }
         });
     }
-   
-    public Command BeamBreak1Stop(){
-        return run(() -> {
-            if (stats.candiPWM1 == true) {
-                algaeVelocity.setDouble(0);
 
-            }
-        });
-    }
         
             public boolean checkCoralRange(double deadband){
         return (stats.coralPosition >= coralCommandedPos.getDouble(0) - deadband) && 
@@ -231,11 +173,7 @@ public class Manipulator extends SubsystemBase {
               io.stop();
           });  
         }
-     
-      public boolean checkAlgaeRange(double deadband){
-        return (stats.algaePosition >= algaeCommandedPos.getDouble(0) - deadband) && 
-               (stats.algaePosition <= algaeCommandedPos.getDouble(0) + deadband);
-      }
+
 
     @Override
     public void simulationPeriodic() {
