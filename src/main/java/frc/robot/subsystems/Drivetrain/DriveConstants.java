@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 import com.pathplanner.lib.config.PIDConstants;
@@ -131,13 +132,13 @@ public class DriveConstants {
     private static final Slot0Configs steerGains = new Slot0Configs()
         .withKP(100).withKI(0).withKD(0.5)
         .withKS(0.1).withKV(1.5).withKA(0)
-        // .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign)
+        .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign)
         ;
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     private static final Slot0Configs driveGains = new Slot0Configs()
-        .withKP(0.1).withKI(0).withKD(0)
-        .withKS(0).withKV(0.124);
+    .withKP(9.0).withKI(0).withKD(0.0)
+    .withKS(6).withKV(0.5);
 
     private static final Slot0Configs driveGainsVoltage = new Slot0Configs()
         .withKP(0.1).withKI(0).withKD(0)

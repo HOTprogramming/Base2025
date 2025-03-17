@@ -11,6 +11,7 @@ import org.json.simple.parser.ParseException;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.RobotConfig;
@@ -85,7 +86,8 @@ public class Drive extends SubsystemBase {
 
     private final SwerveRequest.SwerveDriveBrake BRAKE = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.FieldCentric FIELD_CENTRIC = new SwerveRequest.FieldCentric()
-    .withDeadband(0.2).withRotationalDeadband(0.0);
+    .withDeadband(0.2).withRotationalDeadband(0.0)
+    .withDriveRequestType(DriveRequestType.Velocity);
 
     private final SwerveRequest.FieldCentric AUTO_ALIGN = new SwerveRequest.FieldCentric()
     .withDeadband(0.0).withRotationalDeadband(0.0);
