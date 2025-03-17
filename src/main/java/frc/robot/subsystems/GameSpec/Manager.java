@@ -246,7 +246,7 @@ public class Manager extends SubsystemBase{
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
             .andThen(goToL1().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail))))),
           ScoringLevel.Algae, algaeSubsystem.algaeVoltage(AlgaeConstants.algaeExpelVoltage),
-          ScoringLevel.Barge, algaeSubsystem.algaeVoltage(16.0)
+          ScoringLevel.Barge, algaeSubsystem.algaeVoltage(AlgaeConstants.algaeExpelVoltage)
         ),
         this::getLevel
       );
@@ -262,8 +262,6 @@ public class Manager extends SubsystemBase{
             ScoringLevel.L3, Commands.sequence(
             Commands.parallel(armSubsystem.L3Score(), manipulatorSubsystem.goScore()), elevatorSubsystem.L3Score()
           )
-          // .onlyWhile(() -> elevatorSubsystem.elevatorGreaterThan(elevator working pose, 0))
-          //shut up im coding
         ),
         this::getLevel
       );
@@ -408,13 +406,6 @@ public class Manager extends SubsystemBase{
       return Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
       .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage()));
     }
-
-    // public Command algaeHolding(){
-    //   return Commands.either(manipulatorSubsystem.algaeVoltage(0.0), 
-    //   manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeHoldVoltage),
-    //   () -> manipulatorSubsystem.returnAlgaeIn());
-    // }
-
 
     public Command alignProcessor(){
       return Commands.sequence(runOnce(() -> {scoringLevel = ScoringLevel.Algae;}),
