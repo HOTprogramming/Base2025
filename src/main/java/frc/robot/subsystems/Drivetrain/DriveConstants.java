@@ -137,8 +137,8 @@ public class DriveConstants {
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     private static final Slot0Configs driveGains = new Slot0Configs()
-    .withKP(9.0).withKI(0).withKD(0.0)
-    .withKS(6).withKV(0.5);
+    .withKP(6).withKI(0).withKD(0.0)
+    .withKS(5).withKV(0.3);
 
     private static final Slot0Configs driveGainsVoltage = new Slot0Configs()
         .withKP(0.1).withKI(0).withKD(0)
