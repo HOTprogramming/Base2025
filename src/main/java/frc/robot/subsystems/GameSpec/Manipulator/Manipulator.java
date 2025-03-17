@@ -19,7 +19,6 @@ public class Manipulator extends SubsystemBase {
     private final ManipulatorIO io;
     public final ManipulatorIOStats stats;
     private final ShuffleboardTab coralShuffleboard;
-    private int delay = 0;
 
     /* Shuffleboard entries */
     private GenericEntry coralVelocity;
@@ -33,7 +32,6 @@ public class Manipulator extends SubsystemBase {
 
     private GenericEntry CANdiPWM2;
     private GenericEntry CANdiPWM3;
-    private GenericEntry CANrange;
 
     
     public Manipulator(ManipulatorIO io) {
@@ -53,8 +51,6 @@ public class Manipulator extends SubsystemBase {
 
         CANdiPWM2 = this.coralShuffleboard.add("CANdi Algae Beambreak",false).getEntry();//false when there is no object, true when it detects object
         CANdiPWM3 = this.coralShuffleboard.add("Outer BeamBreak",false).getEntry();//false when there is no object, true when it detects object
-
-        CANrange = this.coralShuffleboard.add("Algae Distance", 0.0).getEntry();
 
     }
 
@@ -161,7 +157,6 @@ public class Manipulator extends SubsystemBase {
             }
         });
     }
-
         
             public boolean checkCoralRange(double deadband){
         return (stats.coralPosition >= coralCommandedPos.getDouble(0) - deadband) && 

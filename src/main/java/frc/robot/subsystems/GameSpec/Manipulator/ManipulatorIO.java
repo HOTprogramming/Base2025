@@ -229,16 +229,12 @@ public abstract class ManipulatorIO {
             }
 
         }
-    
-    
-    /** Apply motion magic control mode */
+        
     public void setCoralSpinMotorControl(double commandedVoltage) {
-        // coral.setControl(coralSpinController.withVelocity(commandedVelocity).withSlot(0));
         coral.setVoltage(commandedVoltage);
     }
 
     public void setCoralAngleMotorControl(double commandedPosition) {
-        // System.out.println(commandedPosition);
         coralWrist.setControl(positionVoltage.withPosition(commandedPosition).withSlot(0));
     }
     
