@@ -174,6 +174,8 @@ public class DriveConstants {
                 .withStatorCurrentLimitEnable(true)
                 .withSupplyCurrentLimit(90)
                 .withSupplyCurrentLimitEnable(true)
+                .withSupplyCurrentLowerLimit(40)
+                .withSupplyCurrentLowerTime(1)
         ).withTorqueCurrent(
             new TorqueCurrentConfigs()
                 .withPeakForwardTorqueCurrent(65)
@@ -183,16 +185,16 @@ public class DriveConstants {
     public static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
     .withCurrentLimits(
         new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(60)
+            .withStatorCurrentLimit(70)
             .withStatorCurrentLimitEnable(true)
-            .withSupplyCurrentLimit(60)
+            .withSupplyCurrentLimit(70)
             .withSupplyCurrentLimitEnable(true)
-            .withSupplyCurrentLowerLimit(40)
+            .withSupplyCurrentLowerLimit(50)
             .withSupplyCurrentLowerTime(1)
     ).withTorqueCurrent(
         new TorqueCurrentConfigs()
-            .withPeakForwardTorqueCurrent(60)
-            .withPeakReverseTorqueCurrent(-60)
+            .withPeakForwardTorqueCurrent(80)
+            .withPeakReverseTorqueCurrent(-80)
     );
 
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
@@ -456,7 +458,7 @@ public class DriveConstants {
     private static final int kFrontLeftDriveMotorIdCompbot = 8;
     private static final int kFrontLeftSteerMotorIdCompbot = 7;
     private static final int kFrontLeftEncoderIdCompbot = 41;
-    private static final Angle kFrontLeftEncoderOffsetCompbot = Rotations.of(-0.254150390625);
+    private static final Angle kFrontLeftEncoderOffsetCompbot = Rotations.of(-0.267822);
     private static final boolean kFrontLeftSteerMotorInvertedCompbot = true;
     private static final boolean kFrontLeftEncoderInvertedCompbot = false;
 
