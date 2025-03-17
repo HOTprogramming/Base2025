@@ -168,7 +168,7 @@ public class RobotContainer {
         () -> (((gamespecManager.armSubsystem.returnArmCommandedPos() < 0.0) && (gamespecManager.elevatorSubsystem.returnElevatorPos() <= 28.0)) 
         || (((gamespecManager.armSubsystem.returnArmPos() < -5.0) && (gamespecManager.armSubsystem.returnArmCommandedPos() <= 0)) && (gamespecManager.elevatorSubsystem.returnElevatorCommandedPos() <= 28.0))
         || (gamespecManager.armSubsystem.returnArmCommandedPos() > 95.0 && gamespecManager.elevatorSubsystem.returnElevatorCommandedPos() < 20.0)
-        || (gamespecManager.armSubsystem.returnArmPos() > 95.0 && gamespecManager.elevatorSubsystem.returnElevatorPos() < 20.0)))
+        || (gamespecManager.armSubsystem.returnArmPos() > 70.0 && gamespecManager.elevatorSubsystem.returnElevatorPos() < 20.0)))
         .unless(this::isClimb) 
       );
 

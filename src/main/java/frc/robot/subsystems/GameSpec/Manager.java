@@ -86,7 +86,7 @@ public class Manager extends SubsystemBase{
 
     public Command goToPackage(){
       return Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
-      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore())));
+      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore(), algaeHolding())));
     }
 
     public Command goToL2Package(){
@@ -148,7 +148,7 @@ public class Manager extends SubsystemBase{
 
     public Command goToL3(){
       return Commands.parallel(
-      manipulatorSubsystem.goScore().withTimeout(0.1)
+      manipulatorSubsystem.goScore()
       ,Commands.parallel(
       run(() -> {scoringLevel = ScoringLevel.L3;})
       ,elevatorSubsystem.goToL3().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
@@ -165,7 +165,7 @@ public class Manager extends SubsystemBase{
 
     public Command goToL4(){
       return Commands.parallel(
-      manipulatorSubsystem.goScore().withTimeout(0.1)
+      manipulatorSubsystem.goScore()
       ,Commands.parallel(
       run(() -> {scoringLevel = ScoringLevel.L4;})
       ,elevatorSubsystem.goToL4().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
@@ -221,16 +221,14 @@ public class Manager extends SubsystemBase{
             gotoL4Package()),
             manipulatorSubsystem.zero()
             ),
-          ScoringLevel.L3, Commands.sequence(
+          ScoringLevel.L3, 
+            Commands.parallel(
+            Commands.sequence(manipulatorSubsystem.goScore(), algaeHolding()),
+            Commands.sequence(
             runOnce(() -> {doneScoring = true;}),
             Commands.sequence(
             armSubsystem.L3Score()
-            ,elevatorSubsystem.L3Score()
-            ,manipulatorSubsystem.goScore().withTimeout(0.1))
-            .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
-            .andThen(goToL3().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))),
-            Commands.sequence(Commands.parallel(goToPackage().onlyIf(() -> (manipulatorSubsystem.returnBeamBreak())))),    
-            goToL3().onlyIf(() -> (!manipulatorSubsystem.returnBeamBreak()))),
+            ,elevatorSubsystem.L3Score()))),
           ScoringLevel.L2, Commands.sequence(
             runOnce(() -> {doneScoring = true;}),
             Commands.sequence(
@@ -397,22 +395,25 @@ public class Manager extends SubsystemBase{
       return Commands.parallel(
         elevatorSubsystem.goToPackage(),
         armSubsystem.goToPackage(),
-        cancelAlgaeHolding());
+        algaeHolding());
     }
 
     public Command algaePackage(){
-      return Commands.parallel(armSubsystem.goToPackage(), cancelAlgaeHolding());
+      return Commands.parallel(armSubsystem.goToPackage(), algaeHolding());
     }
 
     //does the normal package like in coral mode, but stops the holding voltage for the algae instead of moving the wrist.
     public Command algaePackageElevator(){
       return Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
-      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), cancelAlgaeHolding()));
+      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), algaeHolding()));
     }
 
-    public Command cancelAlgaeHolding(){
-      return manipulatorSubsystem.algaeVoltage(0.0).onlyIf(() -> manipulatorSubsystem.returnAlgaeIn());
+    public Command algaeHolding(){
+      return Commands.either(manipulatorSubsystem.algaeVoltage(0.0), 
+      manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeHoldVoltage),
+      () -> manipulatorSubsystem.returnAlgaeIn());
     }
+
 
     public Command alignProcessor(){
       return Commands.sequence(runOnce(() -> {scoringLevel = ScoringLevel.Algae;}),
