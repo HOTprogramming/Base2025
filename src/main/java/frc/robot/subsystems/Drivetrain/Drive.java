@@ -35,14 +35,17 @@ import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -97,6 +100,10 @@ public class Drive extends SubsystemBase {
     double pixelTolerance = 8;
 
     double chaseVelocity = 0;
+
+    double sideRatio; //.4 long side, 1.2 short side
+
+    Timer timeout;
 
     NetworkTable objectDetection;
     ArrayList<DoubleArraySubscriber> coralSubs = new ArrayList<>();
@@ -157,6 +164,7 @@ public class Drive extends SubsystemBase {
         for (int i=0; i<5; ++i) {
             coralSubs.add(objectDetection.getDoubleArrayTopic("Coral_"+i).subscribe(new double[] {-1, -1, -1, -1}));
         }
+        timeout = new Timer();
 
         double driveBaseRadius = 0;
         for (var moduleLocation : this.iOdata.m_moduleLocations) {
@@ -259,12 +267,13 @@ public class Drive extends SubsystemBase {
             } else {
                 framesLost[i] = 0;
             }
-            if (framesLost[i] < 3) {
+            if (framesLost[i] < 5) {
                 corals[i] = coralSubs.get(i).get();
+                sideRatio = (corals[i][3] - corals[i][1]) / (corals[i][2] - corals[i][0]);
 
-                if (corals[i][3] >= corals[bestCoral][3]) {
+                if (corals[i][3] >= corals[bestCoral][3]) {  //corals[i][3] * sideRatio >= corals[bestCoral][3] * (pixelY/pixelX)lowest on screen, prefer rotated
                     bestCoral = i;
-                    SmartDashboard.putNumber("best coral", i);
+                    SmartDashboard.putNumber("chase object/best coral", i);
                 }
             }
         }
@@ -274,10 +283,9 @@ public class Drive extends SubsystemBase {
         pixelX = (corals[bestCoral][0] + corals[bestCoral][2]) / 2; // xmin + xmax
         pixelY = (corals[bestCoral][1] + pixelYmax) / 2;  //ymin + ymax
 
-        SmartDashboard.putNumber("pixel error", Math.abs(pixelX - targetXPixel));
-        SmartDashboard.putNumberArray("frames lost", framesLost);
-
-        SmartDashboard.putBoolean("aah", corals[0].equals(coralSubs.get(0).get()));
+        SmartDashboard.putNumber("chase object/pixel error", Math.abs(pixelX - targetXPixel));
+        SmartDashboard.putNumberArray("chase object/frames lost", framesLost);
+        SmartDashboard.putNumber("chase object/timer", timeout.get());
     }
 
     public boolean alignedToObject() {
@@ -285,18 +293,28 @@ public class Drive extends SubsystemBase {
     }
 
     public boolean stopChase() {
+        if (timeout.get() > 1) {
+            timeout.reset();
+            timeout.stop();
+            return true;
+        }
         for (int i=0; i<5; ++i) {
-            if (framesLost[i] < 5) {
+            if (framesLost[i] < 10) {
                 return false;
             } 
         }
+        timeout.reset();
+        timeout.stop();
         return true;
     }
 
     public void chaseObject() {
 
         if (pixelYmax > 400) {
-            chaseVelocity = 0.3;
+            if (chaseVelocity != 0.4) {
+                timeout.restart();
+            }
+            chaseVelocity = 0.4;
         } else if (alignedToObject()) {
             chaseVelocity = yChaseObjectPID.calculate(pixelYmax, 400);
         } else {
@@ -309,12 +327,21 @@ public class Drive extends SubsystemBase {
         );
     }
 
-    public void alignObjectTeleop(double driveX, double driveY) {
+    public void alignObjectTeleop(double driveX, double driveY, double driveTheta) {
+
+        if (framesLost[bestCoral] < 5) {
         driveIO.setSwerveRequest(ROBOT_CENTRIC
         .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY())
         .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
         .withRotationalRate(alignedToObject() ? 0 : thetaChaseObjectPID.calculate(pixelX, targetXPixel))
         );
+        } else {
+            driveIO.setSwerveRequest(FIELD_CENTRIC
+            .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY())
+            .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
+            .withRotationalRate((driveTheta <= 0 ? -(driveTheta * driveTheta) : (driveTheta * driveTheta)) * DriveConfig.MAX_ANGULAR_VELOCITY())
+            );
+        }
     }
 
     // public void alignReef(int leftRight) {
