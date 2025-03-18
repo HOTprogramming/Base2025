@@ -25,14 +25,6 @@ public class Intake extends SubsystemBase {
   /* Shuffleboard entrys */
   public GenericEntry intakePosition;
   public GenericEntry intakeDirection;
-  private GenericEntry intakeVelocity;
-  private GenericEntry intakeSupplyCurrent;
-  private GenericEntry intakeStatorCurrent;
-  private GenericEntry intakeTemp;
-  private GenericEntry blackRollerVoltage;
-  private GenericEntry orangeRollerVoltage;
-  private GenericEntry intakeCancoderPosition;
-  private GenericEntry IntakeCancoderVelocity;
   public GenericEntry intakeCommandedPos;
   public GenericEntry beamBreakStatus;
   
@@ -66,8 +58,6 @@ public class Intake extends SubsystemBase {
     return new FunctionalCommand(
       () ->{
       this.intakeCommandedPos.setDouble(position);
-      this.orangeRollerVoltage.setDouble(orangeVoltage);
-      this.blackRollerVoltage.setDouble(blackVoltage);
       },
       () -> {
       io.setIntakeMotorControl(position);
