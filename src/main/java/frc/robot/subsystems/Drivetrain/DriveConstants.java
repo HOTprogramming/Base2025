@@ -9,7 +9,6 @@ import java.util.Map;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
-import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 import com.pathplanner.lib.config.PIDConstants;
@@ -132,16 +131,14 @@ public class DriveConstants {
     // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
     private static final Slot0Configs steerGains = new Slot0Configs()
         .withKP(100).withKI(0).withKD(0.5)
-
-        .withKS(0.1).withKV(1.5).withKA(0)
-        .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign)
-
+        .withKS(0.15).withKV(1.5).withKA(0)
+        // .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign)
         ;
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     private static final Slot0Configs driveGains = new Slot0Configs()
-    .withKP(6).withKI(0).withKD(0.0)
-    .withKS(5).withKV(0.3);
+        .withKP(0.1).withKI(0).withKD(0)
+        .withKS(0).withKV(0.124);
 
     private static final Slot0Configs driveGainsVoltage = new Slot0Configs()
         .withKP(0.1).withKI(0).withKD(0)
@@ -341,7 +338,7 @@ public class DriveConstants {
     private static final int kBackLeftDriveMotorId = 4;
     private static final int kBackLeftSteerMotorId = 3;
     private static final int kBackLeftEncoderId = 43;
-    private static final Angle kBackLeftEncoderOffset = Rotations.of(-0.179199);
+    private static final Angle kBackLeftEncoderOffset = Rotations.of(-0.17626953125);
     private static final boolean kBackLeftSteerMotorInverted = true;
     private static final boolean kBackLeftEncoderInverted = false;
 

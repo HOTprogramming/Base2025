@@ -39,8 +39,6 @@ public class Climber extends SubsystemBase {
   private GenericEntry servoVelocity;
   private GenericEntry servoClampCommandedPos;
   private GenericEntry climberVoltage;
-  private GenericEntry switch1State;
-  private GenericEntry switch2State;
   
   public Climber(ClimberIO io) {
     this.io = io; 
@@ -57,8 +55,6 @@ public class Climber extends SubsystemBase {
     climberCommandedPos = this.climberShuffleboard.add("climber Commanded Position", 0.0).getEntry();
     servoVelocity = this.climberShuffleboard.add("servo Velocity", 0.0).getEntry();
     servoClampCommandedPos = this.climberShuffleboard.add("servo Commanded Position", 0.0).getEntry();
-    switch1State = this.climberShuffleboard.add("Switch 1 State", false).getEntry();
-    switch2State = this.climberShuffleboard.add("Switch 2 State", false).getEntry();
   }
 
 
@@ -81,9 +77,19 @@ public class Climber extends SubsystemBase {
     climberTemp.setDouble(stats.TempCelsius);
     servoVelocity.setDouble(stats.climberVelocity);
     servoClampCommandedPos.setDouble(stats.servoVelocity);
-    switch1State.setBoolean(io.switch1.get());//false if ready to climb
-    switch2State.setBoolean(io.switch2.get());//false if ready to climb
   }
+   //public boolean climberPosition(double desiredPos, double threshHold){
+   //  if(stats.climberPosition > desiredPos - Math.abs(threshHold)){
+   //    System.out.println(true);
+   //    return true;
+   //  }
+   //  else{
+   //    System.out.println(false);
+   //    return false;
+   //  }
+   //}
+    
+
 
     public void setPower(Double supplier){
         io.setPower(supplier);
