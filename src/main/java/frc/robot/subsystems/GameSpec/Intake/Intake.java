@@ -25,14 +25,6 @@ public class Intake extends SubsystemBase {
   /* Shuffleboard entrys */
   public GenericEntry intakePosition;
   public GenericEntry intakeDirection;
-  private GenericEntry intakeVelocity;
-  private GenericEntry intakeSupplyCurrent;
-  private GenericEntry intakeStatorCurrent;
-  private GenericEntry intakeTemp;
-  private GenericEntry blackRollerVoltage;
-  private GenericEntry orangeRollerVoltage;
-  private GenericEntry intakeCancoderPosition;
-  private GenericEntry IntakeCancoderVelocity;
   public GenericEntry intakeCommandedPos;
   public GenericEntry beamBreakStatus;
   
@@ -42,16 +34,8 @@ public class Intake extends SubsystemBase {
 
     this.intakeShuffleboard = Shuffleboard.getTab("Intake");
 
-    intakeVelocity = this.intakeShuffleboard.add("Intake RPM", 0.0).getEntry();
-    intakePosition = this.intakeShuffleboard.add("Intake Position", 0.0).getEntry();;
-    intakeSupplyCurrent = this.intakeShuffleboard.add("Intake Supply Current", 0.0).getEntry();
-    intakeStatorCurrent = this.intakeShuffleboard.add("Intake Stator Current", 0.0).getEntry();
-    intakeTemp = this.intakeShuffleboard.add("Intake Temp", 0.0).getEntry();
-    blackRollerVoltage = this.intakeShuffleboard.add("Black Roller Voltage", 0.0).getEntry();
-    orangeRollerVoltage = this.intakeShuffleboard.add("Orange Roller Voltage", 0.0).getEntry();
-    intakeCancoderPosition = this.intakeShuffleboard.add("Intake Cancoder Position", 0.0).getEntry();
-    IntakeCancoderVelocity = this.intakeShuffleboard.add("Intake Cancoder Speed", 0.0).getEntry();
-    intakeCommandedPos = this.intakeShuffleboard.add("Arm Commanded Position", 0.0).getEntry();
+    intakePosition = this.intakeShuffleboard.add("Intake Position", 0.0).getEntry();
+    intakeCommandedPos = this.intakeShuffleboard.add("Intake Commanded Position", 0.0).getEntry();
     beamBreakStatus = this.intakeShuffleboard.add("BeamBreak", false).getEntry();
   }
 
@@ -66,13 +50,7 @@ public class Intake extends SubsystemBase {
   }
 
   private void UpdateTelemetry() {
-    intakeVelocity.setDouble(stats.intakeVelocity);
     intakePosition.setDouble(stats.intakePosition);
-    intakeSupplyCurrent.setDouble(stats.SupplyCurrentAmps);
-    intakeStatorCurrent.setDouble(stats.TorqueCurrentAmps);
-    intakeTemp.setDouble(stats.TempCelsius);
-    intakeCancoderPosition.setDouble(stats.intakeCancoderPosition);
-    IntakeCancoderVelocity.setDouble(stats.intakeCancoderVelocity);
     beamBreakStatus.setBoolean(io.beambreak.get());
   }
 
@@ -80,8 +58,6 @@ public class Intake extends SubsystemBase {
     return new FunctionalCommand(
       () ->{
       this.intakeCommandedPos.setDouble(position);
-      this.orangeRollerVoltage.setDouble(orangeVoltage);
-      this.blackRollerVoltage.setDouble(blackVoltage);
       },
       () -> {
       io.setIntakeMotorControl(position);

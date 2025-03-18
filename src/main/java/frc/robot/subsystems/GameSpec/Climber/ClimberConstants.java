@@ -5,25 +5,15 @@ import frc.robot.Constants;
 public class ClimberConstants {
     public static int climberMotorID;
     public static int climberMotor2ID;
-    public static double kReduction;
-    public static double kMaxAccelerationRpmPerSec;
-    public static MMGains climberGains;
     public static int ServoPort;
     public static int ServoPort2;
     public static int ServoPort3;
-    public static double UnspoolDistance;
-    public static double SpoolDistance;
-    public static double ServoClampDistance;
     public static double climberServoLockPos;
     public static double climberServoOpenPos;
     public static double targetClicks;
     public static double packageClicks;
     public static double softStopClicks;
 
-    public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
-
-    //public static final double climberServoLockPos2 = 0.33;
-    //public static final double climberServoOpenPos2 = 0.34;
 
     static {
         switch (Constants.getRobot()) {
@@ -46,17 +36,11 @@ public class ClimberConstants {
         ServoPort = 8;
         ServoPort2 = 9;
         ServoPort3 = 7;
-        kReduction = (1.0 / 2.0);
-        kMaxAccelerationRpmPerSec = 9000.0;
-        UnspoolDistance = -2;
-        SpoolDistance = 3;
-        ServoClampDistance = 0.5;
         climberServoLockPos = 0.50;
         climberServoOpenPos = 0.16;
         targetClicks = 100.0;
         packageClicks = 5.0;
         softStopClicks = 26.0;
-        climberGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
 
     }
 
@@ -66,16 +50,10 @@ public class ClimberConstants {
         climberMotor2ID = 12;
         ServoPort = 8;
         ServoPort2 = 9;
-        kReduction = (1.0 / 2.0);
-        kMaxAccelerationRpmPerSec = 9000.0;
-        UnspoolDistance = -2;
-        SpoolDistance = 3;
-        ServoClampDistance = 0.5;
         climberServoLockPos = 0.50;
         climberServoOpenPos = 0.16;
         targetClicks = 80.0;
         softStopClicks = 40.0;
-        climberGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
 
     }
 
@@ -85,15 +63,9 @@ public class ClimberConstants {
         climberMotor2ID = 12;
         ServoPort = 8;
         ServoPort2 = 9;
-        kReduction = (1.0 / 2.0);
-        kMaxAccelerationRpmPerSec = 9000.0;
-        UnspoolDistance = -2;
-        SpoolDistance = 3;
-        ServoClampDistance = 0.5;
         climberServoLockPos = 0.50;
         climberServoOpenPos = 0.16;
         targetClicks = 80.0;
-        climberGains = new MMGains(200, 100, 200, 20 , 2.5, 0.0, 0, 0);
 
     }
 

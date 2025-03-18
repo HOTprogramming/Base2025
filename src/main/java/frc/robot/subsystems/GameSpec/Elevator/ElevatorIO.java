@@ -48,7 +48,6 @@ public abstract class ElevatorIO {
         public double elevatorCurrentAmps = 0.0;
         public double SupplyCurrentAmps = 0.0;
         public double TorqueCurrentAmps = 0.0;
-        public double TempCelsius = 0.0;
 
         public boolean elevatorMotorConnected2 = true;
         public double elevatorPosition2 = 0.0;
@@ -57,10 +56,8 @@ public abstract class ElevatorIO {
         public double elevatorCurrentAmps2 = 0.0;
         public double SupplyCurrentAmps2 = 0.0;
         public double TorqueCurrentAmps2 = 0.0;
-        public double TempCelsius2 = 0.0;
 
         public double elevatorCancoderPosition = 0.0;
-        public double elevatorCancoderVelocity = 0.0;
     }
 
     protected static ElevatorIOStats stats = new ElevatorIOStats();
@@ -69,16 +66,13 @@ public abstract class ElevatorIO {
     private final StatusSignal<AngularVelocity> elevatorVelocity;
     private final StatusSignal<Current> SupplyCurrent;
     private final StatusSignal<Current> TorqueCurrent;
-    private final StatusSignal<Temperature> TempCelsius;
 
     private final StatusSignal<Angle> elevatorPosition2;
     private final StatusSignal<AngularVelocity> elevatorVelocity2;
     private final StatusSignal<Current> SupplyCurrent2;
     private final StatusSignal<Current> TorqueCurrent2;
-    private final StatusSignal<Temperature> TempCelsius2;
 
     private final StatusSignal<Angle> elevatorCancoderPosition;
-    private final StatusSignal<AngularVelocity> elevatorCancoderVelocity;
 
     private TalonFXConfiguration cfg;
     private CANcoderConfiguration encoderCfg;
@@ -144,16 +138,12 @@ public abstract class ElevatorIO {
         elevatorVelocity = elevator.getVelocity();
         SupplyCurrent = elevator.getSupplyCurrent();
         TorqueCurrent = elevator.getTorqueCurrent();
-        TempCelsius = elevator.getDeviceTemp();
 
         elevatorPosition2 = elevator2.getPosition();
         elevatorVelocity2 = elevator2.getVelocity();
         SupplyCurrent2 = elevator2.getSupplyCurrent();
         TorqueCurrent2 = elevator2.getTorqueCurrent();
-        TempCelsius2 = elevator2.getDeviceTemp();
-
         elevatorCancoderPosition = elevatorCancoder.getPosition();
-        elevatorCancoderVelocity = elevatorCancoder.getVelocity();
     
         BaseStatusSignal.setUpdateFrequencyForAll(
             50.0,
@@ -161,15 +151,16 @@ public abstract class ElevatorIO {
             elevatorVelocity,
             SupplyCurrent,
             TorqueCurrent,
-            TempCelsius,
             elevatorPosition2,
             elevatorVelocity2,
             SupplyCurrent2,
             TorqueCurrent2,
-            TempCelsius2,
-            elevatorCancoderPosition,
-            elevatorCancoderVelocity
+            elevatorCancoderPosition
           );
+
+        elevator.optimizeBusUtilization();
+        elevator2.optimizeBusUtilization();
+        elevatorCancoder.optimizeBusUtilization();
     }
 
 
@@ -182,30 +173,24 @@ public abstract class ElevatorIO {
           elevatorVelocity,
           SupplyCurrent,
           TorqueCurrent,
-          TempCelsius,
           elevatorPosition2,
           elevatorVelocity2,
           SupplyCurrent2,
           TorqueCurrent2,
-          TempCelsius2,
-          elevatorCancoderPosition,
-          elevatorCancoderVelocity)
+          elevatorCancoderPosition)
             .isOK();
 
         stats.elevatorPosition = elevatorPosition.getValueAsDouble();
         stats.elevatorVelocity = elevatorVelocity.getValueAsDouble();
         stats.SupplyCurrentAmps = SupplyCurrent.getValueAsDouble();
         stats.TorqueCurrentAmps = TorqueCurrent.getValueAsDouble();
-        stats.TempCelsius = TempCelsius.getValueAsDouble();
 
         stats.elevatorPosition2 = elevatorPosition2.getValueAsDouble();
         stats.elevatorVelocity2 = elevatorVelocity2.getValueAsDouble();
         stats.SupplyCurrentAmps2 = SupplyCurrent2.getValueAsDouble();
         stats.TorqueCurrentAmps2 = TorqueCurrent2.getValueAsDouble();
-        stats.TempCelsius2 = TempCelsius2.getValueAsDouble();
 
         stats.elevatorCancoderPosition = elevatorCancoderPosition.getValueAsDouble();
-        stats.elevatorCancoderVelocity = elevatorCancoderVelocity.getValueAsDouble();
     }
 
     public void applyConfig(){
