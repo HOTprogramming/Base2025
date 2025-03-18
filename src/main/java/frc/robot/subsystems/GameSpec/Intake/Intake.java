@@ -43,6 +43,7 @@ public class Intake extends SubsystemBase {
     this.intakeShuffleboard = Shuffleboard.getTab("Intake");
 
     intakePosition = this.intakeShuffleboard.add("Intake Position", 0.0).getEntry();
+    intakeCommandedPos = this.intakeShuffleboard.add("Intake Commanded Position", 0.0).getEntry();
     beamBreakStatus = this.intakeShuffleboard.add("BeamBreak", false).getEntry();
   }
 
