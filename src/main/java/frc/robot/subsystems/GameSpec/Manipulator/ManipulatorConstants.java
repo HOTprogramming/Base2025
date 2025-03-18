@@ -47,7 +47,7 @@ public class ManipulatorConstants {
       coralWristID = 13;
       canRangeID = 55;
       coralWristGains = new MMGains(0, 0, 0, 0.725, 0.0, 0.01, 0.0, 0.0);
-      coralWristEncoderOffset = 0.497803;
+      coralWristEncoderOffset = 0.429688;
   
       
       coralWristHP = -90;
