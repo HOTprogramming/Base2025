@@ -16,6 +16,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.*;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain.DriveConstants.DriveConfig;
@@ -26,9 +27,9 @@ public class DriveConstants {
     public static final double OTF_end_tolerance = 0.2;
 
     public static final double auto_align_theta_disable = .1;
-    public static final double auto_align_top_speed = 1.8;
+    public static final double auto_align_top_speed = 2.4;
     public static final double auto_align_tolerance = 0.01;
-    public static final double auto_align_lights_tolerance = 0.01;
+    public static final double auto_align_lights_tolerance = Units.inchesToMeters(1.5);
     public static final double auto_align_command = 0.035;
 
     public static final double distance_safe_from_reef = 1.1;
@@ -100,9 +101,9 @@ public class DriveConstants {
             put(Rotation2d.fromDegrees(0), new Double[] {6.0, -0.25, -6.5});
             put(Rotation2d.fromDegrees(60), new Double[] {7.0, -0.25,  -7.0});
             put(Rotation2d.fromDegrees(120), new Double[] {5.0, -0.25, -7.0});
-            put(Rotation2d.fromDegrees(180), new Double[] {6.0, -0.25, -7.0});
-            put(Rotation2d.fromDegrees(-120), new Double[] {6.5, -0.25, -7.0}); // bad post on right (5")
-            put(Rotation2d.fromDegrees(-60), new Double[] {5.5, -0.25, -7.5});
+            put(Rotation2d.fromDegrees(180), new Double[] {6.0, -0.25, -7.5});
+            put(Rotation2d.fromDegrees(-120), new Double[] {5.5, -0.25, -5.0});
+            put(Rotation2d.fromDegrees(-60), new Double[] {5.5, -0.25, -6.5});
         }
     };
 
@@ -112,7 +113,7 @@ public class DriveConstants {
             put(Rotation2d.fromDegrees(60), new Double[] {6.0, -0.25,  -6.0});
             put(Rotation2d.fromDegrees(120), new Double[] {5.0, -0.25, -7.0});
             put(Rotation2d.fromDegrees(180), new Double[] {7.0, -0.25, -6.0});
-            put(Rotation2d.fromDegrees(-120), new Double[] {8.0, -0.25, -6.0}); 
+            put(Rotation2d.fromDegrees(-120), new Double[] {8.0, -0.25, -6.0});
             put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -0.25, -6.0});
         }
     };
@@ -174,6 +175,8 @@ public class DriveConstants {
                 .withStatorCurrentLimitEnable(true)
                 .withSupplyCurrentLimit(90)
                 .withSupplyCurrentLimitEnable(true)
+                .withSupplyCurrentLowerLimit(40)
+                .withSupplyCurrentLowerTime(1)
         ).withTorqueCurrent(
             new TorqueCurrentConfigs()
                 .withPeakForwardTorqueCurrent(65)
@@ -183,16 +186,16 @@ public class DriveConstants {
     public static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
     .withCurrentLimits(
         new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(60)
+            .withStatorCurrentLimit(70)
             .withStatorCurrentLimitEnable(true)
-            .withSupplyCurrentLimit(60)
+            .withSupplyCurrentLimit(70)
             .withSupplyCurrentLimitEnable(true)
-            .withSupplyCurrentLowerLimit(60)
-            .withSupplyCurrentLowerTime(1.0)
+            .withSupplyCurrentLowerLimit(50)
+            .withSupplyCurrentLowerTime(1)
     ).withTorqueCurrent(
         new TorqueCurrentConfigs()
-            .withPeakForwardTorqueCurrent(60)
-            .withPeakReverseTorqueCurrent(-60)
+            .withPeakForwardTorqueCurrent(80)
+            .withPeakReverseTorqueCurrent(-80)
     );
 
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
@@ -456,7 +459,7 @@ public class DriveConstants {
     private static final int kFrontLeftDriveMotorIdCompbot = 8;
     private static final int kFrontLeftSteerMotorIdCompbot = 7;
     private static final int kFrontLeftEncoderIdCompbot = 41;
-    private static final Angle kFrontLeftEncoderOffsetCompbot = Rotations.of(-0.254150390625);
+    private static final Angle kFrontLeftEncoderOffsetCompbot = Rotations.of(-0.267822);
     private static final boolean kFrontLeftSteerMotorInvertedCompbot = true;
     private static final boolean kFrontLeftEncoderInvertedCompbot = false;
 

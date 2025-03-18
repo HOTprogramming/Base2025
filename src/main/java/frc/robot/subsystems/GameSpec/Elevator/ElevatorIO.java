@@ -156,7 +156,7 @@ public abstract class ElevatorIO {
         elevatorCancoderVelocity = elevatorCancoder.getVelocity();
     
         BaseStatusSignal.setUpdateFrequencyForAll(
-            100.0,
+            50.0,
             elevatorPosition,
             elevatorVelocity,
             SupplyCurrent,

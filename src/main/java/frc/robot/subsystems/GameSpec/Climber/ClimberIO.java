@@ -138,7 +138,7 @@ public abstract class ClimberIO {
         TempCelsius2 = climber2.getDeviceTemp();
         voltage2 = climber.getMotorVoltage();
         BaseStatusSignal.setUpdateFrequencyForAll(
-            100.0,
+            50.0,
             climberPosition,
             climberVelocity,
             SupplyCurrent,

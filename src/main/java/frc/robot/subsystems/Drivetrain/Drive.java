@@ -145,9 +145,7 @@ public class Drive extends SubsystemBase {
         try {
             this.pathGroup.addAll(PathPlannerAuto.getPathGroupFromAutoFile("OTF_TESTING"));
         } catch (IOException e) {
-            System.out.println("Auto String Invalid");
         } catch (ParseException e) {
-            System.out.println("Auto Data Invalid");
         }
 
         List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
@@ -194,9 +192,6 @@ public class Drive extends SubsystemBase {
 
     public Command generateOnTheFly() {
         return runOnce(() -> {
-            SmartDashboard.putBoolean("Path Generated", true);
-
-            System.err.println("Start Gen");
             List<Pose2d> currentPathPoses = pathGroup.get(currentPathIndex).getPathPoses();
             PathPlannerPath nextPath = pathGroup.get(currentPathIndex + 1);
             waypoints = PathPlannerPath.waypointsFromPoses(
@@ -210,7 +205,6 @@ public class Drive extends SubsystemBase {
             null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
             new GoalEndState(nextPath.getIdealStartingState().velocityMPS(), nextPath.getInitialHeading()) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
             );
-            System.err.println("Finish Gen");
             AutoBuilder.followPath(path).unless(this::drivetrainAtTarget).schedule();
         });
     }
@@ -457,9 +451,7 @@ public class Drive extends SubsystemBase {
         try {
             this.pathGroup.addAll(PathPlannerAuto.getPathGroupFromAutoFile("OTF_TESTING"));
         } catch (IOException e) {
-            System.out.println("Auto String Invalid");
         } catch (ParseException e) {
-            System.out.println("Auto Data Invalid");
         }
     }
 

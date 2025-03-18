@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Drivetrain;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.subsystems.Drivetrain.DriveConstants.*;
 
@@ -20,6 +21,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.units.AngleUnit;
 
 import com.ctre.phoenix6.swerve.*;
 
@@ -91,7 +93,12 @@ public class DriveKraken extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> im
             for (int i = 0; i < 4; i++) {
                 SmartDashboard.putNumberArray("Module " + i, new double[] {
                     getModule(i).getSteerMotor().getPosition().getValueAsDouble() % 1, 
-                    getModule(i).getSteerMotor().getClosedLoopReference().getValueAsDouble() % 1});
+                    getModule(i).getSteerMotor().getClosedLoopReference().getValueAsDouble() % 1,
+                    getModule(i).getSteerMotor().getStatorCurrent().getValueAsDouble(),
+                    getModule(i).getSteerMotor().getSupplyCurrent().getValueAsDouble()
+
+                });
+                    // getModule(i).getEncoder().getAbsolutePosition().getValue().in(Degrees)});
             }
         }
 

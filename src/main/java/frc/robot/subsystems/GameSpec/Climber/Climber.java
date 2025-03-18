@@ -78,18 +78,6 @@ public class Climber extends SubsystemBase {
     servoVelocity.setDouble(stats.climberVelocity);
     servoClampCommandedPos.setDouble(stats.servoVelocity);
   }
-   //public boolean climberPosition(double desiredPos, double threshHold){
-   //  if(stats.climberPosition > desiredPos - Math.abs(threshHold)){
-   //    System.out.println(true);
-   //    return true;
-   //  }
-   //  else{
-   //    System.out.println(false);
-   //    return false;
-   //  }
-   //}
-    
-
 
     public void setPower(Double supplier){
         io.setPower(supplier);
