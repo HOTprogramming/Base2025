@@ -37,6 +37,7 @@ import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
 import frc.robot.subsystems.GameSpec.Manager;
 import frc.robot.subsystems.GameSpec.Climber.Climber;
+import frc.robot.subsystems.GameSpec.Intake.Intake;
 import frc.robot.subsystems.GameSpec.Lights.Lights;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
 
@@ -131,7 +132,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Auton Finish Intake", gamespecManager.autonFinishIntake());
     NamedCommands.registerCommand("AL4", gamespecManager.autonL4());
 
-    NamedCommands.registerCommand("Chase Object", Commands.sequence(drivetrain.run(() -> drivetrain.chaseObject()).until(() -> drivetrain.chaseObjectDone())));
+    NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.chaseObject()).until(() -> gamespecManager.intakeSubsystem.getBeamBreak() || drivetrain.stopChase()));
 
     //new EventTrigger("Package").whileTrue(gamespecManager.goToPackage());
 

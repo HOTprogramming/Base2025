@@ -77,26 +77,26 @@ public class Drive extends SubsystemBase {
     private Alert alert;
 
     double[][] corals = {
-    {320, -1, 320, -1},
-    {320, -1, 320, -1},
-    {320, -1, 320, -1},
-    {320, -1, 320, -1},
-    {320, -1, 320, -1}}; //x1 y1 x2 y2, 1 top left  2 bottom right
+    {-1, -1, -1, -1},
+    {-1, -1, -1, -1},
+    {-1, -1, -1, -1},
+    {-1, -1, -1, -1},
+    {-1, -1, -1, -1}}; //x1 y1 x2 y2, 1 top left  2 bottom right
 
-    int[] framesLost = {0, 0, 0, 0, 0};
+    double[] framesLost = {0, 0, 0, 0, 0};
 
-    //robot centric -- +X forward, +Y left, +theta Counterclockwise
-    
+    double frames = 0;
+
     double pixelX;   // 640 x 480, origin top left
     double pixelY;
-    double pixelYmax = 640;
+    double pixelYmax;
 
     int bestCoral = 0;
 
-    double targetXPixel = 320;
-    double pixelTolerance = 3;
+    double targetXPixel = 320.5;
+    double pixelTolerance = 8;
 
-    boolean objectRotatedClockwise = true;
+    double chaseVelocity = 0;
 
     NetworkTable objectDetection;
     ArrayList<DoubleArraySubscriber> coralSubs = new ArrayList<>();
@@ -106,9 +106,8 @@ public class Drive extends SubsystemBase {
     private PIDController translationControllerAcross = new PIDController(5, 0, 0);
     private ProfiledPIDController translationControllerY = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
     private ProfiledPIDController translationControllerX = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
-    private PIDController xChaseObjectController = new PIDController(0.008, 0, 0);
-    private PIDController yChaseObjectController = new PIDController(0.008, 0, 0);
-    private PIDController thetaChaseObjectController = new PIDController(0.007, 0, 0);
+    private PIDController yChaseObjectPID = new PIDController(0.008, 0, 0);
+    private PIDController thetaChaseObjectPID = new PIDController(0.007, 0, 0);
 
 
 
@@ -156,9 +155,8 @@ public class Drive extends SubsystemBase {
 
         objectDetection = NetworkTableInstance.getDefault().getTable("ObjectDetection/coralDetections");
         for (int i=0; i<5; ++i) {
-            coralSubs.add(objectDetection.getDoubleArrayTopic("Coral_"+i).subscribe(new double[] {320, -1, 320, -1}));
+            coralSubs.add(objectDetection.getDoubleArrayTopic("Coral_"+i).subscribe(new double[] {-1, -1, -1, -1}));
         }
-        // coralSubs.add(objectDetection.getDoubleArrayTopic("Coral_0").subscribe(new double[] {}));
 
         double driveBaseRadius = 0;
         for (var moduleLocation : this.iOdata.m_moduleLocations) {
@@ -256,50 +254,58 @@ public class Drive extends SubsystemBase {
     private void getObjectMeasurements() {
 
         for (int i=0; i<5; ++i) {
-            if (corals[i] != new double[]{320, -1, 320, -1}) {
+            if (corals[i].equals(coralSubs.get(i).get())) {
+                ++framesLost[i];
+            } else {
+                framesLost[i] = 0;
+            }
+            if (framesLost[i] < 3) {
+                corals[i] = coralSubs.get(i).get();
 
-                if (corals[i] == coralSubs.get(i).get()) {
-                    ++framesLost[i];
-                } else {
-                    framesLost[i] = 0;
-                }
-                if (framesLost[i] < 3) {
-                    corals[i] = coralSubs.get(i).get();
-
-                    if (corals[i][3] >= corals[bestCoral][3]) {
-                        bestCoral = i;
-                        SmartDashboard.putNumber("best coral", i);
-                    }
+                if (corals[i][3] >= corals[bestCoral][3]) {
+                    bestCoral = i;
+                    SmartDashboard.putNumber("best coral", i);
                 }
             }
         }
 
-        double pixelXmin = corals[bestCoral][0];
-        double pixelXmax = corals[bestCoral][2];
-        double pixelYmin = corals[bestCoral][1];
         pixelYmax = corals[bestCoral][3];
 
-        pixelX = (pixelXmin + pixelXmax) / 2;
-        pixelY = (pixelYmin + pixelYmax) / 2;
+        pixelX = (corals[bestCoral][0] + corals[bestCoral][2]) / 2; // xmin + xmax
+        pixelY = (corals[bestCoral][1] + pixelYmax) / 2;  //ymin + ymax
 
         SmartDashboard.putNumber("pixel error", Math.abs(pixelX - targetXPixel));
-    }
+        SmartDashboard.putNumberArray("frames lost", framesLost);
 
-
-    public boolean chaseObjectDone() {
-        return pixelYmax > 440;
+        SmartDashboard.putBoolean("aah", corals[0].equals(coralSubs.get(0).get()));
     }
 
     public boolean alignedToObject() {
         return Math.abs(pixelX - targetXPixel) < pixelTolerance;
     }
 
+    public boolean stopChase() {
+        for (int i=0; i<5; ++i) {
+            if (framesLost[i] < 5) {
+                return false;
+            } 
+        }
+        return true;
+    }
+
     public void chaseObject() {
+
+        if (pixelYmax > 400) {
+            chaseVelocity = 0.3;
+        } else if (alignedToObject()) {
+            chaseVelocity = yChaseObjectPID.calculate(pixelYmax, 400);
+        } else {
+            chaseVelocity = yChaseObjectPID.calculate(pixelYmax, 400) * 0.7;   
+        }
+
         driveIO.setSwerveRequest(ROBOT_CENTRIC
-        .withRotationalRate(alignedToObject() ? 0 : thetaChaseObjectController.calculate(pixelX, targetXPixel))
-        .withVelocityY(yChaseObjectController.calculate(pixelYmax, 480) * (alignedToObject() ? 1 : 0.8))
-        // .withVelocityX(-xChaseObjectController.calculate(pixelX, targetXPixel))
-        //.withRotationalRate(Math.abs(boundingBoxRatio - goalRatio) > ratioTolerance ? thetaChaseObjectController.calculate(boundingBoxRatio, goalRatio) : 0)
+        .withRotationalRate(alignedToObject() ? 0 : thetaChaseObjectPID.calculate(pixelX, targetXPixel))
+        .withVelocityY(chaseVelocity)
         );
     }
 
@@ -307,7 +313,7 @@ public class Drive extends SubsystemBase {
         driveIO.setSwerveRequest(ROBOT_CENTRIC
         .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY())
         .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
-        .withRotationalRate(alignedToObject() ? 0 : thetaChaseObjectController.calculate(pixelX, targetXPixel))
+        .withRotationalRate(alignedToObject() ? 0 : thetaChaseObjectPID.calculate(pixelX, targetXPixel))
         );
     }
 
