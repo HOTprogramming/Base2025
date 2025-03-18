@@ -181,12 +181,6 @@ public class Elevator extends SubsystemBase {
   public double returnElevatorPos(){
     return this.elevatorPosition.getDouble(0);
   }
-  
-
-  public Command managerElevatorTest(){
-    System.out.println("elevatorworks");
-    return runOnce(() -> {});
-  }
 
   public Command stop(){
     return run(() -> {

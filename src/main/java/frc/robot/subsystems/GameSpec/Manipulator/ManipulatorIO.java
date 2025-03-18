@@ -229,7 +229,7 @@ public abstract class ManipulatorIO {
             }
 
         }
-        
+
     public void setCoralSpinMotorControl(double commandedVoltage) {
         coral.setVoltage(commandedVoltage);
     }
@@ -237,7 +237,6 @@ public abstract class ManipulatorIO {
     public void setCoralAngleMotorControl(double commandedPosition) {
         coralWrist.setControl(positionVoltage.withPosition(commandedPosition).withSlot(0));
     }
-    
 
     /** Stop motor */
     public void stop() {
@@ -249,10 +248,8 @@ public abstract class ManipulatorIO {
         coralWrist.setControl(positionVoltage.withPosition(ManipulatorConstants.coralWristScore).withSlot(0));
     }
 
-
     public abstract void periodic(); 
-    
-
+  
     public void runVelocity(double rPM, int i) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'runVelocity'");
