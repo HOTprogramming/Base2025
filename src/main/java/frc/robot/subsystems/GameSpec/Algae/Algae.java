@@ -62,10 +62,16 @@ public class Algae extends SubsystemBase {
    * @return negative voltage if intake, positive voltage if expel
    */
     public Command algaeVoltage(double voltage){
-            return run(() -> {
+            return runOnce(() -> {
                 io.setAlgaeSpinMotorControl(voltage);
             });
     }
+
+    public Command runAlwaysAlgaeVoltage(double voltage){
+        return run(() -> {
+            io.setAlgaeSpinMotorControl(voltage);
+        });
+}
      
 
     @Override

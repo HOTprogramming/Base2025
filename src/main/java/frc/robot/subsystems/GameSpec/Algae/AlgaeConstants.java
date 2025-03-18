@@ -37,7 +37,7 @@ public class AlgaeConstants {
       algaeExpelVoltage = 16.0;
       algaeHoldVoltage = -0.4;
 
-      algaeTriggerDistance = 0.05;
+      algaeTriggerDistance = 0.07;
     }
 
     private static void practiceBotConstants(){

@@ -174,7 +174,7 @@ public class RobotContainer {
 
       gamespecManager.algaeSubsystem.setDefaultCommand(  
       Commands.either(gamespecManager.algaeSubsystem.algaeVoltage(0.0), 
-      gamespecManager.algaeSubsystem.algaeVoltage(0.4),
+      gamespecManager.algaeSubsystem.algaeVoltage(-0.5),
       () -> gamespecManager.algaeSubsystem.returnAlgaeIn())
       );
 

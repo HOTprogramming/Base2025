@@ -189,22 +189,16 @@ public class Manager extends SubsystemBase{
       return Commands.parallel(
         elevatorSubsystem.goToHighAlgae()
         ,armSubsystem.getAlgaeFromReef()
-        ,Commands.sequence(
-        algaeSubsystem.algaeVoltage(AlgaeConstants.algaeIntakeVoltage)
+        ,algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeIntakeVoltage)
         .onlyWhile(() -> algaeSubsystem.returnAlgaeIn())
-        ,algaeSubsystem.algaeVoltage(AlgaeConstants.algaeHoldVoltage)
-        .onlyWhile(() -> !algaeSubsystem.returnAlgaeIn()))
         );
     }
 
     public Command lowAlgae(){
       return Commands.parallel(elevatorSubsystem.goToLowAlgae()
         ,armSubsystem.getAlgaeFromReef()
-        ,Commands.sequence(
-          algaeSubsystem.algaeVoltage(AlgaeConstants.algaeIntakeVoltage)
-          .onlyWhile(() -> algaeSubsystem.returnAlgaeIn())
-          ,algaeSubsystem.algaeVoltage(AlgaeConstants.algaeHoldVoltage)
-          .onlyWhile(() -> !algaeSubsystem.returnAlgaeIn()))
+        ,algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeIntakeVoltage)
+        .onlyWhile(() -> algaeSubsystem.returnAlgaeIn())
       );
     }
 
@@ -247,8 +241,8 @@ public class Manager extends SubsystemBase{
             manipulatorSubsystem.shoot()
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
             .andThen(goToL1().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail))))),
-          ScoringLevel.Algae, algaeSubsystem.algaeVoltage(AlgaeConstants.algaeExpelVoltage),
-          ScoringLevel.Barge, algaeSubsystem.algaeVoltage(AlgaeConstants.algaeExpelVoltage)
+          ScoringLevel.Algae, algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage),
+          ScoringLevel.Barge, algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage)
         ),
         this::getLevel
       );
