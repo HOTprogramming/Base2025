@@ -35,7 +35,6 @@ public class Climber extends SubsystemBase {
   private GenericEntry climberSupplyCurrent;
   private GenericEntry climberStatorCurrent;
   private GenericEntry climberTemp;
-  private GenericEntry climberCommandedPos;
   private GenericEntry servoVelocity;
   private GenericEntry servoClampCommandedPos;
   private GenericEntry climberVoltage;
@@ -46,15 +45,8 @@ public class Climber extends SubsystemBase {
 
     this.climberShuffleboard = Shuffleboard.getTab("climber");
     
-    climberVoltage = this.climberShuffleboard.add("climber Voltage",0.0).getEntry();
-    climberVelocity = this.climberShuffleboard.add("climber RPM", 0.0).getEntry();
     climberPosition = this.climberShuffleboard.add("climber Position", 0.0).getEntry();
     climberSupplyCurrent = this.climberShuffleboard.add("climber Supply Current", 0.0).getEntry();
-    climberStatorCurrent = this.climberShuffleboard.add("climber Stator Current", 0.0).getEntry();
-    climberTemp = this.climberShuffleboard.add("climber Temp", 0.0).getEntry();
-    climberCommandedPos = this.climberShuffleboard.add("climber Commanded Position", 0.0).getEntry();
-    servoVelocity = this.climberShuffleboard.add("servo Velocity", 0.0).getEntry();
-    servoClampCommandedPos = this.climberShuffleboard.add("servo Commanded Position", 0.0).getEntry();
   }
 
 
@@ -69,14 +61,8 @@ public class Climber extends SubsystemBase {
   }
 
   private void UpdateTelemetry() {
-    climberVoltage.setDouble(stats.climberAppliedVolts);
-    climberVelocity.setDouble(stats.climberVelocity);
     climberPosition.setDouble(stats.climberPosition);
-    climberSupplyCurrent.setDouble(stats.SupplyCurrentAmps);
-    climberStatorCurrent.setDouble(stats.TorqueCurrentAmps);
-    climberTemp.setDouble(stats.TempCelsius);
-    servoVelocity.setDouble(stats.climberVelocity);
-    servoClampCommandedPos.setDouble(stats.servoVelocity);
+    climberSupplyCurrent.setDouble(stats.supplyCurrentAmps);
   }
 
     public void setPower(Double supplier){

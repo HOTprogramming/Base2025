@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.GameSpec.Algae.Algae;
+import frc.robot.subsystems.GameSpec.Algae.AlgaeConstants;
 import frc.robot.subsystems.GameSpec.Arm.Arm;
 import frc.robot.subsystems.GameSpec.Arm.ArmConstants;
 import frc.robot.subsystems.GameSpec.Arm.ArmIOReal;
@@ -46,6 +48,7 @@ public class Manager extends SubsystemBase{
     public Intake intakeSubsystem;
     private Manipulator manipulatorSubsystem;
     private Lights lightsSubsystem;
+    public Algae algaeSubsystem;
 
     public GenericEntry scoringEnum;
 
@@ -86,7 +89,7 @@ public class Manager extends SubsystemBase{
 
     public Command goToPackage(){
       return Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
-      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore(), algaeHolding())));
+      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore())));
     }
 
     public Command goToL2Package(){
@@ -185,22 +188,21 @@ public class Manager extends SubsystemBase{
         elevatorSubsystem.goToHighAlgae()
         ,armSubsystem.getAlgaeFromReef()
         ,Commands.sequence(
-        manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage)
-        .onlyWhile(() -> manipulatorSubsystem.returnAlgaeIn())
-        ,manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeHoldVoltage)
-        .onlyWhile(() -> !manipulatorSubsystem.returnAlgaeIn()))
+        algaeSubsystem.algaeVoltage(AlgaeConstants.algaeIntakeVoltage)
+        .onlyWhile(() -> algaeSubsystem.returnAlgaeIn())
+        ,algaeSubsystem.algaeVoltage(AlgaeConstants.algaeHoldVoltage)
+        .onlyWhile(() -> !algaeSubsystem.returnAlgaeIn()))
         );
     }
 
     public Command lowAlgae(){
       return Commands.parallel(elevatorSubsystem.goToLowAlgae()
         ,armSubsystem.getAlgaeFromReef()
-        ,
-        Commands.sequence(
-        manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage)
-        .onlyWhile(() -> manipulatorSubsystem.returnAlgaeIn())
-        ,manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeHoldVoltage)
-        .onlyWhile(() -> !manipulatorSubsystem.returnAlgaeIn()))
+        ,Commands.sequence(
+          algaeSubsystem.algaeVoltage(AlgaeConstants.algaeIntakeVoltage)
+          .onlyWhile(() -> algaeSubsystem.returnAlgaeIn())
+          ,algaeSubsystem.algaeVoltage(AlgaeConstants.algaeHoldVoltage)
+          .onlyWhile(() -> !algaeSubsystem.returnAlgaeIn()))
       );
     }
 
@@ -223,7 +225,7 @@ public class Manager extends SubsystemBase{
             ),
           ScoringLevel.L3, 
             Commands.parallel(
-            Commands.sequence(manipulatorSubsystem.goScore(), algaeHolding()),
+            manipulatorSubsystem.goScore(),
             Commands.sequence(
             runOnce(() -> {doneScoring = true;}),
             Commands.sequence(
@@ -243,8 +245,8 @@ public class Manager extends SubsystemBase{
             manipulatorSubsystem.shoot()
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
             .andThen(goToL1().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail))))),
-          ScoringLevel.Algae, manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeExpelVoltage),
-          ScoringLevel.Barge, manipulatorSubsystem.algaeVoltage(16.0)
+          ScoringLevel.Algae, algaeSubsystem.algaeVoltage(AlgaeConstants.algaeExpelVoltage),
+          ScoringLevel.Barge, algaeSubsystem.algaeVoltage(AlgaeConstants.algaeExpelVoltage)
         ),
         this::getLevel
       );
@@ -260,8 +262,6 @@ public class Manager extends SubsystemBase{
             ScoringLevel.L3, Commands.sequence(
             Commands.parallel(armSubsystem.L3Score(), manipulatorSubsystem.goScore()), elevatorSubsystem.L3Score()
           )
-          // .onlyWhile(() -> elevatorSubsystem.elevatorGreaterThan(elevator working pose, 0))
-          //shut up im coding
         ),
         this::getLevel
       );
@@ -394,26 +394,18 @@ public class Manager extends SubsystemBase{
     public Command bargePackage(){
       return Commands.parallel(
         elevatorSubsystem.goToPackage(),
-        armSubsystem.goToPackage(),
-        algaeHolding());
+        armSubsystem.goToPackage());
     }
 
     public Command algaePackage(){
-      return Commands.parallel(armSubsystem.goToPackage(), algaeHolding());
+      return Commands.parallel(armSubsystem.goToPackage());
     }
 
     //does the normal package like in coral mode, but stops the holding voltage for the algae instead of moving the wrist.
     public Command algaePackageElevator(){
       return Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
-      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), algaeHolding()));
+      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage()));
     }
-
-    public Command algaeHolding(){
-      return Commands.either(manipulatorSubsystem.algaeVoltage(0.0), 
-      manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeHoldVoltage),
-      () -> manipulatorSubsystem.returnAlgaeIn());
-    }
-
 
     public Command alignProcessor(){
       return Commands.sequence(runOnce(() -> {scoringLevel = ScoringLevel.Algae;}),

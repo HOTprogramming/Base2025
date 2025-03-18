@@ -36,25 +36,17 @@ public abstract class ArmIO {
     public static class ArmIOStats {
         public boolean armMotorConnected = true;
         public double armPosition = 0.0;
-        public double armVelocity = 0.0;
-        public double armAppliedVolts = 0.0;
-        public double armCurrentAmps = 0.0;
         public double SupplyCurrentAmps = 0.0;
         public double TorqueCurrentAmps = 0.0;
-        public double TempCelsius = 0.0;
         public double armCancoderPosition = 0.0;
-        public double armCancoderVelocity = 0.0;
     }
 
     protected static ArmIOStats stats = new ArmIOStats();
 
     private final StatusSignal<Angle> armPosition;
-    private final StatusSignal<AngularVelocity> armVelocity;
     private final StatusSignal<Current> SupplyCurrent;
     private final StatusSignal<Current> TorqueCurrent;
-    private final StatusSignal<Temperature> TempCelsius;
     private final StatusSignal<Angle> armCancoderPosition;
-    private final StatusSignal<AngularVelocity> armCancoderVelocity;
 
     public TalonFXConfiguration cfg;
     public CANcoderConfiguration encoderCfg;
@@ -109,23 +101,20 @@ public abstract class ArmIO {
         setConfig();
 
         armPosition = arm.getPosition();
-        armVelocity = arm.getVelocity();
         SupplyCurrent = arm.getSupplyCurrent();
         TorqueCurrent = arm.getTorqueCurrent();
-        TempCelsius = arm.getDeviceTemp();
         armCancoderPosition = armCancoder.getPosition();
-        armCancoderVelocity = armCancoder.getVelocity();
     
         BaseStatusSignal.setUpdateFrequencyForAll(
             50.0,
             armPosition,
-            armVelocity,
             SupplyCurrent,
             TorqueCurrent,
-            TempCelsius,
-            armCancoderPosition,
-            armCancoderVelocity
+            armCancoderPosition
           );
+
+        arm.optimizeBusUtilization();
+        armCancoder.optimizeBusUtilization();
     }
 
     /** Update stats */
@@ -133,21 +122,15 @@ public abstract class ArmIO {
         stats.armMotorConnected =
         BaseStatusSignal.refreshAll(
           armPosition,
-          armVelocity,
           SupplyCurrent,
           TorqueCurrent,
-          TempCelsius,
-          armCancoderPosition,
-          armCancoderVelocity)
+          armCancoderPosition)
             .isOK();
 
         stats.armPosition = armPosition.getValueAsDouble();
-        stats.armVelocity = armVelocity.getValueAsDouble();
         stats.SupplyCurrentAmps = SupplyCurrent.getValueAsDouble();
         stats.TorqueCurrentAmps = TorqueCurrent.getValueAsDouble();
-        stats.TempCelsius = TempCelsius.getValueAsDouble();
         stats.armCancoderPosition = armCancoderPosition.getValueAsDouble();
-        stats.armCancoderVelocity = armCancoderVelocity.getValueAsDouble();
     }
 
 
