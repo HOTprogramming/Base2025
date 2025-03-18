@@ -106,14 +106,14 @@ public class Manipulator extends SubsystemBase {
             () -> this.coralCommandedPos.setDouble(position),
             () -> 
             {io.setCoralAngleMotorControl(position);
-            if(stats.algaeDistance > ManipulatorConstants.algaeTriggerDistance){
+            if(this.returnAlgaeIn()){
                 io.algaeRoller.setVoltage(0.0);
             }else{
                 io.algaeRoller.setVoltage(ManipulatorConstants.algaeHoldVoltage);
             }}
             ,
             interrupted -> {io.setCoralAngleMotorControl(position);
-            if(stats.algaeDistance > ManipulatorConstants.algaeTriggerDistance){
+            if(this.returnAlgaeIn()){
                 io.algaeRoller.setVoltage(0.0);
             }else{
                 io.algaeRoller.setVoltage(ManipulatorConstants.algaeHoldVoltage);
@@ -186,7 +186,6 @@ public class Manipulator extends SubsystemBase {
 
     public  Command goScore() {
         return coralCommand(ManipulatorConstants.coralWristScore);
-
     }
 
     /**

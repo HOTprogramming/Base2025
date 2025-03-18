@@ -16,6 +16,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.*;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain.DriveConstants.DriveConfig;
@@ -28,7 +29,7 @@ public class DriveConstants {
     public static final double auto_align_theta_disable = .1;
     public static final double auto_align_top_speed = 2.4;
     public static final double auto_align_tolerance = 0.01;
-    public static final double auto_align_lights_tolerance = 0.01;
+    public static final double auto_align_lights_tolerance = Units.inchesToMeters(1.5);
     public static final double auto_align_command = 0.035;
 
     public static final double distance_safe_from_reef = 1.1;
@@ -100,7 +101,7 @@ public class DriveConstants {
             put(Rotation2d.fromDegrees(0), new Double[] {6.0, -0.25, -6.5});
             put(Rotation2d.fromDegrees(60), new Double[] {7.0, -0.25,  -7.0});
             put(Rotation2d.fromDegrees(120), new Double[] {5.0, -0.25, -7.0});
-            put(Rotation2d.fromDegrees(180), new Double[] {6.0, -0.25, -6.0});
+            put(Rotation2d.fromDegrees(180), new Double[] {6.0, -0.25, -7.5});
             put(Rotation2d.fromDegrees(-120), new Double[] {5.5, -0.25, -5.0});
             put(Rotation2d.fromDegrees(-60), new Double[] {5.5, -0.25, -6.5});
         }

@@ -184,7 +184,6 @@ public class Elevator extends SubsystemBase {
   
 
   public Command managerElevatorTest(){
-    System.out.println("elevatorworks");
     return runOnce(() -> {});
   }
 

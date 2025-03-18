@@ -117,7 +117,7 @@ public abstract class ArmIO {
         armCancoderVelocity = armCancoder.getVelocity();
     
         BaseStatusSignal.setUpdateFrequencyForAll(
-            100.0,
+            50.0,
             armPosition,
             armVelocity,
             SupplyCurrent,

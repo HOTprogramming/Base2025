@@ -146,11 +146,9 @@ public class Arm extends SubsystemBase {
 
   public boolean armGreaterThan(double desiredPos, double threshHold){
     if(stats.armPosition > desiredPos - Math.abs(threshHold)){
-      System.out.println(true);
       return true;
     }
     else{
-      System.out.println(false);
       return false;
     }
   }
