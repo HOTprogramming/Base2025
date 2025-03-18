@@ -61,7 +61,6 @@ public abstract class AlgaeIO {
         /** Constructor to initialize the TalonFX */
         public AlgaeIO() {
             this.canRange = new CANrange(AlgaeConstants.canRangeID, "robot");
-
             this.algaeRoller = new TalonFX(AlgaeConstants.algaeRollerID, "robot");
 
             rangeConfig = new CANrangeConfiguration();
@@ -84,6 +83,9 @@ public abstract class AlgaeIO {
                 100.0,
                 CANrangeDistance
                 );
+
+                canRange.optimizeBusUtilization();
+                algaeRoller.optimizeBusUtilization();
         }
     
         /** Update stats */

@@ -156,6 +156,11 @@ public abstract class IntakeIO {
             intakePosition,
             intakeCancoderPosition
           );
+
+          orangeWheels.optimizeBusUtilization();
+          blackWheels.optimizeBusUtilization();
+          intakeRotation.optimizeBusUtilization();
+          intakeCancoder.optimizeBusUtilization();
     }
 
     /** Update stats */

@@ -148,6 +148,10 @@ public abstract class ManipulatorIO {
                 CANdiPWM1,
                 CANdiPWM3
                 );
+            
+            coral.optimizeBusUtilization();
+            coralWrist.optimizeBusUtilization();
+            coralCancoder.optimizeBusUtilization();
         }
     
         /** Update stats */

@@ -29,7 +29,6 @@ public abstract class ClimberIO {
     protected Servo ratchetServo;
     protected TalonFX climber;
     protected TalonFX climber2;
-    protected MotionMagicVoltage climberMagic;
 
     public static class ClimberIOStats {
         public double climberPosition = 0.0;
@@ -56,7 +55,6 @@ public abstract class ClimberIO {
                 this.climberServo = new Servo(ClimberConstants.ServoPort);
                 this.climberServo2 = new Servo(ClimberConstants.ServoPort2);
                 this.ratchetServo = new Servo(ClimberConstants.ServoPort3);
-                climberMagic = new MotionMagicVoltage(0);
                 TalonFXConfiguration cfg = new TalonFXConfiguration();
         
                 FeedbackConfigs fdb = cfg.Feedback;
@@ -101,6 +99,9 @@ public abstract class ClimberIO {
                   );
         
                   climber.setPosition(0.0);
+
+                  climber.optimizeBusUtilization();
+                  climber2.optimizeBusUtilization();
             }
         
         

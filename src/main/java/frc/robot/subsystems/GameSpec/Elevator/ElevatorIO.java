@@ -157,6 +157,10 @@ public abstract class ElevatorIO {
             TorqueCurrent2,
             elevatorCancoderPosition
           );
+
+        elevator.optimizeBusUtilization();
+        elevator2.optimizeBusUtilization();
+        elevatorCancoder.optimizeBusUtilization();
     }
 
 

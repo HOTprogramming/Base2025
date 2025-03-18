@@ -112,6 +112,9 @@ public abstract class ArmIO {
             TorqueCurrent,
             armCancoderPosition
           );
+
+        arm.optimizeBusUtilization();
+        armCancoder.optimizeBusUtilization();
     }
 
     /** Update stats */
