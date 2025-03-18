@@ -219,7 +219,7 @@ public abstract class ManipulatorIO {
             CANrangeDistance = canRange.getDistance();
 
             BaseStatusSignal.setUpdateFrequencyForAll(
-                100.0,
+                50.0,
                 CoralPosition,
                 CoralVelocity,
                 CoralSupplyCurrent,

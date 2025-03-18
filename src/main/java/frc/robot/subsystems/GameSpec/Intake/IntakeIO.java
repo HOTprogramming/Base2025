@@ -78,10 +78,10 @@ public abstract class IntakeIO {
 
     /** Constructor to initialize the TalonFX */
     public IntakeIO() {
-        this.orangeWheels = new TalonFX(IntakeConstants.orangeWheelsID, "robot");
-        this.blackWheels = new TalonFX(IntakeConstants.blackWheelsID, "robot");
-        this.intakeRotation = new TalonFX(IntakeConstants.intakeRotationID, "robot");
-        this.intakeCancoder = new CANcoder(IntakeConstants.intakeEncoderID, "robot");
+        this.orangeWheels = new TalonFX(IntakeConstants.orangeWheelsID, "rio");
+        this.blackWheels = new TalonFX(IntakeConstants.blackWheelsID, "rio");
+        this.intakeRotation = new TalonFX(IntakeConstants.intakeRotationID, "rio");
+        this.intakeCancoder = new CANcoder(IntakeConstants.intakeEncoderID, "rio");
         this.beambreak = new DigitalInput(9);
 
         voltageControl = new PositionVoltage(0);
@@ -170,7 +170,7 @@ public abstract class IntakeIO {
         intakeCancoderVelocity = intakeCancoder.getVelocity();
     
         BaseStatusSignal.setUpdateFrequencyForAll(
-            100.0,
+            50.0,
             intakePosition,
             intakeVelocity,
             SupplyCurrent,

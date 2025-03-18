@@ -278,7 +278,6 @@ public class RobotContainer {
         () -> gamespecManager.climberSubsystem.setPower(0.0)));
 
       operator.leftTrigger().or(operator.rightTrigger()).onFalse(NamedCommands.getCommand("Coral Zero"));
-      System.out.println("c");
 
        NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
       NamedCommands.registerCommand("R_OTF", drivetrain.runOnTheFly());
@@ -355,6 +354,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return autoCommand.finallyDo(() -> System.out.println("ENDED AUTO COMMAND"));
+    return autoCommand;
   }
 }
