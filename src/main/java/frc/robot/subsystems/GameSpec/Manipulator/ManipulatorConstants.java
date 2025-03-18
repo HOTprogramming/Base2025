@@ -14,8 +14,6 @@ public class ManipulatorConstants {
       public static int coralCandiID;
       public static int coralWristID;
       public static int canRangeID;
-      public static double kReduction;
-      public static double kMaxAccelerationRpmPerSec;
       public static MMGains coralWristGains;
       public static VVGains coralSpinGains;
       public static double coralWristEncoderOffset;
@@ -48,10 +46,7 @@ public class ManipulatorConstants {
       coralCandiID = 53;
       coralWristID = 13;
       canRangeID = 55;
-      kReduction = (1.0 / 2.0);
-      kMaxAccelerationRpmPerSec = 9000.0; 
       coralWristGains = new MMGains(0, 0, 0, 0.725, 0.0, 0.01, 0.0, 0.0);
-      coralSpinGains = new VVGains(10.0, 0.0, 0.0, 0, 1);
       coralWristEncoderOffset = 0.497803;
   
       
@@ -67,11 +62,8 @@ public class ManipulatorConstants {
       coralCandiID = 53;
       coralWristID = 13;
       canRangeID = 55;
-      kReduction = (1.0 / 2.0);
-      kMaxAccelerationRpmPerSec = 9000.0; 
       //coralWristGains = new MMGains(3000, 4000, 14000, 0.2, 0.0, 0.002, 0.1, 0.0);
       coralWristGains = new MMGains(0, 0, 0, 0.725, 0.0, 0.01, 0.0, 0.0);
-      coralSpinGains = new VVGains(10.0, 0.0, 0.0, 0, 1);
       coralWristEncoderOffset = -0.180176;
       
       coralWristHP = -99;
@@ -81,18 +73,6 @@ public class ManipulatorConstants {
 
     private static void simBotConstants(){
 
-      coralMotorID = 16;
-      coralEncoderID = 54;
-      coralCandiID = 53;
-      coralWristID = 13;
-      canRangeID = 55;
-      kReduction = (1.0 / 2.0);
-      kMaxAccelerationRpmPerSec = 9000.0; 
-      coralWristGains = new MMGains(3000, 4000, 14000, 0.2, 0.0, 0.002, 0.1, 0.0);
-      coralSpinGains = new VVGains(10.0, 0.0, 0.0, 0, 1);
-      
-      coralWristHP = -90;
-      coralWristScore = 0;
     }
 
 }

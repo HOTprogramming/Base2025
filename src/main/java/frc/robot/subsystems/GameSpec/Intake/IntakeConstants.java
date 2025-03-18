@@ -8,8 +8,6 @@ public class IntakeConstants {
     public static int orangeWheelsID;
     public static int intakeRotationID;
     public static int intakeEncoderID;
-    public static double kReduction;
-    public static double kMaxAccelerationRpmPerSec;
     public static MMGains intakeGains;
 
     public static double intakeHandoff;
@@ -45,8 +43,6 @@ public class IntakeConstants {
         orangeWheelsID = 18;
         intakeRotationID = 19;
         intakeEncoderID = 46;
-        kReduction = (1.0 / 2.0);
-        kMaxAccelerationRpmPerSec = 9000.0; 
         intakeGains = new MMGains(0.19,0,0);
         
         intakeHandoff = 145.0;

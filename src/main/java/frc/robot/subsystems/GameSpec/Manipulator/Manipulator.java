@@ -21,16 +21,9 @@ public class Manipulator extends SubsystemBase {
     private final ShuffleboardTab coralShuffleboard;
 
     /* Shuffleboard entries */
-    private GenericEntry coralVelocity;
-    private GenericEntry coralPosition;
-    private GenericEntry coralSupplyCurrent;
-    private GenericEntry coralStatorCurrent;
-    private GenericEntry coralTemp;
-    private GenericEntry coralCommandedPos;
-    private GenericEntry coralCommandedSpeed;
+    private GenericEntry wristPosition;
+    private GenericEntry wristCommandedPos;
     private GenericEntry CANdiPWM1;
-
-    private GenericEntry CANdiPWM2;
     private GenericEntry CANdiPWM3;
 
     
@@ -40,16 +33,9 @@ public class Manipulator extends SubsystemBase {
 
         this.coralShuffleboard = Shuffleboard.getTab("Coral");
 
-        coralVelocity = this.coralShuffleboard.add("Coral RPM", 0.0).getEntry();
-        coralPosition = this.coralShuffleboard.add("Coral Position", 0.0).getEntry();
-        coralSupplyCurrent = this.coralShuffleboard.add("Coral Supply Current", 0.0).getEntry();
-        coralStatorCurrent = this.coralShuffleboard.add("Coral Stator Current", 0.0).getEntry();
-        coralTemp = this.coralShuffleboard.add("Coral Temp", 0.0).getEntry();
-        coralCommandedPos = this.coralShuffleboard.add("Coral Commanded Position", 0.0).getEntry();
-        coralCommandedSpeed = this.coralShuffleboard.add("Coral Commanded Speed", 0.0).getEntry();
+        wristPosition = this.coralShuffleboard.add("Coral Position", 0.0).getEntry();
+        wristCommandedPos = this.coralShuffleboard.add("Coral Commanded Position", 0.0).getEntry();
         CANdiPWM1 = this.coralShuffleboard.add("CANdi Coral Beambreak",false).getEntry();//false when there is no object, true when it detects object
-
-        CANdiPWM2 = this.coralShuffleboard.add("CANdi Algae Beambreak",false).getEntry();//false when there is no object, true when it detects object
         CANdiPWM3 = this.coralShuffleboard.add("Outer BeamBreak",false).getEntry();//false when there is no object, true when it detects object
 
     }
@@ -64,33 +50,27 @@ public class Manipulator extends SubsystemBase {
     }
 
     private void UpdateTelemetry() {
-        coralVelocity.setDouble(io.coral.getVelocity().getValueAsDouble());
-        coralPosition.setDouble(io.coralWrist.getPosition().getValueAsDouble());
-        coralSupplyCurrent.setDouble(stats.coralSupplyCurrentAmps);
-        coralStatorCurrent.setDouble(stats.coralTorqueCurrentAmps);
-        coralTemp.setDouble(stats.coralTempCelsius);
+        wristPosition.setDouble(io.coralWrist.getPosition().getValueAsDouble());
         CANdiPWM1.setBoolean(stats.candiPWM1);
 
-        CANdiPWM2.setBoolean(stats.candiPWM2);
         CANdiPWM3.setBoolean(stats.candiPWM3);
     }
 
     private FunctionalCommand coralCommand(double position){
         return new FunctionalCommand(
-            () -> this.coralCommandedPos.setDouble(position),
+            () -> this.wristCommandedPos.setDouble(position),
             () -> 
             {io.setCoralAngleMotorControl(position);}
             ,
             interrupted -> {io.setCoralAngleMotorControl(position);
             }, 
-            () -> stats.coralCancoderPosition <= position + .01 && stats.coralCancoderPosition >= position - .01,
+            () -> stats.wristCancoderPosition <= position + .01 && stats.wristCancoderPosition >= position - .01,
             this
         );
     }
 
     public Command shoot() {
         return runOnce(() -> {
-            coralCommandedSpeed.setDouble(-1.5);
             io.setCoralSpinMotorControl(-1.5);
             io.setCoralAngleMotorControl(ManipulatorConstants.coralWristHP);
         });
@@ -98,7 +78,6 @@ public class Manipulator extends SubsystemBase {
 
     public Command intake() {
         return run(() -> {
-            coralCommandedSpeed.setDouble(8);
             io.setCoralSpinMotorControl(8);
             io.setCoralAngleMotorControl(ManipulatorConstants.coralWristHP);
 
@@ -107,7 +86,6 @@ public class Manipulator extends SubsystemBase {
 
     public Command intakeGround() {
         return run(() -> {
-            coralCommandedSpeed.setDouble(8);
             io.setCoralSpinMotorControl(8);
             io.setCoralAngleMotorControl(ManipulatorConstants.coralWristScore);
 
@@ -116,7 +94,6 @@ public class Manipulator extends SubsystemBase {
 
     public Command autonIntake() {
         return run(() -> {
-            coralCommandedSpeed.setDouble(8);
             io.setCoralSpinMotorControl(8);
             io.setCoralAngleMotorControl(ManipulatorConstants.coralWristHP);
 
@@ -148,19 +125,11 @@ public class Manipulator extends SubsystemBase {
     public Command zero(){
         return runOnce(() -> io.stop());
     }
-    
-    public Command BeamBreak2Stop() {
-        return run(() -> {
-            if (stats.candiPWM2 == true) {
-                coralCommandedSpeed.setDouble(0);
-                io.setCoralSpinMotorControl(0);
-            }
-        });
-    }
+
         
             public boolean checkCoralRange(double deadband){
-        return (stats.coralPosition >= coralCommandedPos.getDouble(0) - deadband) && 
-               (stats.coralPosition <= coralCommandedPos.getDouble(0) + deadband);
+        return (stats.wristPosition >= wristCommandedPos.getDouble(0) - deadband) && 
+               (stats.wristPosition <= wristCommandedPos.getDouble(0) + deadband);
     }
     
         public Command stop(){

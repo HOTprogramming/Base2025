@@ -54,33 +54,17 @@ public abstract class ManipulatorIO {
     
         public static class ManipulatorIOStats {
             public boolean coralMotorConnected = true;
-            public double coralPosition = 0.0;
-            public double coralVelocity = 0.0;
-            public double coralAppliedVolts = 0.0;
-            public double coralCurrentAmps = 0.0;
-            public double coralSupplyCurrentAmps = 0.0;
-            public double coralTorqueCurrentAmps = 0.0;
-            public double coralTempCelsius = 0.0;
-            public double coralCancoderPosition = 0.0;
-            public double coralCancoderVelocity = 0.0;
+            public double wristPosition = 0.0;
+            public double wristCancoderPosition = 0.0;
             public boolean candiPWM1;
-
-            public boolean candiPWM2;
             public boolean candiPWM3;
         }
     
         protected static ManipulatorIOStats stats = new ManipulatorIOStats();
     
-        private final StatusSignal<Angle> CoralPosition;
-        private final StatusSignal<AngularVelocity> CoralVelocity;
-        private final StatusSignal<Current> CoralSupplyCurrent;
-        private final StatusSignal<Current> CoralTorqueCurrent;
-        private final StatusSignal<Temperature> CoralTempCelsius;
-        private final StatusSignal<Angle> CoralCancoderPosition;
-        private final StatusSignal<AngularVelocity> CoralCancoderVelocity;
+        private final StatusSignal<Angle> WristPosition;
+        private final StatusSignal<Angle> WristCancoderPosition;
         private final StatusSignal<Boolean> CANdiPWM1;
-
-        private final StatusSignal<Boolean> CANdiPWM2;
         private final StatusSignal<Boolean> CANdiPWM3;
         private TalonFXConfiguration cfg;
         private TalonFXSConfiguration cFXS;
@@ -151,31 +135,17 @@ public abstract class ManipulatorIO {
     
             setConfig();
     
-            CoralPosition = coral.getPosition();
-            CoralVelocity = coral.getVelocity();
-            CoralSupplyCurrent = coral.getSupplyCurrent();
-            CoralTorqueCurrent = coral.getTorqueCurrent();
-            CoralTempCelsius = coral.getDeviceTemp();
-            CoralCancoderPosition = coralCancoder.getPosition();
-            CoralCancoderVelocity = coralCancoder.getVelocity();
+            WristPosition = coral.getPosition();
+            WristCancoderPosition = coralCancoder.getPosition();
     
             CANdiPWM1 = coralCandi.getS1Closed();
-
-
-            CANdiPWM2 = coralCandi.getS2Closed();
             CANdiPWM3 = coralCandi.getS2Closed();
 
             BaseStatusSignal.setUpdateFrequencyForAll(
                 100.0,
-                CoralPosition,
-                CoralVelocity,
-                CoralSupplyCurrent,
-                CoralTorqueCurrent,
-                CoralTempCelsius,
-                CoralCancoderPosition,
-                CoralCancoderVelocity,
+                WristPosition,
+                WristCancoderPosition,
                 CANdiPWM1,
-                CANdiPWM2,
                 CANdiPWM3
                 );
         }
@@ -184,29 +154,17 @@ public abstract class ManipulatorIO {
         public void updateStats() {
             stats.coralMotorConnected =
             BaseStatusSignal.refreshAll(
-                CoralPosition,
-                CoralVelocity,
-                CoralSupplyCurrent,
-                CoralTorqueCurrent,
-                CoralTempCelsius,
-                CoralCancoderPosition,
-                CoralCancoderVelocity,
+                WristPosition,
+                WristCancoderPosition,
                 CANdiPWM1,
-                CANdiPWM3,
-                CANdiPWM2)
+                CANdiPWM3)
                 .isOK();
     
-            stats.coralPosition = CoralPosition.getValueAsDouble();
-            stats.coralVelocity = CoralVelocity.getValueAsDouble();
-            stats.coralSupplyCurrentAmps = CoralSupplyCurrent.getValueAsDouble();
-            stats.coralTorqueCurrentAmps = CoralTorqueCurrent.getValueAsDouble();
-            stats.coralTempCelsius = CoralTempCelsius.getValueAsDouble();
-            stats.coralCancoderPosition = CoralCancoderPosition.getValueAsDouble();
-            stats.coralCancoderVelocity = CoralCancoderVelocity.getValueAsDouble();
+            stats.wristPosition = WristPosition.getValueAsDouble();
+            stats.wristCancoderPosition = WristCancoderPosition.getValueAsDouble();
             stats.candiPWM1 = CANdiPWM1.getValue();
     
             stats.candiPWM3 = CANdiPWM3.getValue();
-            stats.candiPWM2 = CANdiPWM2.getValue();
         }
     
         public void setConfig(){

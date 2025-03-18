@@ -47,15 +47,8 @@ public abstract class IntakeIO {
     public static class IntakeIOStats {
         public boolean intakeMotorConnected = true;
         public double intakePosition = 0.0;
-        public double intakeVelocity = 0.0;
-        public double intakeAppliedVolts = 0.0;
-        public double intakeCurrentAmps = 0.0;
-        public double SupplyCurrentAmps = 0.0;
-        public double TorqueCurrentAmps = 0.0;
-        public double TempCelsius = 0.0;
 
         public double intakeCancoderPosition = 0.0;
-        public double intakeCancoderVelocity = 0.0;
 
         public boolean PWM1;
     }
@@ -63,13 +56,8 @@ public abstract class IntakeIO {
     protected static IntakeIOStats stats = new IntakeIOStats();
 
     private final StatusSignal<Angle> intakePosition;
-    private final StatusSignal<AngularVelocity> intakeVelocity;
-    private final StatusSignal<Current> SupplyCurrent;
-    private final StatusSignal<Current> TorqueCurrent;
-    private final StatusSignal<Temperature> TempCelsius;
 
     private final StatusSignal<Angle> intakeCancoderPosition;
-    private final StatusSignal<AngularVelocity> intakeCancoderVelocity;
 
     public CANcoderConfiguration encoderCfg;
     public TalonFXConfiguration cfg;
@@ -160,24 +148,13 @@ public abstract class IntakeIO {
         }
 
         intakePosition = intakeRotation.getPosition();
-        intakeVelocity = intakeRotation.getVelocity();
-        SupplyCurrent = intakeRotation.getSupplyCurrent();
-        TorqueCurrent = intakeRotation.getTorqueCurrent();
-        TempCelsius = intakeRotation.getDeviceTemp();
-
 
         intakeCancoderPosition = intakeCancoder.getPosition();
-        intakeCancoderVelocity = intakeCancoder.getVelocity();
     
         BaseStatusSignal.setUpdateFrequencyForAll(
             100.0,
             intakePosition,
-            intakeVelocity,
-            SupplyCurrent,
-            TorqueCurrent,
-            TempCelsius,
-            intakeCancoderPosition,
-            intakeCancoderVelocity
+            intakeCancoderPosition
           );
     }
 
@@ -186,22 +163,11 @@ public abstract class IntakeIO {
         stats.intakeMotorConnected =
         BaseStatusSignal.refreshAll(
           intakePosition,
-          intakeVelocity,
-          SupplyCurrent,
-          TorqueCurrent,
-          TempCelsius,
-          intakeCancoderPosition,
-          intakeCancoderVelocity)
+          intakeCancoderPosition)
             .isOK();
 
         stats.intakePosition = intakePosition.getValueAsDouble();
-        stats.intakeVelocity = intakeVelocity.getValueAsDouble();
-        stats.SupplyCurrentAmps = SupplyCurrent.getValueAsDouble();
-        stats.TorqueCurrentAmps = TorqueCurrent.getValueAsDouble();
-        stats.TempCelsius = TempCelsius.getValueAsDouble();
-
         stats.intakeCancoderPosition = intakeCancoderPosition.getValueAsDouble();
-        stats.intakeCancoderVelocity = intakeCancoderVelocity.getValueAsDouble();
     }
 
 
