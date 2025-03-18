@@ -125,7 +125,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": null
+                  "pathName": "Pickup.2"
                 }
               },
               {
@@ -257,6 +257,31 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Align Reef Right"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AL4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auton Shoot"
           }
         }
       ]
