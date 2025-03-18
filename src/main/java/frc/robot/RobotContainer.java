@@ -176,6 +176,12 @@ public class RobotContainer {
         .unless(this::isClimb) 
       );
 
+      gamespecManager.algaeSubsystem.setDefaultCommand(  
+      Commands.either(gamespecManager.algaeSubsystem.algaeVoltage(0.0), 
+      gamespecManager.algaeSubsystem.algaeVoltage(-0.5),
+      () -> gamespecManager.algaeSubsystem.returnAlgaeIn())
+      );
+
       drivetrain.setDefaultCommand
       (drivetrain.run(() -> {
         drivetrain.teleopDrive(
