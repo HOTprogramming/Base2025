@@ -37,6 +37,7 @@ import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
 import frc.robot.subsystems.GameSpec.Manager;
 import frc.robot.subsystems.GameSpec.Climber.Climber;
+import frc.robot.subsystems.GameSpec.Intake.Intake;
 import frc.robot.subsystems.GameSpec.Lights.Lights;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
 
@@ -131,6 +132,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Auton Finish Intake", gamespecManager.autonFinishIntake());
     NamedCommands.registerCommand("AL4", gamespecManager.autonL4());
 
+    NamedCommands.registerCommand("Chase Object", Commands.sequence(drivetrain.run(() -> drivetrain.chaseObject()).until(() -> drivetrain.objectClose()), drivetrain.run(() -> drivetrain.chaseSlow())).until(() -> (drivetrain.noObjectsSeen()))); // gamespecManager.intakeSubsystem.getBeamBreak() ||
 
     //new EventTrigger("Package").whileTrue(gamespecManager.goToPackage());
 
@@ -146,7 +148,11 @@ public class RobotContainer {
     configureBindings();
   }
 
-  private void configureBindings() {    
+  private void configureBindings() {   
+    
+    driver.leftTrigger().onTrue(NamedCommands.getCommand("Chase Object"));
+    driver.leftTrigger().onFalse(drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
+
 
     // drivetrain.setDefaultCommand
     //   (drivetrain.run(() -> {
@@ -205,6 +211,15 @@ public class RobotContainer {
       //     Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
       //     Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
       //   })));
+
+      driver.a().whileTrue(
+        drivetrain.run(() -> {drivetrain.alignObjectTeleop(
+          (Math.abs(driver.getLeftX()) >= 0.1 ? driver.getLeftX() : 0) * 0.5,
+          (Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0) * 0.5,
+          (Math.abs(driver.getRightX()) >= 0.015 ? -driver.getRightX() : 0) * 0.5);
+        }
+      ));
+
 
       driver.y()
       .and(driver.axisLessThan(4, -0.15).or(driver.axisGreaterThan(4, 0.15))
