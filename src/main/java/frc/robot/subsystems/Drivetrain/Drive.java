@@ -118,7 +118,7 @@ public class Drive extends SubsystemBase {
     private PIDController translationControllerAcross = new PIDController(5, 0, 0);
     private ProfiledPIDController translationControllerY = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
     private ProfiledPIDController translationControllerX = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
-    private PIDController yChaseObjectPID = new PIDController(0.009, 0, 0);
+    private PIDController yChaseObjectPID = new PIDController(0.011, 0, 0);
     private PIDController thetaChaseObjectPID = new PIDController(0.007, 0, 0);
 
 
@@ -314,7 +314,7 @@ public class Drive extends SubsystemBase {
         pixelTolerance = 50;
         driveIO.setSwerveRequest(ROBOT_CENTRIC
         .withRotationalRate(alignedToObject() ? 0 : thetaChaseObjectPID.calculate(pixelX, targetXPixel)* 0.5)
-        .withVelocityY(0.8)
+        .withVelocityY(1.5)
         );
     }
 
