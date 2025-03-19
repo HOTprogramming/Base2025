@@ -251,13 +251,18 @@ public class Manager extends SubsystemBase{
     public Command autonShoot() {
       return 
       Commands.sequence(
-        armSubsystem.L4Score().withTimeout(0.75),
-        Commands.parallel(
-          manipulatorSubsystem.L4Spit(),
-          gotoL4Package()),
-        manipulatorSubsystem.zero());
+            runOnce(() -> {doneScoring = true;}),
+            armSubsystem.L4Score().withTimeout(0.75),
+            Commands.parallel(
+            manipulatorSubsystem.L4Spit(),
+            gotoL4Package()),
+            manipulatorSubsystem.zero()
+            );
     }
 
+    /**
+     * @deprecated not used just use autonShoot
+     */
     public Command autonFinishShoot() {
       return
       Commands.sequence(
@@ -278,10 +283,7 @@ public class Manager extends SubsystemBase{
       .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-20.0,2.0)))
       .andThen(Commands.parallel(Commands.sequence(elevatorSubsystem.goToL4()
       .onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), elevatorSubsystem.goToL4Long()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak()
-      )), 
-      Commands.sequence(armSubsystem.goToL4()
-      .onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), armSubsystem.goToL4Short()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak()
-      )));
+      ))));
     }
 
     public Command autonIntake() {
