@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.GameSpec.Algae.Algae;
 import frc.robot.subsystems.GameSpec.Algae.AlgaeConstants;
+import frc.robot.subsystems.GameSpec.Algae.AlgaeIO;
 import frc.robot.subsystems.GameSpec.Algae.AlgaeIOReal;
 import frc.robot.subsystems.GameSpec.Arm.Arm;
 import frc.robot.subsystems.GameSpec.Arm.ArmConstants;
@@ -82,7 +83,7 @@ public class Manager extends SubsystemBase{
         climberSubsystem = new Climber(new ClimberIOSim());
         lightsSubsystem = new Lights();
         intakeSubsystem = new Intake(new IntakeIOSim());
-
+        algaeSubsystem = new Algae(new AlgaeIOReal());
       } 
 
       scoringLevel = ScoringLevel.L1;
