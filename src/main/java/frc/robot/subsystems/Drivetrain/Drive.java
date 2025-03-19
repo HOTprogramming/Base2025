@@ -119,7 +119,7 @@ public class Drive extends SubsystemBase {
     private ProfiledPIDController translationControllerY = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
     private ProfiledPIDController translationControllerX = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
     private PIDController yChaseObjectPID = new PIDController(0.011, 0, 0);
-    private PIDController thetaChaseObjectPID = new PIDController(0.007, 0, 0);
+    private PIDController thetaChaseObjectPID = new PIDController(0.0075, 0, 0);
 
 
 
@@ -265,7 +265,7 @@ public class Drive extends SubsystemBase {
             } else {
                 framesLost[i] = 0;
             }
-            if (framesLost[i] < 5) {
+            if (framesLost[i] < 15) {
                 corals[i] = coralSubs.get(i).get();
                 sideRatio = (corals[i][3] - corals[i][1]) / (corals[i][2] - corals[i][0]);
 
@@ -291,7 +291,7 @@ public class Drive extends SubsystemBase {
 
     public boolean noObjectsSeen() {
         for (int i=0; i<10; ++i) {
-            if (framesLost[i] < 10) {
+            if (framesLost[i] < 45) {
                 return false;
             } 
         }
@@ -311,7 +311,7 @@ public class Drive extends SubsystemBase {
     }
 
     public void chaseSlow() {
-        pixelTolerance = 50;
+        pixelTolerance = 20;
         driveIO.setSwerveRequest(ROBOT_CENTRIC
         .withRotationalRate(alignedToObject() ? 0 : thetaChaseObjectPID.calculate(pixelX, targetXPixel)* 0.5)
         .withVelocityY(1.5)
