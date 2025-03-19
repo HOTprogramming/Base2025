@@ -172,7 +172,16 @@ public class RobotContainer {
       gamespecManager.intakeSubsystem.setDefaultCommand(
         Commands.either(gamespecManager.intakeSubsystem.bump(), gamespecManager.intakeSubsystem.clearance(), 
         () -> (((gamespecManager.armSubsystem.returnArmCommandedPos() < 0.0) && (gamespecManager.elevatorSubsystem.returnElevatorPos() <= 28.0)) 
-        || (((gamespecManager.armSubsystem.returnArmPos() < -5.0) && (gamespecManager.armSubsystem.returnArmCommandedPos() <= 0)) && (gamespecManager.elevatorSubsystem.returnElevatorCommandedPos() <= 28.0)))) 
+        || (((gamespecManager.armSubsystem.returnArmPos() < -5.0) && (gamespecManager.armSubsystem.returnArmCommandedPos() <= 0)) && (gamespecManager.elevatorSubsystem.returnElevatorCommandedPos() <= 28.0))
+        || (gamespecManager.armSubsystem.returnArmCommandedPos() > 95.0 && gamespecManager.elevatorSubsystem.returnElevatorCommandedPos() < 20.0)
+        || (gamespecManager.armSubsystem.returnArmPos() > 70.0 && gamespecManager.elevatorSubsystem.returnElevatorPos() < 20.0)))
+        .unless(this::isClimb) 
+      );
+
+      gamespecManager.algaeSubsystem.setDefaultCommand(  
+      Commands.either(gamespecManager.algaeSubsystem.algaeVoltage(0.0), 
+      gamespecManager.algaeSubsystem.algaeVoltage(-0.5),
+      () -> gamespecManager.algaeSubsystem.returnAlgaeIn())
       );
 
       drivetrain.setDefaultCommand
@@ -274,7 +283,7 @@ public class RobotContainer {
       operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("open fingers"));
       operator.b().and(this::isClimb).onTrue(gamespecManager.latchServo());
 
-      driver.leftTrigger().whileTrue(gamespecManager.floorIntakeDeploy()).onFalse(gamespecManager.floorIntakeClearance());
+      operator.leftTrigger().whileTrue(gamespecManager.floorIntakeDeploy()).onFalse(gamespecManager.floorIntakeClearance());
       
       operator.povUp().or(operator.povLeft().or(operator.povDown().or(operator.povRight()))).onTrue(NamedCommands.getCommand("Package").unless(this::isClimb));
 
@@ -290,7 +299,6 @@ public class RobotContainer {
         () -> gamespecManager.climberSubsystem.setPower(0.0)));
 
       operator.leftTrigger().or(operator.rightTrigger()).onFalse(NamedCommands.getCommand("Coral Zero"));
-      System.out.println("c");
 
        NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
       NamedCommands.registerCommand("R_OTF", drivetrain.runOnTheFly());
@@ -367,6 +375,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return autoCommand.finallyDo(() -> System.out.println("ENDED AUTO COMMAND"));
+    return autoCommand;
   }
 }

@@ -41,7 +41,6 @@ public class Elevator extends SubsystemBase {
     elevatorPosition = this.elevatorShuffleboard.add("Elevator Position", 0.0).getEntry();;
     elevatorSupplyCurrent = this.elevatorShuffleboard.add("Elevator Supply Current", 0.0).getEntry();
     elevatorStatorCurrent = this.elevatorShuffleboard.add("Elevator Stator Current", 0.0).getEntry();
-    elevatorTemp = this.elevatorShuffleboard.add("Elevator Temp", 0.0).getEntry();
     elevatorCommandedPos = this.elevatorShuffleboard.add("Elevator Commanded Position", 0.0).getEntry();
   }
 
@@ -60,7 +59,6 @@ public class Elevator extends SubsystemBase {
     elevatorPosition.setDouble(io.elevator.getPosition().getValueAsDouble());
     elevatorSupplyCurrent.setDouble(stats.SupplyCurrentAmps);
     elevatorStatorCurrent.setDouble(stats.TorqueCurrentAmps);
-    elevatorTemp.setDouble(stats.TempCelsius);
   }
 
   public Command runToPosition(double position){
@@ -129,8 +127,8 @@ public class Elevator extends SubsystemBase {
     return elevatorCommand(ElevatorConstants.PackageHeight);
   }
 
-  public Command goToFloorIntake(){
-    return elevatorCommand(ElevatorConstants.FloorIntakeHeight);
+  public Command initialClimbHeight(){
+    return elevatorCommand(ElevatorConstants.initialClimbHeight);
   }
 
   public Command goToProcessor(){
@@ -180,12 +178,6 @@ public class Elevator extends SubsystemBase {
 
   public double returnElevatorPos(){
     return this.elevatorPosition.getDouble(0);
-  }
-  
-
-  public Command managerElevatorTest(){
-    System.out.println("elevatorworks");
-    return runOnce(() -> {});
   }
 
   public Command stop(){

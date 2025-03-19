@@ -14,7 +14,7 @@ import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
 
 public class Lights extends SubsystemBase {
-    private final CANdle leftCANdle = new CANdle(51, "rio");
+    private final CANdle leftCANdle = new CANdle(54, "rio");
     private final CANdle rightCANdle = new CANdle(55, "rio");
 
     int repeats;
