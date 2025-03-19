@@ -51,7 +51,7 @@ public class ManipulatorConstants {
   
       
       coralWristHP = -90;
-      coralWristScore = -6;
+      coralWristScore = 0;
 
     }
 

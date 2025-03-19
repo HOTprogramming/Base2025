@@ -27,7 +27,7 @@ public class DriveConstants {
     public static final double OTF_end_tolerance = 0.2;
 
     public static final double auto_align_theta_disable = .1;
-    public static final double auto_align_top_speed = 1.5;
+    public static final double auto_align_top_speed = 2.4;
     public static final double auto_align_tolerance = 0.01;
     public static final double auto_align_lights_tolerance = Units.inchesToMeters(1.5);
     public static final double auto_align_command = 0.035;

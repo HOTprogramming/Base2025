@@ -81,7 +81,7 @@ public class RobotContainer {
 
     chooser.setDefaultOption("Auto", "Auto");
     
-    chooser.addOption("RedR3", "Copy of RedR3"); 
+    chooser.addOption("RedR3", "RedR3"); 
     chooser.addOption("RedL3", "RedL3");
     chooser.addOption("BlueR3", "BlueR3");
     chooser.addOption("BlueL3", "BlueL3");
