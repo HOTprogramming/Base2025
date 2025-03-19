@@ -66,7 +66,7 @@ public class ElevatorConstants {
         PackageHeight = 15.0; 
         L4Height = 56.0;
         L4LongHeight = 52.0;
-        L3Height = 25.55;
+        L3Height = 26.25;  //was 25.55
         L3LongHeight = 22.35;
         L2Height = 10.6;
         L2LongHeight = 9.73;
