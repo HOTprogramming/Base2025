@@ -48,6 +48,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Drivetrain.DriveIO.DriveIOdata;
 
@@ -80,11 +81,11 @@ public class Drive extends SubsystemBase {
     private Alert alert;
 
     double[][] corals = {
-    {-1, -1, -1, -1},
-    {-1, -1, -1, -1},
-    {-1, -1, -1, -1},
-    {-1, -1, -1, -1},
-    {-1, -1, -1, -1}}; //x1 y1 x2 y2, 1 top left  2 bottom right
+    {320, -1, 321, -1},
+    {320, -1, 321, -1},
+    {320, -1, 321, -1},
+    {320, -1, 321, -1},
+    {320, -1, 321, -1}}; //x1 y1 x2 y2, 1 top left  2 bottom right
 
     double[] framesLost = {0, 0, 0, 0, 0};
 
@@ -97,6 +98,7 @@ public class Drive extends SubsystemBase {
     int bestCoral = 0;
 
     double targetXPixel = 320.5;
+    double targetYPixel = 410;
     double pixelTolerance = 8;
 
     double chaseVelocity = 0;
@@ -113,7 +115,7 @@ public class Drive extends SubsystemBase {
     private PIDController translationControllerAcross = new PIDController(5, 0, 0);
     private ProfiledPIDController translationControllerY = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
     private ProfiledPIDController translationControllerX = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
-    private PIDController yChaseObjectPID = new PIDController(0.008, 0, 0);
+    private PIDController yChaseObjectPID = new PIDController(0.009, 0, 0);
     private PIDController thetaChaseObjectPID = new PIDController(0.007, 0, 0);
 
 
@@ -162,7 +164,7 @@ public class Drive extends SubsystemBase {
 
         objectDetection = NetworkTableInstance.getDefault().getTable("ObjectDetection/coralDetections");
         for (int i=0; i<5; ++i) {
-            coralSubs.add(objectDetection.getDoubleArrayTopic("Coral_"+i).subscribe(new double[] {-1, -1, -1, -1}));
+            coralSubs.add(objectDetection.getDoubleArrayTopic("Coral_"+i).subscribe(new double[] {320, -1, 321, -1}));
         }
         timeout = new Timer();
 
@@ -292,38 +294,32 @@ public class Drive extends SubsystemBase {
         return Math.abs(pixelX - targetXPixel) < pixelTolerance;
     }
 
-    public boolean stopChase() {
-        if (timeout.get() > 1) {
-            timeout.reset();
-            timeout.stop();
-            return true;
-        }
+    public boolean noObjectsSeen() {
         for (int i=0; i<5; ++i) {
             if (framesLost[i] < 10) {
                 return false;
             } 
         }
-        timeout.reset();
-        timeout.stop();
         return true;
     }
 
+    public boolean objectClose() {
+        return pixelYmax > targetYPixel;
+    }
+
     public void chaseObject() {
-
-        if (pixelYmax > 400) {
-            if (chaseVelocity != 0.4) {
-                timeout.restart();
-            }
-            chaseVelocity = 0.4;
-        } else if (alignedToObject()) {
-            chaseVelocity = yChaseObjectPID.calculate(pixelYmax, 400);
-        } else {
-            chaseVelocity = yChaseObjectPID.calculate(pixelYmax, 400) * 0.7;   
-        }
-
+        pixelTolerance = 10;
         driveIO.setSwerveRequest(ROBOT_CENTRIC
         .withRotationalRate(alignedToObject() ? 0 : thetaChaseObjectPID.calculate(pixelX, targetXPixel))
-        .withVelocityY(chaseVelocity)
+        .withVelocityY( yChaseObjectPID.calculate(pixelYmax, targetYPixel) * (alignedToObject() ? 1 : 0.7)) 
+        );
+    }
+
+    public void chaseSlow() {
+        pixelTolerance = 50;
+        driveIO.setSwerveRequest(ROBOT_CENTRIC
+        .withRotationalRate(alignedToObject() ? 0 : thetaChaseObjectPID.calculate(pixelX, targetXPixel)* 0.5)
+        .withVelocityY(0.5)
         );
     }
 
