@@ -31,17 +31,24 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Drivetrain.DriveIO.DriveIOdata;
 
@@ -70,16 +77,46 @@ public class Drive extends SubsystemBase {
 
     private PathPlannerPath path;
     private Pose2d reefTarget;
-    private Pose2d objectAbsolute;
-    private Pose2d objectRelative;
 
     private Alert alert;
+
+    double[][] corals = {
+    {320, -1, 321, -1},
+    {320, -1, 321, -1},
+    {320, -1, 321, -1},
+    {320, -1, 321, -1},
+    {320, -1, 321, -1}}; //x1 y1 x2 y2, 1 top left  2 bottom right
+
+    double[] framesLost = {0, 0, 0, 0, 0};
+
+    double frames = 0;
+
+    double pixelX;   // 640 x 480, origin top left
+    double pixelY;
+    double pixelYmax;
+
+    int bestCoral = 0;
+
+    double targetXPixel = 320.5;
+    double targetYPixel = 410;
+    double pixelTolerance = 8;
+
+    double chaseVelocity = 0;
+
+    double sideRatio; //.4 long side, 1.2 short side
+
+    Timer timeout;
+
+    NetworkTable objectDetection;
+    ArrayList<DoubleArraySubscriber> coralSubs = new ArrayList<>();
 
     private PIDController thetaController = new PIDController(10, 0, 0.2);
     private PIDController translationControllerIn = new PIDController(5, 0, 0);
     private PIDController translationControllerAcross = new PIDController(5, 0, 0);
     private ProfiledPIDController translationControllerY = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
     private ProfiledPIDController translationControllerX = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
+    private PIDController yChaseObjectPID = new PIDController(0.009, 0, 0);
+    private PIDController thetaChaseObjectPID = new PIDController(0.007, 0, 0);
 
 
 
@@ -116,8 +153,6 @@ public class Drive extends SubsystemBase {
         translationControllerIn.setTolerance(auto_align_tolerance);
         translationControllerAcross.setTolerance(auto_align_tolerance);
 
-
-
         heading = Rotation2d.fromDegrees(0);
 
         driveTab = Shuffleboard.getTab("Drive");
@@ -126,6 +161,12 @@ public class Drive extends SubsystemBase {
         pathXEntry = driveTab.add("Path X", 0.0).getEntry();
         pathYEntry = driveTab.add("Path Y", 0.0).getEntry();
         pathRotEntry = driveTab.add("Path Rot", 0.0).getEntry();
+
+        objectDetection = NetworkTableInstance.getDefault().getTable("ObjectDetection/coralDetections");
+        for (int i=0; i<5; ++i) {
+            coralSubs.add(objectDetection.getDoubleArrayTopic("Coral_"+i).subscribe(new double[] {320, -1, 321, -1}));
+        }
+        timeout = new Timer();
 
         double driveBaseRadius = 0;
         for (var moduleLocation : this.iOdata.m_moduleLocations) {
@@ -140,14 +181,11 @@ public class Drive extends SubsystemBase {
 
         constraints = PathConstraints.unlimitedConstraints(12.0);
         reefTarget = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
-        objectRelative = new Pose2d(2, 3, Rotation2d.fromDegrees(0));
 
         try {
             this.pathGroup.addAll(PathPlannerAuto.getPathGroupFromAutoFile("OTF_TESTING"));
         } catch (IOException e) {
-            System.out.println("Auto String Invalid");
         } catch (ParseException e) {
-            System.out.println("Auto Data Invalid");
         }
 
         List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
@@ -194,9 +232,6 @@ public class Drive extends SubsystemBase {
 
     public Command generateOnTheFly() {
         return runOnce(() -> {
-            SmartDashboard.putBoolean("Path Generated", true);
-
-            System.err.println("Start Gen");
             List<Pose2d> currentPathPoses = pathGroup.get(currentPathIndex).getPathPoses();
             PathPlannerPath nextPath = pathGroup.get(currentPathIndex + 1);
             waypoints = PathPlannerPath.waypointsFromPoses(
@@ -210,7 +245,6 @@ public class Drive extends SubsystemBase {
             null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
             new GoalEndState(nextPath.getIdealStartingState().velocityMPS(), nextPath.getInitialHeading()) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
             );
-            System.err.println("Finish Gen");
             AutoBuilder.followPath(path).unless(this::drivetrainAtTarget).schedule();
         });
     }
@@ -221,21 +255,93 @@ public class Drive extends SubsystemBase {
             AutoBuilder.followPath(path).unless(this::drivetrainAtTarget));
     }
 
-    public void chaseObject(int leftRight) {
-        objectAbsolute = new Pose2d(
-            (iOdata.state.Pose.getX() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getCos() * objectRelative.getTranslation().getNorm())) - (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getSin() * 0.1524 * leftRight) - (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getCos() * 0.1524),
-            (iOdata.state.Pose.getY() + (iOdata.state.Pose.getRotation().plus(objectRelative.getTranslation().getAngle()).getSin() * objectRelative.getTranslation().getNorm())) + (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getCos() * 0.1524 * leftRight) + (iOdata.state.Pose.getRotation().plus(objectRelative.getRotation()).getSin() * 0.1524),
-            iOdata.state.Pose.getRotation().plus(objectRelative.getRotation())
-        );
-        heading = objectAbsolute.getRotation();
+    private void getObjectMeasurements() {
 
-        driveIO.setSwerveRequest(FIELD_CENTRIC
-            .withVelocityX(translationControllerX.calculate(iOdata.state.Pose.getX(), objectAbsolute.getX()))
-            .withVelocityY(translationControllerY.calculate(iOdata.state.Pose.getY(), objectAbsolute.getY()))
-            .withRotationalRate(thetaController.calculate(iOdata.state.Pose.getRotation().getDegrees(), objectAbsolute.getRotation().getDegrees()))
+        for (int i=0; i<5; ++i) {
+            if (corals[i].equals(coralSubs.get(i).get())) {
+                ++framesLost[i];
+            } else {
+                framesLost[i] = 0;
+            }
+            if (framesLost[i] < 5) {
+                corals[i] = coralSubs.get(i).get();
+                sideRatio = (corals[i][3] - corals[i][1]) / (corals[i][2] - corals[i][0]);
+
+                if (corals[i][3] >= corals[bestCoral][3]) {  //corals[i][3] * sideRatio >= corals[bestCoral][3] * (pixelY/pixelX)lowest on screen, prefer rotated
+                    bestCoral = i;
+                    SmartDashboard.putNumber("chase object/best coral", i);
+                }
+            }
+        }
+
+        pixelYmax = corals[bestCoral][3];
+
+        pixelX = (corals[bestCoral][0] + corals[bestCoral][2]) / 2; // xmin + xmax
+        pixelY = (corals[bestCoral][1] + pixelYmax) / 2;  //ymin + ymax
+
+        SmartDashboard.putNumber("chase object/pixel error", Math.abs(pixelX - targetXPixel));
+        SmartDashboard.putNumberArray("chase object/frames lost", framesLost);
+        SmartDashboard.putNumber("chase object/timer", timeout.get());
+    }
+
+    public boolean alignedToObject() {
+        return Math.abs(pixelX - targetXPixel) < pixelTolerance;
+    }
+
+    public boolean noObjectsSeen() {
+        for (int i=0; i<5; ++i) {
+            if (framesLost[i] < 10) {
+                return false;
+            } 
+        }
+        return true;
+    }
+
+    public boolean objectClose() {
+        return pixelYmax > targetYPixel;
+    }
+
+    public void chaseObject() {
+        pixelTolerance = 10;
+        driveIO.setSwerveRequest(ROBOT_CENTRIC
+        .withRotationalRate(alignedToObject() ? 0 : thetaChaseObjectPID.calculate(pixelX, targetXPixel))
+        .withVelocityY( yChaseObjectPID.calculate(pixelYmax, targetYPixel) * (alignedToObject() ? 1 : 0.7)) 
         );
     }
 
+    public void chaseSlow() {
+        pixelTolerance = 50;
+        driveIO.setSwerveRequest(ROBOT_CENTRIC
+        .withRotationalRate(alignedToObject() ? 0 : thetaChaseObjectPID.calculate(pixelX, targetXPixel)* 0.5)
+        .withVelocityY(0.5)
+        );
+    }
+
+    public void alignObjectTeleop(double driveX, double driveY, double driveTheta) {
+
+        if (framesLost[bestCoral] < 5) {
+        driveIO.setSwerveRequest(ROBOT_CENTRIC
+        .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY())
+        .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
+        .withRotationalRate(alignedToObject() ? 0 : thetaChaseObjectPID.calculate(pixelX, targetXPixel))
+        );
+        } else {
+            driveIO.setSwerveRequest(FIELD_CENTRIC
+            .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY())
+            .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
+            .withRotationalRate((driveTheta <= 0 ? -(driveTheta * driveTheta) : (driveTheta * driveTheta)) * DriveConfig.MAX_ANGULAR_VELOCITY())
+            );
+        }
+    }
+
+    // public void alignReef(int leftRight) {
+    //     double leftRightFromTable = Units.inchesToMeters(DriverStation.getAlliance().get() == Alliance.Blue ? blueShift.get(reefTagID)[leftRight] : redShift.get(reefTagID)[leftRight]);
+    //     driveIO.setSwerveRequest(ROBOT_CENTRIC
+    //         .withVelocityX(-(-leftRightFromTable - tagTransform.getX()) * 5)
+    //         .withVelocityY((-0.44 - tagTransform.getY()) * 7.5)
+    //         // .withRotationalRate()
+    //     );
+    // }
 
     public void updateReefTarget(int leftRight) {
         Alliance curAlliance = DriverStation.getAlliance().get();
@@ -337,8 +443,6 @@ public class Drive extends SubsystemBase {
             ))
             );
         }
-        
-        
     }
 
     public FunctionalCommand autonAlignReefCommand(int LR) {
@@ -457,14 +561,14 @@ public class Drive extends SubsystemBase {
         try {
             this.pathGroup.addAll(PathPlannerAuto.getPathGroupFromAutoFile("OTF_TESTING"));
         } catch (IOException e) {
-            System.out.println("Auto String Invalid");
         } catch (ParseException e) {
-            System.out.println("Auto Data Invalid");
         }
     }
 
     @Override
     public void periodic() {
+        getObjectMeasurements();
+
         if (!(DriverStation.isTeleopEnabled()) || Math.abs(iOdata.pigeon.getX()) > 0.2 || Math.abs(iOdata.pigeon.getY()) > 0.2) {
             heading = iOdata.state.Pose.getRotation();
         }
@@ -577,3 +681,4 @@ public class Drive extends SubsystemBase {
             autoStartPose.getRotation().getDegrees()});
     }
 }
+

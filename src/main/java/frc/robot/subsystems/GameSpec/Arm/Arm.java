@@ -21,11 +21,8 @@ public class Arm extends SubsystemBase {
 
   /* Shuffleboard entrys */
   public GenericEntry armPosition;
-  public GenericEntry armDirection;
-  private GenericEntry armVelocity;
   private GenericEntry armSupplyCurrent;
   private GenericEntry armStatorCurrent;
-  private GenericEntry armTemp;
   public GenericEntry armCommandedPos;
   
   public Arm(ArmIO io) {
@@ -35,11 +32,9 @@ public class Arm extends SubsystemBase {
 
     this.armShuffleboard = Shuffleboard.getTab("Arm");
     
-    armVelocity = this.armShuffleboard.add("Arm RPM", 0.0).getEntry();
     armPosition = this.armShuffleboard.add("Arm Position", 0.0).getEntry();;
     armSupplyCurrent = this.armShuffleboard.add("Arm Supply Current", 0.0).getEntry();
     armStatorCurrent = this.armShuffleboard.add("Arm Stator Current", 0.0).getEntry();
-    armTemp = this.armShuffleboard.add("Arm Temp", 0.0).getEntry();
     armCommandedPos = this.armShuffleboard.add("Arm Commanded Position", 0.0).getEntry();
   }
 
@@ -51,11 +46,9 @@ public class Arm extends SubsystemBase {
   }
 
   private void UpdateTelemetry() {
-    armVelocity.setDouble(stats.armVelocity);
     armPosition.setDouble(io.arm.getPosition().getValueAsDouble());
     armSupplyCurrent.setDouble(stats.SupplyCurrentAmps);
     armStatorCurrent.setDouble(stats.TorqueCurrentAmps);
-    armTemp.setDouble(stats.TempCelsius);
   }
 
   public FunctionalCommand armCommand(double position){
@@ -146,11 +139,9 @@ public class Arm extends SubsystemBase {
 
   public boolean armGreaterThan(double desiredPos, double threshHold){
     if(stats.armPosition > desiredPos - Math.abs(threshHold)){
-      System.out.println(true);
       return true;
     }
     else{
-      System.out.println(false);
       return false;
     }
   }

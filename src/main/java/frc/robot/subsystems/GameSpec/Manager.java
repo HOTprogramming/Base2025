@@ -17,6 +17,9 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.GameSpec.Algae.Algae;
+import frc.robot.subsystems.GameSpec.Algae.AlgaeConstants;
+import frc.robot.subsystems.GameSpec.Algae.AlgaeIOReal;
 import frc.robot.subsystems.GameSpec.Arm.Arm;
 import frc.robot.subsystems.GameSpec.Arm.ArmConstants;
 import frc.robot.subsystems.GameSpec.Arm.ArmIOReal;
@@ -46,6 +49,7 @@ public class Manager extends SubsystemBase{
     public Intake intakeSubsystem;
     private Manipulator manipulatorSubsystem;
     private Lights lightsSubsystem;
+    public Algae algaeSubsystem;
 
     public GenericEntry scoringEnum;
 
@@ -70,6 +74,7 @@ public class Manager extends SubsystemBase{
         climberSubsystem = new Climber(new ClimberIOReal());
         intakeSubsystem = new Intake(new IntakeIOReal());
         lightsSubsystem = new Lights();
+        algaeSubsystem = new Algae(new AlgaeIOReal());
       } else {
         elevatorSubsystem = new Elevator(new ElevatorIOSim());
         armSubsystem = new Arm(new ArmIOSim());
@@ -148,7 +153,7 @@ public class Manager extends SubsystemBase{
 
     public Command goToL3(){
       return Commands.parallel(
-      manipulatorSubsystem.goScore().withTimeout(0.1)
+      manipulatorSubsystem.goScore()
       ,Commands.parallel(
       run(() -> {scoringLevel = ScoringLevel.L3;})
       ,elevatorSubsystem.goToL3().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
@@ -165,7 +170,7 @@ public class Manager extends SubsystemBase{
 
     public Command goToL4(){
       return Commands.parallel(
-      manipulatorSubsystem.goScore().withTimeout(0.1)
+      manipulatorSubsystem.goScore()
       ,Commands.parallel(
       run(() -> {scoringLevel = ScoringLevel.L4;})
       ,elevatorSubsystem.goToL4().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
@@ -184,23 +189,16 @@ public class Manager extends SubsystemBase{
       return Commands.parallel(
         elevatorSubsystem.goToHighAlgae()
         ,armSubsystem.getAlgaeFromReef()
-        ,Commands.sequence(
-        manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage)
-        .onlyWhile(() -> manipulatorSubsystem.returnAlgaeIn())
-        ,manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeHoldVoltage)
-        .onlyWhile(() -> !manipulatorSubsystem.returnAlgaeIn()))
+        ,algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeIntakeVoltage)
+        .onlyWhile(() -> algaeSubsystem.returnAlgaeIn())
         );
     }
 
     public Command lowAlgae(){
       return Commands.parallel(elevatorSubsystem.goToLowAlgae()
         ,armSubsystem.getAlgaeFromReef()
-        ,
-        Commands.sequence(
-        manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeIntakeVoltage)
-        .onlyWhile(() -> manipulatorSubsystem.returnAlgaeIn())
-        ,manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeHoldVoltage)
-        .onlyWhile(() -> !manipulatorSubsystem.returnAlgaeIn()))
+        ,algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeIntakeVoltage)
+        .onlyWhile(() -> algaeSubsystem.returnAlgaeIn())
       );
     }
 
@@ -221,16 +219,14 @@ public class Manager extends SubsystemBase{
             gotoL4Package()),
             manipulatorSubsystem.zero()
             ),
-          ScoringLevel.L3, Commands.sequence(
+          ScoringLevel.L3, 
+            Commands.parallel(
+            manipulatorSubsystem.goScore(),
+            Commands.sequence(
             runOnce(() -> {doneScoring = true;}),
             Commands.sequence(
             armSubsystem.L3Score()
-            ,elevatorSubsystem.L3Score()
-            ,manipulatorSubsystem.goScore().withTimeout(0.1))
-            .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
-            .andThen(goToL3().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail)))),
-            Commands.sequence(Commands.parallel(goToPackage().onlyIf(() -> (manipulatorSubsystem.returnBeamBreak())))),    
-            goToL3().onlyIf(() -> (!manipulatorSubsystem.returnBeamBreak()))),
+            ,elevatorSubsystem.L3Score()))),
           ScoringLevel.L2, Commands.sequence(
             runOnce(() -> {doneScoring = true;}),
             Commands.sequence(
@@ -245,8 +241,8 @@ public class Manager extends SubsystemBase{
             manipulatorSubsystem.shoot()
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
             .andThen(goToL1().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail))))),
-          ScoringLevel.Algae, manipulatorSubsystem.algaeVoltage(ManipulatorConstants.algaeExpelVoltage),
-          ScoringLevel.Barge, manipulatorSubsystem.algaeVoltage(16.0)
+          ScoringLevel.Algae, algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage),
+          ScoringLevel.Barge, algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage)
         ),
         this::getLevel
       );
@@ -262,8 +258,6 @@ public class Manager extends SubsystemBase{
             ScoringLevel.L3, Commands.sequence(
             Commands.parallel(armSubsystem.L3Score(), manipulatorSubsystem.goScore()), elevatorSubsystem.L3Score()
           )
-          // .onlyWhile(() -> elevatorSubsystem.elevatorGreaterThan(elevator working pose, 0))
-          //shut up im coding
         ),
         this::getLevel
       );
@@ -308,18 +302,20 @@ public class Manager extends SubsystemBase{
     }
 
     public Command climberOut(){
-      return Commands.sequence(
+      return 
+      Commands.parallel(
+      intakeSubsystem.climb(),
+      Commands.sequence(
       lockFingers()
-      ,elevatorSubsystem.goToFloorIntake()
-      ,armSubsystem.horizontal()
-      //,intakeSubsystem.intakeClimberOut()
+      ,Commands.parallel(
+      elevatorSubsystem.initialClimbHeight()
+      ,armSubsystem.horizontal())
       ,unlatchServo()
       ,Commands.waitSeconds(0.2)
       ,climberDeploy()
       ,latchServo()
       ,elevatorSubsystem.climbDown()
-      //,intakeSubsystem.intakeVert()
-      );
+      ));
     }
 
     public Command climberDeploy(){
@@ -382,6 +378,7 @@ public class Manager extends SubsystemBase{
         )));
     }
 
+    //packages the floor intake after a deploy
     public Command floorIntakeClearance(){
       return Commands.parallel(
         armSubsystem.goToPackage(), 
@@ -393,22 +390,17 @@ public class Manager extends SubsystemBase{
     public Command bargePackage(){
       return Commands.parallel(
         elevatorSubsystem.goToPackage(),
-        armSubsystem.goToPackage(),
-        cancelAlgaeHolding());
+        armSubsystem.goToPackage());
     }
 
     public Command algaePackage(){
-      return Commands.parallel(armSubsystem.goToPackage(), cancelAlgaeHolding());
+      return Commands.parallel(armSubsystem.goToPackage());
     }
 
     //does the normal package like in coral mode, but stops the holding voltage for the algae instead of moving the wrist.
     public Command algaePackageElevator(){
       return Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
-      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage(), cancelAlgaeHolding()));
-    }
-
-    public Command cancelAlgaeHolding(){
-      return manipulatorSubsystem.algaeVoltage(0.0).onlyIf(() -> manipulatorSubsystem.returnAlgaeIn());
+      .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage()));
     }
 
     public Command alignProcessor(){
