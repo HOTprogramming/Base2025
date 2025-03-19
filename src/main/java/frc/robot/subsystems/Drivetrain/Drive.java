@@ -85,9 +85,14 @@ public class Drive extends SubsystemBase {
     {320, -1, 321, -1},
     {320, -1, 321, -1},
     {320, -1, 321, -1},
+    {320, -1, 321, -1},
+    {320, -1, 321, -1},
+    {320, -1, 321, -1},
+    {320, -1, 321, -1},
+    {320, -1, 321, -1},
     {320, -1, 321, -1}}; //x1 y1 x2 y2, 1 top left  2 bottom right
 
-    double[] framesLost = {0, 0, 0, 0, 0};
+    double[] framesLost = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
     double frames = 0;
 
@@ -98,14 +103,12 @@ public class Drive extends SubsystemBase {
     int bestCoral = 0;
 
     double targetXPixel = 320.5;
-    double targetYPixel = 410;
+    double targetYPixel = 430;
     double pixelTolerance = 8;
 
-    double chaseVelocity = 0;
+    double chaseVelocity;
 
-    double sideRatio; //.4 long side, 1.2 short side
-
-    Timer timeout;
+    double sideRatio; //.4 long side, 1.2 short side h/w
 
     NetworkTable objectDetection;
     ArrayList<DoubleArraySubscriber> coralSubs = new ArrayList<>();
@@ -115,7 +118,7 @@ public class Drive extends SubsystemBase {
     private PIDController translationControllerAcross = new PIDController(5, 0, 0);
     private ProfiledPIDController translationControllerY = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
     private ProfiledPIDController translationControllerX = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
-    private PIDController yChaseObjectPID = new PIDController(0.009, 0, 0);
+    private PIDController yChaseObjectPID = new PIDController(0.011, 0, 0);
     private PIDController thetaChaseObjectPID = new PIDController(0.007, 0, 0);
 
 
@@ -163,10 +166,9 @@ public class Drive extends SubsystemBase {
         pathRotEntry = driveTab.add("Path Rot", 0.0).getEntry();
 
         objectDetection = NetworkTableInstance.getDefault().getTable("ObjectDetection/coralDetections");
-        for (int i=0; i<5; ++i) {
+        for (int i=0; i<10; ++i) {
             coralSubs.add(objectDetection.getDoubleArrayTopic("Coral_"+i).subscribe(new double[] {320, -1, 321, -1}));
         }
-        timeout = new Timer();
 
         double driveBaseRadius = 0;
         for (var moduleLocation : this.iOdata.m_moduleLocations) {
@@ -257,7 +259,7 @@ public class Drive extends SubsystemBase {
 
     private void getObjectMeasurements() {
 
-        for (int i=0; i<5; ++i) {
+        for (int i=0; i<10; ++i) {
             if (corals[i].equals(coralSubs.get(i).get())) {
                 ++framesLost[i];
             } else {
@@ -281,7 +283,6 @@ public class Drive extends SubsystemBase {
 
         SmartDashboard.putNumber("chase object/pixel error", Math.abs(pixelX - targetXPixel));
         SmartDashboard.putNumberArray("chase object/frames lost", framesLost);
-        SmartDashboard.putNumber("chase object/timer", timeout.get());
     }
 
     public boolean alignedToObject() {
@@ -289,7 +290,7 @@ public class Drive extends SubsystemBase {
     }
 
     public boolean noObjectsSeen() {
-        for (int i=0; i<5; ++i) {
+        for (int i=0; i<10; ++i) {
             if (framesLost[i] < 10) {
                 return false;
             } 
@@ -313,7 +314,7 @@ public class Drive extends SubsystemBase {
         pixelTolerance = 50;
         driveIO.setSwerveRequest(ROBOT_CENTRIC
         .withRotationalRate(alignedToObject() ? 0 : thetaChaseObjectPID.calculate(pixelX, targetXPixel)* 0.5)
-        .withVelocityY(0.5)
+        .withVelocityY(1.5)
         );
     }
 

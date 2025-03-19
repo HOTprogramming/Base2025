@@ -40,7 +40,7 @@ public class ClimberConstants {
         climberServoOpenPos = 0.16;
         targetClicks = 100.0;
         packageClicks = 5.0;
-        softStopClicks = 26.0;
+        softStopClicks = 22.0;
 
     }
 
