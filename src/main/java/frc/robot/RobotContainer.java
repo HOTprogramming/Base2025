@@ -152,7 +152,6 @@ public class RobotContainer {
     
     driver.leftTrigger().onTrue(NamedCommands.getCommand("Chase Object"));
     driver.leftTrigger().onFalse(drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
-    driver.a().onTrue(NamedCommands.getCommand("Align Object"));
 
 
     // drivetrain.setDefaultCommand
