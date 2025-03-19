@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 16.270192622950816,
-        "y": 1.252323770491804
+        "x": 15.200409836065573,
+        "y": 1.23186475409836
       },
       "isLocked": false,
       "linkedName": "Coral6"
     },
     {
       "anchor": {
-        "x": 14.664000000000001,
-        "y": 3.8397499999999996
+        "x": 14.88872950819672,
+        "y": 3.5934426229508194
       },
       "prevControl": {
-        "x": 14.839500000000001,
-        "y": 3.6154999999999995
+        "x": 15.63196721311475,
+        "y": 3.521516393442622
       },
       "nextControl": null,
       "isLocked": false,
@@ -41,7 +41,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.9,
+    "velocity": 0.5,
     "rotation": -90.0
   },
   "reversed": false,
