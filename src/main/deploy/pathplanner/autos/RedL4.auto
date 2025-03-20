@@ -17,7 +17,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CoralP1"
+                  "pathName": "RedLP1"
                 }
               },
               {
@@ -96,7 +96,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "CoralP2"
+                        "pathName": "RedLP2"
                       }
                     }
                   ]
@@ -112,7 +112,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CoralP3"
+                  "pathName": "RedLP3"
                 }
               },
               {
@@ -198,7 +198,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "CoralP4"
+                        "pathName": "RedLP4"
                       }
                     }
                   ]
@@ -214,7 +214,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CoralP5"
+                  "pathName": "RedLP5"
                 }
               },
               {
@@ -313,7 +313,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "CoralP6"
+                        "pathName": "RedLP6"
                       }
                     }
                   ]
@@ -329,7 +329,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CoralP7"
+                  "pathName": "RedLP7"
                 }
               },
               {

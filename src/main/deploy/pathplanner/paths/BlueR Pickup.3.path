@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 1.6423155737704918,
-        "y": 0.6564549180327879
+        "x": 1.4984631147540983,
+        "y": 0.6744364754098353
       },
       "prevControl": {
-        "x": 1.7893584981892539,
-        "y": 0.8586389391085847
+        "x": 1.6455060391728604,
+        "y": 0.8766204964856321
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "BlueR44"
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,7 @@
     {
       "name": "Constraints Zone",
       "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.29709655638082383,
+      "maxWaypointRelativePos": 0.277777777777779,
       "constraints": {
         "maxVelocity": 4.96,
         "maxAcceleration": 3.0,
@@ -45,7 +45,7 @@
     },
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.548278190411884,
+      "minWaypointRelativePos": 0.7070275403608718,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 4.96,
