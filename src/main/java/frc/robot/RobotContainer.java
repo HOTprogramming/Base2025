@@ -241,9 +241,9 @@ public class RobotContainer {
         }
       ));
       // b right y middle x left
-      driver.rightBumper().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTarget(2)), gamespecManager.setLightsAligning()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefRobotcentric()))).onFalse(refreshLights());
-      driver.y().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1)), gamespecManager.setLightsAligning()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefRobotcentric()))).onFalse(refreshLights());
-      driver.leftBumper().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTarget(0)), gamespecManager.setLightsAligning()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefRobotcentric()))).onFalse(refreshLights());
+      driver.rightBumper().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTarget(2)), gamespecManager.setLightsAligning()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefRobotcentric(false)))).onFalse(refreshLights());
+      driver.y().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1)), gamespecManager.setLightsAligning()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefRobotcentric(false)))).onFalse(refreshLights());
+      driver.leftBumper().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTarget(0)), gamespecManager.setLightsAligning()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefRobotcentric(false)))).onFalse(refreshLights());
       
       driver.rightBumper().and(() -> drivetrain.getAutoAlignGood()).whileTrue(gamespecManager.setLightsAlignGood());
       driver.y().and(() -> drivetrain.getAutoAlignGood()).whileTrue(gamespecManager.setLightsAlignGood());

@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 13.749897540983607,
-        "y": 6.014959016393443
+        "x": 13.965676229508198,
+        "y": 6.146823770491803
       },
       "isLocked": false,
       "linkedName": "dropoff2"
@@ -20,8 +20,8 @@
         "y": 7.477459016393443
       },
       "prevControl": {
-        "x": 15.668356557377047,
-        "y": 7.297643442622951
+        "x": 15.607991803278686,
+        "y": 7.1178278688524586
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     },
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.4564483457123517,
+      "minWaypointRelativePos": 0.7103513770180443,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 4.96,
