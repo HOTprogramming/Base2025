@@ -57,6 +57,12 @@
                 "data": {
                   "commands": [
                     {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.0
+                      }
+                    },
+                    {
                       "type": "named",
                       "data": {
                         "name": "Auton Shoot"
@@ -84,7 +90,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.2
+                        "waitTime": 0.3
                       }
                     },
                     {
@@ -159,9 +165,15 @@
                       }
                     },
                     {
+                      "type": "named",
+                      "data": {
+                        "name": "Intake Bump"
+                      }
+                    },
+                    {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.25
+                        "waitTime": 0.35
                       }
                     },
                     {
