@@ -5,9 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Place.1"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Package"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Place 1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Clearence"
+                }
+              }
+            ]
           }
         },
         {
@@ -30,25 +49,25 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Auton Shoot"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "Pickup.1"
-                }
-              },
-              {
                 "type": "sequential",
                 "data": {
                   "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Auton Shoot"
+                      }
+                    },
                     {
                       "type": "wait",
                       "data": {
@@ -59,6 +78,25 @@
                       "type": "named",
                       "data": {
                         "name": "Auton Intake Start"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.3
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Pickup 1"
                       }
                     }
                   ]
@@ -74,7 +112,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Place.2"
+                  "pathName": "Place 2"
                 }
               },
               {
@@ -113,19 +151,38 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Auton Shoot"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": null
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Auton Shoot"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Intake Bump"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.35
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Auton Intake Start"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -135,13 +192,13 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.25
+                        "waitTime": 0.5
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "path",
                       "data": {
-                        "name": "Auton Intake Start"
+                        "pathName": "Pickup 2"
                       }
                     }
                   ]
@@ -157,7 +214,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Place.3"
+                  "pathName": "Place 3"
                 }
               },
               {
@@ -196,25 +253,19 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Auton Shoot"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "Pickup.3"
-                }
-              },
-              {
                 "type": "sequential",
                 "data": {
                   "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Auton Shoot"
+                      }
+                    },
                     {
                       "type": "wait",
                       "data": {
@@ -225,6 +276,25 @@
                       "type": "named",
                       "data": {
                         "name": "Auton Intake Start"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Pickup 3"
                       }
                     }
                   ]
@@ -240,7 +310,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Place.4"
+                  "pathName": "Place 4"
                 }
               },
               {
@@ -258,11 +328,36 @@
               }
             ]
           }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Align Reef Right"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AL4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auton Shoot"
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Blue Autos",
+  "folder": "Red Autos",
   "choreoAuto": false
 }

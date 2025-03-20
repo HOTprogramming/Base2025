@@ -237,6 +237,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Tests",
+  "folder": "Blue Autos",
   "choreoAuto": false
 }

@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CoralP1"
+            "pathName": "1 Place"
           }
         },
         {
@@ -42,7 +42,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CoralP2"
+                  "pathName": "1 Pickup"
                 }
               },
               {
@@ -74,7 +74,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CoralP3"
+                  "pathName": "2 Place"
                 }
               },
               {
@@ -125,7 +125,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CoralP4"
+                  "pathName": "2 Pickup"
                 }
               },
               {
@@ -157,7 +157,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CoralP5"
+                  "pathName": "3 Place"
                 }
               },
               {
@@ -208,7 +208,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CoralP6"
+                  "pathName": "3 Pickup"
                 }
               },
               {
@@ -232,11 +232,62 @@
               }
             ]
           }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "4 Place"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Auton Finish Intake"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Align Reef Left"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AL4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auton Shoot"
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Red Autos",
+  "folder": "Blue Autos",
   "choreoAuto": false
 }

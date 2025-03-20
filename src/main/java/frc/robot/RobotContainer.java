@@ -81,11 +81,12 @@ public class RobotContainer {
 
     chooser.setDefaultOption("Auto", "Auto");
     
-    chooser.addOption("RedR3", "RedR3"); 
-    chooser.addOption("RedL3", "RedL3");
-    chooser.addOption("BlueR3", "BlueR3");
-    chooser.addOption("BlueL3", "BlueL3");
-    chooser.addOption(" Copy of BlueL3", "Copy of BlueL3");
+    chooser.addOption("RedR4", "RedR4"); 
+    chooser.addOption("RedL4", "RedL4"); 
+    // chooser.addOption("RedL3", "RedL3");
+    // chooser.addOption("BlueR3", "BlueR3");
+    // chooser.addOption("BlueL3", "BlueL3");
+    // chooser.addOption("Copy of BlueL3", "Copy of BlueL3");
 
      
 
@@ -128,9 +129,14 @@ public class RobotContainer {
     NamedCommands.registerCommand("Align Reef Right",  drivetrain.autonAlignReefCommand(2));
 
     NamedCommands.registerCommand("Auton Shoot",  gamespecManager.autonShoot());
+    NamedCommands.registerCommand("Auton Finish Shoot",  gamespecManager.autonFinishShoot());
     NamedCommands.registerCommand("Auton Intake Start", gamespecManager.autonIntake());
     NamedCommands.registerCommand("Auton Finish Intake", gamespecManager.autonFinishIntake());
     NamedCommands.registerCommand("AL4", gamespecManager.autonL4());
+    NamedCommands.registerCommand("Intake Clearence", gamespecManager.intakeSubsystem.clearance());
+    NamedCommands.registerCommand("Intake Bump", gamespecManager.intakeSubsystem.bump());
+    NamedCommands.registerCommand("Half Height", gamespecManager.autonHalfL4());
+
 
     NamedCommands.registerCommand("Chase ", Commands.sequence(drivetrain.run(() -> drivetrain.chaseObject()).until(() -> drivetrain.objectClose()), drivetrain.run(() -> drivetrain.chaseSlow())).until(() -> (drivetrain.noObjectsSeen()))); // gamespecManager.intakeSubsystem.getBeamBreak() ||
     NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.chaseSlow()).until(() -> (gamespecManager.intakeSubsystem.getBeamBreak()))); // gamespecManager.intakeSubsystem.getBeamBreak() ||
@@ -248,6 +254,10 @@ public class RobotContainer {
       new Trigger(() -> cameraSubsystem.getCameraAlive(CameraPositions.RIGHT)).onTrue(gamespecManager.setOneLights(0, true)).onFalse(gamespecManager.setOneLights(0, false).ignoringDisable(true));
       new Trigger(() -> cameraSubsystem.getCameraAlive(CameraPositions.LEFT)).onTrue(gamespecManager.setOneLights(3, true)).onFalse(gamespecManager.setOneLights(3, false).ignoringDisable(true));
       new Trigger(() -> cameraSubsystem.getCameraAlive(CameraPositions.TOP)).onTrue(gamespecManager.setOneLights(5, true)).onFalse(gamespecManager.setOneLights(5, false).ignoringDisable(true));
+
+      // driver.a().onTrue(gamespecManager.setOneLights(0, true)).onFalse(gamespecManager.setOneLights(0, false).ignoringDisable(true));
+      // driver.b().onTrue(gamespecManager.setOneLights(3, true)).onFalse(gamespecManager.setOneLights(3, false).ignoringDisable(true));
+      // driver.x().onTrue(gamespecManager.setOneLights(5, true)).onFalse(gamespecManager.setOneLights(5, false).ignoringDisable(true));
 
 
       // driver.b().whileTrue(NamedCommands.getCommand("Align Reef Left"));

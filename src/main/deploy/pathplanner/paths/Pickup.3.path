@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 1.51,
-        "y": 0.662
+        "x": 1.6423155737704918,
+        "y": 0.6564549180327879
       },
       "prevControl": {
-        "x": 1.657042924418762,
-        "y": 0.8641840210757968
+        "x": 1.7893584981892539,
+        "y": 0.8586389391085847
       },
       "nextControl": null,
       "isLocked": false,
@@ -72,7 +72,7 @@
     "rotation": 145.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "BlueR",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 150.0

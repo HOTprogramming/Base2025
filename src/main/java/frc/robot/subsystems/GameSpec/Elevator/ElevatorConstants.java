@@ -33,6 +33,7 @@ public class ElevatorConstants {
     public static double ProcessorHeight;
     public static double initialClimbHeight;
     public static double intakeCoralHeight;
+    public static double autonHalfHeight;
 
 
     public record MMGains(double CruiseVelocity, double Acceleration, double ExpoKV, double ExpoKA, double kP, double kI, double kD, double kV, double kS, double kG) {} 
@@ -84,6 +85,7 @@ public class ElevatorConstants {
         initialClimbHeight = 12.0;
         L4MiniScoreHeight = 50.0;
         intakeCoralHeight = 9.6;
+        autonHalfHeight = 25.0;
 
     }
 
@@ -120,6 +122,7 @@ public class ElevatorConstants {
         ProcessorHeight = 14.0;
         initialClimbHeight = 20.25;
         L4MiniScoreHeight = 50.0;
+        autonHalfHeight = 25.0;
     }
 
     private static void simBotConstants(){
@@ -133,8 +136,8 @@ public class ElevatorConstants {
         
         PackageHeight = 17.9;
     
-        L4Height = 57.0;
-        L4LongHeight = 53.0;
+        L4Height = 59.0;
+        L4LongHeight = 55.0;
         L3Height = 28.35;
         L2Height = 13.2;
         L1Height = 18.79;

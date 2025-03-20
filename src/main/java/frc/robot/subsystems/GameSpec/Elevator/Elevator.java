@@ -163,6 +163,10 @@ public class Elevator extends SubsystemBase {
     return elevatorCommand(ElevatorConstants.climbHeight);
   }
 
+  public Command halfHeight(){
+    return elevatorCommand(ElevatorConstants.autonHalfHeight);
+  }
+
   public boolean elevatorClimbHeight(){
     if(stats.elevatorPosition < ElevatorConstants.L1Height - 1.0){
       return true;
