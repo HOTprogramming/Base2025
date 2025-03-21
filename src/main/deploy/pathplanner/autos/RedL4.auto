@@ -57,6 +57,12 @@
                 "data": {
                   "commands": [
                     {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.25
+                      }
+                    },
+                    {
                       "type": "named",
                       "data": {
                         "name": "Auton Shoot"
@@ -84,7 +90,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.2
+                        "waitTime": 0.35
                       }
                     },
                     {
@@ -152,6 +158,12 @@
                 "type": "sequential",
                 "data": {
                   "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.3
+                      }
+                    },
                     {
                       "type": "named",
                       "data": {
@@ -232,9 +244,22 @@
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "AL4"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.2
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AL4"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -248,6 +273,12 @@
                 "type": "sequential",
                 "data": {
                   "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.325
+                      }
+                    },
                     {
                       "type": "named",
                       "data": {
@@ -276,7 +307,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.5
+                        "waitTime": 0.525
                       }
                     },
                     {
