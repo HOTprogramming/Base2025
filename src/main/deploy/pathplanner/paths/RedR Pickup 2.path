@@ -1,0 +1,88 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 13.582069672131148,
+        "y": 5.223770491803278
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 13.965676229508198,
+        "y": 6.146823770491803
+      },
+      "isLocked": false,
+      "linkedName": "dropoff2"
+    },
+    {
+      "anchor": {
+        "x": 16.016,
+        "y": 7.477459016393443
+      },
+      "prevControl": {
+        "x": 15.607991803278686,
+        "y": 7.1178278688524586
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "pickup2"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.2916948008102622,
+      "constraints": {
+        "maxVelocity": 4.96,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.7103513770180443,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 4.96,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Lights",
+      "waypointRelativePos": 0.8345712356515853,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.96,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -35.0
+  },
+  "reversed": false,
+  "folder": "RedR",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -29.999999999999996
+  },
+  "useDefaultConstraints": false
+}

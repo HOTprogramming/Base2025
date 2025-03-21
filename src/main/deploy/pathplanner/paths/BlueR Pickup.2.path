@@ -1,0 +1,68 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.943954918032787,
+        "y": 2.86219262295082
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.6900934271094106,
+        "y": 2.6281563011116624
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.4505122950819673,
+        "y": 0.6085040983606563
+      },
+      "prevControl": {
+        "x": 1.6802011809437938,
+        "y": 0.775316290976651
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "BlueR42"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.6462488129154828,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 4.96,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.6,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.96,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.6,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 145.0
+  },
+  "reversed": false,
+  "folder": "BlueR",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 150.0
+  },
+  "useDefaultConstraints": true
+}

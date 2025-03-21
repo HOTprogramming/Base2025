@@ -17,7 +17,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Place.1"
+                  "pathName": "BlueR Place.1"
                 }
               },
               {
@@ -63,9 +63,27 @@
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "named",
                       "data": {
-                        "pathName": "Pickup.1"
+                        "name": "Auton Shoot"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Intake Bump"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.1
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Auton Intake Start"
                       }
                     }
                   ]
@@ -76,27 +94,15 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
-                      "data": {
-                        "name": "Auton Shoot"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Auton Finish Shoot"
-                      }
-                    },
-                    {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.4
+                        "waitTime": 0.55
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "path",
                       "data": {
-                        "name": "Auton Intake Start"
+                        "pathName": "BlueR Pickup.1"
                       }
                     }
                   ]
@@ -112,7 +118,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Place.2"
+                  "pathName": "BlueR Place.2"
                 }
               },
               {
@@ -123,18 +129,6 @@
                       "type": "named",
                       "data": {
                         "name": "Auton Finish Intake"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.2
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Half Height"
                       }
                     }
                   ]
@@ -173,13 +167,25 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.5
+                        "waitTime": 0.2
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "named",
                       "data": {
-                        "pathName": "Pickup.2"
+                        "name": "Auton Shoot"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.05
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Auton Intake Start"
                       }
                     }
                   ]
@@ -190,27 +196,15 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
-                      "data": {
-                        "name": "Auton Shoot"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Auton Finish Shoot"
-                      }
-                    },
-                    {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.25
+                        "waitTime": 0.55
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "path",
                       "data": {
-                        "name": "Auton Intake Start"
+                        "pathName": "BlueR Pickup.2"
                       }
                     }
                   ]
@@ -226,7 +220,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Place.3"
+                  "pathName": "BlueR Place.3"
                 }
               },
               {
@@ -237,18 +231,6 @@
                       "type": "named",
                       "data": {
                         "name": "Auton Finish Intake"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.2
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Half Height"
                       }
                     }
                   ]
@@ -287,13 +269,25 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.5
+                        "waitTime": 0.2
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "named",
                       "data": {
-                        "pathName": "Pickup.3"
+                        "name": "Auton Shoot"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Auton Intake Start"
                       }
                     }
                   ]
@@ -304,27 +298,15 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
-                      "data": {
-                        "name": "Auton Shoot"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Auton Finish Shoot"
-                      }
-                    },
-                    {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.25
+                        "waitTime": 0.55
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "path",
                       "data": {
-                        "name": "Auton Intake Start"
+                        "pathName": "BlueR Pickup.3"
                       }
                     }
                   ]
@@ -340,7 +322,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Place.4"
+                  "pathName": "BlueR Place.4"
                 }
               },
               {
@@ -351,18 +333,6 @@
                       "type": "named",
                       "data": {
                         "name": "Auton Finish Intake"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.9
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Half Height"
                       }
                     }
                   ]
@@ -394,12 +364,6 @@
           "type": "named",
           "data": {
             "name": "Auton Shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Auton Finish Shoot"
           }
         }
       ]

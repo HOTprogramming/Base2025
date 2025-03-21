@@ -3,37 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.25061475409836,
+        "x": 13.8577868852459,
         "y": 5.079918032786885
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.557274590163935,
-        "y": 6.026946721311476
+        "x": 14.153165900992136,
+        "y": 5.341646542248945
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.6423155737704918,
-        "y": 7.33360655737705
+        "x": 16.0155737704918,
+        "y": 7.46547131147541
       },
       "prevControl": {
-        "x": 1.8632625528575282,
-        "y": 7.2166346272728035
+        "x": 15.810401559653695,
+        "y": 7.303489334051211
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "b1"
+      "linkedName": "P3"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.24307900067521576,
+      "minWaypointRelativePos": 0.7293447293447302,
+      "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 4.96,
         "maxAcceleration": 3.0,
@@ -45,11 +45,11 @@
     },
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.5671843349088432,
-      "maxWaypointRelativePos": 1.0,
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.29169480081026405,
       "constraints": {
         "maxVelocity": 4.96,
-        "maxAcceleration": 4.0,
+        "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.6,
@@ -58,7 +58,19 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Lights",
+      "waypointRelativePos": 0.902093180283592,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Auton Lights"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.96,
     "maxAcceleration": 6.0,
@@ -69,10 +81,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 35.0
+    "rotation": -35.0
   },
   "reversed": false,
-  "folder": "BlueL",
+  "folder": "RedR",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -29.999999999999996

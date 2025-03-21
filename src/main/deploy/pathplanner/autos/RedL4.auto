@@ -17,7 +17,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CoralP1"
+                  "pathName": "RedLP1"
                 }
               },
               {
@@ -59,7 +59,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.25
+                        "waitTime": 0.0
                       }
                     },
                     {
@@ -90,13 +90,13 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.35
+                        "waitTime": 0.3
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "CoralP2"
+                        "pathName": "RedLP2"
                       }
                     }
                   ]
@@ -112,7 +112,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CoralP3"
+                  "pathName": "RedLP3"
                 }
               },
               {
@@ -161,7 +161,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.3
+                        "waitTime": 0.0
                       }
                     },
                     {
@@ -192,13 +192,13 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.5
+                        "waitTime": 0.3
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "CoralP4"
+                        "pathName": "RedLP4"
                       }
                     }
                   ]
@@ -214,7 +214,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CoralP5"
+                  "pathName": "RedLP5"
                 }
               },
               {
@@ -276,7 +276,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.325
+                        "waitTime": 0.0
                       }
                     },
                     {
@@ -307,13 +307,13 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.525
+                        "waitTime": 0.3
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "CoralP6"
+                        "pathName": "RedLP6"
                       }
                     }
                   ]
@@ -329,7 +329,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CoralP7"
+                  "pathName": "RedLP7"
                 }
               },
               {

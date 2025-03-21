@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.692213114754098,
-        "y": 2.970081967213115
+        "x": 1.5823770491803275,
+        "y": 0.7163934426229513
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.524385245901639,
-        "y": 2.730327868852459
+        "x": 2.972950819672131,
+        "y": 1.7053790983606576
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "BlueR44"
     },
     {
       "anchor": {
-        "x": 1.6423155737704918,
-        "y": 0.6564549180327879
+        "x": 2.7931352459016394,
+        "y": 3.6054303278688526
       },
       "prevControl": {
-        "x": 1.7893584981892539,
-        "y": 0.8586389391085847
+        "x": 1.2227459016393443,
+        "y": 3.737295081967213
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,24 +32,11 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.29709655638082383,
-      "constraints": {
-        "maxVelocity": 4.96,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.6,
-        "unlimited": false
-      }
-    },
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.548278190411884,
+      "minWaypointRelativePos": 0.6766381766381802,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 4.96,
-        "maxAcceleration": 4.0,
+        "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.6,
@@ -68,14 +55,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 145.0
+    "velocity": 0.3,
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": "BlueR",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 150.0
+    "rotation": 145.0
   },
   "useDefaultConstraints": true
 }

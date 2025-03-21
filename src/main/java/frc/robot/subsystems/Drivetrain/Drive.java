@@ -385,7 +385,7 @@ public class Drive extends SubsystemBase {
         });
     }
 
-    public void alignReefRobotcentric() {        
+    public void alignReefRobotcentric(boolean auton) {        
         Pose2d Error = currentTarget.relativeTo(new Pose2d(iOdata.state.Pose.getTranslation(), currentTarget.getRotation()));
         SmartDashboard.putNumberArray("Drive Error", new double[] {Error.getX(), Error.getY(), Error.getRotation().getRadians()});
 
@@ -401,8 +401,14 @@ public class Drive extends SubsystemBase {
         double cosine = Math.cos(currentTarget.getRotation().getRadians());
         double sine = Math.sin(currentTarget.getRotation().getRadians());
 
-        in = MathUtil.clamp(in, -auto_align_top_speed, auto_align_top_speed);
-        across =  MathUtil.clamp(across, -auto_align_top_speed, auto_align_top_speed);
+        if (auton) {
+            in = MathUtil.clamp(in, -auto_align_top_speed_auton, auto_align_top_speed_auton);
+            across =  MathUtil.clamp(across, -auto_align_top_speed_auton, auto_align_top_speed_auton);
+        } else {
+            in = MathUtil.clamp(in, -auto_align_top_speed_teleop, auto_align_top_speed_teleop);
+            across =  MathUtil.clamp(across, -auto_align_top_speed_teleop, auto_align_top_speed_teleop);
+        }
+        
 
         boolean disableTheta = Error.getX() < auto_align_theta_disable;
 
@@ -456,7 +462,7 @@ public class Drive extends SubsystemBase {
     public FunctionalCommand autonAlignReefCommand(int LR) {
         return new FunctionalCommand(
         () -> updateReefTarget(LR),
-        () -> alignReefRobotcentric(),
+        () -> alignReefRobotcentric(true),
         interrupted -> {}, 
         () -> Math.abs(currentTarget.getTranslation().getDistance(iOdata.state.Pose.getTranslation())) < auto_align_command,
         // () -> translationControllerX.atGoal() && translationControllerY.atGoal(),
