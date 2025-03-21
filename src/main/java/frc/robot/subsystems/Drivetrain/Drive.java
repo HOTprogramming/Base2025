@@ -260,18 +260,25 @@ public class Drive extends SubsystemBase {
     private void getObjectMeasurements() {
 
         for (int i=0; i<10; ++i) {
+
             if (corals[i].equals(coralSubs.get(i).get())) {
                 ++framesLost[i];
             } else {
                 framesLost[i] = 0;
             }
+
             if (framesLost[i] < 15) {
                 corals[i] = coralSubs.get(i).get();
-                sideRatio = (corals[i][3] - corals[i][1]) / (corals[i][2] - corals[i][0]);
 
-                if (corals[i][3] >= corals[bestCoral][3]) {  //corals[i][3] * sideRatio >= corals[bestCoral][3] * (pixelY/pixelX)lowest on screen, prefer rotated
-                    bestCoral = i;
-                    SmartDashboard.putNumber("chase object/best coral", i);
+                double newX =(corals[i][0] + corals[i][2]) / 2;
+                double newY = corals[i][3];
+                double bestX = (corals[bestCoral][0] + corals[bestCoral][2]) / 2;
+                double bestY = corals[bestCoral][3];
+
+                if (newY > bestY - 15) {  //close or better y
+                    if (Math.abs(newX - targetXPixel) < Math.abs(bestX - targetXPixel) + 15) {  //close or better x
+                        bestCoral = i;
+                    }
                 }
             }
         }
