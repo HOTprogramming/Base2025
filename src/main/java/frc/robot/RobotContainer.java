@@ -36,6 +36,7 @@ import frc.robot.subsystems.Camera.Camera.CameraPositions;
 import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
 import frc.robot.subsystems.GameSpec.Manager;
+import frc.robot.subsystems.GameSpec.Algae.AlgaeConstants;
 import frc.robot.subsystems.GameSpec.Climber.Climber;
 import frc.robot.subsystems.GameSpec.Intake.Intake;
 import frc.robot.subsystems.GameSpec.Lights.Lights;
@@ -189,8 +190,8 @@ public class RobotContainer {
 
       gamespecManager.algaeSubsystem.setDefaultCommand(  
       Commands.either(gamespecManager.algaeSubsystem.algaeVoltage(0.0), 
-      gamespecManager.algaeSubsystem.algaeVoltage(-0.5),
-      () -> gamespecManager.algaeSubsystem.returnAlgaeIn())
+      gamespecManager.algaeSubsystem.algaeVoltage(AlgaeConstants.algaeHoldVoltage),
+      () -> gamespecManager.algaeSubsystem.returnAlgaeInWhileHolding())
       );
 
       drivetrain.setDefaultCommand
