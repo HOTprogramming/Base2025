@@ -279,10 +279,10 @@ public class Manager extends SubsystemBase{
       manipulatorSubsystem.goScore().withTimeout(0.1)
       ,Commands.parallel(
       run(() -> {scoringLevel = ScoringLevel.L4;})
-      ,elevatorSubsystem.goToL4().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
+      ,elevatorSubsystem.autonGoToL4().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
       ,armSubsystem.goToPackage())
       .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-20.0,2.0)))
-      .andThen(Commands.parallel(Commands.sequence(elevatorSubsystem.goToL4()
+      .andThen(Commands.parallel(Commands.sequence(elevatorSubsystem.autonGoToL4()
       .onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), elevatorSubsystem.goToL4Long()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak()
       ))));
     }

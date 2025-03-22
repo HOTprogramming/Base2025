@@ -33,9 +33,9 @@ public class Manipulator extends SubsystemBase {
 
         this.coralShuffleboard = Shuffleboard.getTab("Coral");
 
-        wristPosition = this.coralShuffleboard.add("Coral Position", 0.0).getEntry();
-        wristCommandedPos = this.coralShuffleboard.add("Coral Commanded Position", 0.0).getEntry();
-        CANdiPWM1 = this.coralShuffleboard.add("CANdi Coral Beambreak",false).getEntry();//false when there is no object, true when it detects object
+        wristPosition = this.coralShuffleboard.add("Wrist Position", 0.0).getEntry();
+        wristCommandedPos = this.coralShuffleboard.add("Wrist Commanded Position", 0.0).getEntry();
+        CANdiPWM1 = this.coralShuffleboard.add("CANdi Wrist Beambreak",false).getEntry();//false when there is no object, true when it detects object
         CANdiPWM3 = this.coralShuffleboard.add("Outer BeamBreak",false).getEntry();//false when there is no object, true when it detects object
 
     }
@@ -50,7 +50,7 @@ public class Manipulator extends SubsystemBase {
     }
 
     private void UpdateTelemetry() {
-        wristPosition.setDouble(io.coralWrist.getPosition().getValueAsDouble());
+        wristPosition.setDouble(io.coralCancoder.getAbsolutePosition().getValueAsDouble());
         CANdiPWM1.setBoolean(stats.candiPWM1);
 
         CANdiPWM3.setBoolean(stats.candiPWM3);
@@ -58,13 +58,13 @@ public class Manipulator extends SubsystemBase {
 
     private FunctionalCommand coralCommand(double position){
         return new FunctionalCommand(
-            () -> this.wristCommandedPos.setDouble(position),
+            () -> this.wristCommandedPos.setDouble(position/360.0),
             () -> 
             {io.setCoralAngleMotorControl(position);}
             ,
             interrupted -> {io.setCoralAngleMotorControl(position);
             }, 
-            () -> stats.wristCancoderPosition <= position + .01 && stats.wristCancoderPosition >= position - .01,
+            () -> stats.wristCancoderPosition <= (position/360.0) + .01 && stats.wristCancoderPosition >= (position/360.0) - .01,
             this
         );
     }

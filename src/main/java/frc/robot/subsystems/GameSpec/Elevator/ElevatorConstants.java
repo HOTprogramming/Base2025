@@ -13,6 +13,7 @@ public class ElevatorConstants {
     public static double elevatorEncoderOffset;
     
     public static double PackageHeight;
+    public static double AutoL4Height;
     public static double L4Height;
     public static double L4LongHeight;
     public static double L3Height;
@@ -65,17 +66,18 @@ public class ElevatorConstants {
 
         elevatorEncoderOffset = 0.2546;
         PackageHeight = 15.0; 
+        AutoL4Height = 58.0;
         L4Height = 56.0;
         L4LongHeight = 52.0;
-        L3Height = 29;  //was 25.55
+        L3Height = 28.0;// 29 first practice match 
         L3LongHeight = 22.35;
-        L2Height = 10.6;
+        L2Height = 16.0; //14
         L2LongHeight = 9.73;
         L1Height = 16.5;
         FeederHeight = 11.1;
         L4ReturnScoreHeight = 50.0;
-        L3ScoreHeight = 19.8;//was 19.8
-        L2ScoreHeight = 9.8; //was 9.8
+        L3ScoreHeight = 19.8;
+        L2ScoreHeight = 9.8; 
         HPHeight = 17.0;
         climbHeight = 0.25;
         highAlgae = 35;
@@ -103,6 +105,7 @@ public class ElevatorConstants {
         elevatorEncoderOffset = 0.4953 - .0168;
 
         PackageHeight = 15.0; 
+        AutoL4Height = 58.0;
         L4Height = 56.0;
         L4LongHeight = 52.0;
         L3Height = 25.55;
