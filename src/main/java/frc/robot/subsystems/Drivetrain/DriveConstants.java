@@ -80,7 +80,7 @@ public class DriveConstants {
             put(Rotation2d.fromDegrees(120), new Double[] {5.5, -1.6, -6.0});
             put(Rotation2d.fromDegrees(180), new Double[] {6.0, -1.6, -6.0});
             put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -1.6, -6.0});
-            put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -1.6, -6.0});
+            put(Rotation2d.fromDegrees(-60), new Double[] {7.0, -1.6, -6.0});
         }
     };
 
