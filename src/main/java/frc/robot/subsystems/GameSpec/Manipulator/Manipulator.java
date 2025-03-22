@@ -50,7 +50,7 @@ public class Manipulator extends SubsystemBase {
     }
 
     private void UpdateTelemetry() {
-        wristPosition.setDouble(io.coralWrist.getPosition().getValueAsDouble());
+        wristPosition.setDouble(io.coralCancoder.getAbsolutePosition().getValueAsDouble());
         CANdiPWM1.setBoolean(stats.candiPWM1);
 
         CANdiPWM3.setBoolean(stats.candiPWM3);
@@ -58,13 +58,13 @@ public class Manipulator extends SubsystemBase {
 
     private FunctionalCommand coralCommand(double position){
         return new FunctionalCommand(
-            () -> this.wristCommandedPos.setDouble(position),
+            () -> this.wristCommandedPos.setDouble(position/360.0),
             () -> 
             {io.setCoralAngleMotorControl(position);}
             ,
             interrupted -> {io.setCoralAngleMotorControl(position);
             }, 
-            () -> stats.wristCancoderPosition <= position + .01 && stats.wristCancoderPosition >= position - .01,
+            () -> stats.wristCancoderPosition <= (position/360.0) + .01 && stats.wristCancoderPosition >= (position/360.0) - .01,
             this
         );
     }

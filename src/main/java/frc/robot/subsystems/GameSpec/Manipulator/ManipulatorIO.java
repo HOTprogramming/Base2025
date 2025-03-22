@@ -135,7 +135,7 @@ public abstract class ManipulatorIO {
     
             setConfig();
     
-            WristPosition = coral.getPosition();
+            WristPosition = coralCancoder.getAbsolutePosition();
             WristCancoderPosition = coralCancoder.getPosition();
     
             CANdiPWM1 = coralCandi.getS1Closed();
