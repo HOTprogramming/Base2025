@@ -54,7 +54,7 @@ public class IntakeConstants {
         climberOut = -120;
         vertical = -90;
         
-        intakeEncoderOffset = 0.179688;
+        intakeEncoderOffset = 0.200684;
 
     }
 
