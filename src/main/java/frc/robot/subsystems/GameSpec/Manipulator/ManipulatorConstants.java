@@ -50,8 +50,8 @@ public class ManipulatorConstants {
       coralWristEncoderOffset = 0.429688;
   
       
-      coralWristHP = -90;
-      coralWristScore = 0;
+      coralWristHP = -93;
+      coralWristScore = -1;
 
     }
 
