@@ -35,7 +35,7 @@ public class AlgaeConstants {
 
       algaeIntakeVoltage = -8.0;
       algaeExpelVoltage = 16.0;
-      algaeHoldVoltage = -0.4;
+      algaeHoldVoltage = -0.8;
 
       algaeTriggerDistance = 0.07;
     }
