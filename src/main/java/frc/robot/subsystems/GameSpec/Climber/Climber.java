@@ -31,13 +31,9 @@ public class Climber extends SubsystemBase {
   public GenericEntry climber;
   public GenericEntry climberPosition;
   public GenericEntry climberDirection;
-  private GenericEntry climberVelocity;
   private GenericEntry climberSupplyCurrent;
-  private GenericEntry climberStatorCurrent;
-  private GenericEntry climberTemp;
-  private GenericEntry servoVelocity;
-  private GenericEntry servoClampCommandedPos;
-  private GenericEntry climberVoltage;
+  private GenericEntry climberLimitSwitch1;
+  private GenericEntry climberLimitSwitch2;
   
   public Climber(ClimberIO io) {
     this.io = io; 
@@ -47,6 +43,10 @@ public class Climber extends SubsystemBase {
     
     climberPosition = this.climberShuffleboard.add("climber Position", 0.0).getEntry();
     climberSupplyCurrent = this.climberShuffleboard.add("climber Supply Current", 0.0).getEntry();
+    climberLimitSwitch1 = this.climberShuffleboard.add("limit switch 1", false).getEntry();
+    climberLimitSwitch2 = this.climberShuffleboard.add("limit switch 2", false).getEntry();
+
+
   }
 
 
@@ -63,6 +63,8 @@ public class Climber extends SubsystemBase {
   private void UpdateTelemetry() {
     climberPosition.setDouble(stats.climberPosition);
     climberSupplyCurrent.setDouble(stats.supplyCurrentAmps);
+    climberLimitSwitch1.setBoolean(!io.limitSwitch1.get());//false if ready to climb
+    climberLimitSwitch2.setBoolean(!io.limitSwitch2.get());//false if ready to climb
   }
 
     public void setPower(Double supplier){
@@ -94,6 +96,18 @@ public class Climber extends SubsystemBase {
       io.climberServo.set(ClimberConstants.climberServoOpenPos);
       io.climberServo2.set(1.0 - ClimberConstants.climberServoOpenPos);
       });
+    }
+
+    /**
+     * @return: true if both limit switches are triggered.
+     */
+    public Boolean returnReadyToClimb(){
+      if(io.limitSwitch1.get() == false && io.limitSwitch2.get() == false){
+        return true;
+      }
+      else{
+        return false;
+      }
     }
 
     /**
