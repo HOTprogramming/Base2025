@@ -13,6 +13,7 @@ public class ElevatorConstants {
     public static double elevatorEncoderOffset;
     
     public static double PackageHeight;
+    public static double AutoL4Height;
     public static double L4Height;
     public static double L4LongHeight;
     public static double L3Height;
@@ -65,6 +66,7 @@ public class ElevatorConstants {
 
         elevatorEncoderOffset = 0.2546;
         PackageHeight = 15.0; 
+        AutoL4Height = 58.0;
         L4Height = 56.0;
         L4LongHeight = 52.0;
         L3Height = 28.0;// 29 first practice match 
@@ -103,6 +105,7 @@ public class ElevatorConstants {
         elevatorEncoderOffset = 0.4953 - .0168;
 
         PackageHeight = 15.0; 
+        AutoL4Height = 58.0;
         L4Height = 56.0;
         L4LongHeight = 52.0;
         L3Height = 25.55;
