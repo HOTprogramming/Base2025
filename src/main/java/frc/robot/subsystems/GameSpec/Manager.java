@@ -411,6 +411,7 @@ public class Manager extends SubsystemBase{
           elevatorSubsystem.intakeCoral()
         );
     }
+    
 
     //packages the floor intake after a deploy
     public Command floorIntakeClearance(){
