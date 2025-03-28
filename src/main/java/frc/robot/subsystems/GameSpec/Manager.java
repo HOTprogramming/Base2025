@@ -102,13 +102,9 @@ public class Manager extends SubsystemBase{
 
     public Command gotoL4Package(){
       return Commands.parallel(
-        elevatorSubsystem.goToPackage(),
-        armSubsystem.L4Score()
-      ).until(() -> !elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-3.0, 0.1))
-      .andThen(Commands.parallel(
         armSubsystem.goToPackage(),
         elevatorSubsystem.goToPackage()
-      ));
+      );
     }
 
     public Command doneScoring(){
@@ -231,12 +227,11 @@ public class Manager extends SubsystemBase{
             ,
           ScoringLevel.L2,
             Commands.parallel(
-            manipulatorSubsystem.goScore(),
+            elevatorSubsystem.goToL2(),
             Commands.sequence(
             runOnce(() -> {doneScoring = true;}),
-            Commands.sequence(
-            armSubsystem.L2Score()
-            ,elevatorSubsystem.L2Score()))
+            armSubsystem.L2Score(),
+            manipulatorSubsystem.L3Spit())
             ),
           ScoringLevel.L1, Commands.sequence(
             manipulatorSubsystem.shoot()

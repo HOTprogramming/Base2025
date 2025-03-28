@@ -68,12 +68,12 @@ public class ArmConstants {
         PackageAngle = -90;
         FeederAngle = -46.4;
         L1Angle = -200.0;
-        L2Angle = -133;
+        L2Angle = -136.0;
         L3Angle = -129.7;
-        L4Angle = -124;
+        L4Angle = -130.0;
         L4Score = -172;
         L3Score = -147.7;
-        L2Score = -177.8;
+        L2Score = -172.8;
         Horizontal = 0;
         Intermediate = -139.0;
         CurrentFail = -10.0;
