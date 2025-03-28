@@ -141,6 +141,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake Clearence", gamespecManager.intakeSubsystem.clearance());
     NamedCommands.registerCommand("Intake Bump", gamespecManager.intakeSubsystem.bump());
     NamedCommands.registerCommand("Half Height", gamespecManager.autonHalfL4());
+    NamedCommands.registerCommand("Floor Intake Deploy", gamespecManager.floorIntakeDeploy());
 
 
     NamedCommands.registerCommand("Chase ", Commands.sequence(drivetrain.run(() -> drivetrain.chaseObject()).until(() -> drivetrain.objectClose()), drivetrain.run(() -> drivetrain.chaseSlow())).until(() -> (drivetrain.noObjectsSeen()))); // gamespecManager.intakeSubsystem.getBeamBreak() ||
