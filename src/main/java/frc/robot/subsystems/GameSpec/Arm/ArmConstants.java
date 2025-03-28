@@ -69,10 +69,10 @@ public class ArmConstants {
         FeederAngle = -46.4;
         L1Angle = -200.0;
         L2Angle = -133;
-        L3Angle = -135.7;
+        L3Angle = -129.7;
         L4Angle = -124;
         L4Score = -172;
-        L3Score = -135.7;
+        L3Score = -147.7;
         L2Score = -177.8;
         Horizontal = 0;
         Intermediate = -139.0;

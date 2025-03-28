@@ -69,14 +69,14 @@ public class ElevatorConstants {
         AutoL4Height = 58.0;
         L4Height = 56.0;
         L4LongHeight = 52.0;
-        L3Height = 24.2;
+        L3Height = 23.2;
         L3LongHeight = 22.35;
         L2Height = 16.0;
         L2LongHeight = 9.73;
         L1Height = 16.5;
         FeederHeight = 11.1;
         L4ReturnScoreHeight = 50.0;
-        L3ScoreHeight = 15.7;
+        L3ScoreHeight = 18.0;
         L2ScoreHeight = 9.8; 
         HPHeight = 17.0;
         climbHeight = 0.25;

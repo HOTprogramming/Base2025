@@ -108,6 +108,10 @@ public class Manipulator extends SubsystemBase {
         return runOnce(() -> io.setCoralSpinMotorControl(-5));
     }
 
+    public Command L3Spit(){
+        return runOnce(() -> io.setCoralSpinMotorControl(-2));
+    }
+
     /** 
      * @apiNote false when it has coral
      */

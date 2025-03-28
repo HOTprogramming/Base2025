@@ -221,14 +221,14 @@ public class Manager extends SubsystemBase{
             manipulatorSubsystem.zero()
             ),
           ScoringLevel.L3, 
-            Commands.parallel(
-            manipulatorSubsystem.goScore(),
             Commands.sequence(
             runOnce(() -> {doneScoring = true;}),
-            Commands.sequence(
-            armSubsystem.L3Score()
-            ,elevatorSubsystem.L3Score()))
-            ),
+            armSubsystem.L3Score(),
+            manipulatorSubsystem.L3Spit(),
+            elevatorSubsystem.L3Score(),
+            goToPackage()
+            )
+            ,
           ScoringLevel.L2,
             Commands.parallel(
             manipulatorSubsystem.goScore(),
