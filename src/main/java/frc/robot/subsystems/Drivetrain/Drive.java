@@ -103,7 +103,7 @@ public class Drive extends SubsystemBase {
     int bestCoral = 0;
 
     double targetXPixel = 320.5;
-    double targetYPixel = 430;
+    double targetYPixel = 400;
     double pixelTolerance = 8;
 
     double chaseVelocity;
@@ -118,7 +118,7 @@ public class Drive extends SubsystemBase {
     private PIDController translationControllerAcross = new PIDController(5, 0, 0);
     private ProfiledPIDController translationControllerY = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
     private ProfiledPIDController translationControllerX = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
-    private PIDController yChaseObjectPID = new PIDController(0.011, 0, 0);
+    private PIDController yChaseObjectPID = new PIDController(0.008, 0, 0);
     private PIDController thetaChaseObjectPID = new PIDController(0.0075, 0, 0);
 
 
@@ -275,10 +275,12 @@ public class Drive extends SubsystemBase {
                 double bestX = (corals[bestCoral][0] + corals[bestCoral][2]) / 2;
                 double bestY = corals[bestCoral][3];
 
-                if (newY > bestY - 15) {  //close or better y
+                if (bestY - 15 < newY) {  //close or better y
                     if (Math.abs(newX - targetXPixel) < Math.abs(bestX - targetXPixel) + 15) {  //close or better x
                         bestCoral = i;
-                    }
+                    } 
+                } else if (bestY + 15 < newY) {
+                    bestCoral = i;
                 }
             }
         }
@@ -313,14 +315,14 @@ public class Drive extends SubsystemBase {
         pixelTolerance = 10;
         driveIO.setSwerveRequest(ROBOT_CENTRIC
         .withRotationalRate(alignedToObject() ? 0 : thetaChaseObjectPID.calculate(pixelX, targetXPixel))
-        .withVelocityY( yChaseObjectPID.calculate(pixelYmax, targetYPixel) * (alignedToObject() ? 1 : 0.7)) 
+        .withVelocityY((yChaseObjectPID.calculate(pixelYmax, targetYPixel) * (alignedToObject() ? 1 : 0.7)) + 1.5) 
         );
     }
 
     public void chaseSlow() {
         pixelTolerance = 20;
         driveIO.setSwerveRequest(ROBOT_CENTRIC
-        .withRotationalRate(alignedToObject() ? 0 : thetaChaseObjectPID.calculate(pixelX, targetXPixel)* 0.5)
+        .withRotationalRate(alignedToObject() ? 0 : thetaChaseObjectPID.calculate(pixelX, targetXPixel) * 0.5)
         .withVelocityY(1.5)
         );
     }
@@ -340,6 +342,10 @@ public class Drive extends SubsystemBase {
             .withRotationalRate((driveTheta <= 0 ? -(driveTheta * driveTheta) : (driveTheta * driveTheta)) * DriveConfig.MAX_ANGULAR_VELOCITY())
             );
         }
+    }
+
+    public boolean closeToBarge() {
+        return DriverStation.getAlliance().get() == Alliance.Blue ? iOdata.state.Pose.getX() > 7.6 : iOdata.state.Pose.getX() < 9.9;
     }
 
     // public void alignReef(int leftRight) {

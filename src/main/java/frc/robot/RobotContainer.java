@@ -143,7 +143,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Half Height", gamespecManager.autonHalfL4());
 
 
-    NamedCommands.registerCommand("Chase ", Commands.sequence(drivetrain.run(() -> drivetrain.chaseObject()).until(() -> drivetrain.objectClose()), drivetrain.run(() -> drivetrain.chaseSlow())).until(() -> (drivetrain.noObjectsSeen()))); // gamespecManager.intakeSubsystem.getBeamBreak() ||
+    NamedCommands.registerCommand("Chase Auton", Commands.sequence(drivetrain.run(() -> drivetrain.chaseObject()).until(() -> drivetrain.objectClose()), drivetrain.run(() -> drivetrain.chaseSlow())).until(() -> gamespecManager.intakeSubsystem.getBeamBreak())); // gamespecManager.intakeSubsystem.getBeamBreak() ||
     NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.chaseSlow()).until(() -> (gamespecManager.intakeSubsystem.getBeamBreak()))); // gamespecManager.intakeSubsystem.getBeamBreak() ||
 
     //new EventTrigger("Package").whileTrue(gamespecManager.goToPackage());
