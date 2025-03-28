@@ -292,6 +292,7 @@ public class Manager extends SubsystemBase{
         elevatorSubsystem.goToFeeder());
     }
 
+
     public Command autonFinishIntake() {
       return 
       Commands.parallel(
@@ -403,15 +404,6 @@ public class Manager extends SubsystemBase{
         )));
     }
 
-    public Command floorIntakeAutonDeploy(){    
-     return Commands.parallel(
-          armSubsystem.horizontal(),
-          intakeSubsystem.deploy(),
-          manipulatorSubsystem.goScore(),
-          elevatorSubsystem.intakeCoral()
-        );
-    }
-
     //packages the floor intake after a deploy
     public Command floorIntakeClearance(){
       return Commands.parallel(
@@ -446,10 +438,7 @@ public class Manager extends SubsystemBase{
     public Command barge(){
       return Commands.parallel(
         Commands.parallel(elevatorSubsystem.goToBarge(), runOnce(() -> {scoringLevel = ScoringLevel.Barge;}))
-        ,armSubsystem.barge())
-        .andThen(
-        (algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage).withTimeout(0.5))
-        .andThen(bargePackage()));
+        ,armSubsystem.barge());
     }
 
     public Command setLightsCoral() {

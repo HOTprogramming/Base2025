@@ -143,7 +143,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake Bump", gamespecManager.intakeSubsystem.bump());
     NamedCommands.registerCommand("Half Height", gamespecManager.autonHalfL4());
     NamedCommands.registerCommand("Floor Intake Deploy", gamespecManager.floorIntakeDeploy());
-    NamedCommands.registerCommand("Floor Intake Auton Deploy", gamespecManager.floorIntakeAutonDeploy());
 
 
     NamedCommands.registerCommand("Chase ", Commands.sequence(drivetrain.run(() -> drivetrain.chaseObject()).until(() -> drivetrain.objectClose()), drivetrain.run(() -> drivetrain.chaseSlow())).until(() -> (drivetrain.noObjectsSeen()))); // gamespecManager.intakeSubsystem.getBeamBreak() ||
@@ -300,9 +299,7 @@ public class RobotContainer {
       operator.a().and(this::isAlgae).whileTrue(NamedCommands.getCommand("low algae")).onFalse(Commands.parallel(NamedCommands.getCommand("Algae Package")));
       operator.b().and(this::isAlgae).whileTrue(NamedCommands.getCommand("high algae")).onFalse(Commands.parallel(NamedCommands.getCommand("Algae Package")));
       operator.x().and(this::isAlgae).onTrue(NamedCommands.getCommand("align processor")).onFalse(gamespecManager.algaePackageElevator());
-      operator.y().and(this::isAlgae).whileTrue(
-      Commands.either(NamedCommands.getCommand("barge"), NamedCommands.getCommand("Package"), () -> drivetrain.returnAutoBarge()))
-      .onFalse(NamedCommands.getCommand("Package"));
+      operator.y().and(this::isAlgae).onTrue(NamedCommands.getCommand("barge")).onFalse(gamespecManager.bargePackage());
 
       operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
       operator.y().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));
