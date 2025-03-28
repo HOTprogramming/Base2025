@@ -403,6 +403,15 @@ public class Manager extends SubsystemBase{
         )));
     }
 
+    public Command floorIntakeAutonDeploy(){    
+     return Commands.parallel(
+          armSubsystem.horizontal(),
+          intakeSubsystem.deploy(),
+          manipulatorSubsystem.goScore(),
+          elevatorSubsystem.intakeCoral()
+        );
+    }
+
     //packages the floor intake after a deploy
     public Command floorIntakeClearance(){
       return Commands.parallel(
