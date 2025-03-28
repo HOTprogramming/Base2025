@@ -70,7 +70,7 @@ public class ElevatorConstants {
         L4Height = 56.0;
         L4LongHeight = 52.0;
         L3Height = 23.2;
-        L3LongHeight = 22.35;
+        L3LongHeight = 20.8;
         L2Height = 16.0;
         L2LongHeight = 9.73;
         L1Height = 16.5;
