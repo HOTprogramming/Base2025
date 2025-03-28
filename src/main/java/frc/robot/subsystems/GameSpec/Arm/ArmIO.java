@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
+import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
@@ -24,12 +25,13 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
+import frc.robot.subsystems.GameSpec.Elevator.ElevatorConstants;
 
 public abstract class ArmIO {
 
     // Protected TalonFX object accessible to subclasses
     protected TalonFX arm;
-    protected PositionTorqueCurrentFOC armControl;
+    protected MotionMagicExpoTorqueCurrentFOC armControl;
     //protected MotionMagicVoltage armControl;
     protected CANcoder armCancoder;
 
@@ -56,15 +58,14 @@ public abstract class ArmIO {
         this.arm = new TalonFX(ArmConstants.armMotorID, "robot");
         this.armCancoder = new CANcoder(ArmConstants.armEncoderID, "robot");
 
-        armControl = new PositionTorqueCurrentFOC(0);
+        armControl = new MotionMagicExpoTorqueCurrentFOC(0);
         //armControl = new MotionMagicVoltage(0);
         cfg = new TalonFXConfiguration();
         encoderCfg = new CANcoderConfiguration();
 
         MotionMagicConfigs mm = cfg.MotionMagic;
-        mm.MotionMagicCruiseVelocity = ArmConstants.armGains.CruiseVelocity(); //rps
-        mm.MotionMagicAcceleration = ArmConstants.armGains.Acceleration();
-        mm.MotionMagicJerk = ArmConstants.armGains.Jerk();
+        mm.MotionMagicExpo_kA = ArmConstants.armGains.ExpoKA();
+        mm.MotionMagicExpo_kV = ArmConstants.armGains.ExpoKV();
 
         Slot0Configs slot0 = cfg.Slot0;
         slot0.kP = ArmConstants.armGains.kP();
@@ -72,11 +73,12 @@ public abstract class ArmIO {
         slot0.kD = ArmConstants.armGains.kD();
         slot0.kV = ArmConstants.armGains.kV();
         slot0.kS = ArmConstants.armGains.kS();
+        slot0.kG = ArmConstants.armGains.kG();
 
         cfg.Feedback.FeedbackRemoteSensorID = armCancoder.getDeviceID();
         cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-        cfg.Feedback.SensorToMechanismRatio = 1/360.0;//changes what the cancoder and fx encoder ratio is
-        cfg.Feedback.RotorToSensorRatio = 1;
+        cfg.Feedback.SensorToMechanismRatio = 1.0/360.0;//changes what the cancoder and fx encoder ratio is
+        cfg.Feedback.RotorToSensorRatio = 1.0;
         cfg.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         cfg.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
         cfg.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 1.0;
@@ -106,7 +108,7 @@ public abstract class ArmIO {
         armCancoderPosition = armCancoder.getPosition();
     
         BaseStatusSignal.setUpdateFrequencyForAll(
-            50.0,
+            100.0,
             armPosition,
             SupplyCurrent,
             TorqueCurrent,
