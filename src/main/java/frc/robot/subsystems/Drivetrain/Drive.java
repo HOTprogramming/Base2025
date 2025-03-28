@@ -694,5 +694,21 @@ public class Drive extends SubsystemBase {
             autoStartPose.getY(), 
             autoStartPose.getRotation().getDegrees()});
     }
+
+    /**
+     * @return true if the robot is in position for a barge shot
+     */
+    public boolean returnAutoBarge(){
+        if(this.iOdata.state.Pose.getY() < DriveConstants.bargePosRedFar && this.iOdata.state.Pose.getY() > DriveConstants.bargePosRedClose){
+            return true;
+
+        } else if(this.iOdata.state.Pose.getY() < DriveConstants.bargePosBlueFar && this.iOdata.state.Pose.getY() > DriveConstants.bargePosBlueClose){
+            return true;
+
+        } else{
+            return false;
+
+        }
+    }
 }
 

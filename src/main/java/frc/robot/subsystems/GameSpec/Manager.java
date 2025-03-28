@@ -437,7 +437,10 @@ public class Manager extends SubsystemBase{
     public Command barge(){
       return Commands.parallel(
         Commands.parallel(elevatorSubsystem.goToBarge(), runOnce(() -> {scoringLevel = ScoringLevel.Barge;}))
-        ,armSubsystem.barge());
+        ,armSubsystem.barge())
+        .andThen(
+        (algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage).withTimeout(0.5))
+        .andThen(bargePackage()));
     }
 
     public Command setLightsCoral() {
