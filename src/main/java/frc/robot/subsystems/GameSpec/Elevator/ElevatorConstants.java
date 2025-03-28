@@ -89,10 +89,6 @@ public class ElevatorConstants {
         intakeCoralHeight = 9.6;
         autonHalfHeight = 25.0;
 
-        //elevator:15.7
-        //arm: -45.7
-        //elevator: 24.2 
-
     }
 
     private static void practiceBotConstants(){
