@@ -42,7 +42,7 @@ public class ArmConstants {
     public static double GetAlgaeFromReef;
     public static double Barge;
     
-    public record MMGains(double CruiseVelocity, double Acceleration, double Jerk, double kP, double kI, double kD, double kV, double kS) {} 
+    public record MMGains(double ExpoKA, double ExpoKV, double kP, double kI, double kD, double kV, double kS, double kG) {} 
 
     static {
         switch (Constants.getRobot()) {
@@ -62,38 +62,27 @@ public class ArmConstants {
 
         armMotorID = 14;
         armEncoderID = 44;
-        kReduction = (1.0 / 2.0);
-        kMaxAccelerationRpmPerSec = 9000.0; 
-        simGearing = 200;
-        simInertia = SingleJointedArmSim.estimateMOI(Units.inchesToMeters(30), 8.0);
-        simArmLength = Units.inchesToMeters(60);
-        simMinAngle = Units.degreesToRadians(-90);
-        simMaxAngle = Units.degreesToRadians(90);
-        startingAngle = Units.degreesToRadians(0);
-        measurementSTDDEVS = 2.0 * Math.PI / 4096.0;
-        armGains = new MMGains(0, 0, 0, 1.0, 0.0, 0.1, 0.0, 0.0);
-        simGearBox = DCMotor.getKrakenX60Foc(1);
-        gravity = false;
-        armEncoderOffset = 0.681396;
-    
-        PackageAngle = 0;
-        FeederAngle = 43.6;
-        L1Angle = -110.0;
-        L2Angle = -43;//33.66
-        L3Angle = -45;//40
-        L4Angle = -34;
-        L4Score = -82;
-        L3Score = -81.5;
-        L2Score = -87.8;
-        Horizontal = 90;
-        Intermediate = -49.0;
-        CurrentFail = 80.0;
-        L3short = -20.6;
-        L2Short = -29.6;
-        L4Short = -22.5;
-        Processor = 35.0;
-        GetAlgaeFromReef = 109;
-        Barge = -170;
+        armGains = new MMGains(0.004, 0.0025, 1.75, 0.0, 0.14, 0.0, 0.0, -2.0);
+        armEncoderOffset = -0.0383293999565972;
+
+        PackageAngle = -90;
+        FeederAngle = -46.4;
+        L1Angle = -200.0;
+        L2Angle = -133;
+        L3Angle = -135.7;
+        L4Angle = -124;
+        L4Score = -172;
+        L3Score = -135.7;
+        L2Score = -177.8;
+        Horizontal = 0;
+        Intermediate = -139.0;
+        CurrentFail = -10.0;
+        L3short = -110.6;
+        L2Short = -119.6;
+        L4Short = -112.5;
+        Processor = -55.0;
+        GetAlgaeFromReef = 19;
+        Barge = -260;
 
     }
 

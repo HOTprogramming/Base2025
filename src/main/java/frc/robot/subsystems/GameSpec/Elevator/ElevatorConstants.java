@@ -69,14 +69,14 @@ public class ElevatorConstants {
         AutoL4Height = 58.0;
         L4Height = 56.0;
         L4LongHeight = 52.0;
-        L3Height = 28.0;// 29 first practice match 
+        L3Height = 24.2;
         L3LongHeight = 22.35;
-        L2Height = 16.0; //14
+        L2Height = 16.0;
         L2LongHeight = 9.73;
         L1Height = 16.5;
         FeederHeight = 11.1;
         L4ReturnScoreHeight = 50.0;
-        L3ScoreHeight = 19.8;
+        L3ScoreHeight = 15.7;
         L2ScoreHeight = 9.8; 
         HPHeight = 17.0;
         climbHeight = 0.25;
@@ -88,6 +88,10 @@ public class ElevatorConstants {
         L4MiniScoreHeight = 50.0;
         intakeCoralHeight = 9.6;
         autonHalfHeight = 25.0;
+
+        //elevator:15.7
+        //arm: -45.7
+        //elevator: 24.2 
 
     }
 

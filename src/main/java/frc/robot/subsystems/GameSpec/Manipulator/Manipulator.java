@@ -21,10 +21,11 @@ public class Manipulator extends SubsystemBase {
     private final ShuffleboardTab coralShuffleboard;
 
     /* Shuffleboard entries */
-    private GenericEntry wristPosition;
+    private GenericEntry wristCancoderPosition;
     private GenericEntry wristCommandedPos;
     private GenericEntry CANdiPWM1;
     private GenericEntry CANdiPWM3;
+    private GenericEntry wristPosition;
 
     
     public Manipulator(ManipulatorIO io) {
@@ -33,6 +34,7 @@ public class Manipulator extends SubsystemBase {
 
         this.coralShuffleboard = Shuffleboard.getTab("Coral");
 
+        wristCancoderPosition = this.coralShuffleboard.add("Wrist Cancoder Position", 0.0).getEntry();
         wristPosition = this.coralShuffleboard.add("Wrist Position", 0.0).getEntry();
         wristCommandedPos = this.coralShuffleboard.add("Wrist Commanded Position", 0.0).getEntry();
         CANdiPWM1 = this.coralShuffleboard.add("CANdi Wrist Beambreak",false).getEntry();//false when there is no object, true when it detects object
@@ -50,8 +52,10 @@ public class Manipulator extends SubsystemBase {
     }
 
     private void UpdateTelemetry() {
-        wristPosition.setDouble(io.coralCancoder.getAbsolutePosition().getValueAsDouble());
+        wristCancoderPosition.setDouble(io.coralCancoder.getAbsolutePosition().getValueAsDouble());
         CANdiPWM1.setBoolean(stats.candiPWM1);
+        wristPosition.setDouble(io.coralWrist.getPosition().getValueAsDouble());
+
 
         CANdiPWM3.setBoolean(stats.candiPWM3);
     }
