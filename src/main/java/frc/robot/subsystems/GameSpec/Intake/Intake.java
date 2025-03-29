@@ -24,6 +24,7 @@ public class Intake extends SubsystemBase {
 
   /* Shuffleboard entrys */
   public GenericEntry intakePosition;
+  public GenericEntry intakeVelocity;
   public GenericEntry intakeDirection;
   public GenericEntry intakeCommandedPos;
   public GenericEntry beamBreakStatus;
@@ -35,6 +36,7 @@ public class Intake extends SubsystemBase {
     this.intakeShuffleboard = Shuffleboard.getTab("Intake");
 
     intakePosition = this.intakeShuffleboard.add("Intake Position", 0.0).getEntry();
+    intakeVelocity = this.intakeShuffleboard.add("Intake Orange Velocity",0.0 ).getEntry();
     intakeCommandedPos = this.intakeShuffleboard.add("Intake Commanded Position", 0.0).getEntry();
     beamBreakStatus = this.intakeShuffleboard.add("BeamBreak", false).getEntry();
   }
@@ -52,22 +54,22 @@ public class Intake extends SubsystemBase {
   private void UpdateTelemetry() {
     intakePosition.setDouble(stats.intakePosition);
     beamBreakStatus.setBoolean(io.beambreak.get());
+    intakeVelocity.setDouble(stats.intakeVelocity);
+    
   }
 
-  public FunctionalCommand intakeCommand(double position, double orangeVoltage, double blackVoltage){
+  public FunctionalCommand intakeCommand(double position, double orangeVelocity, double blackVelocity){
     return new FunctionalCommand(
       () ->{
       this.intakeCommandedPos.setDouble(position);
       },
       () -> {
       io.setIntakeMotorControl(position);
-      io.setIntakeSpinMotorControl(0.0, 0.0);
-      
+      io.setIntakeSpinVelocityControl(orangeVelocity, blackVelocity);
       },
       interrupted -> {
       io.setIntakeMotorControl(position);
-      io.setIntakeSpinMotorControl(orangeVoltage, blackVoltage);
-      io.setIntakeSpinMotorControl(0.0, 0.0);
+      io.setIntakeSpinVelocityControl(orangeVelocity, blackVelocity);
       }, 
       () -> checkRange(5),
       this);
@@ -97,7 +99,8 @@ public class Intake extends SubsystemBase {
     return run(() -> {
       intakeCommandedPos.setDouble(IntakeConstants.intakeGround);
       io.setIntakeMotorControl(IntakeConstants.intakeGround);
-      io.setIntakeSpinMotorControl(8, 10);
+      // io.setIntakeSpinMotorControl(8, 10);
+      io.setIntakeSpinVelocityControl(85.0, 100);
      }); 
   }
 
@@ -105,7 +108,7 @@ public class Intake extends SubsystemBase {
     return runOnce(() -> {
       intakeCommandedPos.setDouble(IntakeConstants.intakeGround);
       io.setIntakeMotorControl(IntakeConstants.intakeGround);
-      io.setIntakeSpinMotorControl(8, 10);
+      io.setIntakeSpinVelocityControl(85.0, 100);
      }); 
   }
 
