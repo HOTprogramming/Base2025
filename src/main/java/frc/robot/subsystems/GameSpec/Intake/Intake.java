@@ -75,15 +75,19 @@ public class Intake extends SubsystemBase {
       this);
   }
 
-  public Command goToHandoff(){
-    return intakeCommand(IntakeConstants.intakeHandoff, 0.0, 0.0);
+  public Command handoffAndSpin(){
+    return run(() -> {
+      intakeCommandedPos.setDouble(IntakeConstants.intakeHandoff);
+      io.setIntakeMotorControl(IntakeConstants.intakeHandoff);
+      io.setIntakeSpinVelocityControl(-1.0, -1.0);
+     }); 
   }
 
   public Command clearance(){
     return intakeCommand(IntakeConstants.intakeClearance, 0.0, 0.0);
   }
 
-  public Command handoffAndSpin(){
+  public Command handoff(){
     return intakeCommand(IntakeConstants.intakeHandoff, 0.0, 0.0);
   }
 
@@ -99,7 +103,6 @@ public class Intake extends SubsystemBase {
     return run(() -> {
       intakeCommandedPos.setDouble(IntakeConstants.intakeGround);
       io.setIntakeMotorControl(IntakeConstants.intakeGround);
-      // io.setIntakeSpinMotorControl(8, 10);
       io.setIntakeSpinVelocityControl(85.0, 100);
      }); 
   }
