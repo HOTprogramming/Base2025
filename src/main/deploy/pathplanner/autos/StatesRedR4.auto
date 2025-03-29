@@ -11,37 +11,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "RedG Place 1"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Align Reef Right"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AL4"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Auton Shoot"
-          }
-        },
-        {
           "type": "sequential",
           "data": {
             "commands": [
@@ -114,20 +83,8 @@
                 "data": {
                   "name": "Align Reef Left"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AL4"
-                }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Auton Shoot"
           }
         }
       ]
