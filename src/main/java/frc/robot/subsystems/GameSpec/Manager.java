@@ -288,7 +288,7 @@ public class Manager extends SubsystemBase{
         Commands.deadline(
           manipulatorSubsystem.autonIntake(), 
           armSubsystem.goToFeeder(),
-          intakeSubsystem.goToHandoff()), 
+          intakeSubsystem.handoff()), 
         elevatorSubsystem.goToFeeder());
     }
 
@@ -306,7 +306,7 @@ public class Manager extends SubsystemBase{
 
     public Command alignStationIntake(){
       return Commands.parallel(
-        Commands.deadline(manipulatorSubsystem.intake(), armSubsystem.goToFeeder(), intakeSubsystem.goToHandoff())
+        Commands.deadline(manipulatorSubsystem.intake(), armSubsystem.goToFeeder(), intakeSubsystem.handoff())
         .andThen(armSubsystem.goToPackage(), intakeSubsystem.clearance()), 
         elevatorSubsystem.goToFeeder());
     }
@@ -364,7 +364,7 @@ public class Manager extends SubsystemBase{
       return climberSubsystem.ratchetServoPosition(0.59);
     }
 
-    //handoff code
+    //handoff code for teleop
     public Command floorIntakeDeploy(){
       return Commands.sequence(
       elevatorSubsystem.goToPackage(),
@@ -376,10 +376,10 @@ public class Manager extends SubsystemBase{
           )
         .until(() -> intakeSubsystem.getBeamBreak())
         .andThen(Commands.sequence(
-        Commands.waitSeconds(0.0),
+        Commands.waitSeconds(0.2),
         Commands.parallel(
           armSubsystem.horizontal(),
-          intakeSubsystem.goToHandoff(),
+          Commands.sequence(Commands.waitSeconds(0.02), intakeSubsystem.handoffAndSpin()),
           manipulatorSubsystem.intakeGround(),
           elevatorSubsystem.intakeCoral()
           ))
@@ -391,19 +391,20 @@ public class Manager extends SubsystemBase{
           armSubsystem.goToPackage(),
           elevatorSubsystem.intakeCoral(),
           Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
-          intakeSubsystem.handoffAndSpin())
+          intakeSubsystem.handoff())
           .until(() -> armSubsystem.returnArmPos() < ArmConstants.Horizontal-5.0)
           .andThen(
           Commands.parallel(
           armSubsystem.goToPackage(),
           elevatorSubsystem.goToPackage(),
           Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
-          intakeSubsystem.goToHandoff())
+          intakeSubsystem.handoff())
           ),
         intakeSubsystem.clearance())
         )));
     }
 
+    //handoff code for auton, doesn't do the elevator at first and doesn't wait.
     public Command floorIntakeAutonDeployFull(){
       return Commands.sequence(
       Commands.parallel(
@@ -417,7 +418,7 @@ public class Manager extends SubsystemBase{
         Commands.waitSeconds(0.0),
         Commands.parallel(
           armSubsystem.horizontal(),
-          intakeSubsystem.goToHandoff(),
+          Commands.sequence(Commands.waitSeconds(0.07), intakeSubsystem.handoffAndSpin()),
           manipulatorSubsystem.intakeGround(),
           elevatorSubsystem.intakeCoral()
           ))
@@ -429,14 +430,14 @@ public class Manager extends SubsystemBase{
           armSubsystem.goToPackage(),
           elevatorSubsystem.intakeCoral(),
           Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
-          intakeSubsystem.handoffAndSpin())
+          intakeSubsystem.handoff())
           .until(() -> armSubsystem.returnArmPos() < ArmConstants.Horizontal-5.0)
           .andThen(
           Commands.parallel(
           armSubsystem.goToPackage(),
           elevatorSubsystem.goToPackage(),
           Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
-          intakeSubsystem.goToHandoff())
+          intakeSubsystem.handoff())
           ),
         intakeSubsystem.clearance())
         )));

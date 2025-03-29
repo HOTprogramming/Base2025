@@ -8,7 +8,10 @@ public class IntakeConstants {
     public static int orangeWheelsID;
     public static int intakeRotationID;
     public static int intakeEncoderID;
+    //change to add Ks,Kv to Gains and allow 2 motors (KRM 3/29) 
     public static MMGains intakeGains;
+    public static MMGains intakeOrangeGains;
+    public static MMGains intakeBlackGains;
 
     public static double intakeHandoff;
     public static double intakeGround;
@@ -21,7 +24,8 @@ public class IntakeConstants {
 
     public static double intakeEncoderOffset;
 
-    public record MMGains(double kP, double kI, double kD) {} 
+    //Add Ks, Kv to Gains (KRM 03/29)
+    public record MMGains(double kP, double kI, double kD, double kS, double kV) {} 
 
     static {
         switch (Constants.getRobot()) {
@@ -43,12 +47,15 @@ public class IntakeConstants {
         orangeWheelsID = 18;
         intakeRotationID = 19;
         intakeEncoderID = 46;
-        intakeGains = new MMGains(0.19,0,0);
-        
+        //change to allow seperate gains for 2 motors (KRM 03/29)
+        intakeGains = new MMGains(0.19,0.0,0.0,0.0,0.0);
+        intakeOrangeGains = new MMGains(0.55,0.2,0.0,0.4,0.07);
+        intakeBlackGains = new MMGains(0.1,0.1,0.0,0.4,0.95);
+
         intakeHandoff = 145.0;
         intakeClearance = 120;
         intakeBump = 75;
-        intakeGround = 3;
+        intakeGround = 4;
         rollerIntakeVoltage = 10;
         rollerExpelVoltage = 1.5;
         climberOut = -120;
@@ -65,7 +72,12 @@ public class IntakeConstants {
       intakeEncoderID = 46;
       // kReduction = (1.0 / 2.0);
       // kMaxAccelerationRpmPerSec = 9000.0; 
-      intakeGains = new MMGains(0.19,0,0);
+      
+      //change to allow seperate gains for 2 motors (KRM 03/29)
+      intakeGains = new MMGains(0.19,0.0,0.0,0.0,0.0);
+      intakeOrangeGains = new MMGains(0.55,0.2,0.0,0.4,0.07);
+      intakeBlackGains = new MMGains(0.1,0.1,0.0,0.4,0.95);
+
       
       intakeHandoff = 145.0;
       intakeClearance = 120;
