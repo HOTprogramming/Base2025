@@ -411,7 +411,6 @@ public class Manager extends SubsystemBase{
           elevatorSubsystem.intakeCoral()
         );
     }
-    
 
     //packages the floor intake after a deploy
     public Command floorIntakeClearance(){
@@ -445,12 +444,12 @@ public class Manager extends SubsystemBase{
     }
 
     public Command barge(){
-      return Commands.parallel(
+      return Commands.sequence(
+      Commands.parallel(
         Commands.parallel(elevatorSubsystem.goToBarge(), runOnce(() -> {scoringLevel = ScoringLevel.Barge;}))
-        ,armSubsystem.barge())
-        .andThen(
-        (algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage).withTimeout(0.5))
-        .andThen(bargePackage()));
+        ,armSubsystem.barge()),
+        algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage).withTimeout(0.5),
+        bargePackage());
     }
 
     public Command setLightsCoral() {
