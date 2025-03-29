@@ -147,7 +147,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Floor Intake Deploy", gamespecManager.floorIntakeDeploy());
     NamedCommands.registerCommand("Floor Intake Auton Deploy", gamespecManager.floorIntakeAutonDeploy());
     
-    NamedCommands.registerCommand("Floor Intake Auton Deploy 2", gamespecManager.floorIntakeAutonDeployFull().withTimeout(0.5));
+    NamedCommands.registerCommand("Floor Intake Auton Deploy 2", gamespecManager.floorIntakeAutonDeployFull());
     NamedCommands.registerCommand("Stop Drive", drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
 
     NamedCommands.registerCommand("Chase ", Commands.sequence(drivetrain.run(() -> drivetrain.chaseObject()).until(() -> drivetrain.objectClose()), drivetrain.run(() -> drivetrain.chaseSlow())).until(() -> (drivetrain.noObjectsSeen()))); // gamespecManager.intakeSubsystem.getBeamBreak() ||
