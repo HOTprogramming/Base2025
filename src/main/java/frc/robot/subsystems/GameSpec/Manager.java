@@ -364,7 +364,7 @@ public class Manager extends SubsystemBase{
       return climberSubsystem.ratchetServoPosition(0.59);
     }
 
-    //handoff code
+    //handoff code for teleop
     public Command floorIntakeDeploy(){
       return Commands.sequence(
       elevatorSubsystem.goToPackage(),
@@ -379,7 +379,7 @@ public class Manager extends SubsystemBase{
         Commands.waitSeconds(0.2),
         Commands.parallel(
           armSubsystem.horizontal(),
-          intakeSubsystem.handoffAndSpin(),
+          Commands.sequence(Commands.waitSeconds(0.02), intakeSubsystem.handoffAndSpin()),
           manipulatorSubsystem.intakeGround(),
           elevatorSubsystem.intakeCoral()
           ))
@@ -418,7 +418,7 @@ public class Manager extends SubsystemBase{
         Commands.waitSeconds(0.0),
         Commands.parallel(
           armSubsystem.horizontal(),
-          Commands.sequence(Commands.waitSeconds(0.05), intakeSubsystem.handoffAndSpin()),
+          Commands.sequence(Commands.waitSeconds(0.07), intakeSubsystem.handoffAndSpin()),
           manipulatorSubsystem.intakeGround(),
           elevatorSubsystem.intakeCoral()
           ))

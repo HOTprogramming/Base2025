@@ -79,7 +79,7 @@ public class Intake extends SubsystemBase {
     return run(() -> {
       intakeCommandedPos.setDouble(IntakeConstants.intakeHandoff);
       io.setIntakeMotorControl(IntakeConstants.intakeHandoff);
-      io.setIntakeSpinVelocityControl(-1.0, -1.0);
+      io.setIntakeSpinMotorControl(-0.5, -0.5);
      }); 
   }
 
@@ -103,7 +103,7 @@ public class Intake extends SubsystemBase {
     return run(() -> {
       intakeCommandedPos.setDouble(IntakeConstants.intakeGround);
       io.setIntakeMotorControl(IntakeConstants.intakeGround);
-      io.setIntakeSpinVelocityControl(85.0, 100);
+      io.setIntakeSpinVelocityControl(100.0, 85.0);
      }); 
   }
 
@@ -111,7 +111,7 @@ public class Intake extends SubsystemBase {
     return runOnce(() -> {
       intakeCommandedPos.setDouble(IntakeConstants.intakeGround);
       io.setIntakeMotorControl(IntakeConstants.intakeGround);
-      io.setIntakeSpinVelocityControl(85.0, 100);
+      io.setIntakeSpinVelocityControl(100.0, 85.0);
      }); 
   }
 
