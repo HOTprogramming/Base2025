@@ -150,10 +150,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("Floor Intake Auton Deploy 2", Commands.sequence(gamespecManager.floorIntakeAutonDeployFull().withTimeout(1.0), gamespecManager.goToPackage()));
     NamedCommands.registerCommand("Stop Drive", drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
 
-    NamedCommands.registerCommand("Chase ", Commands.sequence(drivetrain.run(() -> drivetrain.chaseObject()).until(() -> drivetrain.objectClose()), drivetrain.run(() -> drivetrain.chaseSlow())).until(() -> (drivetrain.noObjectsSeen()))); // gamespecManager.intakeSubsystem.getBeamBreak() ||
-    NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.chaseSlow()).until(() -> (gamespecManager.intakeSubsystem.getBeamBreak())).withTimeout(1)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
+    NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.chaseSlow()).until(() -> gamespecManager.intakeSubsystem.getBeamBreak()).onlyWhile(() -> drivetrain.targetSeen).onlyIf(() -> drivetrain.targetSeen)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
     
-    NamedCommands.registerCommand("Chase Auton", drivetrain.run(() -> drivetrain.chaseAuton()).until(() -> (gamespecManager.intakeSubsystem.getBeamBreak())).withTimeout(1)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
+    NamedCommands.registerCommand("Chase Auton", drivetrain.run(() -> drivetrain.chaseSlow()).until(() -> gamespecManager.intakeSubsystem.getBeamBreak()).onlyWhile(() -> drivetrain.targetSeen).onlyIf(() -> drivetrain.targetSeen).withTimeout(0.5)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
    // NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.chaseSlow()).until(() -> (gamespecManager.intakeSubsystem.getBeamBreak()))); // gamespecManager.intakeSubsystem.getBeamBreak() ||
 
     //new EventTrigger("Package").whileTrue(gamespecManager.goToPackage());
