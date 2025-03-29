@@ -328,8 +328,7 @@ public class Manager extends SubsystemBase{
     }
 
     public Command climberOut(){
-      return 
-      Commands.parallel(
+      return Commands.parallel(
       intakeSubsystem.climb(),
       Commands.sequence(
       lockFingers()
