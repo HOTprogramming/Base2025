@@ -19,12 +19,6 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "path",
-                      "data": {
-                        "pathName": "GroundPickup1"
-                      }
-                    },
-                    {
                       "type": "named",
                       "data": {
                         "name": "Floor Intake Auton Deploy"
@@ -40,31 +34,32 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Chase Auton"
+                        "name": "Floor Intake Auton Deploy 2"
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "sequential",
                       "data": {
-                        "name": "Floor Intake Deploy"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Chase Object"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Stop Drive"
+                            }
+                          }
+                        ]
                       }
                     }
                   ]
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "GroundPlace2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Align Reef Left"
           }
         }
       ]

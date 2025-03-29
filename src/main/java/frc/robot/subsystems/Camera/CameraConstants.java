@@ -109,8 +109,8 @@ public class CameraConstants {
                         VecBuilder.fill(0.5, 0.5, 1)));
 
                 cameraConstants.put(CameraPositions.TOP, new CameraConstant("TOP", // top
-                        new Translation3d(Units.inchesToMeters(-7.0), Units.inchesToMeters(-8.76), Units.inchesToMeters(42)),
-                        new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(-22.5), Units.degreesToRadians(62.77)),
+                        new Translation3d(Units.inchesToMeters(-8.5), Units.inchesToMeters(-9.72), Units.inchesToMeters(39.36)),
+                        new Rotation3d(Units.degreesToRadians(0.0), Units.degreesToRadians(25), Units.degreesToRadians(-90)),
                         VecBuilder.fill(4, 4, 8),
                         VecBuilder.fill(0.5, 0.5, 1)));
                 break;
