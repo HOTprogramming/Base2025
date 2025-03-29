@@ -165,9 +165,9 @@ public class Drive extends SubsystemBase {
         pathYEntry = driveTab.add("Path Y", 0.0).getEntry();
         pathRotEntry = driveTab.add("Path Rot", 0.0).getEntry();
 
-        objectDetection = NetworkTableInstance.getDefault().getTable("ObjectDetection/coralDetections");
+        objectDetection = NetworkTableInstance.getDefault().getTable("ObjectDetection");
         for (int i=0; i<10; ++i) {
-            coralSubs.add(objectDetection.getDoubleArrayTopic("Coral_"+i).subscribe(new double[] {320, -1, 321, -1}));
+            coralSubs.add(objectDetection.getDoubleArrayTopic("coral").subscribe(new double[] {320, -1, 321, -1}));
         }
 
         double driveBaseRadius = 0;
@@ -299,12 +299,11 @@ public class Drive extends SubsystemBase {
     }
 
     public boolean noObjectsSeen() {
-        for (int i=0; i<10; ++i) {
-            if (framesLost[i] < 45) {
-                return false;
-            } 
+        if (corals[0].equals(coralSubs.get(0).get())) {
+            return false;
+        } else {
+            return true;
         }
-        return true;
     }
 
     public boolean objectClose() {
@@ -699,6 +698,22 @@ public class Drive extends SubsystemBase {
             autoStartPose.getX(), 
             autoStartPose.getY(), 
             autoStartPose.getRotation().getDegrees()});
+    }
+
+    /**
+     * @return true if the robot is in position for a barge shot
+     */
+    public boolean returnAutoBarge(){
+        if(this.iOdata.state.Pose.getX() < DriveConstants.bargePosRedFar && this.iOdata.state.Pose.getX() > DriveConstants.bargePosRedClose){
+            return true;
+
+        } else if(this.iOdata.state.Pose.getX() < DriveConstants.bargePosBlueFar && this.iOdata.state.Pose.getX() > DriveConstants.bargePosBlueClose){
+            return true;
+
+        } else{
+            return false;
+
+        }
     }
 }
 

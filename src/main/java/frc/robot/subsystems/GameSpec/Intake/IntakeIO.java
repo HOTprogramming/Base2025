@@ -18,6 +18,7 @@ import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
@@ -47,6 +48,7 @@ public abstract class IntakeIO {
     public static class IntakeIOStats {
         public boolean intakeMotorConnected = true;
         public double intakePosition = 0.0;
+        public double intakeVelocity = 0.0;
 
         public double intakeCancoderPosition = 0.0;
 
@@ -56,6 +58,7 @@ public abstract class IntakeIO {
     protected static IntakeIOStats stats = new IntakeIOStats();
 
     private final StatusSignal<Angle> intakePosition;
+    private final StatusSignal intakeVelocity;
 
     private final StatusSignal<Angle> intakeCancoderPosition;
 
@@ -63,6 +66,10 @@ public abstract class IntakeIO {
     public TalonFXConfiguration cfg;
     public TalonFXConfiguration orangeCFG;
     public TalonFXConfiguration blackCFG;
+
+    private VelocityVoltage blackVelocityVoltage = new VelocityVoltage(0.0);
+    private VelocityVoltage orangeVelocityVoltage = new VelocityVoltage(0.0);
+
 
     /** Constructor to initialize the TalonFX */
     public IntakeIO() {
@@ -109,8 +116,49 @@ public abstract class IntakeIO {
         );
 
         blackCFG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        //Add PID Gains for Black Intake Motor (KRM 03/29)
+        Slot0Configs blackslot0 = blackCFG.Slot0;
+        blackslot0.kP = IntakeConstants.intakeBlackGains.kP();
+        blackslot0.kI = IntakeConstants.intakeBlackGains.kI();
+        blackslot0.kD = IntakeConstants.intakeBlackGains.kD();
+        blackslot0.kS = IntakeConstants.intakeBlackGains.kS();
+        blackslot0.kV = IntakeConstants.intakeBlackGains.kV();
+        blackCFG.Voltage.PeakForwardVoltage = 12;
+        blackCFG.Voltage.PeakReverseVoltage = -12;
+        blackCFG.withCurrentLimits(
+            new CurrentLimitsConfigs()
+                .withStatorCurrentLimit(80)
+                .withStatorCurrentLimitEnable(true)
+                .withSupplyCurrentLimit(90)
+                .withSupplyCurrentLimitEnable(true)
+        ).withTorqueCurrent(
+            new TorqueCurrentConfigs()
+                .withPeakForwardTorqueCurrent(65)
+                .withPeakReverseTorqueCurrent(-65)
+        );
+
+        
 
         orangeCFG.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        Slot0Configs orangeslot0 = orangeCFG.Slot0;
+        orangeslot0.kP = IntakeConstants.intakeOrangeGains.kP();
+        orangeslot0.kI = IntakeConstants.intakeOrangeGains.kI();
+        orangeslot0.kD = IntakeConstants.intakeOrangeGains.kD();
+        orangeslot0.kS = IntakeConstants.intakeOrangeGains.kS();
+        orangeslot0.kV = IntakeConstants.intakeOrangeGains.kV();
+        orangeCFG.Voltage.PeakForwardVoltage = 12;
+        orangeCFG.Voltage.PeakReverseVoltage = -12;
+        orangeCFG.withCurrentLimits(
+            new CurrentLimitsConfigs()
+                .withStatorCurrentLimit(80)
+                .withStatorCurrentLimitEnable(true)
+                .withSupplyCurrentLimit(90)
+                .withSupplyCurrentLimitEnable(true)
+        ).withTorqueCurrent(
+            new TorqueCurrentConfigs()
+                .withPeakForwardTorqueCurrent(65)
+                .withPeakReverseTorqueCurrent(-65)
+        );
         
         encoderCfg.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
         encoderCfg.MagnetSensor.MagnetOffset = IntakeConstants.intakeEncoderOffset;
@@ -148,12 +196,14 @@ public abstract class IntakeIO {
         }
 
         intakePosition = intakeRotation.getPosition();
+        intakeVelocity = orangeWheels.getVelocity();
 
         intakeCancoderPosition = intakeCancoder.getPosition();
     
         BaseStatusSignal.setUpdateFrequencyForAll(
             50.0,
             intakePosition,
+            intakeVelocity,
             intakeCancoderPosition
           );
 
@@ -173,6 +223,7 @@ public abstract class IntakeIO {
 
         stats.intakePosition = intakePosition.getValueAsDouble();
         stats.intakeCancoderPosition = intakeCancoderPosition.getValueAsDouble();
+        stats.intakeVelocity = intakeVelocity.getValueAsDouble();
     }
 
 
@@ -184,6 +235,11 @@ public abstract class IntakeIO {
     public void setIntakeSpinMotorControl(double orangeVoltage, double blackVoltage){
         orangeWheels.setVoltage(orangeVoltage);
         blackWheels.setVoltage(blackVoltage);
+    }
+
+    public void setIntakeSpinVelocityControl(double orangeVelocity, double blackVelocity){
+        orangeWheels.setControl(orangeVelocityVoltage.withVelocity(orangeVelocity));
+        blackWheels.setControl(blackVelocityVoltage.withVelocity(blackVelocity));
     }
 
     /** Perform simulation-specific tasks */

@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "initPath"
+            "pathName": "SPlace1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auton Align Left"
           }
         }
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

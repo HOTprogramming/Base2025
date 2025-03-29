@@ -72,53 +72,53 @@ public class DriveConstants {
             put(Rotation2d.fromDegrees(-60), new Pose2d(4.07,4.75, Rotation2d.fromDegrees(-60))); 
         }
     };
-    //                                  COMP GAINS
-    public static final Map<Rotation2d, Double[]> redPoleShift = new HashMap<>() {
-        {   //                                                  left center right
-            put(Rotation2d.fromDegrees(0), new Double[] {6.0, -1.6, -6.0});
-            put(Rotation2d.fromDegrees(60), new Double[] {6.0, -1.6,  -6.0});
-            put(Rotation2d.fromDegrees(120), new Double[] {5.5, -1.6, -6.0});
-            put(Rotation2d.fromDegrees(180), new Double[] {6.0, -1.6, -6.0});
-            put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -1.6, -6.0});
-            put(Rotation2d.fromDegrees(-60), new Double[] {7.0, -1.6, -6.0});
-        }
-    };
-
-    public static final Map<Rotation2d, Double[]> bluePoleShift = new HashMap<>() {
-        {   //                                                  left center right
-            put(Rotation2d.fromDegrees(0), new Double[] {6.0, -1.6, -6.0});
-            put(Rotation2d.fromDegrees(60), new Double[] {7.0, -1.6,  -5.5});
-            put(Rotation2d.fromDegrees(120), new Double[] {6.0, -1.6, -6.0});
-            put(Rotation2d.fromDegrees(180), new Double[] {5.5, -1.6, -6.0});
-            put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -1.6, -6.0});
-            put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -1.6, -6.0});
-        }
-    };
-
-    public static final double robotToReefTagFace = 0.39;
-
-    //                              GM GAINS
+    // //                                  COMP GAINS
     // public static final Map<Rotation2d, Double[]> redPoleShift = new HashMap<>() {
     //     {   //                                                  left center right
-    //         put(Rotation2d.fromDegrees(0), new Double[] {6.0, -0.25, -6.5});
-    //         put(Rotation2d.fromDegrees(60), new Double[] {8.0, -0.25,  -7.0});
-    //         put(Rotation2d.fromDegrees(120), new Double[] {5.0, -0.25, -8.0});
-    //         put(Rotation2d.fromDegrees(180), new Double[] {6.0, -0.25, -7.5});
-    //         put(Rotation2d.fromDegrees(-120), new Double[] {5.5, -0.25, -6.0});
-    //         put(Rotation2d.fromDegrees(-60), new Double[] {5.5, -0.25, -6.5});
+    //         put(Rotation2d.fromDegrees(0), new Double[] {6.0, -1.6, -6.0});
+    //         put(Rotation2d.fromDegrees(60), new Double[] {6.0, -1.6,  -6.0});
+    //         put(Rotation2d.fromDegrees(120), new Double[] {5.5, -1.6, -6.0});
+    //         put(Rotation2d.fromDegrees(180), new Double[] {6.0, -1.6, -6.0});
+    //         put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -1.6, -6.0});
+    //         put(Rotation2d.fromDegrees(-60), new Double[] {7.0, -1.6, -6.0});
     //     }
     // };
 
     // public static final Map<Rotation2d, Double[]> bluePoleShift = new HashMap<>() {
     //     {   //                                                  left center right
-    //         put(Rotation2d.fromDegrees(0), new Double[] {6.0, -0.25, -7.5});
-    //         put(Rotation2d.fromDegrees(60), new Double[] {5.5, -0.25, -6.0});
-    //         put(Rotation2d.fromDegrees(120), new Double[] {5.5, -0.25, -8.0});
-    //         put(Rotation2d.fromDegrees(180), new Double[] {7.0, -0.25, -6.0});
-    //         put(Rotation2d.fromDegrees(-120), new Double[] {8.0, -0.25,  -7.0});
-    //         put(Rotation2d.fromDegrees(-60), new Double[] {5.0, -0.25, -8.0});
+    //         put(Rotation2d.fromDegrees(0), new Double[] {6.0, -1.6, -6.0});
+    //         put(Rotation2d.fromDegrees(60), new Double[] {7.0, -1.6,  -5.5});
+    //         put(Rotation2d.fromDegrees(120), new Double[] {6.0, -1.6, -6.0});
+    //         put(Rotation2d.fromDegrees(180), new Double[] {5.5, -1.6, -6.0});
+    //         put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -1.6, -6.0});
+    //         put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -1.6, -6.0});
     //     }
     // };
+
+    public static final double robotToReefTagFace = 0.39;
+
+    //                             GM GAINS
+    public static final Map<Rotation2d, Double[]> redPoleShift = new HashMap<>() {
+        {   //                                                  left center right
+            put(Rotation2d.fromDegrees(0), new Double[] {6.0, -0.25, -6.5});
+            put(Rotation2d.fromDegrees(60), new Double[] {8.0, -0.25,  -7.0});
+            put(Rotation2d.fromDegrees(120), new Double[] {5.0, -0.25, -8.0});
+            put(Rotation2d.fromDegrees(180), new Double[] {6.0, -0.25, -7.5});
+            put(Rotation2d.fromDegrees(-120), new Double[] {5.5, -0.25, -6.0});
+            put(Rotation2d.fromDegrees(-60), new Double[] {5.5, -0.25, -6.5});
+        }
+    };
+
+    public static final Map<Rotation2d, Double[]> bluePoleShift = new HashMap<>() {
+        {   //                                                  left center right
+            put(Rotation2d.fromDegrees(0), new Double[] {6.0, -0.25, -7.5});
+            put(Rotation2d.fromDegrees(60), new Double[] {5.5, -0.25, -6.0});
+            put(Rotation2d.fromDegrees(120), new Double[] {5.5, -0.25, -8.0});
+            put(Rotation2d.fromDegrees(180), new Double[] {7.0, -0.25, -6.0});
+            put(Rotation2d.fromDegrees(-120), new Double[] {8.0, -0.25,  -7.0});
+            put(Rotation2d.fromDegrees(-60), new Double[] {5.0, -0.25, -8.0});
+        }
+    };
 
     public static final Pose2d BLUE_REEF = new Pose2d(4.483, 4.025, Rotation2d.fromDegrees(0));
     public static final Pose2d RED_REEF = new Pose2d(13.066, 4.025, Rotation2d.fromDegrees(0));
@@ -585,4 +585,10 @@ public class DriveConstants {
         PIDConstants AUTON_ROTATION_PID,
         PIDConstants TELEOP_ROTATION_PID
         ) {}
+
+        public static final double bargePosRedFar = 10.0;
+        public static final double bargePosRedClose = 9.75;
+        public static final double bargePosBlueFar = 7.86;
+        public static final double bargePosBlueClose = 7.61;
+
 }

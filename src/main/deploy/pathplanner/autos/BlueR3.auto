@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Place 1"
+            "pathName": "Place.1"
           }
         },
         {
@@ -42,7 +42,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pickup 1"
+                  "pathName": "Pickup.1"
                 }
               },
               {
@@ -74,7 +74,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Place 2"
+                  "pathName": "Place.2"
                 }
               },
               {
@@ -125,7 +125,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pickup 2"
+                  "pathName": "Pickup.2"
                 }
               },
               {
@@ -157,7 +157,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Place 3"
+                  "pathName": "Place.3"
                 }
               },
               {
@@ -208,7 +208,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pickup 3"
+                  "pathName": "Pickup.3"
                 }
               },
               {
@@ -234,9 +234,29 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Place 4"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Place.4"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Auton Finish Intake"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
