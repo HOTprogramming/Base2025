@@ -360,10 +360,6 @@ public class Manager extends SubsystemBase{
       .andThen(Commands.waitSeconds(0.2));
     }
 
-    public Command testRatchetServoIn2(){
-      return climberSubsystem.ratchetServoPosition(0.59);
-    }
-
     //handoff code for teleop
     public Command floorIntakeDeploy(){
       return Commands.sequence(
@@ -443,6 +439,7 @@ public class Manager extends SubsystemBase{
         )));
     }
 
+    //initial deploy command for auto, doesn't check for beambreak so the command can end
     public Command floorIntakeAutonDeploy(){
      return Commands.parallel(
         armSubsystem.horizontal(),
