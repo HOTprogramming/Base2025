@@ -115,7 +115,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("high algae", gamespecManager.highAlgae());
     NamedCommands.registerCommand("low algae", gamespecManager.lowAlgae());
     NamedCommands.registerCommand("align processor", gamespecManager.alignProcessor());
-    NamedCommands.registerCommand("barge", Commands.parallel(gamespecManager.barge(), drivetrain.run(() -> drivetrain.teleopDrive(0, 0, 0))));
+    NamedCommands.registerCommand("barge", Commands.parallel(gamespecManager.barge(), drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0))));
     NamedCommands.registerCommand("L2 Package", gamespecManager.goToL2Package());
     NamedCommands.registerCommand("Algae Package", gamespecManager.algaePackage());
     NamedCommands.registerCommand("Barge Package", gamespecManager.bargePackage());
