@@ -312,7 +312,11 @@ public class RobotContainer {
       operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
       operator.y().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));
       operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("open fingers"));
-      operator.b().and(this::isClimb).onTrue(gamespecManager.latchServo());
+
+      new Trigger(() -> gamespecManager.climberSubsystem.returnReadyToClimb())
+      .debounce(1)
+      .and(operator.b().and(this::isClimb))
+      .onTrue(gamespecManager.autoPackageClimber());
 
       operator.leftTrigger().whileTrue(gamespecManager.floorIntakeDeploy()).onFalse(gamespecManager.floorIntakeClearance());
       

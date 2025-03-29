@@ -344,6 +344,12 @@ public class Manager extends SubsystemBase{
       ));
     }
 
+    public Command autoPackageClimber(){
+      return run(() -> climberSubsystem.setPower(-2.0))
+      .onlyWhile(() -> climberSubsystem.checkClimberClimbed())
+      .andThen(runOnce(() -> climberSubsystem.setPower(0.0)));
+    }
+
     public Command climberDeploy(){
     return run(() -> climberSubsystem.setPower(4.0))
       .onlyWhile(() -> climberSubsystem.checkClimberDeployed())
