@@ -376,7 +376,7 @@ public class Manager extends SubsystemBase{
           )
         .until(() -> intakeSubsystem.getBeamBreak())
         .andThen(Commands.sequence(
-        Commands.waitSeconds(0.0),
+        Commands.waitSeconds(0.2),
         Commands.parallel(
           armSubsystem.horizontal(),
           intakeSubsystem.goToHandoff(),
@@ -404,6 +404,7 @@ public class Manager extends SubsystemBase{
         )));
     }
 
+    //handoff code for auton, doesn't do the elevator at first and doesn't wait.
     public Command floorIntakeAutonDeployFull(){
       return Commands.sequence(
       Commands.parallel(

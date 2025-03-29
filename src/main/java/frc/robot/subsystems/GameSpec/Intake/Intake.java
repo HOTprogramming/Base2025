@@ -65,11 +65,11 @@ public class Intake extends SubsystemBase {
       },
       () -> {
       io.setIntakeMotorControl(position);
-      io.setIntakeSpinVelocityControl(orangeVelocity, blackVelocity);
+      io.setIntakeSpinMotorControl(orangeVelocity, blackVelocity);
       },
       interrupted -> {
       io.setIntakeMotorControl(position);
-      io.setIntakeSpinVelocityControl(orangeVelocity, blackVelocity);
+      io.setIntakeSpinMotorControl(orangeVelocity, blackVelocity);
       }, 
       () -> checkRange(5),
       this);
@@ -84,7 +84,7 @@ public class Intake extends SubsystemBase {
   }
 
   public Command handoffAndSpin(){
-    return intakeCommand(IntakeConstants.intakeHandoff, -2.0, -2.0);
+    return intakeCommand(IntakeConstants.intakeHandoff, 0.0, 0.0);
   }
 
   public Command bump(){

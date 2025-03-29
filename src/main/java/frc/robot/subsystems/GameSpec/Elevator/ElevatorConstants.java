@@ -86,7 +86,7 @@ public class ElevatorConstants {
         ProcessorHeight = 14.0;
         initialClimbHeight = 12.0;
         L4MiniScoreHeight = 50.0;
-        intakeCoralHeight = 9.6;
+        intakeCoralHeight = 9.1;
         autonHalfHeight = 25.0;
 
     }
