@@ -292,6 +292,7 @@ public class Manager extends SubsystemBase{
         elevatorSubsystem.goToFeeder());
     }
 
+
     public Command autonFinishIntake() {
       return 
       Commands.parallel(
@@ -375,7 +376,7 @@ public class Manager extends SubsystemBase{
           )
         .until(() -> intakeSubsystem.getBeamBreak())
         .andThen(Commands.sequence(
-        Commands.waitSeconds(0.2),
+        Commands.waitSeconds(0.0),
         Commands.parallel(
           armSubsystem.horizontal(),
           intakeSubsystem.goToHandoff(),
@@ -401,6 +402,53 @@ public class Manager extends SubsystemBase{
           ),
         intakeSubsystem.clearance())
         )));
+    }
+
+    public Command floorIntakeAutonDeployFull(){
+      return Commands.sequence(
+      Commands.parallel(
+          armSubsystem.horizontal(),
+          intakeSubsystem.deploy(),
+          manipulatorSubsystem.goScore(),
+          elevatorSubsystem.intakeCoral()
+          )
+        .until(() -> intakeSubsystem.getBeamBreak())
+        .andThen(Commands.sequence(
+        Commands.waitSeconds(0.0),
+        Commands.parallel(
+          armSubsystem.horizontal(),
+          intakeSubsystem.goToHandoff(),
+          manipulatorSubsystem.intakeGround(),
+          elevatorSubsystem.intakeCoral()
+          ))
+        .until(() -> !manipulatorSubsystem.returnBeamBreak()) //coral beambreak true/false is flipped from intake beambreak
+        .andThen(
+        Commands.sequence(
+        Commands.waitSeconds(0.1),
+        Commands.parallel(
+          armSubsystem.goToPackage(),
+          elevatorSubsystem.intakeCoral(),
+          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
+          intakeSubsystem.handoffAndSpin())
+          .until(() -> armSubsystem.returnArmPos() < ArmConstants.Horizontal-5.0)
+          .andThen(
+          Commands.parallel(
+          armSubsystem.goToPackage(),
+          elevatorSubsystem.goToPackage(),
+          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
+          intakeSubsystem.goToHandoff())
+          ),
+        intakeSubsystem.clearance())
+        )));
+    }
+
+    public Command floorIntakeAutonDeploy(){
+     return Commands.parallel(
+        armSubsystem.horizontal(),
+        intakeSubsystem.deployAuton(),
+        manipulatorSubsystem.goScore(),
+        elevatorSubsystem.intakeCoral()
+        );
     }
 
     //packages the floor intake after a deploy

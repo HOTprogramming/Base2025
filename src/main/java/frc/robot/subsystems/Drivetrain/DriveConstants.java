@@ -585,4 +585,10 @@ public class DriveConstants {
         PIDConstants AUTON_ROTATION_PID,
         PIDConstants TELEOP_ROTATION_PID
         ) {}
+
+        public static final double bargePosRedFar = 19;
+        public static final double bargePosRedClose = 17;
+        public static final double bargePosBlueFar = 15;
+        public static final double bargePosBlueClose = 13;
+
 }
