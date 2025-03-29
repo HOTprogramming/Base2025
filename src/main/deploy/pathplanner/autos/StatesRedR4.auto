@@ -13,7 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "GroundPlace1"
+            "pathName": "RedG Place 1"
           }
         },
         {
@@ -52,7 +52,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "GroundPickup1"
+                        "pathName": "RedG Pickup 1"
                       }
                     },
                     {
@@ -102,7 +102,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "GroundPlace2"
+            "pathName": "RedG Place 2"
           }
         },
         {
