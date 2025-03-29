@@ -101,6 +101,15 @@ public class Intake extends SubsystemBase {
      }); 
   }
 
+  public Command deployAuton(){
+    return runOnce(() -> {
+      intakeCommandedPos.setDouble(IntakeConstants.intakeGround);
+      io.setIntakeMotorControl(IntakeConstants.intakeGround);
+      io.setIntakeSpinMotorControl(8, 10);
+     }); 
+  }
+
+
   /**
    * @return: false if nothing in the beambreak, true if it detects
    */

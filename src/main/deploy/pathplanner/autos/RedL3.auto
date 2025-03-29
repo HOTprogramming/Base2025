@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Place 1"
+            "pathName": "CoralP1"
           }
         },
         {
@@ -17,7 +17,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Align Reef Right"
+                  "name": "Align Reef Left"
                 }
               },
               {
@@ -42,7 +42,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pickup 1"
+                  "pathName": "CoralP2"
                 }
               },
               {
@@ -74,90 +74,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Place 2"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Auton Finish Intake"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Align Reef Right"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AL4"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Auton Shoot"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Pickup 2"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.25
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Auton Intake Start"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Place 3"
+                  "pathName": "CoralP3"
                 }
               },
               {
@@ -208,7 +125,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pickup 3"
+                  "pathName": "CoralP4"
                 }
               },
               {
@@ -234,9 +151,86 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Place 4"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CoralP5"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Auton Finish Intake"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Align Reef Right"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AL4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auton Shoot"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CoralP6"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.25
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Auton Intake Start"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

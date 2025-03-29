@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "REDL4Place1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "REDL4Pickup1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "REDL4Place2"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
