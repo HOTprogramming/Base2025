@@ -115,7 +115,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("high algae", gamespecManager.highAlgae());
     NamedCommands.registerCommand("low algae", gamespecManager.lowAlgae());
     NamedCommands.registerCommand("align processor", gamespecManager.alignProcessor());
-    NamedCommands.registerCommand("barge", gamespecManager.barge());
+    NamedCommands.registerCommand("barge", Commands.parallel(gamespecManager.barge(), drivetrain.run(() -> drivetrain.teleopDrive(0, 0, 0))));
     NamedCommands.registerCommand("L2 Package", gamespecManager.goToL2Package());
     NamedCommands.registerCommand("Algae Package", gamespecManager.algaePackage());
     NamedCommands.registerCommand("Barge Package", gamespecManager.bargePackage());
@@ -308,9 +308,6 @@ public class RobotContainer {
       .and(this::isAlgae)
       .and(new Trigger(() -> drivetrain.returnAutoBarge()))
       .onTrue(NamedCommands.getCommand("barge"));
-
-      // operator.y().and(this::isAlgae).whileTrue(
-      // Commands.either(NamedCommands.getCommand("barge"), NamedCommands.getCommand("Package"), new Trigger(() -> drivetrain.returnAutoBarge())));
 
       operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
       operator.y().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));
