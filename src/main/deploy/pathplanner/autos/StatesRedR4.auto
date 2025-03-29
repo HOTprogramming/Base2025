@@ -40,13 +40,26 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Chase Auton"
+                        "name": "Floor Intake Auton Deploy 2"
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "sequential",
                       "data": {
-                        "name": "Floor Intake Deploy"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Chase Object"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Stop Drive"
+                            }
+                          }
+                        ]
                       }
                     }
                   ]
