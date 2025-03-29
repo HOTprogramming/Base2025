@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 import com.pathplanner.lib.config.PIDConstants;
@@ -133,9 +134,9 @@ public class DriveConstants {
     // The steer motor uses any SwerveModule.SteerRequestType control request with the
     // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
     private static final Slot0Configs steerGains = new Slot0Configs()
-        .withKP(100).withKI(0).withKD(0.5)
-        .withKS(0.15).withKV(1.5).withKA(0)
-        // .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign)
+        .withKP(2250).withKI(0).withKD(20)
+        .withKS(2).withKV(0).withKA(0)
+        .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign)
         ;
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
@@ -148,10 +149,10 @@ public class DriveConstants {
         .withKS(0).withKV(0.124);
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
-    private static final ClosedLoopOutputType kSteerClosedLoopOutput = ClosedLoopOutputType.Voltage;
+    private static final ClosedLoopOutputType kSteerClosedLoopOutput = ClosedLoopOutputType.TorqueCurrentFOC;
     // The closed-loop output type to use for the drive motors;
     // This affects the PID/FF gains for the drive motors
-    private static final ClosedLoopOutputType kDriveClosedLoopOutput = ClosedLoopOutputType.Voltage;
+    private static final ClosedLoopOutputType kDriveClosedLoopOutput = ClosedLoopOutputType.TorqueCurrentFOC;
     private static final ClosedLoopOutputType kDriveClosedLoopOutputCambot = ClosedLoopOutputType.Voltage;
 
 
@@ -196,8 +197,8 @@ public class DriveConstants {
             .withSupplyCurrentLowerTime(1)
     ).withTorqueCurrent(
         new TorqueCurrentConfigs()
-            .withPeakForwardTorqueCurrent(80)
-            .withPeakReverseTorqueCurrent(-80)
+            .withPeakForwardTorqueCurrent(120)
+            .withPeakReverseTorqueCurrent(-120)
     );
 
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
@@ -586,9 +587,9 @@ public class DriveConstants {
         PIDConstants TELEOP_ROTATION_PID
         ) {}
 
-        public static final double bargePosRedFar = 19;
-        public static final double bargePosRedClose = 17;
-        public static final double bargePosBlueFar = 15;
-        public static final double bargePosBlueClose = 13;
+        public static final double bargePosRedFar = 10.0;
+        public static final double bargePosRedClose = 9.75;
+        public static final double bargePosBlueFar = 7.86;
+        public static final double bargePosBlueClose = 7.61;
 
 }
