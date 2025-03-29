@@ -5,15 +5,46 @@
     "data": {
       "commands": [
         {
-          "type": "sequential",
+          "type": "named",
+          "data": {
+            "name": "Package"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "GroundPlace1"
+          }
+        },
+        {
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "Package"
+                  "name": "Align Reef Right"
                 }
               },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AL4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auton Shoot"
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
               {
                 "type": "parallel",
                 "data": {
@@ -75,9 +106,28 @@
           }
         },
         {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Align Reef Left"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AL4"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "Align Reef Left"
+            "name": "Auton Shoot"
           }
         }
       ]
