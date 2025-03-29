@@ -5,32 +5,13 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Package"
-          }
-        },
-        {
           "type": "sequential",
           "data": {
             "commands": [
               {
-                "type": "parallel",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "RedG Pickup 1"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Floor Intake Auton Deploy"
-                      }
-                    }
-                  ]
+                  "name": "Package"
                 }
               },
               {
@@ -38,31 +19,24 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "path",
                       "data": {
-                        "name": "Floor Intake Auton Deploy 2"
+                        "pathName": "GroundPickup1"
                       }
                     },
                     {
-                      "type": "sequential",
+                      "type": "named",
                       "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Chase Object"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Stop Drive"
-                            }
-                          }
-                        ]
+                        "name": "Floor Intake Deploy"
                       }
                     }
                   ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Auton Chase"
                 }
               }
             ]
@@ -71,26 +45,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RedG Place 2"
+            "pathName": "GroundPlace2"
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Align Reef Left"
-                }
-              }
-            ]
+            "name": "Align Reef Left"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Dev Autos",
+  "folder": null,
   "choreoAuto": false
 }
