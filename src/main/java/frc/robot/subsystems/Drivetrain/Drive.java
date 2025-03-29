@@ -163,7 +163,7 @@ public class Drive extends SubsystemBase {
         pathRotEntry = driveTab.add("Path Rot", 0.0).getEntry();
 
         objectDetection = NetworkTableInstance.getDefault().getTable("ObjectDetection");
-        coralSub = objectDetection.getDoubleArrayTopic("coral").subscribe(new double[] {320, -1, 321, -1});
+        coralSub = objectDetection.getDoubleArrayTopic("coral_0").subscribe(new double[] {320, -1, 321, -1});
         targetSeenSub = objectDetection.getBooleanTopic("detected").subscribe(false);
         // for (int i=0; i<10; ++i) {
         //     coralSubs.add(objectDetection.getDoubleArrayTopic("coral").subscribe(new double[] {320, -1, 321, -1}));
