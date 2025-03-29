@@ -163,8 +163,8 @@ public class Drive extends SubsystemBase {
         pathRotEntry = driveTab.add("Path Rot", 0.0).getEntry();
 
         objectDetection = NetworkTableInstance.getDefault().getTable("ObjectDetection");
-        objectDetection.getDoubleArrayTopic("coral").subscribe(new double[] {320, -1, 321, -1});
-        objectDetection.getBooleanTopic("detected").subscribe(false);
+        coralSub = objectDetection.getDoubleArrayTopic("coral").subscribe(new double[] {320, -1, 321, -1});
+        targetSeenSub = objectDetection.getBooleanTopic("detected").subscribe(false);
         // for (int i=0; i<10; ++i) {
         //     coralSubs.add(objectDetection.getDoubleArrayTopic("coral").subscribe(new double[] {320, -1, 321, -1}));
         // }
@@ -291,6 +291,7 @@ public class Drive extends SubsystemBase {
         pixelYmax = coral[3];
         pixelX = (coral[0] + coral[2]) / 2; // xmin + xmax
         pixelY = (coral[1] + coral[3]) / 2;
+        SmartDashboard.putBoolean("target seen", targetSeen);
     }
 
     public boolean alignedToObject() {
