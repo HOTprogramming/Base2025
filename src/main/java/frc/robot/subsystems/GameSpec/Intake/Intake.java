@@ -65,26 +65,30 @@ public class Intake extends SubsystemBase {
       },
       () -> {
       io.setIntakeMotorControl(position);
-      io.setIntakeSpinVelocityControl(orangeVelocity, blackVelocity);
+      io.setIntakeSpinMotorControl(orangeVelocity, blackVelocity);
       },
       interrupted -> {
       io.setIntakeMotorControl(position);
-      io.setIntakeSpinVelocityControl(orangeVelocity, blackVelocity);
+      io.setIntakeSpinMotorControl(orangeVelocity, blackVelocity);
       }, 
       () -> checkRange(5),
       this);
   }
 
-  public Command goToHandoff(){
-    return intakeCommand(IntakeConstants.intakeHandoff, 0.0, 0.0);
+  public Command handoffAndSpin(){
+    return run(() -> {
+      intakeCommandedPos.setDouble(IntakeConstants.intakeHandoff);
+      io.setIntakeMotorControl(IntakeConstants.intakeHandoff);
+      io.setIntakeSpinMotorControl(-0.5, -0.5);
+     }); 
   }
 
   public Command clearance(){
     return intakeCommand(IntakeConstants.intakeClearance, 0.0, 0.0);
   }
 
-  public Command handoffAndSpin(){
-    return intakeCommand(IntakeConstants.intakeHandoff, -2.0, -2.0);
+  public Command handoff(){
+    return intakeCommand(IntakeConstants.intakeHandoff, 0.0, 0.0);
   }
 
   public Command bump(){
@@ -99,8 +103,7 @@ public class Intake extends SubsystemBase {
     return run(() -> {
       intakeCommandedPos.setDouble(IntakeConstants.intakeGround);
       io.setIntakeMotorControl(IntakeConstants.intakeGround);
-      // io.setIntakeSpinMotorControl(8, 10);
-      io.setIntakeSpinVelocityControl(85.0, 100);
+      io.setIntakeSpinVelocityControl(100.0, 85.0);
      }); 
   }
 
@@ -108,7 +111,7 @@ public class Intake extends SubsystemBase {
     return runOnce(() -> {
       intakeCommandedPos.setDouble(IntakeConstants.intakeGround);
       io.setIntakeMotorControl(IntakeConstants.intakeGround);
-      io.setIntakeSpinVelocityControl(85.0, 100);
+      io.setIntakeSpinVelocityControl(100.0, 85.0);
      }); 
   }
 
