@@ -27,16 +27,42 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Floor Intake Deploy"
+                        "name": "Floor Intake Auton Deploy"
                       }
                     }
                   ]
                 }
               },
               {
-                "type": "named",
+                "type": "parallel",
                 "data": {
-                  "name": "Auton Chase"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Floor Intake Auton Deploy 2"
+                      }
+                    },
+                    {
+                      "type": "sequential",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Chase Auton"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Stop Drive"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -49,9 +75,28 @@
           }
         },
         {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AL4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Align Reef Left"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "Align Reef Left"
+            "name": "Auton Shoot"
           }
         }
       ]
