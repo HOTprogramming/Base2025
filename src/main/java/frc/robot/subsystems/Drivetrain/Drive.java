@@ -116,6 +116,8 @@ public class Drive extends SubsystemBase {
     private ProfiledPIDController translationControllerY = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
     private ProfiledPIDController translationControllerX = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
     private PIDController yChaseObjectPID = new PIDController(0.011, 0, 0);
+    private PIDController xChaseObjectPID = new PIDController(0.005, 0, 0);
+
     private PIDController thetaChaseObjectPID = new PIDController(0.0075, 0, 0);
 
 
@@ -163,7 +165,7 @@ public class Drive extends SubsystemBase {
         pathRotEntry = driveTab.add("Path Rot", 0.0).getEntry();
 
         objectDetection = NetworkTableInstance.getDefault().getTable("ObjectDetection");
-        coralSub = objectDetection.getDoubleArrayTopic("coral_0").subscribe(new double[] {320, -1, 321, -1});
+        coralSub = objectDetection.getDoubleArrayTopic("coral").subscribe(new double[] {320, -1, 321, -1});
         targetSeenSub = objectDetection.getBooleanTopic("detected").subscribe(false);
         // for (int i=0; i<10; ++i) {
         //     coralSubs.add(objectDetection.getDoubleArrayTopic("coral").subscribe(new double[] {320, -1, 321, -1}));
@@ -314,6 +316,14 @@ public class Drive extends SubsystemBase {
         pixelTolerance = 20;
         driveIO.setSwerveRequest(ROBOT_CENTRIC
         .withRotationalRate(alignedToObject() ? 0 : thetaChaseObjectPID.calculate(pixelX, targetXPixel)* 0.5)
+        .withVelocityY(1.5)
+        );
+    }
+
+    public void chaseAuton() {
+        pixelTolerance = 5;
+        driveIO.setSwerveRequest(ROBOT_CENTRIC
+        .withVelocityX(alignedToObject() ? 0 : -xChaseObjectPID.calculate(pixelX, targetXPixel))
         .withVelocityY(1.5)
         );
     }
