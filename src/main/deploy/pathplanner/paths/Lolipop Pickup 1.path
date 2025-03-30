@@ -73,7 +73,7 @@
   "constraintZones": [
     {
       "name": "Pickup",
-      "minWaypointRelativePos": 2.0696435886931557,
+      "minWaypointRelativePos": 1.838812301166489,
       "maxWaypointRelativePos": 3.0,
       "constraints": {
         "maxVelocity": 1.0,

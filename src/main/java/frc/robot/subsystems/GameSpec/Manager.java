@@ -432,7 +432,7 @@ public class Manager extends SubsystemBase{
     }
 
     /**
-     * @apiNote ends with a coral in da
+     * @apiNote ends with a coral in da grippa
      */
     public Command autonFloorIntakeStart() {
       return Commands.parallel(

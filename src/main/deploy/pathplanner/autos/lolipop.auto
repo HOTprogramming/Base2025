@@ -121,7 +121,13 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 0.1
+                              "waitTime": 0.3
+                            }
+                          },
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "RedG Place 2"
                             }
                           },
                           {
@@ -167,12 +173,6 @@
                             "type": "named",
                             "data": {
                               "name": "Auton Shoot"
-                            }
-                          },
-                          {
-                            "type": "wait",
-                            "data": {
-                              "waitTime": 0.1
                             }
                           },
                           {
