@@ -17,7 +17,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "BlueL 1 Place"
+                  "pathName": "BlueL Place 1"
                 }
               },
               {
@@ -96,7 +96,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "BlueL 1 Pickup"
+                        "pathName": "BlueL Pickup  1"
                       }
                     }
                   ]
@@ -112,7 +112,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "BlueL 2 Place"
+                  "pathName": "BlueL Place 2"
                 }
               },
               {
@@ -198,7 +198,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "BlueL 2 Pickup"
+                        "pathName": "BlueL Pickup 2"
                       }
                     }
                   ]
@@ -214,7 +214,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "BlueL3 Place"
+                  "pathName": "BlueL Place 3"
                 }
               },
               {
@@ -313,7 +313,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "BlueL 3 Pickup"
+                        "pathName": "BlueL Pickup 3"
                       }
                     }
                   ]
@@ -329,7 +329,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "BlueL 4 Place"
+                  "pathName": "BlueL Place 4"
                 }
               },
               {

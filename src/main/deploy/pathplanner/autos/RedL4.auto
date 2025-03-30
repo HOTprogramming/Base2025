@@ -17,7 +17,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RedLP1"
+                  "pathName": "RedL Place 1"
                 }
               },
               {
@@ -96,7 +96,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "RedLP2"
+                        "pathName": "RedL Pickup 1"
                       }
                     }
                   ]
@@ -112,7 +112,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RedLP3"
+                  "pathName": "RedL Place 2"
                 }
               },
               {
@@ -198,7 +198,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "RedLP4"
+                        "pathName": "RedL Pickup 2"
                       }
                     }
                   ]
@@ -214,7 +214,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RedLP5"
+                  "pathName": "RedL Place 3"
                 }
               },
               {
@@ -313,7 +313,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "RedLP6"
+                        "pathName": "RedL Pickup 3"
                       }
                     }
                   ]
@@ -329,7 +329,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RedLP7"
+                  "pathName": "RedL Place 4"
                 }
               },
               {
