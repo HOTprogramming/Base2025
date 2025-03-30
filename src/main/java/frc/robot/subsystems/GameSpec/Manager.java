@@ -244,11 +244,38 @@ public class Manager extends SubsystemBase{
       );
     }
 
+    /**
+     * @apinote full shooting to package
+     */
     public Command autonShoot() {
       return 
       Commands.sequence(
             runOnce(() -> {doneScoring = true;}),
             armSubsystem.L4Score().withTimeout(0.75),
+            Commands.parallel(
+            manipulatorSubsystem.L4Spit(),
+            gotoL4Package()),
+            manipulatorSubsystem.zero()
+            );
+    }
+
+    /**
+     * @apinote Half shoot for fast driving
+     */
+    public Command autonShootStart() {
+      return 
+      Commands.sequence(
+            runOnce(() -> {doneScoring = true;}),
+            armSubsystem.L4Score().withTimeout(0.75)
+            );
+    }
+
+    /**
+     * @apinote finish the half shoot
+     */
+    public Command autonShootFinish() {
+      return 
+      Commands.sequence(
             Commands.parallel(
             manipulatorSubsystem.L4Spit(),
             gotoL4Package()),
