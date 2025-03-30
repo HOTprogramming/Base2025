@@ -268,13 +268,7 @@
                           {
                             "type": "named",
                             "data": {
-                              "name": "Auton Shoot"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Auton Floor Intake Start"
+                              "name": "Auton Shoot Intake"
                             }
                           }
                         ]

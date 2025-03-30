@@ -152,6 +152,8 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("Auton Fast Shoot Start", gamespecManager.autonShootStart());
     NamedCommands.registerCommand("Auton Fast Shoot End", gamespecManager.autonShootFinish());
+    NamedCommands.registerCommand("Auton Shoot Intake", gamespecManager.autonShootIntake());
+
 
     
     NamedCommands.registerCommand("Auton Floor Intake End", gamespecManager.autonFloorIntakeEnd());
