@@ -191,7 +191,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 0.3
+                              "waitTime": 0.5
                             }
                           },
                           {
@@ -260,15 +260,15 @@
                       "data": {
                         "commands": [
                           {
-                            "type": "named",
-                            "data": {
-                              "name": "Auton Shoot"
-                            }
-                          },
-                          {
                             "type": "wait",
                             "data": {
                               "waitTime": 0.1
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Auton Shoot"
                             }
                           },
                           {
@@ -287,7 +287,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 0.3
+                              "waitTime": 0.35
                             }
                           },
                           {
@@ -358,7 +358,7 @@
                       }
                     },
                     {
-                      "type": "parallel",
+                      "type": "sequential",
                       "data": {
                         "commands": [
                           {
