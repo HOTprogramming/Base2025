@@ -413,45 +413,45 @@ public class Manager extends SubsystemBase{
       .andThen(Commands.waitSeconds(0.2));
     }
 
-    //handoff code for teleop
-    public Command floorIntakeDeploy(){
-      return Commands.sequence(
-      elevatorSubsystem.goToPackage(),
+  //handoff code for teleop
+  public Command floorIntakeDeploy(){
+    return Commands.sequence(
+    elevatorSubsystem.goToPackage(),
+    Commands.parallel(
+        armSubsystem.horizontal(),
+        intakeSubsystem.deploy(),
+        manipulatorSubsystem.goScore(),
+        elevatorSubsystem.intakeCoral()
+        )
+      .until(() -> intakeSubsystem.getBeamBreak())
+      .andThen(Commands.sequence(
+      Commands.waitSeconds(0.2),
       Commands.parallel(
-          armSubsystem.horizontal(),
-          intakeSubsystem.deploy(),
-          manipulatorSubsystem.goScore(),
-          elevatorSubsystem.intakeCoral()
-          )
-        .until(() -> intakeSubsystem.getBeamBreak())
-        .andThen(Commands.sequence(
-        Commands.waitSeconds(0.2),
-        Commands.parallel(
-          armSubsystem.horizontal(),
-          Commands.sequence(Commands.waitSeconds(0.02), intakeSubsystem.handoff()),
-          manipulatorSubsystem.intakeGround(),
-          elevatorSubsystem.intakeCoral()
-          ))
-        .until(() -> !manipulatorSubsystem.returnBeamBreak()) //coral beambreak true/false is flipped from intake beambreak
+        armSubsystem.horizontal(),
+        Commands.sequence(Commands.waitSeconds(0.02), intakeSubsystem.handoffAndSpin()),
+        manipulatorSubsystem.intakeGround(),
+        elevatorSubsystem.intakeCoral()
+        ))
+      .until(() -> !manipulatorSubsystem.returnBeamBreak()) //coral beambreak true/false is flipped from intake beambreak
+      .andThen(
+      Commands.sequence(
+      Commands.waitSeconds(0.1),
+      Commands.parallel(
+        armSubsystem.goToPackage(),
+        elevatorSubsystem.intakeCoral(),
+        Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
+        intakeSubsystem.handoff())
+        .until(() -> armSubsystem.returnArmPos() < ArmConstants.Horizontal-5.0)
         .andThen(
-        Commands.sequence(
-        Commands.waitSeconds(0.1),
         Commands.parallel(
-          armSubsystem.goToPackage(),
-          elevatorSubsystem.intakeCoral(),
-          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
-          intakeSubsystem.handoff())
-          .until(() -> armSubsystem.returnArmPos() < ArmConstants.Horizontal-5.0)
-          .andThen(
-          Commands.parallel(
-          armSubsystem.goToPackage(),
-          elevatorSubsystem.goToPackage(),
-          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
-          intakeSubsystem.handoff())
-          ),
-        intakeSubsystem.clearance())
-        )));
-    }
+        armSubsystem.goToPackage(),
+        elevatorSubsystem.goToPackage(),
+        Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
+        intakeSubsystem.handoff())
+        ),
+      intakeSubsystem.clearance())
+      )));
+  }
 
     /**
      * @apiNote ends with a coral in da grippa
