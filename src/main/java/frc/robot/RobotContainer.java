@@ -336,7 +336,7 @@ public class RobotContainer {
       operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("open fingers"));
       operator.b().and(this::isClimb).onTrue(gamespecManager.latchServo());
 
-      operator.leftTrigger().whileTrue(gamespecManager.floorIntakeDeploy()).onFalse(gamespecManager.floorIntakeClearance());
+      operator.leftTrigger().or(driver.leftTrigger()).whileTrue(gamespecManager.floorIntakeDeploy()).onFalse(gamespecManager.floorIntakeClearance());
       
       operator.povUp().or(operator.povLeft().or(operator.povDown().or(operator.povRight()))).onTrue(NamedCommands.getCommand("Package").unless(this::isClimb));
 
