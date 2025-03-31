@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import org.json.simple.parser.ParseException;
+import org.opencv.core.Mat;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -390,6 +391,57 @@ public class Drive extends SubsystemBase {
             translationControllerIn.reset();
             translationControllerAcross.reset();
         });
+    }
+
+    public void alignReefRobotcentricWithSlowSide(boolean auton) {        
+        Pose2d Error = currentTarget.relativeTo(new Pose2d(iOdata.state.Pose.getTranslation(), currentTarget.getRotation()));
+        SmartDashboard.putNumberArray("Drive Error", new double[] {Error.getX(), Error.getY(), Error.getRotation().getRadians()});
+
+        Translation2d speeds = new Translation2d(iOdata.state.Speeds.vyMetersPerSecond, iOdata.state.Speeds.vxMetersPerSecond);
+        speeds.rotateBy(currentTarget.getRotation());
+        SmartDashboard.putNumberArray("Relative Speeds", new double[] {speeds.getX(), -speeds.getY(), 0.0});
+
+        translationControllerIn.calculate(Error.getX(), 0.0);
+        translationControllerAcross.calculate(Error.getY(), 0.0);
+
+        double in = !translationControllerIn.atSetpoint() ? -translationControllerIn.calculate(Error.getX(), 0.0) : 0.0;
+        double across = !translationControllerAcross.atSetpoint() ? translationControllerAcross.calculate(Error.getY(), 0.0) : 0.0;
+        double cosine = Math.cos(currentTarget.getRotation().getRadians());
+        double sine = Math.sin(currentTarget.getRotation().getRadians());
+
+        if (auton) {
+            in = MathUtil.clamp(in, -auto_align_top_speed_auton, auto_align_top_speed_auton);
+            across =  MathUtil.clamp(across, -auto_align_top_speed_auton, auto_align_top_speed_auton);
+        } else {
+            if (Math.abs(translationControllerAcross.getError()) > Math.abs(translationControllerIn.getError() * auto_align_slow_in_percent)) {
+                in = MathUtil.clamp(in, -auto_align_slow_speed_teleop, auto_align_slow_speed_teleop);
+            } else {
+                in = MathUtil.clamp(in, -auto_align_top_speed_teleop, auto_align_top_speed_teleop);
+            }
+            across =  MathUtil.clamp(across, -auto_align_top_speed_teleop, auto_align_top_speed_teleop);
+        }
+        
+
+        boolean disableTheta = Error.getX() < auto_align_theta_disable;
+
+        if (DriverStation.getAlliance().get() == Alliance.Blue) 
+            driveIO.setSwerveRequest(AUTO_ALIGN
+                .withVelocityX(((in * cosine) + (across * sine)))
+                .withVelocityY(((across * -cosine) + (in * sine)))
+                .withRotationalRate(!disableTheta ? thetaController.calculate(
+                    iOdata.state.Pose.getRotation().getRadians(), 
+                    currentTarget.getRotation().getRadians() + Math.toRadians(90)
+                ) : 0.0)
+            );
+        else 
+            driveIO.setSwerveRequest(AUTO_ALIGN
+                .withVelocityX(-((in * cosine) + (across * sine)))
+                .withVelocityY(-((across * -cosine) + (in * sine)))
+                .withRotationalRate(!disableTheta ? thetaController.calculate(
+                    iOdata.state.Pose.getRotation().getRadians(), 
+                    currentTarget.getRotation().getRadians() + Math.toRadians(90)
+                ) : 0.0)
+            );
     }
 
     public void alignReefRobotcentric(boolean auton) {        
