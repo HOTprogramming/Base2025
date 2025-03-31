@@ -179,10 +179,6 @@ public class RobotContainer {
   }
 
   private void configureBindings() {   
-    
-    driver.leftTrigger().whileTrue(NamedCommands.getCommand("Chase Auton"));
-    driver.leftTrigger().whileFalse(drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
-
 
     // drivetrain.setDefaultCommand
     //   (drivetrain.run(() -> {
