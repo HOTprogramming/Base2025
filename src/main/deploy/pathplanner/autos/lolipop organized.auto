@@ -109,7 +109,14 @@
                     }
                   ]
                 }
-              },
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
               {
                 "type": "parallel",
                 "data": {
@@ -199,7 +206,14 @@
                     }
                   ]
                 }
-              },
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
               {
                 "type": "deadline",
                 "data": {
@@ -289,7 +303,14 @@
                     }
                   ]
                 }
-              },
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
               {
                 "type": "deadline",
                 "data": {
@@ -374,6 +395,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Red Autos",
+  "folder": null,
   "choreoAuto": false
 }

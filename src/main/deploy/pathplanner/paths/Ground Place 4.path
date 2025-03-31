@@ -59,7 +59,7 @@
     "rotation": -29.999999999999996
   },
   "reversed": false,
-  "folder": null,
+  "folder": "RedRG",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -39.15
