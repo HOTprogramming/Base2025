@@ -413,45 +413,49 @@ public class Manager extends SubsystemBase{
       .andThen(Commands.waitSeconds(0.2));
     }
 
-  //handoff code for teleop
-  public Command floorIntakeDeploy(){
-    return Commands.sequence(
-    elevatorSubsystem.goToPackage(),
-    Commands.parallel(
-        armSubsystem.horizontal(),
-        intakeSubsystem.deploy(),
-        manipulatorSubsystem.goScore(),
-        elevatorSubsystem.intakeCoral()
-        )
-      .until(() -> intakeSubsystem.getBeamBreak())
-      .andThen(Commands.sequence(
-      Commands.waitSeconds(0.2),
+    public Command testRatchetServoIn2(){
+      return climberSubsystem.ratchetServoPosition(0.59);
+    }
+
+    //handoff code for teleop
+    public Command floorIntakeDeploy(){
+      return Commands.sequence(
+      elevatorSubsystem.goToPackage(),
       Commands.parallel(
-        armSubsystem.horizontal(),
-        intakeSubsystem.handoffAndSpin(),
-        manipulatorSubsystem.intakeGround(),
-        elevatorSubsystem.intakeCoral()
-        ))
-      .until(() -> !manipulatorSubsystem.returnBeamBreak()) //coral beambreak true/false is flipped from intake beambreak
-      .andThen(
-      Commands.sequence(
-      Commands.waitSeconds(0.1),
-      Commands.parallel(
-        armSubsystem.goToPackage(),
-        elevatorSubsystem.intakeCoral(),
-        Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
-        intakeSubsystem.handoff())
-        .until(() -> armSubsystem.returnArmPos() < ArmConstants.Horizontal-5.0)
-        .andThen(
+          armSubsystem.horizontal(),
+          intakeSubsystem.deploy(),
+          manipulatorSubsystem.goScore(),
+          elevatorSubsystem.intakeCoral()
+          )
+        .until(() -> intakeSubsystem.getBeamBreak())
+        .andThen(Commands.sequence(
+        Commands.waitSeconds(0.2),
         Commands.parallel(
-        armSubsystem.goToPackage(),
-        elevatorSubsystem.goToPackage(),
-        Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
-        intakeSubsystem.handoff())
-        ),
-      intakeSubsystem.clearance())
-      )));
-  }
+          armSubsystem.horizontal(),
+          intakeSubsystem.handoffAndSpin(),
+          manipulatorSubsystem.intakeGround(),
+          elevatorSubsystem.intakeCoral()
+          ))
+        .until(() -> !manipulatorSubsystem.returnBeamBreak()) //coral beambreak true/false is flipped from intake beambreak
+        .andThen(
+        Commands.sequence(
+        Commands.waitSeconds(0.15),
+        Commands.parallel(
+          armSubsystem.goToPackage(),
+          elevatorSubsystem.intakeCoral(),
+          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
+          intakeSubsystem.handoff())
+          .until(() -> armSubsystem.returnArmPos() < ArmConstants.Horizontal-5.0)
+          .andThen(
+          Commands.parallel(
+          armSubsystem.goToPackage(),
+          elevatorSubsystem.goToPackage(),
+          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
+          intakeSubsystem.handoff())
+          ),
+        intakeSubsystem.clearance())
+        )));
+    }
 
     /**
      * @apiNote ends with a coral in da grippa
@@ -638,11 +642,11 @@ public class Manager extends SubsystemBase{
     }
 
     public Command setLightsAlignGood() {
-      return Commands.sequence(lightsSubsystem.changeAnimation(AnimationTypes.AutoAlign), lightsSubsystem.animate());
+      return Commands.sequence(lightsSubsystem.changeAnimation(AnimationTypes.AutoAlign));
     }
 
     public Command setFancyLights() {
-      return Commands.sequence(lightsSubsystem.changeAnimation(AnimationTypes.Twinkle), lightsSubsystem.animate());
+      return Commands.sequence(lightsSubsystem.changeAnimation(AnimationTypes.Twinkle));
     }
 
     public Command setOneLights(int light, Boolean good) {
