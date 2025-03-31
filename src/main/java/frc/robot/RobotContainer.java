@@ -87,8 +87,11 @@ public class RobotContainer {
     chooser.addOption("BlueR4", "BlueR4"); 
     chooser.addOption("BlueL4", "BlueL4"); 
     chooser.addOption("TESTING", "TESTING"); 
-    chooser.addOption("StatesRedR4", "StatesRedR4"); 
+    chooser.addOption("Copy of StatesRedR4", "Copy of StatesRedR4"); 
     chooser.addOption("Practice1", "Practice1"); 
+    chooser.addOption("Test", "Test"); 
+    chooser.addOption("lolipop", "lolipop"); 
+    chooser.addOption("lolipop test", "lolipop test"); 
 
     // chooser.addOption("RedL3", "RedL3");
     // chooser.addOption("BlueR3", "BlueR3");
@@ -144,15 +147,21 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake Bump", gamespecManager.intakeSubsystem.bump());
     NamedCommands.registerCommand("Half Height", gamespecManager.autonHalfL4());
     NamedCommands.registerCommand("Floor Intake Deploy", gamespecManager.floorIntakeDeploy());
-    NamedCommands.registerCommand("Floor Intake Auton Deploy", gamespecManager.floorIntakeAutonDeploy());
+    NamedCommands.registerCommand("Auton Floor Intake Start", gamespecManager.autonFloorIntakeStart());
+    NamedCommands.registerCommand("Auton Floor Intake End Fast", gamespecManager.autonFloorIntakeEndFast());
+
+    NamedCommands.registerCommand("Auton Fast Shoot Start", gamespecManager.autonShootStart());
+    NamedCommands.registerCommand("Auton Fast Shoot End", gamespecManager.autonShootFinish());
+    NamedCommands.registerCommand("Auton Shoot Intake", gamespecManager.autonShootIntake());
+
+
     
-    NamedCommands.registerCommand("Floor Intake Auton Deploy 2", gamespecManager.floorIntakeAutonDeployFull().withTimeout(3.0));
+    NamedCommands.registerCommand("Auton Floor Intake End", gamespecManager.autonFloorIntakeEnd());
     NamedCommands.registerCommand("Stop Drive", drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
 
-    NamedCommands.registerCommand("Chase ", Commands.sequence(drivetrain.run(() -> drivetrain.chaseObject()).until(() -> drivetrain.objectClose()), drivetrain.run(() -> drivetrain.chaseSlow())).until(() -> (drivetrain.noObjectsSeen()))); // gamespecManager.intakeSubsystem.getBeamBreak() ||
-    NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.chaseSlow()).until(() -> (gamespecManager.intakeSubsystem.getBeamBreak())).withTimeout(1)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
+    NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.chaseSlow()).until(() -> gamespecManager.intakeSubsystem.getBeamBreak()).onlyIf(() -> drivetrain.targetSeen)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
     
-    NamedCommands.registerCommand("Chase Auton", Commands.sequence(drivetrain.run(() -> drivetrain.chaseObject()).until(() -> drivetrain.objectClose()), drivetrain.run(() -> drivetrain.chaseSlow())).until(() -> gamespecManager.intakeSubsystem.getBeamBreak()).withTimeout(0.5)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
+    NamedCommands.registerCommand("Chase Auton", drivetrain.run(() -> drivetrain.chaseAuton()).until(() -> gamespecManager.intakeSubsystem.getBeamBreak()).onlyIf(() -> drivetrain.targetSeen)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
    // NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.chaseSlow()).until(() -> (gamespecManager.intakeSubsystem.getBeamBreak()))); // gamespecManager.intakeSubsystem.getBeamBreak() ||
 
     //new EventTrigger("Package").whileTrue(gamespecManager.goToPackage());
@@ -171,7 +180,7 @@ public class RobotContainer {
 
   private void configureBindings() {   
     
-    driver.leftTrigger().whileTrue(NamedCommands.getCommand("Chase Object"));
+    driver.leftTrigger().whileTrue(NamedCommands.getCommand("Chase Auton"));
     driver.leftTrigger().whileFalse(drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
 
 
@@ -312,7 +321,14 @@ public class RobotContainer {
       operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
       operator.y().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));
       operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("open fingers"));
-      operator.b().and(this::isClimb).onTrue(gamespecManager.latchServo());
+
+      //auto climb code
+      new Trigger(() -> gamespecManager.climberSubsystem.returnReadyToClimb())
+      .debounce(1.0)
+      .and(operator.b().and(this::isClimb))
+      .onTrue(gamespecManager.autoPackageClimber());
+
+      operator.b().onTrue(NamedCommands.getCommand("open fingers"));
 
       operator.leftTrigger().whileTrue(gamespecManager.floorIntakeDeploy()).onFalse(gamespecManager.floorIntakeClearance());
       
@@ -348,13 +364,6 @@ public class RobotContainer {
     return mode == Mode.climb;
   }
 
-  public Command turnOffTopCam() {
-    return cameraSubsystem.setIgnore();
-  }
-
-  public Command turnOnTopCam() {
-    return cameraSubsystem.setUnIgnore();
-  }
 
         //      operator.leftTrigger().and(operator.y())
       //      .whileTrue(gamespecManager.L3());

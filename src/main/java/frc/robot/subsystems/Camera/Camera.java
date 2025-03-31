@@ -42,6 +42,8 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
 
+import static edu.wpi.first.units.Units.Inch;
+
 import java.beans.VetoableChangeListener;
 import java.io.IOException;
 import java.time.Month;
@@ -221,11 +223,11 @@ public class Camera extends SubsystemBase {
         }
     }
 
-    public Command setIgnore() {
+    public Command usetIgnore() {
         return runOnce(() -> ignoring = true);
     }
 
-    public Command setUnIgnore() {
+    public Command suetUnIgnore() {
         return runOnce(() -> ignoring = false);
     }
 
@@ -373,6 +375,17 @@ public class Camera extends SubsystemBase {
 
         if (numTags == 1 && avgDist > 2.75) {
             estStdDevs =VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+            
+        }
+
+        if (constant.getName().equals("TOP")) {
+            if (avgDist > 3.0) {
+                estStdDevs =VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+
+            } else {
+                estStdDevs = constant.getMultiTagStdDevs();
+
+            }
         }
         return estStdDevs;
     }    

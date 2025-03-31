@@ -123,6 +123,19 @@ public class Climber extends SubsystemBase {
     }
   }
 
+    /**
+   * 
+   * @return false if the robot is packaged, true if it isn't
+   */
+  public boolean checkClimberClimbed(){
+    if(stats.climberPosition <= ClimberConstants.softStopClicks){
+      return false;
+    }
+    else{
+      return true;
+    }
+  }
+
   /**
    * @return false if climber is at or past softstop
    */

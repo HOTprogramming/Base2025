@@ -6,13 +6,13 @@
     "BlueL",
     "BlueR",
     "Init",
-    "Floor Pickup",
     "RedL",
     "RedR"
   ],
   "autoFolders": [
     "Blue Autos",
     "Init Auto",
+    "Dev Autos",
     "Red Autos"
   ],
   "defaultMaxVel": 4.96,
