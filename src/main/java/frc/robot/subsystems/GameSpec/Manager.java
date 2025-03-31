@@ -427,14 +427,14 @@ public class Manager extends SubsystemBase{
         Commands.waitSeconds(0.2),
         Commands.parallel(
           armSubsystem.horizontal(),
-          Commands.sequence(Commands.waitSeconds(0.02), intakeSubsystem.handoff()),
+          intakeSubsystem.handoffAndSpin(),
           manipulatorSubsystem.intakeGround(),
           elevatorSubsystem.intakeCoral()
           ))
         .until(() -> !manipulatorSubsystem.returnBeamBreak()) //coral beambreak true/false is flipped from intake beambreak
         .andThen(
         Commands.sequence(
-        Commands.waitSeconds(0.1),
+        Commands.waitSeconds(0.15),
         Commands.parallel(
           armSubsystem.goToPackage(),
           elevatorSubsystem.intakeCoral(),
@@ -637,11 +637,11 @@ public class Manager extends SubsystemBase{
     }
 
     public Command setLightsAlignGood() {
-      return Commands.sequence(lightsSubsystem.changeAnimation(AnimationTypes.AutoAlign), lightsSubsystem.animate());
+      return Commands.sequence(lightsSubsystem.changeAnimation(AnimationTypes.AutoAlign));
     }
 
     public Command setFancyLights() {
-      return Commands.sequence(lightsSubsystem.changeAnimation(AnimationTypes.Twinkle), lightsSubsystem.animate());
+      return Commands.sequence(lightsSubsystem.changeAnimation(AnimationTypes.Twinkle));
     }
 
     public Command setOneLights(int light, Boolean good) {

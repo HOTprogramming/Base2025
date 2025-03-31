@@ -119,7 +119,7 @@ public class Lights extends SubsystemBase {
                 m_toAnimate = new TwinkleOffAnimation(70, 90, 175, 0, 0.8, LEDS_PER_ANIMATION, TwinkleOffPercent.Percent100);
                 break;
             case AutoAlign:
-                m_toAnimate = new StrobeAnimation(0, 255, 0, 0, 5, LEDS_PER_ANIMATION);
+                m_toAnimate = new StrobeAnimation(0, 255, 0, 0, 5, LEDS_PER_ANIMATION, RightStart);
             case SetAll:
                 m_toAnimate = null;
                 break;
