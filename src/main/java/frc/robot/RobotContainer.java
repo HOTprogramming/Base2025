@@ -92,6 +92,7 @@ public class RobotContainer {
     chooser.addOption("Test", "Test"); 
     chooser.addOption("lolipop", "lolipop"); 
     chooser.addOption("lolipop test", "lolipop test"); 
+    chooser.addOption("lolipop organized", "lolipop organized"); 
 
     // chooser.addOption("RedL3", "RedL3");
     // chooser.addOption("BlueR3", "BlueR3");
