@@ -31,6 +31,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
@@ -92,26 +93,22 @@ public class Drive extends SubsystemBase {
     {320, -1, 321, -1},
     {320, -1, 321, -1}}; //x1 y1 x2 y2, 1 top left  2 bottom right
 
-    double[] framesLost = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-
-    double frames = 0;
+    double [] coral = { 320, -1, 321, -1};
+    public boolean targetSeen = false;
 
     double pixelX;   // 640 x 480, origin top left
     double pixelY;
     double pixelYmax;
 
-    int bestCoral = 0;
-
     double targetXPixel = 320.5;
-    double targetYPixel = 430;
-    double pixelTolerance = 8;
+    double targetYPixel = 400;
+    double pixelTolerance = 10;
 
     double chaseVelocity;
 
-    double sideRatio; //.4 long side, 1.2 short side h/w
-
     NetworkTable objectDetection;
-    ArrayList<DoubleArraySubscriber> coralSubs = new ArrayList<>();
+    DoubleArraySubscriber coralSub;
+    BooleanSubscriber targetSeenSub;
 
     private PIDController thetaController = new PIDController(10, 0, 0.2);
     private PIDController translationControllerIn = new PIDController(5, 0, 0);
@@ -119,6 +116,8 @@ public class Drive extends SubsystemBase {
     private ProfiledPIDController translationControllerY = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
     private ProfiledPIDController translationControllerX = new ProfiledPIDController(5, 0, 0, DEFAULT_XY_CONSTRAINTS);
     private PIDController yChaseObjectPID = new PIDController(0.011, 0, 0);
+    private PIDController xChaseObjectPID = new PIDController(0.005, 0, 0);
+
     private PIDController thetaChaseObjectPID = new PIDController(0.0075, 0, 0);
 
 
@@ -166,9 +165,11 @@ public class Drive extends SubsystemBase {
         pathRotEntry = driveTab.add("Path Rot", 0.0).getEntry();
 
         objectDetection = NetworkTableInstance.getDefault().getTable("ObjectDetection");
-        for (int i=0; i<10; ++i) {
-            coralSubs.add(objectDetection.getDoubleArrayTopic("coral").subscribe(new double[] {320, -1, 321, -1}));
-        }
+        coralSub = objectDetection.getDoubleArrayTopic("coral").subscribe(new double[] {320, -1, 321, -1});
+        targetSeenSub = objectDetection.getBooleanTopic("detected").subscribe(false);
+        // for (int i=0; i<10; ++i) {
+        //     coralSubs.add(objectDetection.getDoubleArrayTopic("coral").subscribe(new double[] {320, -1, 321, -1}));
+        // }
 
         double driveBaseRadius = 0;
         for (var moduleLocation : this.iOdata.m_moduleLocations) {
@@ -259,49 +260,44 @@ public class Drive extends SubsystemBase {
 
     private void getObjectMeasurements() {
 
-        for (int i=0; i<10; ++i) {
+        // for (int i=0; i<10; ++i) {
+        //     if (corals[i].equals(coralSubs.get(i).get())) {
+        //         ++framesLost[i];
+        //     } else {
+        //         framesLost[i] = 0;
+        //     }
+        //     if (framesLost[i] < 15) {
+        //         corals[i] = coralSubs.get(i).get();
+        //         double newX =(corals[i][0] + corals[i][2]) / 2;
+        //         double newY = corals[i][3];
+        //         double bestX = (corals[bestCoral][0] + corals[bestCoral][2]) / 2;
+        //         double bestY = corals[bestCoral][3];
+        //         if (bestY - 15 < newY) {  //close or better y
+        //             if (Math.abs(newX - targetXPixel) < Math.abs(bestX - targetXPixel) + 15) {  //close or better x
+        //                 bestCoral = i;
+        //             } 
+        //         } else if (bestY + 15 < newY) {
+        //             bestCoral = i;
+        //         }
+        //     }
+        // }
+        // pixelYmax = corals[bestCoral][3];
+        // pixelX = (corals[bestCoral][0] + corals[bestCoral][2]) / 2; // xmin + xmax
+        // pixelY = (corals[bestCoral][1] + pixelYmax) / 2;  //ymin + ymax
+        // SmartDashboard.putNumber("chase object/pixel error", Math.abs(pixelX - targetXPixel));
+        // SmartDashboard.putNumberArray("chase object/frames lost", framesLost);
 
-            if (corals[i].equals(coralSubs.get(i).get())) {
-                ++framesLost[i];
-            } else {
-                framesLost[i] = 0;
-            }
+        targetSeen = targetSeenSub.get();
+        coral = coralSub.get();
 
-            if (framesLost[i] < 15) {
-                corals[i] = coralSubs.get(i).get();
-
-                double newX =(corals[i][0] + corals[i][2]) / 2;
-                double newY = corals[i][3];
-                double bestX = (corals[bestCoral][0] + corals[bestCoral][2]) / 2;
-                double bestY = corals[bestCoral][3];
-
-                if (newY > bestY - 15) {  //close or better y
-                    if (Math.abs(newX - targetXPixel) < Math.abs(bestX - targetXPixel) + 15) {  //close or better x
-                        bestCoral = i;
-                    }
-                }
-            }
-        }
-
-        pixelYmax = corals[bestCoral][3];
-
-        pixelX = (corals[bestCoral][0] + corals[bestCoral][2]) / 2; // xmin + xmax
-        pixelY = (corals[bestCoral][1] + pixelYmax) / 2;  //ymin + ymax
-
-        SmartDashboard.putNumber("chase object/pixel error", Math.abs(pixelX - targetXPixel));
-        SmartDashboard.putNumberArray("chase object/frames lost", framesLost);
+        pixelYmax = coral[3];
+        pixelX = (coral[0] + coral[2]) / 2; // xmin + xmax
+        pixelY = (coral[1] + coral[3]) / 2;
+        SmartDashboard.putBoolean("target seen", targetSeen);
     }
 
     public boolean alignedToObject() {
         return Math.abs(pixelX - targetXPixel) < pixelTolerance;
-    }
-
-    public boolean noObjectsSeen() {
-        if (corals[0].equals(coralSubs.get(0).get())) {
-            return false;
-        } else {
-            return true;
-        }
     }
 
     public boolean objectClose() {
@@ -312,7 +308,7 @@ public class Drive extends SubsystemBase {
         pixelTolerance = 10;
         driveIO.setSwerveRequest(ROBOT_CENTRIC
         .withRotationalRate(alignedToObject() ? 0 : thetaChaseObjectPID.calculate(pixelX, targetXPixel))
-        .withVelocityY( yChaseObjectPID.calculate(pixelYmax, targetYPixel) * (alignedToObject() ? 1 : 0.7)) 
+        .withVelocityY((yChaseObjectPID.calculate(pixelYmax, targetYPixel) * (alignedToObject() ? 1 : 0.7)) + 1.5) 
         );
     }
 
@@ -324,9 +320,17 @@ public class Drive extends SubsystemBase {
         );
     }
 
+    public void chaseAuton() {
+        pixelTolerance = 5;
+        driveIO.setSwerveRequest(ROBOT_CENTRIC
+        .withVelocityX(alignedToObject() ? 0 : -xChaseObjectPID.calculate(pixelX, targetXPixel))
+        .withVelocityY(1.5)
+        );
+    }
+
     public void alignObjectTeleop(double driveX, double driveY, double driveTheta) {
 
-        if (framesLost[bestCoral] < 5) {
+        if (targetSeen) {
         driveIO.setSwerveRequest(ROBOT_CENTRIC
         .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY())
         .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
@@ -339,6 +343,10 @@ public class Drive extends SubsystemBase {
             .withRotationalRate((driveTheta <= 0 ? -(driveTheta * driveTheta) : (driveTheta * driveTheta)) * DriveConfig.MAX_ANGULAR_VELOCITY())
             );
         }
+    }
+
+    public boolean closeToBarge() {
+        return DriverStation.getAlliance().get() == Alliance.Blue ? iOdata.state.Pose.getX() > 7.6 : iOdata.state.Pose.getX() < 9.9;
     }
 
     // public void alignReef(int leftRight) {
