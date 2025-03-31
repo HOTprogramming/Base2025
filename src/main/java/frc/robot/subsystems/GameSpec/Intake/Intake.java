@@ -103,7 +103,7 @@ public class Intake extends SubsystemBase {
     return run(() -> {
       intakeCommandedPos.setDouble(IntakeConstants.intakeGround);
       io.setIntakeMotorControl(IntakeConstants.intakeGround);
-      io.setIntakeSpinVelocityControl(110.0, 95.0);
+      io.setIntakeSpinVelocityControl(95.0, 120.0);
      }); 
   }
 
