@@ -2,7 +2,7 @@ package frc.robot.subsystems.Drivetrain;
 
 import static edu.wpi.first.units.Units.*;
 
-
+import java.util.DuplicateFormatFlagsException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +29,10 @@ public class DriveConstants {
 
     public static final double auto_align_theta_disable = .1;
     public static final double auto_align_top_speed_teleop = 2.4;
+    public static final double auto_align_slow_speed_teleop = 1.0;
     public static final double auto_align_top_speed_auton = 2.4;
+
+    public static final double auto_align_slow_in_percent = 0.66;
 
     public static final double auto_align_tolerance = 0.01;
     public static final double auto_align_lights_tolerance = Units.inchesToMeters(1.5);
