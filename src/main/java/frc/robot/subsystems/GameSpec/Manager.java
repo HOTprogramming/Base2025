@@ -473,7 +473,7 @@ public class Manager extends SubsystemBase{
         Commands.waitSeconds(0.0),
         Commands.parallel(
           armSubsystem.horizontal(),
-          Commands.sequence(Commands.waitSeconds(0.07), intakeSubsystem.handoffAndSpin()),
+          Commands.sequence(Commands.waitSeconds(0.02), intakeSubsystem.handoff()),
           manipulatorSubsystem.intakeGround(),
           elevatorSubsystem.intakeCoral()
           ))
