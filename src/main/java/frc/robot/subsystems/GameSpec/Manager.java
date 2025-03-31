@@ -637,11 +637,11 @@ public class Manager extends SubsystemBase{
     }
 
     public Command setLightsAlignGood() {
-      return Commands.sequence(lightsSubsystem.changeAnimation(AnimationTypes.AutoAlign), lightsSubsystem.animate());
+      return Commands.sequence(lightsSubsystem.changeAnimation(AnimationTypes.AutoAlign));
     }
 
     public Command setFancyLights() {
-      return Commands.sequence(lightsSubsystem.changeAnimation(AnimationTypes.Twinkle), lightsSubsystem.animate());
+      return Commands.sequence(lightsSubsystem.changeAnimation(AnimationTypes.Twinkle));
     }
 
     public Command setOneLights(int light, Boolean good) {
