@@ -337,7 +337,9 @@ public class RobotContainer {
       .and(operator.b().and(this::isClimb))
       .onTrue(gamespecManager.autoPackageClimber());
 
-      operator.b().onTrue(NamedCommands.getCommand("open fingers"));
+      new Trigger(() -> gamespecManager.climberSubsystem.returnReadyToClimb())
+      .and(operator.b().and(this::isClimb))
+      .onTrue(NamedCommands.getCommand("open fingers"));
 
       operator.leftTrigger().or(driver.leftTrigger()).whileTrue(gamespecManager.floorIntakeDeploy()).onFalse(gamespecManager.floorIntakeClearance());
       
