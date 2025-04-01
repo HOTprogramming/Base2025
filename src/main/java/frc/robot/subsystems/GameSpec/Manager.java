@@ -48,11 +48,12 @@ public class Manager extends SubsystemBase{
     public Elevator elevatorSubsystem;
     public Climber climberSubsystem;
     public Intake intakeSubsystem;
-    private Manipulator manipulatorSubsystem;
+    public Manipulator manipulatorSubsystem;
     private Lights lightsSubsystem;
     public Algae algaeSubsystem;
 
     public GenericEntry scoringEnum;
+    public boolean intakeState;
 
     private enum ScoringLevel {
       L1,
@@ -87,6 +88,7 @@ public class Manager extends SubsystemBase{
       } 
 
       scoringLevel = ScoringLevel.L1;
+      intakeState = false;
     }
 
 
@@ -376,8 +378,7 @@ public class Manager extends SubsystemBase{
     }
 
     public Command climberOut(){
-      return 
-      Commands.parallel(
+      return Commands.parallel(
       intakeSubsystem.climb(),
       Commands.sequence(
       lockFingers()
@@ -390,6 +391,12 @@ public class Manager extends SubsystemBase{
       ,latchServo()
       ,elevatorSubsystem.climbDown()
       ));
+    }
+
+    public Command autoPackageClimber(){
+      return run(() -> climberSubsystem.setPower(-2.0))
+      .onlyWhile(() -> climberSubsystem.checkClimberClimbed())
+      .andThen(runOnce(() -> climberSubsystem.setPower(0.0)));
     }
 
     public Command climberDeploy(){
@@ -424,6 +431,7 @@ public class Manager extends SubsystemBase{
           )
         .until(() -> intakeSubsystem.getBeamBreak())
         .andThen(Commands.sequence(
+        runOnce(() -> intakeState = true),
         Commands.waitSeconds(0.2),
         Commands.parallel(
           armSubsystem.horizontal(),
@@ -449,7 +457,16 @@ public class Manager extends SubsystemBase{
           intakeSubsystem.handoff())
           ),
         intakeSubsystem.clearance())
-        )));
+        )),
+        runOnce(() -> intakeState = false)
+        );
+    }
+
+    /**
+     *@return True if it needs to finish the ground intake. False if it has ground intaked. 
+     */
+    public boolean returnIntakeState(){
+      return this.intakeState;
     }
 
     /**
@@ -472,7 +489,7 @@ public class Manager extends SubsystemBase{
         Commands.waitSeconds(0.0),
         Commands.parallel(
           armSubsystem.horizontal(),
-          Commands.sequence(Commands.waitSeconds(0.07), intakeSubsystem.handoffAndSpin()),
+          Commands.sequence(Commands.waitSeconds(0.02), intakeSubsystem.handoff()),
           manipulatorSubsystem.intakeGround(),
           elevatorSubsystem.intakeCoral()
           ))
