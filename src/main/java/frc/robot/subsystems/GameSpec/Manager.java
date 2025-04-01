@@ -53,6 +53,7 @@ public class Manager extends SubsystemBase{
     public Algae algaeSubsystem;
 
     public GenericEntry scoringEnum;
+    public boolean intakeState;
 
     private enum ScoringLevel {
       L1,
@@ -87,6 +88,7 @@ public class Manager extends SubsystemBase{
       } 
 
       scoringLevel = ScoringLevel.L1;
+      intakeState = false;
     }
 
 
@@ -429,6 +431,7 @@ public class Manager extends SubsystemBase{
           )
         .until(() -> intakeSubsystem.getBeamBreak())
         .andThen(Commands.sequence(
+        runOnce(() -> intakeState = true),
         Commands.waitSeconds(0.2),
         Commands.parallel(
           armSubsystem.horizontal(),
@@ -454,7 +457,16 @@ public class Manager extends SubsystemBase{
           intakeSubsystem.handoff())
           ),
         intakeSubsystem.clearance())
-        )));
+        )),
+        runOnce(() -> intakeState = false)
+        );
+    }
+
+    /**
+     *@return True if it needs to finish the ground intake. False if it has ground intaked. 
+     */
+    public boolean returnIntakeState(){
+      return this.intakeState;
     }
 
     /**

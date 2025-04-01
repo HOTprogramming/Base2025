@@ -332,18 +332,18 @@ public class RobotContainer {
       operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("open fingers"));
 
       //auto climb code
-      new Trigger(() -> gamespecManager.climberSubsystem.returnReadyToClimb())
-      .debounce(1.0)
-      .and(operator.b().and(this::isClimb))
-      .onTrue(gamespecManager.autoPackageClimber());
+      // new Trigger(() -> gamespecManager.climberSubsystem.returnReadyToClimb())
+      // .debounce(1.0)
+      // .and(operator.b().and(this::isClimb))
+      // .onTrue(gamespecManager.autoPackageClimber());
 
-      new Trigger(() -> gamespecManager.climberSubsystem.returnReadyToClimb())
-      .and(operator.b().and(this::isClimb))
-      .onTrue(NamedCommands.getCommand("open fingers"));
+      // new Trigger(() -> gamespecManager.climberSubsystem.returnReadyToClimb())
+      // .and(operator.b().and(this::isClimb))
+      // .onTrue(NamedCommands.getCommand("open fingers"));
 
-      operator.leftTrigger().or(driver.leftTrigger()).whileTrue(gamespecManager.floorIntakeDeploy()).onFalse(gamespecManager.floorIntakeClearance()
-      .unless(() -> gamespecManager.intakeSubsystem.getBeamBreak() || !gamespecManager.manipulatorSubsystem.returnBeamBreak()));
-      
+      operator.leftTrigger().or(driver.leftTrigger()).or(() -> gamespecManager.returnIntakeState())
+      .whileTrue(gamespecManager.floorIntakeDeploy()).onFalse(gamespecManager.floorIntakeClearance());
+
       operator.povUp().or(operator.povLeft().or(operator.povDown().or(operator.povRight()))).onTrue(NamedCommands.getCommand("Package").unless(this::isClimb));
 
       operator.axisLessThan(5, -0.05).or(operator.axisGreaterThan(5, 0.05)).and(this::isClimb).whileTrue(
