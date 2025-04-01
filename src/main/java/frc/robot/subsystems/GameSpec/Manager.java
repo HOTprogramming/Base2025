@@ -48,7 +48,7 @@ public class Manager extends SubsystemBase{
     public Elevator elevatorSubsystem;
     public Climber climberSubsystem;
     public Intake intakeSubsystem;
-    private Manipulator manipulatorSubsystem;
+    public Manipulator manipulatorSubsystem;
     private Lights lightsSubsystem;
     public Algae algaeSubsystem;
 
