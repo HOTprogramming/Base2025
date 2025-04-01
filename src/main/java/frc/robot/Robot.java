@@ -68,7 +68,8 @@ public class Robot extends TimedRobot {
       ppConfigured = true;
     }
     
-    SmartDashboard.putBoolean("Enabled", false);
+    SmartDashboard.putBoolean("Teleop", false);
+    SmartDashboard.putBoolean("Auto", false);
 
     m_robotContainer.lightsDisable().ignoringDisable(true);
   }
