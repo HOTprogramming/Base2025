@@ -462,6 +462,12 @@ public class Manager extends SubsystemBase{
         );
     }
 
+    public void setIntakeStateFalse(){
+      runOnce(() -> intakeState = false);
+    }
+
+    
+
     /**
      *@return True if it needs to finish the ground intake. False if it has ground intaked. 
      */
