@@ -40,6 +40,7 @@ import frc.robot.subsystems.GameSpec.Algae.AlgaeConstants;
 import frc.robot.subsystems.GameSpec.Climber.Climber;
 import frc.robot.subsystems.GameSpec.Intake.Intake;
 import frc.robot.subsystems.GameSpec.Lights.Lights;
+import frc.robot.subsystems.GameSpec.Lights.Lights.AnimationTypes;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
 
 
@@ -276,7 +277,8 @@ public class RobotContainer {
       // driver.y().onFalse(refreshLights());
       // driver.leftBumper().onFalse(refreshLights());
 
-      new Trigger(() -> drivetrain.getAutoAlignGood()).onTrue(gamespecManager.setLightsAlignGood()).onFalse(refreshLights());
+      new Trigger(() -> drivetrain.getAutoAlignGood()).onTrue(gamespecManager.lightsSubsystem.setAutoAlign())
+      .onFalse(Commands.sequence(gamespecManager.lightsSubsystem.stopAnimation(), refreshLights()));
 
       
       driver.rightBumper().and(() -> drivetrain.getAutoAlignGood()).onTrue(gamespecManager.setLightsAlignGood());

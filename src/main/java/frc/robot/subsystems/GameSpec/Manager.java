@@ -49,7 +49,7 @@ public class Manager extends SubsystemBase{
     public Climber climberSubsystem;
     public Intake intakeSubsystem;
     private Manipulator manipulatorSubsystem;
-    private Lights lightsSubsystem;
+    public Lights lightsSubsystem;
     public Algae algaeSubsystem;
 
     public GenericEntry scoringEnum;
@@ -637,7 +637,7 @@ public class Manager extends SubsystemBase{
     }
 
     public Command setLightsAlignGood() {
-      return Commands.sequence(lightsSubsystem.changeAnimation(AnimationTypes.AutoAlign));
+      return lightsSubsystem.changeAnimation(AnimationTypes.AutoAlign);
     }
 
     public Command setFancyLights() {
