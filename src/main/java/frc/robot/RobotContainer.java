@@ -91,6 +91,8 @@ public class RobotContainer {
     chooser.addOption("RightBlueLolipop", "RightBlueLolipop"); 
     chooser.addOption("RightRedLolipopp", "RightRedLolipop"); 
     chooser.addOption("RedLeftLolipop", "RedLeftLolipop"); 
+    chooser.addOption("BlueLeftLolipop", "BlueLeftLolipop"); 
+
 
 
 
