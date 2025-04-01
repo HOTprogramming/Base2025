@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 12.551,
-        "y": 5.235758196721312
+        "x": 13.869774590163933,
+        "y": 5.091905737704917
       },
       "prevControl": null,
       "nextControl": {
-        "x": 12.191495901639344,
-        "y": 5.967008196721312
+        "x": 14.073207957965616,
+        "y": 5.237215286134692
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 14.86,
-        "y": 6.18
+        "x": 15.560040983606559,
+        "y": 6.722233606557377
       },
       "prevControl": {
-        "x": 14.56030737704918,
-        "y": 6.048135245901639
+        "x": 15.34209100748411,
+        "y": 6.599768068922402
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,10 +32,10 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.6120625465376037,
+      "minWaypointRelativePos": 0.5281018027571577,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 2.0,
+        "maxVelocity": 1.0,
         "maxAcceleration": 6.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -55,14 +55,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.2,
+    "velocity": 0,
     "rotation": -39.15
   },
   "reversed": false,
-  "folder": null,
+  "folder": "RedRG",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 29.999999999999996
+    "rotation": -29.999999999999996
   },
   "useDefaultConstraints": true
 }

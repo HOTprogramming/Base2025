@@ -85,7 +85,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    SmartDashboard.putBoolean("Enabled", true);
+    SmartDashboard.putBoolean("Auto", true);
 
     m_autonomousCommand = Commands.waitSeconds(0.01).andThen(m_robotContainer.getAutonomousCommand());
 
@@ -102,6 +102,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    SmartDashboard.putBoolean("Teleop", true);
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
