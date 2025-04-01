@@ -272,9 +272,11 @@ public class RobotContainer {
       driver.y().whileTrue(drivetrain.run(() -> drivetrain.alignReefRobotcentric(false)));
       driver.leftBumper().whileTrue(drivetrain.run(() -> drivetrain.alignReefRobotcentric(false)));
 
-      driver.rightBumper().onFalse(refreshLights());
-      driver.y().onFalse(refreshLights());
-      driver.leftBumper().onFalse(refreshLights());
+      // driver.rightBumper().onFalse(refreshLights());
+      // driver.y().onFalse(refreshLights());
+      // driver.leftBumper().onFalse(refreshLights());
+
+      new Trigger(() -> drivetrain.getAutoAlignGood()).onTrue(gamespecManager.setLightsAlignGood()).onFalse(refreshLights());
 
       
       driver.rightBumper().and(() -> drivetrain.getAutoAlignGood()).onTrue(gamespecManager.setLightsAlignGood());
