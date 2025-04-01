@@ -90,7 +90,7 @@ public class RobotContainer {
     chooser.addOption("TESTING", "TESTING"); 
     chooser.addOption("RightBlueLolipop", "RightBlueLolipop"); 
     chooser.addOption("RightRedLolipopp", "RightRedLolipop"); 
-    chooser.addOption("RedLeftLolipop", "LeftRedLolipop"); 
+    chooser.addOption("RedLeftLolipop", "RedLeftLolipop"); 
 
 
 
@@ -127,7 +127,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("Lights Coral", gamespecManager.setLightsCoral());
     NamedCommands.registerCommand("Lights Algae", gamespecManager.setLightsAlgae());
     NamedCommands.registerCommand("Lights Climb", gamespecManager.setLightsClimb());
-    NamedCommands.registerCommand("Lights Shoot", gamespecManager.setLightsShoot());
 
 
     NamedCommands.registerCommand("Lights Auto Bad", gamespecManager.setLightsBad());
@@ -331,6 +330,11 @@ public class RobotContainer {
       .and(new Trigger(() -> drivetrain.returnAutoBarge()))
       .onTrue(NamedCommands.getCommand("barge"));
 
+      operator.y()
+        .and(this::isAlgae)
+          .onTrue(gamespecManager.lightsSubsystem.setPurple())
+          .onFalse(refreshLights());
+
       operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
       operator.y().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));
       operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("open fingers"));
@@ -395,7 +399,8 @@ public class RobotContainer {
   }
 
   public Command refreshLights() {
-    return gamespecManager.setLightsAlgae().onlyIf(() -> isAlgae())
+    return gamespecManager.lightsSubsystem.stopAnimation()
+    .andThen(gamespecManager.setLightsAlgae().onlyIf(() -> isAlgae()))
     .andThen(gamespecManager.setLightsClimb().onlyIf(() -> isClimb()))
     .andThen(gamespecManager.setLightsCoral().onlyIf(() -> isCoral()));
   }

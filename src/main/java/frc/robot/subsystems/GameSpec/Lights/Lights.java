@@ -183,8 +183,8 @@ public class Lights extends SubsystemBase {
 
    public Command setPurple(){
     return runOnce(()-> {
-      rightCANdle.setLEDs(0, 150, 255, 0, RightStart, count);
-      leftCANdle.setLEDs(0, 150, 255, 0, LeftStart, count);
+      rightCANdle.setLEDs(255, 0, 255, 0, RightStart, count);
+      leftCANdle.setLEDs(255, 0, 255, 0, LeftStart, count);
     });
    }  
 
