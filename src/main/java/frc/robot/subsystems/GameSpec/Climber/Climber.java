@@ -92,7 +92,7 @@ public class Climber extends SubsystemBase {
     }
 
     public Command servoOpen(){
-      return run(() -> {
+      return runOnce(() -> {
       io.climberServo.set(ClimberConstants.climberServoOpenPos);
       io.climberServo2.set(1.0 - ClimberConstants.climberServoOpenPos);
       });
@@ -116,6 +116,19 @@ public class Climber extends SubsystemBase {
    */
   public boolean checkClimberDeployed(){
     if(stats.climberPosition > ClimberConstants.targetClicks){
+      return false;
+    }
+    else{
+      return true;
+    }
+  }
+
+    /**
+   * 
+   * @return false if the robot is packaged, true if it isn't
+   */
+  public boolean checkClimberClimbed(){
+    if(stats.climberPosition <= ClimberConstants.softStopClicks){
       return false;
     }
     else{
