@@ -37,7 +37,7 @@
       },
       "prevControl": {
         "x": 15.199682173644055,
-        "y": 4.653483606557377
+        "y": 4.653483606557378
       },
       "nextControl": {
         "x": 15.644820803418341,
@@ -126,7 +126,7 @@
     "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "RedRG",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 29.999999999999996

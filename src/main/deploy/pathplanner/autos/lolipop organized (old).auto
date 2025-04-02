@@ -60,7 +60,7 @@
                 }
               },
               {
-                "type": "deadline",
+                "type": "race",
                 "data": {
                   "commands": [
                     {
@@ -103,15 +103,28 @@
                             "data": {
                               "pathName": "Ground Pickup 1"
                             }
+                          },
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 0.3
+                            }
                           }
                         ]
                       }
                     }
                   ]
                 }
-              },
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
               {
-                "type": "parallel",
+                "type": "deadline",
                 "data": {
                   "commands": [
                     {
@@ -129,12 +142,6 @@
                             "data": {
                               "pathName": "Ground Place 2"
                             }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Align Reef Right"
-                            }
                           }
                         ]
                       }
@@ -148,11 +155,31 @@
                             "data": {
                               "name": "Auton Floor Intake End"
                             }
-                          },
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "parallel",
+                      "data": {
+                        "commands": [
                           {
                             "type": "named",
                             "data": {
                               "name": "AL4"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Align Reef Right"
                             }
                           }
                         ]
@@ -162,7 +189,7 @@
                 }
               },
               {
-                "type": "deadline",
+                "type": "race",
                 "data": {
                   "commands": [
                     {
@@ -193,13 +220,26 @@
                             "data": {
                               "pathName": "Ground Pickup 2"
                             }
+                          },
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 0.3
+                            }
                           }
                         ]
                       }
                     }
                   ]
                 }
-              },
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
               {
                 "type": "deadline",
                 "data": {
@@ -230,23 +270,16 @@
                       }
                     },
                     {
-                      "type": "sequential",
+                      "type": "named",
                       "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "AL4"
-                            }
-                          }
-                        ]
+                        "name": "AL4"
                       }
                     }
                   ]
                 }
               },
               {
-                "type": "deadline",
+                "type": "race",
                 "data": {
                   "commands": [
                     {
@@ -283,13 +316,26 @@
                             "data": {
                               "pathName": "Ground Pickup 3"
                             }
+                          },
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 0.3
+                            }
                           }
                         ]
                       }
                     }
                   ]
                 }
-              },
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
               {
                 "type": "deadline",
                 "data": {
@@ -336,7 +382,7 @@
                 }
               },
               {
-                "type": "deadline",
+                "type": "parallel",
                 "data": {
                   "commands": [
                     {
@@ -374,6 +420,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Red Autos",
+  "folder": null,
   "choreoAuto": false
 }
