@@ -343,7 +343,7 @@ public class RobotContainer {
 
       //auto climb code
       new Trigger(() -> gamespecManager.climberSubsystem.returnReadyToClimb())
-      .debounce(1.0)
+      .debounce(0.5)
       .and(operator.b().and(this::isClimb))
       .onTrue(gamespecManager.autoPackageClimber());
 

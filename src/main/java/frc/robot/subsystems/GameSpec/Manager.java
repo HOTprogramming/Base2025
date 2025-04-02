@@ -157,7 +157,7 @@ public class Manager extends SubsystemBase{
       run(() -> {scoringLevel = ScoringLevel.L3;})
       ,elevatorSubsystem.goToL3().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
       ,armSubsystem.goToPackage())
-      .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L3Height-30.0,2.0)))
+      .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L3Height-5.0,2.0)))
       .andThen(Commands.parallel(Commands.sequence(elevatorSubsystem.goToL3()
       .onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), elevatorSubsystem.goToL3Long()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak()
       )), 
@@ -623,7 +623,7 @@ public class Manager extends SubsystemBase{
       Commands.parallel(
         Commands.parallel(elevatorSubsystem.goToBarge(), runOnce(() -> {scoringLevel = ScoringLevel.Barge;}))
         ,armSubsystem.barge()),
-        algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage).withTimeout(0.5),
+        algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage).withTimeout(0.25),
         bargePackage());
     }
 
