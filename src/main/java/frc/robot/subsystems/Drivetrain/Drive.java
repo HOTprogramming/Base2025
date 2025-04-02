@@ -325,7 +325,7 @@ public class Drive extends SubsystemBase {
                 }
             
                 public Command chaseObject() {
-        return run(() -> {                    pixelTolerance = 10;
+        return runOnce(() -> {                    pixelTolerance = 10;
             double cameraToCoral = ((pixelX-320) / 320.0) * 35.0 * Math.PI/180.0;
             // double targetAngle = cameraToCoral - iOdata.state.Pose.getRotation().getRadians();
             double distance = 1.5;
@@ -333,13 +333,12 @@ public class Drive extends SubsystemBase {
             Pose2d poseCameraToCoral = new Pose2d(Math.sin(cameraToCoral),Math.cos(cameraToCoral)+0.4572,Rotation2d.fromRadians(0));
 
             Rotation2d angleRobotToCoral = new Rotation2d(poseCameraToCoral.getY(), poseCameraToCoral.getX())
-                .rotateBy(Rotation2d.fromDegrees(-90)
-                .rotateBy(iOdata.state.Pose.getRotation()));
+                .rotateBy(iOdata.state.Pose.getRotation());
 if (targetSeenSub.get()) {
             chaseWayPoints = PathPlannerPath.waypointsFromPoses(
             new Pose2d(iOdata.state.Pose.getX(),iOdata.state.Pose.getY(),angleRobotToCoral),
-            new Pose2d(iOdata.state.Pose.getX() + distance * angleRobotToCoral.getCos(),
-                       iOdata.state.Pose.getY() + distance * angleRobotToCoral.getSin(), 
+            new Pose2d(iOdata.state.Pose.getX() + distance * angleRobotToCoral.rotateBy(Rotation2d.fromDegrees(90)).getCos(),
+                       iOdata.state.Pose.getY() + distance * angleRobotToCoral.rotateBy(Rotation2d.fromDegrees(90)).getSin(), 
                        angleRobotToCoral) // pos through object  
         );
         PathConstraints constraints = new PathConstraints(4.96, 6.0, 540.0, 720.0, 12.0);
@@ -352,17 +351,22 @@ if (targetSeenSub.get()) {
     new GoalEndState(1.5, Rotation2d.fromRadians(iOdata.state.Pose.getRotation().getRadians() + cameraToCoral)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
 );
 
+AutoBuilder.followPath(fetchPath).schedule();
+
+
 // Prevent the path from being flipped if the coordinates are already correct
 fetchPath.preventFlipping = true;
-}
-
-
-SmartDashboard.putNumber("cameraToCoral", Math.toDegrees(cameraToCoral));
-
 SmartDashboard.putNumber("poseCameraToCoral", poseCameraToCoral.getRotation().getDegrees());
 SmartDashboard.putNumber("target Angle", angleRobotToCoral.getDegrees());
 SmartDashboard.putNumber("CoralX", iOdata.state.Pose.getX() + distance * angleRobotToCoral.getCos());
 SmartDashboard.putNumber("CoralY", iOdata.state.Pose.getY() + distance * angleRobotToCoral.getSin());
+SmartDashboard.putNumber("startingPoseX", iOdata.state.Pose.getX());
+SmartDashboard.putNumber("startingPoseY", iOdata.state.Pose.getY());
+SmartDashboard.putNumber("startingPoseTheta", iOdata.state.Pose.getRotation().getDegrees());
+}
+
+
+SmartDashboard.putNumber("cameraToCoral", Math.toDegrees(cameraToCoral));
 });
     }
 
