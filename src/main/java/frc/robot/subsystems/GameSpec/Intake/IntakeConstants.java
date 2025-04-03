@@ -21,6 +21,7 @@ public class IntakeConstants {
     public static double rollerExpelVoltage;
     public static double climberOut;
     public static double vertical;
+    public static double intakeClimb;
 
     public static double intakeEncoderOffset;
 
@@ -60,6 +61,7 @@ public class IntakeConstants {
         rollerExpelVoltage = 1.5;
         climberOut = -120;
         vertical = -90;
+        intakeClimb = 6.5;
         
         intakeEncoderOffset = 0.200684;
 
