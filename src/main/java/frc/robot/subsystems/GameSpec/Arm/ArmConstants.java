@@ -77,7 +77,7 @@ public class ArmConstants {
         Horizontal = 0;
         Intermediate = -139.0;
         CurrentFail = -10.0;
-        L3short = -114.0;
+        L3short = -129.7;//-114.0;
         L2Short = -119.6;
         L4Short = -112.5;
         Processor = -55.0;

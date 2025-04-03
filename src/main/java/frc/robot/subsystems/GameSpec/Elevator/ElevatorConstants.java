@@ -70,7 +70,7 @@ public class ElevatorConstants {
         L4Height = 51.0;
         L4LongHeight = 52.0;
         L3Height = 24.7;//23.7 first practice match
-        L3LongHeight = 20.8;
+        L3LongHeight = 24.7;//20.8;
         L2Height = 10.4;
         L2LongHeight = 9.73;
         L1Height = 17.5;
