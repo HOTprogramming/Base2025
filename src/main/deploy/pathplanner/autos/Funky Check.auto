@@ -32,13 +32,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Auton Intake Start"
+            "name": "Auton Floor Intake Start"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Auton Finish Intake"
+            "name": "Auton Floor Intake End"
           }
         },
         {
