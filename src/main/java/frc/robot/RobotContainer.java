@@ -361,6 +361,19 @@ public class RobotContainer {
       operator.leftTrigger().or(driver.leftTrigger())
       .whileTrue(gamespecManager.floorIntakeDeploy()).onFalse(gamespecManager.floorIntakeClearance());
 
+
+      
+      // operator.leftTrigger().or(driver.leftTrigger())
+      // .whileTrue(
+      //   gamespecManager.floorIntakeDeploy()
+      //   .andThen(Commands.sequence(
+      //       gamespecManager.runOnce(() -> driver.setRumble(RumbleType.kBothRumble, .7)), 
+      //       Commands.waitSeconds(.4), 
+      //       gamespecManager.runOnce(() -> driver.setRumble(RumbleType.kBothRumble, 0.0))
+      //       ))
+      //   )
+      // .onFalse(gamespecManager.floorIntakeClearance());
+
       operator.povUp().or(operator.povLeft().or(operator.povDown().or(operator.povRight()))).onTrue(NamedCommands.getCommand("Package").unless(this::isClimb));
 
       operator.axisLessThan(5, -0.05).or(operator.axisGreaterThan(5, 0.05)).and(this::isClimb).whileTrue(
