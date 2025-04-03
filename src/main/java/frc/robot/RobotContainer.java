@@ -25,6 +25,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -350,6 +351,12 @@ public class RobotContainer {
       new Trigger(() -> gamespecManager.climberSubsystem.returnReadyToClimb())
       .and(operator.b().and(this::isClimb))
       .onTrue(NamedCommands.getCommand("open fingers"));
+
+      // driver.leftTrigger().onTrue(Commands.sequence(
+      //   gamespecManager.runOnce(() -> operator.setRumble(RumbleType.kBothRumble, .7)), 
+      //   Commands.waitSeconds(.4), 
+      //   gamespecManager.runOnce(() -> operator.setRumble(RumbleType.kBothRumble, 0.0))
+      //   ));
 
       operator.leftTrigger().or(driver.leftTrigger())
       .whileTrue(gamespecManager.floorIntakeDeploy()).onFalse(gamespecManager.floorIntakeClearance());
