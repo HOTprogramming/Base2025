@@ -56,14 +56,14 @@ public class IntakeConstants {
         intakeHandoff = 145.0;//147
         intakeClearance = 120;
         intakeBump = 75;
-        intakeGround = 3;
+        intakeGround = 5;
         rollerIntakeVoltage = 10;
         rollerExpelVoltage = 1.5;
         climberOut = -120;
         vertical = -90;
         intakeClimb = 6.5;
         
-        intakeEncoderOffset = 0.200684;
+        intakeEncoderOffset = 0.15283203125;
 
     }
 
