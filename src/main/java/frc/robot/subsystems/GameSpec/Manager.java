@@ -218,15 +218,30 @@ public class Manager extends SubsystemBase{
             gotoL4Package()),
             manipulatorSubsystem.zero()
             ),
-          ScoringLevel.L3, 
+          ScoringLevel.L3,
+          Commands.sequence(
+          Commands.parallel(
+            elevatorSubsystem.goToL3(),
             Commands.sequence(
             runOnce(() -> {doneScoring = true;}),
             armSubsystem.L3Score(),
-            manipulatorSubsystem.L3Spit(),
-            elevatorSubsystem.L3Score(),
-            goToPackage()
-            )
-            ,
+            manipulatorSubsystem.L3Spit()
+            )),
+          Commands.parallel(
+            elevatorSubsystem.goToPackage(),
+            armSubsystem.L3Score()
+          ).until(() -> elevatorSubsystem.stats.elevatorPosition<ElevatorConstants.L3Height-3.0)
+          .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage()))
+          ),
+          //L3 package: 
+            
+            // Commands.sequence(
+            // runOnce(() -> {doneScoring = true;}),
+            // armSubsystem.L3Score(),
+            // manipulatorSubsystem.L3Spit(),
+            // elevatorSubsystem.L3Score(),
+            // goToPackage()
+            // ),
           ScoringLevel.L2,
             Commands.parallel(
             elevatorSubsystem.goToL2(),

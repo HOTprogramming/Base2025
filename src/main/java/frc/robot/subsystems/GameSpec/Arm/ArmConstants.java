@@ -72,7 +72,7 @@ public class ArmConstants {
         L3Angle = -129.7;
         L4Angle = -130.0;
         L4Score = -172;
-        L3Score = -147.7;
+        L3Score = -166.5;//-147.7; change to make L3 just an arm
         L2Score = -172.8;
         Horizontal = 0;
         Intermediate = -139.0;
