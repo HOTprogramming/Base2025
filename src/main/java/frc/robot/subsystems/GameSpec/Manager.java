@@ -230,9 +230,17 @@ public class Manager extends SubsystemBase{
           Commands.parallel(
             elevatorSubsystem.goToPackage(),
             armSubsystem.L3Score()
-          ).until(() -> elevatorSubsystem.stats.elevatorPosition<ElevatorConstants.L3Height-3.0)
-          .andThen(Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage()))
+          ).until(() -> !elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L3Height-3.0, 0.1))
+          ,Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage())
           ),
+          // return Commands.parallel(
+          //   elevatorSubsystem.goToPackage(),
+          //   armSubsystem.L4Score()
+          // ).until(() -> !elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-3.0, 0.1))
+          // .andThen(Commands.parallel(
+          //   armSubsystem.goToPackage(),
+          //   elevatorSubsystem.goToPackage()
+          // ));
           //L3 package: 
             
             // Commands.sequence(
@@ -259,6 +267,14 @@ public class Manager extends SubsystemBase{
         ),
         this::getLevel
       );
+    }
+
+    public Command L3Package(){
+      Commands.parallel(
+        elevatorSubsystem.goToPackage(),
+        armSubsystem.L3Score()
+      ).until(() -> !elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L3Height-3.0, 0.1))
+      ,Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage())
     }
 
     /**
