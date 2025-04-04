@@ -270,7 +270,7 @@ public class Manager extends SubsystemBase{
       Commands.parallel(
         elevatorSubsystem.goToPackage(),
         armSubsystem.L3Score())
-        .until(() -> !elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L3Height-3.0, 0.1))
+        .until(() -> elevatorSubsystem.stats.elevatorPosition < ElevatorConstants.L3Height-3.0)
       ,Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage()));
     }
 
