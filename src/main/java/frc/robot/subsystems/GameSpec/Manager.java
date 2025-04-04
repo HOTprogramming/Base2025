@@ -227,25 +227,8 @@ public class Manager extends SubsystemBase{
             armSubsystem.L3Score(),
             manipulatorSubsystem.L3Spit()
             )),
-            L3Package()
+            elevatorSubsystem.L3Score()
           ),
-          // return Commands.parallel(
-          //   elevatorSubsystem.goToPackage(),
-          //   armSubsystem.L4Score()
-          // ).until(() -> !elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L4Height-3.0, 0.1))
-          // .andThen(Commands.parallel(
-          //   armSubsystem.goToPackage(),
-          //   elevatorSubsystem.goToPackage()
-          // ));
-          //L3 package: 
-            
-            // Commands.sequence(
-            // runOnce(() -> {doneScoring = true;}),
-            // armSubsystem.L3Score(),
-            // manipulatorSubsystem.L3Spit(),
-            // elevatorSubsystem.L3Score(),
-            // goToPackage()
-            // ),
           ScoringLevel.L2,
             Commands.parallel(
             elevatorSubsystem.goToL2(),
@@ -521,7 +504,7 @@ public class Manager extends SubsystemBase{
         Commands.waitSeconds(0.0),
         Commands.parallel(
           armSubsystem.horizontal(),
-          Commands.sequence(Commands.waitSeconds(0.02), intakeSubsystem.handoff()),
+          intakeSubsystem.handoffAndSpin(),
           manipulatorSubsystem.intakeGround(),
           elevatorSubsystem.intakeCoral()
           ))
