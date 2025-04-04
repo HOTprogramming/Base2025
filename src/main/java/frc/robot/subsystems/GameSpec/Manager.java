@@ -227,11 +227,7 @@ public class Manager extends SubsystemBase{
             armSubsystem.L3Score(),
             manipulatorSubsystem.L3Spit()
             )),
-          Commands.parallel(
-            elevatorSubsystem.goToPackage(),
-            armSubsystem.L3Score()
-          ).until(() -> !elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L3Height-3.0, 0.1))
-          ,Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage())
+            L3Package()
           ),
           // return Commands.parallel(
           //   elevatorSubsystem.goToPackage(),
@@ -270,11 +266,12 @@ public class Manager extends SubsystemBase{
     }
 
     public Command L3Package(){
+      return Commands.sequence(
       Commands.parallel(
         elevatorSubsystem.goToPackage(),
-        armSubsystem.L3Score()
-      ).until(() -> !elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L3Height-3.0, 0.1))
-      ,Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage())
+        armSubsystem.L3Score())
+        .until(() -> !elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L3Height-3.0, 0.1))
+      ,Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage()));
     }
 
     /**
