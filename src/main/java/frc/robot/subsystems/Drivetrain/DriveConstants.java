@@ -593,6 +593,6 @@ public class DriveConstants {
         public static final double bargePosRedFar = 9.975;
         public static final double bargePosRedClose = 9.75;
         public static final double bargePosBlueFar = 7.86;
-        public static final double bargePosBlueClose = 7.61;
+        public static final double bargePosBlueClose = 7.635;//7.61
 
 }
