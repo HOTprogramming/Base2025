@@ -267,11 +267,9 @@ public class Manager extends SubsystemBase{
 
     public Command L3Package(){
       return Commands.sequence(
-      Commands.parallel(
-        elevatorSubsystem.goToPackage(),
-        armSubsystem.L3Score())
-        .until(() -> elevatorSubsystem.stats.elevatorPosition < ElevatorConstants.L3Height-3.0)
-      ,Commands.parallel(elevatorSubsystem.goToPackage(), armSubsystem.goToPackage()));
+        elevatorSubsystem.L3Score(),
+          armSubsystem.goToPackage()
+        );
     }
 
     /**

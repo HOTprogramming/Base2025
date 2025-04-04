@@ -352,27 +352,20 @@ public class RobotContainer {
       .and(operator.b().and(this::isClimb))
       .onTrue(NamedCommands.getCommand("open fingers"));
 
-      // driver.leftTrigger().onTrue(Commands.sequence(
-      //   gamespecManager.runOnce(() -> operator.setRumble(RumbleType.kBothRumble, .7)), 
-      //   Commands.waitSeconds(.4), 
-      //   gamespecManager.runOnce(() -> operator.setRumble(RumbleType.kBothRumble, 0.0))
-      //   ));
+      driver.leftTrigger().onTrue(Commands.sequence(
+        gamespecManager.runOnce(() -> operator.setRumble(RumbleType.kBothRumble, .7))
+        )).onFalse(gamespecManager.runOnce(() -> operator.setRumble(RumbleType.kBothRumble, 0.0)));
 
-      operator.leftTrigger().or(driver.leftTrigger())
-      .whileTrue(gamespecManager.floorIntakeDeploy()).onFalse(gamespecManager.floorIntakeClearance());
-
+      // operator.leftTrigger().or(driver.leftTrigger())
+      // .whileTrue(gamespecManager.floorIntakeDeploy()).onFalse(gamespecManager.floorIntakeClearance());
 
       
-      // operator.leftTrigger().or(driver.leftTrigger())
-      // .whileTrue(
-      //   gamespecManager.floorIntakeDeploy()
-      //   .andThen(Commands.sequence(
-      //       gamespecManager.runOnce(() -> driver.setRumble(RumbleType.kBothRumble, .7)), 
-      //       Commands.waitSeconds(.4), 
-      //       gamespecManager.runOnce(() -> driver.setRumble(RumbleType.kBothRumble, 0.0))
-      //       ))
-      //   )
-      // .onFalse(gamespecManager.floorIntakeClearance());
+      
+      operator.leftTrigger().or(driver.leftTrigger())
+      .whileTrue(
+        gamespecManager.floorIntakeDeploy()
+        )
+      .onFalse(gamespecManager.floorIntakeClearance());
 
       operator.povUp().or(operator.povLeft().or(operator.povDown().or(operator.povRight()))).onTrue(NamedCommands.getCommand("Package").unless(this::isClimb));
 
