@@ -62,8 +62,9 @@ public class ArmConstants {
 
         armMotorID = 14;
         armEncoderID = 44;
-        armGains = new MMGains(0.004, 0.0025, 1.75, 0.0, 0.14, 0.0, 0.0, -2.0);
-        armEncoderOffset = -0.0383293999565972;
+        armGains = new MMGains(0.004, 0.0025, 1.82, 0.0, 0.13, 0.0, 0.0, -2.0);
+        //old gains:armGains = new MMGains(0.004, 0.0025, 1.75, 0.0, 0.14, 0.0, 0.0, -2.0);
+        armEncoderOffset = 0.007568359375;
 
         PackageAngle = -90;
         FeederAngle = -51.4;
