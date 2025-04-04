@@ -76,7 +76,7 @@ public class ElevatorConstants {
         L1Height = 17.5;
         FeederHeight = 9.1;
         L4ReturnScoreHeight = 50.0;
-        L3ScoreHeight = 18.0;
+        L3ScoreHeight = 17.2;
         L2ScoreHeight = 9.8; 
         HPHeight = 17.0;
         climbHeight = 0.25;
