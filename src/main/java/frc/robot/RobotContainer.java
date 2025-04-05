@@ -338,6 +338,9 @@ public class RobotContainer {
           .onTrue(gamespecManager.lightsSubsystem.setPurple())
           .onFalse(refreshLights());
 
+      // operator.rightStick().and(operator.leftStick()).and(this::isAlgae).onTrue(gamespecManager.bargeManual())
+      // .onFalse(gamespecManager.bargePackage());
+        
       operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
       operator.y().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));
       operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("open fingers"));

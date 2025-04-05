@@ -636,6 +636,13 @@ public class Manager extends SubsystemBase{
         bargePackage());
     }
 
+    public Command bargeManual(){
+      return Commands.sequence(
+      Commands.parallel(
+        Commands.parallel(elevatorSubsystem.goToBarge(), runOnce(() -> {scoringLevel = ScoringLevel.Barge;}))
+        ,armSubsystem.barge()));
+    }
+
     public Command setLightsCoral() {
       return lightsSubsystem.setYellow();
     }

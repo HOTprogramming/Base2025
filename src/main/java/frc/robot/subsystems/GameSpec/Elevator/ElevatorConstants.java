@@ -82,7 +82,7 @@ public class ElevatorConstants {
         climbHeight = 0.25;
         highAlgae = 35;
         lowAlgae = 17;
-        BargeHeight = 68.75;
+        BargeHeight = 69.25;//68.75
         ProcessorHeight = 14.0;
         initialClimbHeight = 12.0;
         L4MiniScoreHeight = 50.0;
