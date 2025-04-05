@@ -56,7 +56,7 @@ public class IntakeConstants {
         intakeHandoff = 145.0;//147
         intakeClearance = 120;
         intakeBump = 75;
-        intakeGround = 5;
+        intakeGround = 3;
         rollerIntakeVoltage = 10;
         rollerExpelVoltage = 1.5;
         climberOut = -120;
