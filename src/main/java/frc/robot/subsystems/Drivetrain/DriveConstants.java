@@ -79,7 +79,7 @@ public class DriveConstants {
     // //                                  COMP GAINS
     public static final Map<Rotation2d, Double[]> redPoleShift = new HashMap<>() {
         {   //                                                  left center right
-            put(Rotation2d.fromDegrees(0), new Double[] {6.0, -1.6, -6.0});
+            put(Rotation2d.fromDegrees(0), new Double[] {6.0, -1.6, -6.5});
             put(Rotation2d.fromDegrees(60), new Double[] {6.0, -1.6,  -6.0});
             put(Rotation2d.fromDegrees(120), new Double[] {6.0, -1.6,  -7.0});
             put(Rotation2d.fromDegrees(180), new Double[] {6.0, -1.6, -6.0});
@@ -590,9 +590,9 @@ public class DriveConstants {
         PIDConstants TELEOP_ROTATION_PID
         ) {}
 
-        public static final double bargePosRedFar = 9.975;
+        public static final double bargePosRedFar = 9.925;
         public static final double bargePosRedClose = 9.75;
         public static final double bargePosBlueFar = 7.86;
-        public static final double bargePosBlueClose = 7.635;//7.61
+        public static final double bargePosBlueClose = 7.685;
 
 }
