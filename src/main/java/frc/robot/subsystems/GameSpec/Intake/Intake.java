@@ -96,7 +96,7 @@ public class Intake extends SubsystemBase {
   }
 
   public Command climb(){
-    return intakeCommand(IntakeConstants.intakeGround, 0.0, 0.0);
+    return intakeCommand(IntakeConstants.intakeClimb, 0.0, 0.0);
   }
 
   public Command deploy(){

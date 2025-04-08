@@ -218,15 +218,17 @@ public class Manager extends SubsystemBase{
             gotoL4Package()),
             manipulatorSubsystem.zero()
             ),
-          ScoringLevel.L3, 
+          ScoringLevel.L3,
+          Commands.sequence(
+          Commands.parallel(
+            elevatorSubsystem.goToL3(),
             Commands.sequence(
             runOnce(() -> {doneScoring = true;}),
             armSubsystem.L3Score(),
-            manipulatorSubsystem.L3Spit(),
-            elevatorSubsystem.L3Score(),
-            goToPackage()
-            )
-            ,
+            manipulatorSubsystem.L3Spit()
+            )),
+            elevatorSubsystem.L3Score()
+          ),
           ScoringLevel.L2,
             Commands.parallel(
             elevatorSubsystem.goToL2(),
@@ -244,6 +246,13 @@ public class Manager extends SubsystemBase{
         ),
         this::getLevel
       );
+    }
+
+    public Command L3Package(){
+      return Commands.sequence(
+        elevatorSubsystem.L3Score(),
+          armSubsystem.goToPackage()
+        );
     }
 
     /**
@@ -442,7 +451,7 @@ public class Manager extends SubsystemBase{
         .until(() -> !manipulatorSubsystem.returnBeamBreak()) //coral beambreak true/false is flipped from intake beambreak
         .andThen(
         Commands.sequence(
-        Commands.waitSeconds(0.15),
+        Commands.waitSeconds(0.25),
         Commands.parallel(
           armSubsystem.goToPackage(),
           elevatorSubsystem.intakeCoral(),
@@ -495,7 +504,7 @@ public class Manager extends SubsystemBase{
         Commands.waitSeconds(0.0),
         Commands.parallel(
           armSubsystem.horizontal(),
-          Commands.sequence(Commands.waitSeconds(0.02), intakeSubsystem.handoff()),
+          intakeSubsystem.handoffAndSpin(),
           manipulatorSubsystem.intakeGround(),
           elevatorSubsystem.intakeCoral()
           ))
@@ -625,6 +634,13 @@ public class Manager extends SubsystemBase{
         ,armSubsystem.barge()),
         algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage).withTimeout(0.25),
         bargePackage());
+    }
+
+    public Command bargeManual(){
+      return Commands.sequence(
+      Commands.parallel(
+        Commands.parallel(elevatorSubsystem.goToBarge(), runOnce(() -> {scoringLevel = ScoringLevel.Barge;}))
+        ,armSubsystem.barge()));
     }
 
     public Command setLightsCoral() {

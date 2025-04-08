@@ -25,6 +25,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -87,7 +88,7 @@ public class RobotContainer {
     chooser.addOption("RedL4", "RedL4");
     chooser.addOption("BlueR4", "BlueR4"); 
     chooser.addOption("BlueL4", "BlueL4"); 
-    chooser.addOption("TESTING", "TESTING"); 
+    chooser.addOption("Funky Check", "Funky Check"); 
     chooser.addOption("RightBlueLolipop", "RightBlueLolipop"); 
     chooser.addOption("RightRedLolipopp", "RightRedLolipop"); 
     chooser.addOption("RedLeftLolipop", "RedLeftLolipop"); 
@@ -337,6 +338,9 @@ public class RobotContainer {
           .onTrue(gamespecManager.lightsSubsystem.setPurple())
           .onFalse(refreshLights());
 
+      // operator.rightStick().and(operator.leftStick()).and(this::isAlgae).onTrue(gamespecManager.bargeManual())
+      // .onFalse(gamespecManager.bargePackage());
+        
       operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
       operator.y().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));
       operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("open fingers"));
@@ -351,8 +355,20 @@ public class RobotContainer {
       .and(operator.b().and(this::isClimb))
       .onTrue(NamedCommands.getCommand("open fingers"));
 
+      driver.leftTrigger().onTrue(Commands.sequence(
+        gamespecManager.runOnce(() -> operator.setRumble(RumbleType.kBothRumble, .7))
+        )).onFalse(gamespecManager.runOnce(() -> operator.setRumble(RumbleType.kBothRumble, 0.0)));
+
+      // operator.leftTrigger().or(driver.leftTrigger())
+      // .whileTrue(gamespecManager.floorIntakeDeploy()).onFalse(gamespecManager.floorIntakeClearance());
+
+      
+      
       operator.leftTrigger().or(driver.leftTrigger())
-      .whileTrue(gamespecManager.floorIntakeDeploy()).onFalse(gamespecManager.floorIntakeClearance());
+      .whileTrue(
+        gamespecManager.floorIntakeDeploy()
+        )
+      .onFalse(gamespecManager.floorIntakeClearance());
 
       operator.povUp().or(operator.povLeft().or(operator.povDown().or(operator.povRight()))).onTrue(NamedCommands.getCommand("Package").unless(this::isClimb));
 

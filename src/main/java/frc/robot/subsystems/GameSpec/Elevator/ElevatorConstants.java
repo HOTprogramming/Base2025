@@ -67,27 +67,54 @@ public class ElevatorConstants {
         elevatorEncoderOffset = 0.2546;
         PackageHeight = 15.0; 
         AutoL4Height = 53.0;
-        L4Height = 51.0;//53.0;
+        L4Height = 51.0;
         L4LongHeight = 52.0;
-        L3Height = 23.7;
-        L3LongHeight = 20.8;
+        L3Height = 24.7;//23.7 first practice match
+        L3LongHeight = 24.7;//20.8;
         L2Height = 10.4;
         L2LongHeight = 9.73;
         L1Height = 17.5;
         FeederHeight = 9.1;
         L4ReturnScoreHeight = 50.0;
-        L3ScoreHeight = 18.0;
+        L3ScoreHeight = 17.2;
         L2ScoreHeight = 9.8; 
         HPHeight = 17.0;
         climbHeight = 0.25;
         highAlgae = 35;
         lowAlgae = 17;
-        BargeHeight = 68.75;
+        BargeHeight = 69.25;//68.75
         ProcessorHeight = 14.0;
         initialClimbHeight = 12.0;
         L4MiniScoreHeight = 50.0;
         intakeCoralHeight = 9.1;
         autonHalfHeight = 25.0;
+
+
+        //GM CONSTANTS:
+        // elevatorEncoderOffset = 0.2546;
+        // PackageHeight = 15.0; 
+        // AutoL4Height = 53.0;
+        // L4Height = 51.0;
+        // L4LongHeight = 52.0;
+        // L3Height = 23.7;
+        // L3LongHeight = 20.8;
+        // L2Height = 10.4;
+        // L2LongHeight = 9.73;
+        // L1Height = 17.5;
+        // FeederHeight = 9.1;
+        // L4ReturnScoreHeight = 50.0;
+        // L3ScoreHeight = 18.0;
+        // L2ScoreHeight = 9.8; 
+        // HPHeight = 17.0;
+        // climbHeight = 0.25;
+        // highAlgae = 35;
+        // lowAlgae = 17;
+        // BargeHeight = 68.75;
+        // ProcessorHeight = 14.0;
+        // initialClimbHeight = 12.0;
+        // L4MiniScoreHeight = 50.0;
+        // intakeCoralHeight = 9.1;
+        // autonHalfHeight = 25.0;
 
     }
 

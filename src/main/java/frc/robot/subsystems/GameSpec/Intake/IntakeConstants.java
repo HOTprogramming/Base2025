@@ -21,6 +21,7 @@ public class IntakeConstants {
     public static double rollerExpelVoltage;
     public static double climberOut;
     public static double vertical;
+    public static double intakeClimb;
 
     public static double intakeEncoderOffset;
 
@@ -52,7 +53,7 @@ public class IntakeConstants {
         intakeOrangeGains = new MMGains(0.55,0.2,0.0,0.4,0.07);
         intakeBlackGains = new MMGains(0.1,0.1,0.0,0.4,0.95);
 
-        intakeHandoff = 147.0;
+        intakeHandoff = 145.0;//147
         intakeClearance = 120;
         intakeBump = 75;
         intakeGround = 3;
@@ -60,8 +61,9 @@ public class IntakeConstants {
         rollerExpelVoltage = 1.5;
         climberOut = -120;
         vertical = -90;
+        intakeClimb = 6.5;
         
-        intakeEncoderOffset = 0.200684;
+        intakeEncoderOffset = 0.15283203125;
 
     }
 
