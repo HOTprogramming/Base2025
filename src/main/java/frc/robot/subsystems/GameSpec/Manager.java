@@ -26,6 +26,7 @@ import frc.robot.subsystems.GameSpec.Arm.ArmConstants;
 import frc.robot.subsystems.GameSpec.Arm.ArmIOReal;
 import frc.robot.subsystems.GameSpec.Arm.ArmIOSim;
 import frc.robot.subsystems.GameSpec.Climber.Climber;
+import frc.robot.subsystems.GameSpec.Climber.ClimberConstants;
 import frc.robot.subsystems.GameSpec.Climber.ClimberIOReal;
 import frc.robot.subsystems.GameSpec.Climber.ClimberIOSim;
 import frc.robot.subsystems.GameSpec.Elevator.Elevator;
@@ -196,6 +197,7 @@ public class Manager extends SubsystemBase{
     public Command lowAlgae(){
       return Commands.parallel(elevatorSubsystem.goToLowAlgae()
         ,armSubsystem.getAlgaeFromReef()
+        ,intakeSubsystem.bumpLowAlgae()
         ,algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeIntakeVoltage)
         .onlyWhile(() -> algaeSubsystem.returnAlgaeIn())
       );
@@ -403,13 +405,25 @@ public class Manager extends SubsystemBase{
     }
 
     public Command autoPackageClimber(){
-      return run(() -> climberSubsystem.setPower(-2.0))
-      .onlyWhile(() -> climberSubsystem.checkClimberClimbed())
+      return Commands.sequence(
+        ClimbStage1(),
+        ClimbStage2()
+      );
+    }
+
+    public Command ClimbStage1(){
+      return run(() -> climberSubsystem.setPower(-0.33))
+      .onlyWhile(() -> climberSubsystem.checkClimberPos(ClimberConstants.slowPullClicks));
+    }
+
+    public Command ClimbStage2(){
+      return run(() -> climberSubsystem.setPower(-1.0))
+      .onlyWhile(() -> climberSubsystem.checkClimberPos(ClimberConstants.softStopClicks))
       .andThen(runOnce(() -> climberSubsystem.setPower(0.0)));
     }
 
     public Command climberDeploy(){
-    return run(() -> climberSubsystem.setPower(4.0))
+    return run(() -> climberSubsystem.setPower(1.0))
       .onlyWhile(() -> climberSubsystem.checkClimberDeployed())
       .andThen(runOnce(() -> climberSubsystem.setPower(0.0)));
     }
@@ -615,6 +629,11 @@ public class Manager extends SubsystemBase{
       return Commands.parallel(armSubsystem.goToPackage());
     }
 
+    public Command algaePackageLowPluck(){
+      return Commands.parallel(armSubsystem.goToPackage(),
+      intakeSubsystem.bumpLowAlgae());
+    }
+
     //does the normal package like in coral mode, but stops the holding voltage for the algae instead of moving the wrist.
     public Command algaePackageElevator(){
       return Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
@@ -633,6 +652,8 @@ public class Manager extends SubsystemBase{
         Commands.parallel(elevatorSubsystem.goToBarge(), runOnce(() -> {scoringLevel = ScoringLevel.Barge;}))
         ,armSubsystem.barge()),
         algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage).withTimeout(0.25),
+        Commands.waitSeconds(0.25),
+        algaeSubsystem.algaeVoltage(0.0),
         bargePackage());
     }
 

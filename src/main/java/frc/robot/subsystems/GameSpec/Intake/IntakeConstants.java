@@ -17,6 +17,7 @@ public class IntakeConstants {
     public static double intakeGround;
     public static double intakeClearance;
     public static double intakeBump;
+    public static double intakeBumpLowAlgae;
     public static double rollerIntakeVoltage;
     public static double rollerExpelVoltage;
     public static double climberOut;
@@ -56,6 +57,7 @@ public class IntakeConstants {
         intakeHandoff = 145.0;//147
         intakeClearance = 120;
         intakeBump = 75;
+        intakeBumpLowAlgae = 20;
         intakeGround = 3;
         rollerIntakeVoltage = 10;
         rollerExpelVoltage = 1.5;
