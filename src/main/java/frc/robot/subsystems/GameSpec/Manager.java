@@ -282,6 +282,15 @@ public class Manager extends SubsystemBase{
             );
     }
 
+    public Command autonShootL3() {
+      return Commands.sequence(
+        armSubsystem.L3Score(),
+        manipulatorSubsystem.L3Spit(),
+        elevatorSubsystem.L3Score(),
+        goToPackage()
+      );
+    }
+
     /**
      * @apinote Half shoot for fast driving
      */
@@ -332,6 +341,10 @@ public class Manager extends SubsystemBase{
       ))));
     }
 
+    public Command autonL3(){
+      return null;
+    }
+
     public Command autonIntake() {
       return 
       Commands.parallel(
@@ -348,6 +361,19 @@ public class Manager extends SubsystemBase{
       Commands.parallel(
         armSubsystem.goToPackage(),
         intakeSubsystem.clearance());
+    }
+
+    public Command autonHighPluckStart(){
+      return Commands.parallel(
+        elevatorSubsystem.goToHighAlgae()
+        ,armSubsystem.getAlgaeFromReef()
+        );
+    }
+
+    public Command autonHighPluckEnd(){
+      return algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeIntakeVoltage)
+        .onlyWhile(() -> algaeSubsystem.returnAlgaeIn())
+      .andThen(algaeSubsystem.algaeVoltage(AlgaeConstants.algaeHoldVoltage));
     }
 
     public Command autonHalfL4() {

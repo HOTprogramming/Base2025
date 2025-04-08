@@ -16,12 +16,28 @@
     },
     {
       "anchor": {
-        "x": 1.2227459016393443,
-        "y": 5.7811987704918035
+        "x": 1.67827868852459,
+        "y": 5.9130635245901635
       },
       "prevControl": {
-        "x": 1.440695877761794,
-        "y": 5.9036643081267774
+        "x": 1.9281706271406776,
+        "y": 5.9057137616896895
+      },
+      "nextControl": {
+        "x": 1.4283867499085017,
+        "y": 5.920413287490637
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.174795081967213,
+        "y": 5.9130635245901635
+      },
+      "prevControl": {
+        "x": 1.424702158594808,
+        "y": 5.919879172134553
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,8 +48,8 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.5281018027571577,
-      "maxWaypointRelativePos": 1.0,
+      "minWaypointRelativePos": 1.2074709742554284,
+      "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 6.0,
@@ -56,7 +72,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 50.85000000000002
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": "RedRG",

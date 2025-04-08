@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 2.972950819672131,
-        "y": 3.635399590163934
+        "x": 2.84108606557377,
+        "y": 4.00701844262295
       },
       "prevControl": {
-        "x": 2.5893442622950817,
-        "y": 3.5634733606557374
+        "x": 2.457479508196721,
+        "y": 3.9350922131147534
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     },
     {
       "name": "End",
-      "minWaypointRelativePos": 0.5365853658536583,
+      "minWaypointRelativePos": 0.75,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 1.5,
@@ -75,7 +75,7 @@
   "folder": "RedRG",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -220.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

@@ -19,41 +19,9 @@
                       }
                     },
                     {
-                      "type": "path",
-                      "data": {
-                        "pathName": "BlueLeftRedLeftRightRedRightBlueGround Place 1"
-                      }
-                    },
-                    {
                       "type": "named",
                       "data": {
                         "name": "Intake Clearence"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "parallel",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "AL4"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Align Reef Left"
-                            }
-                          }
-                        ]
                       }
                     }
                   ]
@@ -67,18 +35,6 @@
                       "type": "sequential",
                       "data": {
                         "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Auton Shoot"
-                            }
-                          },
-                          {
-                            "type": "wait",
-                            "data": {
-                              "waitTime": 0.5
-                            }
-                          },
                           {
                             "type": "named",
                             "data": {
@@ -101,7 +57,7 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "BlueLeftRedLeftRightRedRightBlueGround Pickup 1"
+                              "pathName": "FunRightBlueGround Pickup 1"
                             }
                           },
                           {
@@ -140,7 +96,7 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "BlueLeftRedLeftRightRedRightBlueGround Place 2"
+                              "pathName": "FunRightBlueGround Place 2"
                             }
                           }
                         ]
@@ -173,7 +129,7 @@
                           {
                             "type": "named",
                             "data": {
-                              "name": "Align Reef Left"
+                              "name": "Align Reef Right"
                             }
                           },
                           {
@@ -183,7 +139,7 @@
                                 {
                                   "type": "wait",
                                   "data": {
-                                    "waitTime": 0.4
+                                    "waitTime": 0.5
                                   }
                                 },
                                 {
@@ -231,7 +187,7 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "BlueLeftRedLeftRightRedRightBlueGround Pickup 2"
+                              "pathName": "FunRightBlueGround Pickup 2"
                             }
                           },
                           {
@@ -260,7 +216,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "BlueLeftRedLeftRightRedRightBlueGround Place 3"
+                        "pathName": "FunRightBlueGround Place 3"
                       }
                     },
                     {
@@ -285,7 +241,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "AL4"
+                        "name": "L2"
                       }
                     }
                   ]
@@ -327,7 +283,7 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "BlueLeftRedLeftRightRedRightBlueGround Pickup 3"
+                              "pathName": "FunRightBlueGround Pickup 3"
                             }
                           },
                           {
@@ -356,7 +312,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "BlueLeftRedLeftRightRedRightBlueGround Place 4"
+                        "pathName": "FunRightBlueGround Place 4"
                       }
                     },
                     {
@@ -385,7 +341,7 @@
                           {
                             "type": "named",
                             "data": {
-                              "name": "AL4"
+                              "name": "L2"
                             }
                           }
                         ]
@@ -417,7 +373,7 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "BlueLeftRedLeftRightRedRightBlueGround Final Path"
+                              "pathName": "FunRightBlueGround Final Path"
                             }
                           }
                         ]
