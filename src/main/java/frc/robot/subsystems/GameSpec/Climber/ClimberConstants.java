@@ -13,6 +13,7 @@ public class ClimberConstants {
     public static double targetClicks;
     public static double packageClicks;
     public static double softStopClicks;
+    public static double slowPullClicks;
 
 
     static {
@@ -40,7 +41,8 @@ public class ClimberConstants {
         climberServoOpenPos = 0.16;
         targetClicks = 100.0;
         packageClicks = 5.0;
-        softStopClicks = 25.0;
+        softStopClicks = 25.0;;
+        slowPullClicks = 85.0;
 
     }
 

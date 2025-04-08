@@ -124,7 +124,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("high algae", gamespecManager.highAlgae());
     NamedCommands.registerCommand("low algae", gamespecManager.lowAlgae());
     NamedCommands.registerCommand("align processor", gamespecManager.alignProcessor());
-    NamedCommands.registerCommand("barge", Commands.parallel(gamespecManager.barge(), drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0))));
+    NamedCommands.registerCommand("barge", gamespecManager.barge());
     NamedCommands.registerCommand("L2 Package", gamespecManager.goToL2Package());
     NamedCommands.registerCommand("Algae Package", gamespecManager.algaePackage());
     NamedCommands.registerCommand("Barge Package", gamespecManager.bargePackage());
@@ -331,20 +331,35 @@ public class RobotContainer {
       operator.y().and(this::isCoral).onTrue(NamedCommands.getCommand("L4")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"), NamedCommands.getCommand("done scoring")));
       operator.rightTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align station intake")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"))); //, NamedCommands.getCommand("Stop Intake")));
 
-      operator.a().and(this::isAlgae).whileTrue(NamedCommands.getCommand("low algae")).onFalse(Commands.parallel(NamedCommands.getCommand("Algae Package")));
+      operator.a().and(this::isAlgae).whileTrue(NamedCommands.getCommand("low algae")).onFalse(gamespecManager.algaePackageLowPluck());
       operator.b().and(this::isAlgae).whileTrue(NamedCommands.getCommand("high algae")).onFalse(Commands.parallel(NamedCommands.getCommand("Algae Package")));
       operator.x().and(this::isAlgae).onTrue(NamedCommands.getCommand("align processor")).onFalse(gamespecManager.algaePackageElevator());
 
       operator.y()
       .and(this::isAlgae)
       .and(new Trigger(() -> drivetrain.returnAutoBarge()))
-      .onTrue(NamedCommands.getCommand("barge"));
+      .onTrue(
+      Commands.parallel(
+      drivetrain.runOnce(() -> 
+      drivetrain.teleopDrive(0, 0, 0))
+      .andThen(Commands.sequence(
+      Commands.waitSeconds(0.5), 
+      drivetrain.run(() -> {
+        drivetrain.teleopDrive(
+          Math.abs(driver.getLeftY()) >= 0.0 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.0 ? -driver.getLeftX() : 0,
+          Math.abs(driver.getRightX()) >= 0.015 ? -driver.getRightX() : 0);
+        }
+      ).withTimeout(3.0)
+      ))
+      ,gamespecManager.barge()));
 
       operator.y()
         .and(this::isAlgae)
           .onTrue(gamespecManager.lightsSubsystem.setPurple())
           .onFalse(refreshLights());
 
+      //Manual barge for pit testing.
       // operator.rightStick().and(operator.leftStick()).and(this::isAlgae).onTrue(gamespecManager.bargeManual())
       // .onFalse(gamespecManager.bargePackage());
         
@@ -354,22 +369,18 @@ public class RobotContainer {
 
       //auto climb code
       new Trigger(() -> gamespecManager.climberSubsystem.returnReadyToClimb())
-      .debounce(0.5)
+      .debounce(0.8)
       .and(operator.b().and(this::isClimb))
       .onTrue(gamespecManager.autoPackageClimber());
 
       new Trigger(() -> gamespecManager.climberSubsystem.returnReadyToClimb())
+      .debounce(0.3)
       .and(operator.b().and(this::isClimb))
       .onTrue(NamedCommands.getCommand("open fingers"));
 
       driver.leftTrigger().onTrue(Commands.sequence(
         gamespecManager.runOnce(() -> operator.setRumble(RumbleType.kBothRumble, .7))
-        )).onFalse(gamespecManager.runOnce(() -> operator.setRumble(RumbleType.kBothRumble, 0.0)));
-
-      // operator.leftTrigger().or(driver.leftTrigger())
-      // .whileTrue(gamespecManager.floorIntakeDeploy()).onFalse(gamespecManager.floorIntakeClearance());
-
-      
+        )).onFalse(gamespecManager.runOnce(() -> operator.setRumble(RumbleType.kBothRumble, 0.0)));      
       
       operator.leftTrigger().or(driver.leftTrigger())
       .whileTrue(
@@ -408,10 +419,6 @@ public class RobotContainer {
   public boolean isClimb() {
     return mode == Mode.climb;
   }
-
-
-        //      operator.leftTrigger().and(operator.y())
-      //      .whileTrue(gamespecManager.L3());
 
   public void updateAutonCommand() {
     if (autoString != null) {

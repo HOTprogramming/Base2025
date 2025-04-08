@@ -67,6 +67,10 @@ public class Climber extends SubsystemBase {
     climberLimitSwitch2.setBoolean(!io.limitSwitch2.get());//false if ready to climb
   }
 
+
+  /**
+   * @apiNote: Sets percentout power for the climber. 1 = 16 volts.
+   */
     public void setPower(Double supplier){
         io.setPower(supplier);
     }
@@ -123,12 +127,8 @@ public class Climber extends SubsystemBase {
     }
   }
 
-    /**
-   * 
-   * @return false if the robot is packaged, true if it isn't
-   */
-  public boolean checkClimberClimbed(){
-    if(stats.climberPosition <= ClimberConstants.softStopClicks){
+  public boolean checkClimberPos(double pos){
+    if(stats.climberPosition <= pos){
       return false;
     }
     else{
