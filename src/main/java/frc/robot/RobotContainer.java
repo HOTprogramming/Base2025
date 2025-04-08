@@ -324,7 +324,7 @@ public class RobotContainer {
       operator.y().and(this::isCoral).onTrue(NamedCommands.getCommand("L4")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"), NamedCommands.getCommand("done scoring")));
       operator.rightTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align station intake")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"))); //, NamedCommands.getCommand("Stop Intake")));
 
-      operator.a().and(this::isAlgae).whileTrue(NamedCommands.getCommand("low algae")).onFalse(Commands.parallel(NamedCommands.getCommand("Algae Package")));
+      operator.a().and(this::isAlgae).whileTrue(NamedCommands.getCommand("low algae")).onFalse(gamespecManager.algaePackageLowPluck());
       operator.b().and(this::isAlgae).whileTrue(NamedCommands.getCommand("high algae")).onFalse(Commands.parallel(NamedCommands.getCommand("Algae Package")));
       operator.x().and(this::isAlgae).onTrue(NamedCommands.getCommand("align processor")).onFalse(gamespecManager.algaePackageElevator());
 
@@ -338,6 +338,7 @@ public class RobotContainer {
           .onTrue(gamespecManager.lightsSubsystem.setPurple())
           .onFalse(refreshLights());
 
+      //Manual barge for pit testing.
       // operator.rightStick().and(operator.leftStick()).and(this::isAlgae).onTrue(gamespecManager.bargeManual())
       // .onFalse(gamespecManager.bargePackage());
         
@@ -352,17 +353,13 @@ public class RobotContainer {
       .onTrue(gamespecManager.autoPackageClimber());
 
       new Trigger(() -> gamespecManager.climberSubsystem.returnReadyToClimb())
+      .debounce(0.2)
       .and(operator.b().and(this::isClimb))
       .onTrue(NamedCommands.getCommand("open fingers"));
 
       driver.leftTrigger().onTrue(Commands.sequence(
         gamespecManager.runOnce(() -> operator.setRumble(RumbleType.kBothRumble, .7))
-        )).onFalse(gamespecManager.runOnce(() -> operator.setRumble(RumbleType.kBothRumble, 0.0)));
-
-      // operator.leftTrigger().or(driver.leftTrigger())
-      // .whileTrue(gamespecManager.floorIntakeDeploy()).onFalse(gamespecManager.floorIntakeClearance());
-
-      
+        )).onFalse(gamespecManager.runOnce(() -> operator.setRumble(RumbleType.kBothRumble, 0.0)));      
       
       operator.leftTrigger().or(driver.leftTrigger())
       .whileTrue(
@@ -401,10 +398,6 @@ public class RobotContainer {
   public boolean isClimb() {
     return mode == Mode.climb;
   }
-
-
-        //      operator.leftTrigger().and(operator.y())
-      //      .whileTrue(gamespecManager.L3());
 
   public void updateAutonCommand() {
     if (autoString != null) {
