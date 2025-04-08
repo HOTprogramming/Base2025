@@ -288,9 +288,9 @@ public class RobotContainer {
       // driver.b().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));      
       // driver.x().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(0)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));      
     
-      new Trigger(() -> cameraSubsystem.getCameraAlive(CameraPositions.RIGHT)).onTrue(gamespecManager.setOneLights(0, true)).onFalse(gamespecManager.setOneLights(0, false).ignoringDisable(true));
-      new Trigger(() -> cameraSubsystem.getCameraAlive(CameraPositions.LEFT)).onTrue(gamespecManager.setOneLights(3, true)).onFalse(gamespecManager.setOneLights(3, false).ignoringDisable(true));
-      new Trigger(() -> cameraSubsystem.getCameraAlive(CameraPositions.TOP)).onTrue(gamespecManager.setOneLights(5, true)).onFalse(gamespecManager.setOneLights(5, false).ignoringDisable(true));
+      new Trigger(() -> cameraSubsystem.getCameraAlive(CameraPositions.RIGHT)).onTrue(gamespecManager.setOneLights(0, true).ignoringDisable(true)).onFalse(gamespecManager.setOneLights(0, false).ignoringDisable(true));
+      new Trigger(() -> cameraSubsystem.getCameraAlive(CameraPositions.LEFT)).onTrue(gamespecManager.setOneLights(3, true).ignoringDisable(true)).onFalse(gamespecManager.setOneLights(3, false).ignoringDisable(true));
+      new Trigger(() -> cameraSubsystem.getCameraAlive(CameraPositions.TOP)).onTrue(gamespecManager.setOneLights(5, true).ignoringDisable(true)).onFalse(gamespecManager.setOneLights(5, false).ignoringDisable(true));
 
 
       new Trigger(() -> gamespecManager.climberSubsystem.returnReadyToClimb()).and(this::isClimb).onTrue(gamespecManager.setLightsGood()).onFalse(gamespecManager.setLightsClimb());
@@ -342,16 +342,16 @@ public class RobotContainer {
       operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("open fingers"));
 
       //auto climb code
-      // new Trigger(() -> gamespecManager.climberSubsystem.returnReadyToClimb())
-      // .debounce(1.0)
-      // .and(operator.b().and(this::isClimb))
-      // .onTrue(gamespecManager.autoPackageClimber());
+      new Trigger(() -> gamespecManager.climberSubsystem.returnReadyToClimb())
+      .debounce(0.5)
+      .and(operator.b().and(this::isClimb))
+      .onTrue(gamespecManager.autoPackageClimber());
 
-      // new Trigger(() -> gamespecManager.climberSubsystem.returnReadyToClimb())
-      // .and(operator.b().and(this::isClimb))
-      // .onTrue(NamedCommands.getCommand("open fingers"));
+      new Trigger(() -> gamespecManager.climberSubsystem.returnReadyToClimb())
+      .and(operator.b().and(this::isClimb))
+      .onTrue(NamedCommands.getCommand("open fingers"));
 
-      operator.leftTrigger().or(driver.leftTrigger()).or(() -> gamespecManager.returnIntakeState())
+      operator.leftTrigger().or(driver.leftTrigger())
       .whileTrue(gamespecManager.floorIntakeDeploy()).onFalse(gamespecManager.floorIntakeClearance());
 
       operator.povUp().or(operator.povLeft().or(operator.povDown().or(operator.povRight()))).onTrue(NamedCommands.getCommand("Package").unless(this::isClimb));

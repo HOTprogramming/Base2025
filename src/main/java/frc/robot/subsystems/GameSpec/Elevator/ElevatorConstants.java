@@ -69,7 +69,7 @@ public class ElevatorConstants {
         AutoL4Height = 53.0;
         L4Height = 51.0;//53.0;
         L4LongHeight = 52.0;
-        L3Height = 23.2;
+        L3Height = 23.7;
         L3LongHeight = 20.8;
         L2Height = 10.4;
         L2LongHeight = 9.73;
