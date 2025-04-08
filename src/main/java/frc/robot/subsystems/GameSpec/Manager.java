@@ -405,29 +405,22 @@ public class Manager extends SubsystemBase{
     }
 
     public Command autoPackageClimber(){
+      return Commands.sequence(
+        ClimbStage1(),
+        ClimbStage2()
+      );
+    }
+
+    public Command ClimbStage1(){
+      return run(() -> climberSubsystem.setPower(-0.33))
+      .onlyWhile(() -> climberSubsystem.checkClimberPos(ClimberConstants.slowPullClicks));
+    }
+
+    public Command ClimbStage2(){
       return run(() -> climberSubsystem.setPower(-1.0))
       .onlyWhile(() -> climberSubsystem.checkClimberPos(ClimberConstants.softStopClicks))
       .andThen(runOnce(() -> climberSubsystem.setPower(0.0)));
     }
-
-    //development climber code
-    // public Command autoPackageClimber(){
-    //   return run(() -> climberSubsystem.setPower(-1.0))
-    //   .onlyWhile(() -> climberSubsystem.checkClimberPos(ClimberConstants.softStopClicks))
-    //   .andThen(runOnce(() -> climberSubsystem.setPower(0.0)));
-    // }
-
-    // public Command ClimbStage1(){
-    //   return run(() -> climberSubsystem.setPower(-0.33))
-    //   .onlyWhile(() -> climberSubsystem.checkClimberPos(ClimberConstants.softStopClicks))
-    //   .andThen(runOnce(() -> climberSubsystem.setPower(0.0)));
-    // }
-
-    // public Command ClimbStage2(){
-    //   return run(() -> climberSubsystem.setPower(-1.0))
-    //   .onlyWhile(() -> climberSubsystem.checkClimberPos(ClimberConstants.softStopClicks))
-    //   .andThen(runOnce(() -> climberSubsystem.setPower(0.0)));
-    // }
 
     public Command climberDeploy(){
     return run(() -> climberSubsystem.setPower(1.0))
