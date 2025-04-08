@@ -362,12 +362,12 @@ public class RobotContainer {
 
       //auto climb code
       new Trigger(() -> gamespecManager.climberSubsystem.returnReadyToClimb())
-      .debounce(0.5)
+      .debounce(0.8)
       .and(operator.b().and(this::isClimb))
       .onTrue(gamespecManager.autoPackageClimber());
 
       new Trigger(() -> gamespecManager.climberSubsystem.returnReadyToClimb())
-      .debounce(0.2)
+      .debounce(0.3)
       .and(operator.b().and(this::isClimb))
       .onTrue(NamedCommands.getCommand("open fingers"));
 
