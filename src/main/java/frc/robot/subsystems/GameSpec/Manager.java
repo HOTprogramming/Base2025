@@ -293,11 +293,14 @@ public class Manager extends SubsystemBase{
 
     public Command autonShootL3() {
       return Commands.sequence(
-        armSubsystem.L3Score(),
-        manipulatorSubsystem.L3Spit(),
-        elevatorSubsystem.L3Score(),
-        goToPackage()
-      );
+        Commands.parallel(
+          elevatorSubsystem.goToL3(),
+          Commands.sequence(
+          armSubsystem.L3Score(),
+          manipulatorSubsystem.L3Spit()
+          )),
+          elevatorSubsystem.L3Score()
+        );
     }
 
     /**
@@ -351,7 +354,12 @@ public class Manager extends SubsystemBase{
     }
 
     public Command autonL3(){
-      return null;
+      return Commands.parallel(
+        manipulatorSubsystem.goScore(),
+        armSubsystem.goToL3(),
+        elevatorSubsystem.goToL3()
+      );
+        
     }
 
     public Command autonIntake() {

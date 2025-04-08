@@ -93,6 +93,8 @@ public class RobotContainer {
     chooser.addOption("RightRedLolipopp", "RightRedLolipop"); 
     chooser.addOption("RedLeftLolipop", "RedLeftLolipop"); 
     chooser.addOption("BlueLeftLolipop", "BlueLeftLolipop"); 
+    chooser.addOption("MiniBackshot", "MiniBackshot"); 
+
 
 
 
@@ -146,6 +148,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Auton Intake Start", gamespecManager.autonIntake());
     NamedCommands.registerCommand("Auton Finish Intake", gamespecManager.autonFinishIntake());
     NamedCommands.registerCommand("AL4", gamespecManager.autonL4());
+    NamedCommands.registerCommand("AL3", gamespecManager.autonL3());
+
     NamedCommands.registerCommand("Intake Clearence", gamespecManager.intakeSubsystem.clearance());
     NamedCommands.registerCommand("Intake Bump", gamespecManager.intakeSubsystem.bump());
     NamedCommands.registerCommand("Half Height", gamespecManager.autonHalfL4());
