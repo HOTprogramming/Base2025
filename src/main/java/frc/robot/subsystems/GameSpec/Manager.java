@@ -659,6 +659,8 @@ public class Manager extends SubsystemBase{
         Commands.parallel(elevatorSubsystem.goToBarge(), runOnce(() -> {scoringLevel = ScoringLevel.Barge;}))
         ,armSubsystem.barge()),
         algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage).withTimeout(0.25),
+        Commands.waitSeconds(0.25),
+        algaeSubsystem.algaeVoltage(0.0),
         bargePackage());
     }
 

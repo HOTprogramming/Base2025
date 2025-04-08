@@ -122,7 +122,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("high algae", gamespecManager.highAlgae());
     NamedCommands.registerCommand("low algae", gamespecManager.lowAlgae());
     NamedCommands.registerCommand("align processor", gamespecManager.alignProcessor());
-    NamedCommands.registerCommand("barge", Commands.parallel(gamespecManager.barge(), drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0))));
+    NamedCommands.registerCommand("barge", gamespecManager.barge());
     NamedCommands.registerCommand("L2 Package", gamespecManager.goToL2Package());
     NamedCommands.registerCommand("Algae Package", gamespecManager.algaePackage());
     NamedCommands.registerCommand("Barge Package", gamespecManager.bargePackage());
@@ -331,7 +331,21 @@ public class RobotContainer {
       operator.y()
       .and(this::isAlgae)
       .and(new Trigger(() -> drivetrain.returnAutoBarge()))
-      .onTrue(NamedCommands.getCommand("barge"));
+      .onTrue(
+      Commands.parallel(
+      drivetrain.runOnce(() -> 
+      drivetrain.teleopDrive(0, 0, 0))
+      .andThen(Commands.sequence(
+      Commands.waitSeconds(0.5), 
+      drivetrain.run(() -> {
+        drivetrain.teleopDrive(
+          Math.abs(driver.getLeftY()) >= 0.0 ? -driver.getLeftY() : 0,
+          Math.abs(driver.getLeftX()) >= 0.0 ? -driver.getLeftX() : 0,
+          Math.abs(driver.getRightX()) >= 0.015 ? -driver.getRightX() : 0);
+        }
+      ).withTimeout(3.0)
+      ))
+      ,gamespecManager.barge()));
 
       operator.y()
         .and(this::isAlgae)

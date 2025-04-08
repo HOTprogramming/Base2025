@@ -590,9 +590,17 @@ public class DriveConstants {
         PIDConstants TELEOP_ROTATION_PID
         ) {}
 
-        public static final double bargePosRedFar = 9.925;
+        //Comp Gains:
+        // public static final double bargePosRedFar = 9.925;
+        // public static final double bargePosRedClose = 9.75;
+        // public static final double bargePosBlueFar = 7.86;
+        // public static final double bargePosBlueClose = 7.685;
+
+        //GM Gains:
+        public static final double bargePosRedFar = 10.0;
         public static final double bargePosRedClose = 9.75;
         public static final double bargePosBlueFar = 7.86;
-        public static final double bargePosBlueClose = 7.685;
+        public static final double bargePosBlueClose = 7.61;
+
 
 }
