@@ -609,15 +609,15 @@ public class Manager extends SubsystemBase{
         Commands.sequence(
         Commands.waitSeconds(0.1),
         Commands.parallel(
-          armSubsystem.goToPackage(),
-          elevatorSubsystem.intakeCoral(),
+          armSubsystem.horizontal(),
+          elevatorSubsystem.goToHighAlgae(),
           Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
           intakeSubsystem.handoff())
-          .until(() -> armSubsystem.returnArmPos() < ArmConstants.Horizontal-5.0)
+          .until(() -> elevatorSubsystem.returnElevatorPos() > ElevatorConstants.highAlgae - 10.0)
           .andThen(
           Commands.parallel(
-          armSubsystem.goToL3(),
-          elevatorSubsystem.goToL3(),
+          armSubsystem.getAlgaeFromReef(),
+          elevatorSubsystem.goToHighAlgae(),
           Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
           intakeSubsystem.handoff())
           ),
@@ -642,19 +642,19 @@ public class Manager extends SubsystemBase{
         Commands.sequence(
         Commands.waitSeconds(0.1),
         Commands.parallel(
-          armSubsystem.goToPackage(),
-          elevatorSubsystem.intakeCoral(),
+          armSubsystem.goToL3(),
+          elevatorSubsystem.goToL3(),
           Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
           intakeSubsystem.handoff())
-          .until(() -> armSubsystem.returnArmPos() < ArmConstants.Horizontal-5.0)
+          .until(() -> elevatorSubsystem.returnElevatorPos() > ElevatorConstants.intakeCoralHeight + 8.0)
           .andThen(
           Commands.parallel(
           armSubsystem.goToL3(),
           elevatorSubsystem.goToL3(),
           Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
-          intakeSubsystem.handoff())
+          intakeSubsystem.bump())
           ),
-        intakeSubsystem.clearance())
+        intakeSubsystem.bump())
         );
     }
 

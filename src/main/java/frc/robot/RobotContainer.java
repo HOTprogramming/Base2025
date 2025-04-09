@@ -168,6 +168,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Auton High Algae End", gamespecManager.autonHighPluckEnd());
 
     NamedCommands.registerCommand("Auton L3 Floor Intake", gamespecManager.autonL3ToIntake());
+    NamedCommands.registerCommand("Auton Intake L3", gamespecManager.autonFloorIntakeEndToL3());
 
     
     NamedCommands.registerCommand("Auton Floor Intake End", gamespecManager.autonFloorIntakeEnd());
