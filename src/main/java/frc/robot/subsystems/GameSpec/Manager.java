@@ -645,7 +645,7 @@ public class Manager extends SubsystemBase{
     }
 
     public Command alignProcessor(){
-      return Commands.sequence(runOnce(() -> {scoringLevel = ScoringLevel.Algae;}),
+      return Commands.parallel(runOnce(() -> {scoringLevel = ScoringLevel.Algae;}),
         Commands.parallel(armSubsystem.processor()),
         Commands.parallel(elevatorSubsystem.goToProcessor()));
     }
