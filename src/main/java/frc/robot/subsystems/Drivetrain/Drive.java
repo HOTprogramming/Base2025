@@ -112,6 +112,8 @@ public class Drive extends SubsystemBase {
 
     double sideRatio; //.4 long side, 1.2 short side h/w
 
+    Pose2d fetchPose = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
+
     NetworkTable objectDetection;
     ArrayList<DoubleArraySubscriber> coralSubs = new ArrayList<>();
 
@@ -326,29 +328,31 @@ public class Drive extends SubsystemBase {
             
                 public Command chaseObject() {
         return runOnce(() -> {                    pixelTolerance = 10;
-            double cameraToCoral = ((pixelX-320) / 320.0) * 35.0 * Math.PI/180.0;
+            double cameraToCoral = -((pixelX-320) / 320.0) * 35.0 * Math.PI/180.0;
             // double targetAngle = cameraToCoral - iOdata.state.Pose.getRotation().getRadians();
             double distance = 1.5;
             
-            Pose2d poseCameraToCoral = new Pose2d(Math.sin(cameraToCoral),Math.cos(cameraToCoral)+0.4572,Rotation2d.fromRadians(0));
+            Pose2d poseRobotToCoral = new Pose2d(distance * Math.sin(cameraToCoral),distance * Math.cos(cameraToCoral)+0.4572,Rotation2d.fromRadians(0));
 
-            Rotation2d angleRobotToCoral = new Rotation2d(poseCameraToCoral.getY(), poseCameraToCoral.getX())
-                .rotateBy(iOdata.state.Pose.getRotation());
+            Rotation2d angleRobotToCoral = Rotation2d.fromRadians(Math.atan2(poseRobotToCoral.getX(), poseRobotToCoral.getY()) + (Math.PI/4));
+
 if (targetSeenSub.get()) {
+
+            fetchPose = poseRobotToCoral.relativeTo(iOdata.state.Pose);
+
             chaseWayPoints = PathPlannerPath.waypointsFromPoses(
-            new Pose2d(iOdata.state.Pose.getX(),iOdata.state.Pose.getY(),angleRobotToCoral),
-            new Pose2d(iOdata.state.Pose.getX() + distance * angleRobotToCoral.rotateBy(Rotation2d.fromDegrees(90)).getCos(),
-                       iOdata.state.Pose.getY() + distance * angleRobotToCoral.rotateBy(Rotation2d.fromDegrees(90)).getSin(), 
-                       angleRobotToCoral) // pos through object  
+            new Pose2d(iOdata.state.Pose.getX(),iOdata.state.Pose.getY(),angleRobotToCoral.minus(iOdata.state.Pose.getRotation())),            
+            fetchPose // pos through object  
         );
         PathConstraints constraints = new PathConstraints(4.96, 6.0, 540.0, 720.0, 12.0);
+        SmartDashboard.putNumberArray("coral Pose",  new double[] {fetchPose.getX(), fetchPose.getY(), fetchPose.getRotation().getRadians()});
 
         // Create the path using the waypoints created above
         fetchPath = new PathPlannerPath(
     chaseWayPoints,
     constraints,
     null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-    new GoalEndState(1.5, Rotation2d.fromRadians(iOdata.state.Pose.getRotation().getRadians() + cameraToCoral)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+    new GoalEndState(1.5, angleRobotToCoral) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
 );
 
 AutoBuilder.followPath(fetchPath).schedule();
@@ -356,7 +360,9 @@ AutoBuilder.followPath(fetchPath).schedule();
 
 // Prevent the path from being flipped if the coordinates are already correct
 fetchPath.preventFlipping = true;
-SmartDashboard.putNumber("poseCameraToCoral", poseCameraToCoral.getRotation().getDegrees());
+SmartDashboard.putNumber("poseCameraToCoral", poseRobotToCoral.getRotation().getDegrees());
+SmartDashboard.putNumber("poseCameraToCoral_X", poseRobotToCoral.getX());
+SmartDashboard.putNumber("poseCameraToCoral_Y", poseRobotToCoral.getY());
 SmartDashboard.putNumber("target Angle", angleRobotToCoral.getDegrees());
 SmartDashboard.putNumber("CoralX", iOdata.state.Pose.getX() + distance * angleRobotToCoral.getCos());
 SmartDashboard.putNumber("CoralY", iOdata.state.Pose.getY() + distance * angleRobotToCoral.getSin());
@@ -368,6 +374,10 @@ SmartDashboard.putNumber("startingPoseTheta", iOdata.state.Pose.getRotation().ge
 
 SmartDashboard.putNumber("cameraToCoral", Math.toDegrees(cameraToCoral));
 });
+    }
+
+    public boolean pathend() {
+        return iOdata.state.Pose.getTranslation().getDistance(fetchPose.getTranslation()) < 0.1;
     }
 
     public Command chaseObjectCommand() {
