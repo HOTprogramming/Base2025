@@ -243,7 +243,11 @@ public class Manager extends SubsystemBase{
             manipulatorSubsystem.shoot()
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
             .andThen(goToL1().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail))))),
-          ScoringLevel.Algae, algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage),
+          ScoringLevel.Algae, 
+            algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage).until(() -> algaeSubsystem.getAlgaePosition() > 0.12)
+              .andThen(algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelSlowVoltage))
+            
+            ,
           ScoringLevel.Barge, algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage)
         ),
         this::getLevel
@@ -642,8 +646,8 @@ public class Manager extends SubsystemBase{
 
     public Command alignProcessor(){
       return Commands.sequence(runOnce(() -> {scoringLevel = ScoringLevel.Algae;}),
-        Commands.parallel(elevatorSubsystem.goToProcessor())
-        ,Commands.parallel(armSubsystem.processor()));
+        Commands.parallel(armSubsystem.processor()),
+        Commands.parallel(elevatorSubsystem.goToProcessor()));
     }
 
     public Command barge(){
