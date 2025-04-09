@@ -58,7 +58,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 0.5
+                              "waitTime": 0.05
                             }
                           },
                           {
@@ -97,9 +97,22 @@
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "sequential",
                       "data": {
-                        "name": "Auton Floor Intake End"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Auton Floor Intake End"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Auton High Algae Start"
+                            }
+                          }
+                        ]
                       }
                     }
                   ]
@@ -147,13 +160,39 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.3
+                  "waitTime": 0.05
                 }
               },
               {
-                "type": "path",
+                "type": "race",
                 "data": {
-                  "pathName": "BackShotMiniBackup"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "BackShotMiniBackup"
+                      }
+                    },
+                    {
+                      "type": "sequential",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 0.3
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "AL3"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -241,7 +280,7 @@
           "data": {
             "commands": [
               {
-                "type": "race",
+                "type": "deadline",
                 "data": {
                   "commands": [
                     {

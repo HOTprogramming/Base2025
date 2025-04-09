@@ -308,6 +308,18 @@ public class Manager extends SubsystemBase{
     }
 
     /**
+     * @apiNote safely goes from l3 shoot straight to intaking
+     */
+    public Command autonL3ToIntake(){
+      return Commands.parallel(
+        armSubsystem.horizontal()
+          .andThen(elevatorSubsystem.intakeCoral()),
+        intakeSubsystem.deploy(),
+        manipulatorSubsystem.L4Spit()
+        ).until(() -> intakeSubsystem.getBeamBreak());
+    }
+
+    /**
      * @apinote Half shoot for fast driving
      */
     public Command autonShootStart() {
@@ -573,6 +585,39 @@ public class Manager extends SubsystemBase{
           Commands.parallel(
           armSubsystem.goToPackage(),
           elevatorSubsystem.goToPackage(),
+          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
+          intakeSubsystem.handoff())
+          ),
+        intakeSubsystem.clearance())
+        );
+    }
+
+    /**
+     * @apiNote handoff to L3
+     */
+    public Command autonFloorIntakeEndToL3() {
+      return Commands.sequence(
+        Commands.waitSeconds(0.0),
+        Commands.parallel(
+          armSubsystem.horizontal(),
+          intakeSubsystem.handoffAndSpin(),
+          manipulatorSubsystem.intakeGround(),
+          elevatorSubsystem.intakeCoral()
+          ))
+        .until(() -> !manipulatorSubsystem.returnBeamBreak()) //coral beambreak true/false is flipped from intake beambreak
+        .andThen(
+        Commands.sequence(
+        Commands.waitSeconds(0.1),
+        Commands.parallel(
+          armSubsystem.goToPackage(),
+          elevatorSubsystem.intakeCoral(),
+          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
+          intakeSubsystem.handoff())
+          .until(() -> armSubsystem.returnArmPos() < ArmConstants.Horizontal-5.0)
+          .andThen(
+          Commands.parallel(
+          armSubsystem.goToL3(),
+          elevatorSubsystem.goToL3(),
           Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
           intakeSubsystem.handoff())
           ),
