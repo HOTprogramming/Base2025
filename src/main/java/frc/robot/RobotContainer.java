@@ -159,9 +159,13 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("Auton Fast Shoot Start", gamespecManager.autonShootStart());
     NamedCommands.registerCommand("Auton Fast Shoot End", gamespecManager.autonShootFinish());
+
+    NamedCommands.registerCommand("Auton Shoot L3", gamespecManager.autonShootL3());
+
+
     NamedCommands.registerCommand("Auton Shoot Intake", gamespecManager.autonShootIntake());
     NamedCommands.registerCommand("Auton High Algae Start", gamespecManager.autonHighPluckStart());
-    NamedCommands.registerCommand("Auton High Algae End", gamespecManager.algaeSubsystem.algaeVoltage(AlgaeConstants.algaeHoldVoltage));
+    NamedCommands.registerCommand("Auton High Algae End", gamespecManager.autonHighPluckEnd());
 
 
 

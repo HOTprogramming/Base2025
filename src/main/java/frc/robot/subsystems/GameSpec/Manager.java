@@ -3,6 +3,8 @@ package frc.robot.subsystems.GameSpec;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
 
+import javax.sound.midi.Sequence;
+
 import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
@@ -357,6 +359,7 @@ public class Manager extends SubsystemBase{
 
     public Command autonL3(){
       return Commands.parallel(
+        intakeSubsystem.bump(), 
         manipulatorSubsystem.goScore(),
         armSubsystem.goToL3(),
         elevatorSubsystem.goToL3()
@@ -392,7 +395,7 @@ public class Manager extends SubsystemBase{
     public Command autonHighPluckEnd(){
       return algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeIntakeVoltage)
         .onlyWhile(() -> algaeSubsystem.returnAlgaeIn())
-      .andThen(algaeSubsystem.algaeVoltage(AlgaeConstants.algaeHoldVoltage));
+        .andThen(algaeSubsystem.algaeVoltage(AlgaeConstants.algaeHoldVoltage));
     }
 
     public Command autonHalfL4() {
@@ -539,7 +542,7 @@ public class Manager extends SubsystemBase{
       return Commands.parallel(
         armSubsystem.horizontal(),
         intakeSubsystem.deploy(),
-        manipulatorSubsystem.goScore(),
+        manipulatorSubsystem.L4Spit(),
         elevatorSubsystem.intakeCoral()
         ).until(() -> intakeSubsystem.getBeamBreak());
     }
