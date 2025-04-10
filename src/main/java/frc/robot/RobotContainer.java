@@ -95,6 +95,8 @@ public class RobotContainer {
     chooser.addOption("BlueLeftLolipop", "BlueLeftLolipop"); 
     chooser.addOption("MiniBackshot", "MiniBackshot"); 
     chooser.addOption("MiniBackshot-optimized", "MiniBackshot-optimized"); 
+    chooser.addOption("sacrifice", "Backshot-full"); 
+
 
 
 
