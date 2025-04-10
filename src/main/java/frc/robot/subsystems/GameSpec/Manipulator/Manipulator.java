@@ -108,6 +108,18 @@ public class Manipulator extends SubsystemBase {
         return runOnce(() -> io.setCoralSpinMotorControl(-5));
     }
 
+    public Command knockAlgaeSlowRight(){
+        return runOnce(() -> io.setCoralSpinMotorControl(-8));
+    }
+
+    public Command knockAlgaeSlowLeft(){
+        return runOnce(() -> io.setCoralSpinMotorControl(5));
+    }
+
+    public Command knockAlgaeLeft(){
+        return runOnce(() -> io.setCoralSpinMotorControl(8));
+    }
+
     public Command L3Spit(){
         return runOnce(() -> io.setCoralSpinMotorControl(-2));
     }

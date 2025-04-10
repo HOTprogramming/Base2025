@@ -315,7 +315,7 @@ public class Manager extends SubsystemBase{
         armSubsystem.horizontal()
           .andThen(elevatorSubsystem.intakeCoral()),
         intakeSubsystem.deploy(),
-        manipulatorSubsystem.L4Spit()
+        manipulatorSubsystem.knockAlgaeLeft()
         ).until(() -> intakeSubsystem.getBeamBreak());
     }
 
@@ -498,7 +498,7 @@ public class Manager extends SubsystemBase{
       Commands.parallel(
           armSubsystem.horizontal(),
           intakeSubsystem.deploy(),
-          manipulatorSubsystem.goScore(),
+          manipulatorSubsystem.L4Spit(),
           elevatorSubsystem.intakeCoral()
           )
         .until(() -> intakeSubsystem.getBeamBreak())
@@ -554,7 +554,19 @@ public class Manager extends SubsystemBase{
       return Commands.parallel(
         armSubsystem.horizontal(),
         intakeSubsystem.deploy(),
-        manipulatorSubsystem.L4Spit(),
+        manipulatorSubsystem.knockAlgaeSlowLeft(),
+        elevatorSubsystem.intakeCoral()
+        ).until(() -> intakeSubsystem.getBeamBreak());
+    }
+
+    /**
+     * @apiNote ends with a coral in da grippa and kicks balls right
+     */
+    public Command autonFloorIntakeStartRight() {
+      return Commands.parallel(
+        armSubsystem.horizontal(),
+        intakeSubsystem.deploy(),
+        manipulatorSubsystem.knockAlgaeSlowRight(),
         elevatorSubsystem.intakeCoral()
         ).until(() -> intakeSubsystem.getBeamBreak());
     }
@@ -578,7 +590,7 @@ public class Manager extends SubsystemBase{
         Commands.parallel(
           armSubsystem.goToPackage(),
           elevatorSubsystem.intakeCoral(),
-          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
+          Commands.sequence(Commands.waitSeconds(.2), manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
           intakeSubsystem.handoff())
           .until(() -> armSubsystem.returnArmPos() < ArmConstants.Horizontal-5.0)
           .andThen(
@@ -611,9 +623,9 @@ public class Manager extends SubsystemBase{
         Commands.parallel(
           armSubsystem.horizontal(),
           elevatorSubsystem.goToHighAlgae(),
-          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
+          Commands.sequence(Commands.waitSeconds(.7), manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
           intakeSubsystem.handoff())
-          .until(() -> elevatorSubsystem.returnElevatorPos() > ElevatorConstants.highAlgae - 10.0)
+          .until(() -> elevatorSubsystem.returnElevatorPos() > ElevatorConstants.intakeCoralHeight + 6.0)
           .andThen(
           Commands.parallel(
           armSubsystem.getAlgaeFromReef(),
@@ -640,11 +652,11 @@ public class Manager extends SubsystemBase{
         .until(() -> !manipulatorSubsystem.returnBeamBreak()) //coral beambreak true/false is flipped from intake beambreak
         .andThen(
         Commands.sequence(
-        Commands.waitSeconds(0.1),
+        Commands.waitSeconds(0.3),
         Commands.parallel(
           armSubsystem.goToL3(),
           elevatorSubsystem.goToL3(),
-          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
+          Commands.sequence(Commands.waitSeconds(0.4), manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
           intakeSubsystem.handoff())
           .until(() -> elevatorSubsystem.returnElevatorPos() > ElevatorConstants.intakeCoralHeight + 8.0)
           .andThen(

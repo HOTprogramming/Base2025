@@ -152,12 +152,6 @@
           "data": {
             "commands": [
               {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.05
-                }
-              },
-              {
                 "type": "deadline",
                 "data": {
                   "commands": [
@@ -168,7 +162,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 0.3
+                              "waitTime": 0.25
                             }
                           },
                           {
@@ -190,15 +184,9 @@
                 }
               },
               {
-                "type": "sequential",
+                "type": "parallel",
                 "data": {
                   "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "AL3"
-                      }
-                    },
                     {
                       "type": "sequential",
                       "data": {
@@ -245,7 +233,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 1.0
+                              "waitTime": 0.25
                             }
                           },
                           {
@@ -342,7 +330,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 1.0
+                              "waitTime": 0.5
                             }
                           },
                           {
