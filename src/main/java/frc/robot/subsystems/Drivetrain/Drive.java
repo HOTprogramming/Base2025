@@ -155,204 +155,204 @@ public class Drive extends SubsystemBase {
         new  Pose2d(0,0,Rotation2d.fromDegrees(0)) // pos through object  
     );
     PathConstraints constraintsFetch = new PathConstraints(4.96, 6.0, 540.0, 720.0, 12.0);
-                private PathPlannerPath fetchPath = new PathPlannerPath(
-                    chaseWayPoints ,
-                    constraintsFetch,
-                    null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-                    new GoalEndState(1.5, Rotation2d.fromDegrees(0))); // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-                private BooleanSubscriber targetSeenSub;
-            
-            
-            
-                public Drive(DriveIO driveIO) { 
-                    this.driveIO = driveIO;
-                    this.iOdata = driveIO.update();
-            
-                    translationControllerX.setTolerance(auto_align_tolerance);
-                    translationControllerY.setTolerance(auto_align_tolerance);
-            
-                    translationControllerIn.setTolerance(auto_align_tolerance);
-                    translationControllerAcross.setTolerance(auto_align_tolerance);
-            
-                    heading = Rotation2d.fromDegrees(0);
-            
-                    driveTab = Shuffleboard.getTab("Drive");
-                    speedEntry = driveTab.add("Speed (RJU)", 0.0).getEntry();
-                    poseEntry = driveTab.add("Pose", new Double[] {0.0, 0.0, 0.0}).getEntry();
-                    pathXEntry = driveTab.add("Path X", 0.0).getEntry();
-                    pathYEntry = driveTab.add("Path Y", 0.0).getEntry();
-                    pathRotEntry = driveTab.add("Path Rot", 0.0).getEntry();
-            
-                    objectDetection = NetworkTableInstance.getDefault().getTable("ObjectDetection");
-                    for (int i=0; i<10; ++i) {
-                        coralSubs.add(objectDetection.getDoubleArrayTopic("coral").subscribe(new double[] {320, -1, 321, -1}));
-                    }
-                    targetSeenSub = objectDetection.getBooleanTopic("detected").subscribe(false);
-            
-                    double driveBaseRadius = 0;
-                    for (var moduleLocation : this.iOdata.m_moduleLocations) {
-                        driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
-                    }
-            
-                    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-            
-                    pathGroup = new ArrayList<PathPlannerPath>();
-            
-                    configurePathPlanner();
-            
-                    constraints = PathConstraints.unlimitedConstraints(12.0);
-                    reefTarget = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
-            
-                    try {
-                        this.pathGroup.addAll(PathPlannerAuto.getPathGroupFromAutoFile("OTF_TESTING"));
-                    } catch (IOException e) {
-                    } catch (ParseException e) {
-                    }
-            
-                    List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-                        new Pose2d(13.0, 1.0, Rotation2d.fromDegrees(0)),
-                        new Pose2d(16.0, 1.0, Rotation2d.fromDegrees(0)),
-                        new Pose2d(15.0, 3.0, Rotation2d.fromDegrees(90))
-                    );
-            
-                    PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // The constraints for this path.
-                    // PathConstraints constraints = PathConstraints.unlimitedConstraints(12.0); // You can also use unlimited constraints, only limited by motor torque and nominal battery voltage
-            
-                    // Create the path using the waypoints created above
-                    path = new PathPlannerPath(
-                            waypoints,
-                            constraints,
-                            null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-                            new GoalEndState(0.0, Rotation2d.fromDegrees(-90)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-                    );
-            
-                    // Prevent the path from being flipped if the coordinates are already correct
-                    path.preventFlipping = true;
-            
-                    alert = new Alert("test alert", AlertType.kWarning);
-                }
-            
-                public boolean drivetrainAtTarget() {
-                    if (path != null) {
-                        
-                        return Math.abs(
-                            this.iOdata.state.Pose.getTranslation().getDistance(
-                                path.getPathPoses().get(path.getPathPoses().size() - 1).getTranslation())) 
-                                < OTF_end_tolerance;
-                    }
-                    return false;
-                }
-            
-                private boolean seesReefTag() {
-                    return seesReefTag;
-                }
-            
-                private Rotation2d getNearestReefAngle() {
-                    return Rotation2d.fromDegrees(60*Math.round(Math.toDegrees(Math.atan2(REEF_CENTER.getY() - iOdata.state.Pose.getY(), (DriverStation.getAlliance().get() == Alliance.Blue ? REEF_CENTER.getX(): REEF_CENTER.getX() + OFFSET_TO_RED) - iOdata.state.Pose.getX()))/60));
-                }
-            
-                public Command generateOnTheFly() {
-                    return runOnce(() -> {
-                        List<Pose2d> currentPathPoses = pathGroup.get(currentPathIndex).getPathPoses();
-                        PathPlannerPath nextPath = pathGroup.get(currentPathIndex + 1);
-                        waypoints = PathPlannerPath.waypointsFromPoses(
-                            currentPathPoses.get(currentPathPoses.size() - 1),
-                            new Pose2d(pathXEntry.getDouble(0), pathYEntry.getDouble(0), Rotation2d.fromDegrees(pathRotEntry.getDouble(0))),
-                            nextPath.getPathPoses().get(0)
-                        );
-                        path = new PathPlannerPath(
-                        waypoints,
-                        constraints,
-                        null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-                        new GoalEndState(nextPath.getIdealStartingState().velocityMPS(), nextPath.getInitialHeading()) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-                        );
-                        AutoBuilder.followPath(path).unless(this::drivetrainAtTarget).schedule();
-                    });
-                }
-            
-                public Command runOnTheFly() {
-                    return Commands.sequence(
-                        generateOnTheFly(),
-                        AutoBuilder.followPath(path).unless(this::drivetrainAtTarget));
-                }
-            
-                private void getObjectMeasurements() {
-                    // double cameraToCoral = ((pixelX-320) / 320.0) * 35.0 * Math.PI/180.0;
-                    // double distance = 1.5;
-                    
-                    // Pose2d poseRobotToCoral = new Pose2d(distance * Math.sin(cameraToCoral),distance * Math.cos(cameraToCoral)+0.4572,Rotation2d.fromDegrees(0));
+    private PathPlannerPath fetchPath = new PathPlannerPath(
+        chaseWayPoints ,
+        constraintsFetch,
+        null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+        new GoalEndState(1.5, Rotation2d.fromDegrees(0))); // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+    private BooleanSubscriber targetSeenSub;
 
-                    // Pose2d poseFieldToCoral = new Pose2d(iOdata.state.Pose.getX() + (poseRobotToCoral.getY() * iOdata.state.Pose.getRotation().getCos()) + (poseRobotToCoral.getX() *  iOdata.state.Pose.getRotation().getSin()), iOdata.state.Pose.getY() + (poseRobotToCoral.getY() * iOdata.state.Pose.getRotation().getSin()) + (poseRobotToCoral.getX() * iOdata.state.Pose.getRotation().getCos()), Rotation2d.fromDegrees(0));
 
-                    // Rotation2d angleFieldToCoral = Rotation2d.fromDegrees(-90).minus(Rotation2d.fromRadians(Math.atan2(iOdata.state.Pose.getX() - poseFieldToCoral.getX(), iOdata.state.Pose.getY() - poseFieldToCoral.getY())));
 
-                    // SmartDashboard.putNumberArray("coral Pose",  new double[] {poseFieldToCoral.getX(), poseFieldToCoral.getY(), angleFieldToCoral.getRadians()});
-                    // SmartDashboard.putNumber("poseCameraToCoral", poseRobotToCoral.getRotation().getDegrees());
-                    // SmartDashboard.putNumber("poseCameraToCoral_X", poseRobotToCoral.getX());
-                    // SmartDashboard.putNumber("poseCameraToCoral_Y", poseRobotToCoral.getY());
-                    // SmartDashboard.putNumber("target Angle", angleRobotToCoral.getDegrees());
-                    // SmartDashboard.putNumber("CoralX", iOdata.state.Pose.getX() + distance * angleRobotToCoral.getCos());
-                    // SmartDashboard.putNumber("CoralY", iOdata.state.Pose.getY() + distance * angleRobotToCoral.getSin());
-                    // SmartDashboard.putNumber("startingPoseX", iOdata.state.Pose.getX());
-                    // SmartDashboard.putNumber("startingPoseY", iOdata.state.Pose.getY());
-                    // SmartDashboard.putNumber("startingPoseTheta", iOdata.state.Pose.getRotation().getDegrees());
-                    // SmartDashboard.putNumber("camera to coral", cameraToCoral);
+    public Drive(DriveIO driveIO) { 
+        this.driveIO = driveIO;
+        this.iOdata = driveIO.update();
 
+        translationControllerX.setTolerance(auto_align_tolerance);
+        translationControllerY.setTolerance(auto_align_tolerance);
+
+        translationControllerIn.setTolerance(auto_align_tolerance);
+        translationControllerAcross.setTolerance(auto_align_tolerance);
+
+        heading = Rotation2d.fromDegrees(0);
+
+        driveTab = Shuffleboard.getTab("Drive");
+        speedEntry = driveTab.add("Speed (RJU)", 0.0).getEntry();
+        poseEntry = driveTab.add("Pose", new Double[] {0.0, 0.0, 0.0}).getEntry();
+        pathXEntry = driveTab.add("Path X", 0.0).getEntry();
+        pathYEntry = driveTab.add("Path Y", 0.0).getEntry();
+        pathRotEntry = driveTab.add("Path Rot", 0.0).getEntry();
+
+        objectDetection = NetworkTableInstance.getDefault().getTable("ObjectDetection");
+        for (int i=0; i<10; ++i) {
+            coralSubs.add(objectDetection.getDoubleArrayTopic("coral").subscribe(new double[] {320, -1, 321, -1}));
+        }
+        targetSeenSub = objectDetection.getBooleanTopic("detected").subscribe(false);
+
+        double driveBaseRadius = 0;
+        for (var moduleLocation : this.iOdata.m_moduleLocations) {
+            driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
+        }
+
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+        pathGroup = new ArrayList<PathPlannerPath>();
+
+        configurePathPlanner();
+
+        constraints = PathConstraints.unlimitedConstraints(12.0);
+        reefTarget = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
+
+        try {
+            this.pathGroup.addAll(PathPlannerAuto.getPathGroupFromAutoFile("OTF_TESTING"));
+        } catch (IOException e) {
+        } catch (ParseException e) {
+        }
+
+        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+            new Pose2d(13.0, 1.0, Rotation2d.fromDegrees(0)),
+            new Pose2d(16.0, 1.0, Rotation2d.fromDegrees(0)),
+            new Pose2d(15.0, 3.0, Rotation2d.fromDegrees(90))
+        );
+
+        PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // The constraints for this path.
+        // PathConstraints constraints = PathConstraints.unlimitedConstraints(12.0); // You can also use unlimited constraints, only limited by motor torque and nominal battery voltage
+
+        // Create the path using the waypoints created above
+        path = new PathPlannerPath(
+                waypoints,
+                constraints,
+                null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+                new GoalEndState(0.0, Rotation2d.fromDegrees(-90)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+        );
+
+        // Prevent the path from being flipped if the coordinates are already correct
+        path.preventFlipping = true;
+
+        alert = new Alert("test alert", AlertType.kWarning);
+    }
+            
+    public boolean drivetrainAtTarget() {
+        if (path != null) {
+            
+            return Math.abs(
+                this.iOdata.state.Pose.getTranslation().getDistance(
+                    path.getPathPoses().get(path.getPathPoses().size() - 1).getTranslation())) 
+                    < OTF_end_tolerance;
+        }
+        return false;
+    }
+
+    private boolean seesReefTag() {
+        return seesReefTag;
+    }
+
+    private Rotation2d getNearestReefAngle() {
+        return Rotation2d.fromDegrees(60*Math.round(Math.toDegrees(Math.atan2(REEF_CENTER.getY() - iOdata.state.Pose.getY(), (DriverStation.getAlliance().get() == Alliance.Blue ? REEF_CENTER.getX(): REEF_CENTER.getX() + OFFSET_TO_RED) - iOdata.state.Pose.getX()))/60));
+    }
+            
+    public Command generateOnTheFly() {
+        return runOnce(() -> {
+            List<Pose2d> currentPathPoses = pathGroup.get(currentPathIndex).getPathPoses();
+            PathPlannerPath nextPath = pathGroup.get(currentPathIndex + 1);
+            waypoints = PathPlannerPath.waypointsFromPoses(
+                currentPathPoses.get(currentPathPoses.size() - 1),
+                new Pose2d(pathXEntry.getDouble(0), pathYEntry.getDouble(0), Rotation2d.fromDegrees(pathRotEntry.getDouble(0))),
+    nextPath.getPathPoses().get(0)
+            );
+            path = new PathPlannerPath(
+            waypoints,
+            constraints,
+            null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+            new GoalEndState(nextPath.getIdealStartingState().velocityMPS(), nextPath.getInitialHeading()) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+            );
+            AutoBuilder.followPath(path).unless(this::drivetrainAtTarget).schedule();
+        });
+    }
+
+    public Command runOnTheFly() {
+        return Commands.sequence(
+            generateOnTheFly(),
+            AutoBuilder.followPath(path).unless(this::drivetrainAtTarget));
+    }
+
+    private void getObjectMeasurements() {
+        // double cameraToCoral = ((pixelX-320) / 320.0) * 35.0 * Math.PI/180.0;
+        // double distance = 1.5;
         
-            
-                    for (int i=0; i<10; ++i) {
-            
-                        if (corals[i].equals(coralSubs.get(i).get())) {
-                            ++framesLost[i];
-                        } else {
-                            framesLost[i] = 0;
-                        }
-            
-                        if (framesLost[i] < 15) {
-                            corals[i] = coralSubs.get(i).get();
-            
-                            double newX =(corals[i][0] + corals[i][2]) / 2;
-                            double newY = corals[i][3];
-                            double bestX = (corals[bestCoral][0] + corals[bestCoral][2]) / 2;
-                            double bestY = corals[bestCoral][3];
-            
-                            if (newY > bestY - 15) {  //close or better y
-                                if (Math.abs(newX - targetXPixel) < Math.abs(bestX - targetXPixel) + 15) {  //close or better x
-                                    bestCoral = i;
-                                }
-                            }
-                        }
-                    }
+        // Pose2d poseRobotToCoral = new Pose2d(distance * Math.sin(cameraToCoral),distance * Math.cos(cameraToCoral)+0.4572,Rotation2d.fromDegrees(0));
 
-            
-                    pixelYmax = corals[bestCoral][3];
-            
-                    pixelX = (corals[bestCoral][0] + corals[bestCoral][2]) / 2; // xmin + xmax
-                    pixelY = (corals[bestCoral][1] + pixelYmax) / 2;  //ymin + ymax
-            
-                    // SmartDashboard.putNumber("chase object/pixel error", Math.abs(pixelX - targetXPixel));
-                    SmartDashboard.putNumber("pixelX", pixelX);
-                    SmartDashboard.putNumber("pixelY", pixelY);
-                    SmartDashboard.putNumberArray("chase object/frames lost", framesLost);
-                }
-            
-                public boolean alignedToObject() {
-                    return Math.abs(pixelX - targetXPixel) < pixelTolerance;
-                }
-            
-                public boolean noObjectsSeen() {
-                    if (corals[0].equals(coralSubs.get(0).get())) {
-                        return false;
-                    } else {
-                        return true;
+        // Pose2d poseFieldToCoral = new Pose2d(iOdata.state.Pose.getX() + (poseRobotToCoral.getY() * iOdata.state.Pose.getRotation().getCos()) + (poseRobotToCoral.getX() *  iOdata.state.Pose.getRotation().getSin()), iOdata.state.Pose.getY() + (poseRobotToCoral.getY() * iOdata.state.Pose.getRotation().getSin()) + (poseRobotToCoral.getX() * iOdata.state.Pose.getRotation().getCos()), Rotation2d.fromDegrees(0));
+
+        // Rotation2d angleFieldToCoral = Rotation2d.fromDegrees(-90).minus(Rotation2d.fromRadians(Math.atan2(iOdata.state.Pose.getX() - poseFieldToCoral.getX(), iOdata.state.Pose.getY() - poseFieldToCoral.getY())));
+
+        // SmartDashboard.putNumberArray("coral Pose",  new double[] {poseFieldToCoral.getX(), poseFieldToCoral.getY(), angleFieldToCoral.getRadians()});
+        // SmartDashboard.putNumber("poseCameraToCoral", poseRobotToCoral.getRotation().getDegrees());
+        // SmartDashboard.putNumber("poseCameraToCoral_X", poseRobotToCoral.getX());
+        // SmartDashboard.putNumber("poseCameraToCoral_Y", poseRobotToCoral.getY());
+        // SmartDashboard.putNumber("target Angle", angleRobotToCoral.getDegrees());
+        // SmartDashboard.putNumber("CoralX", iOdata.state.Pose.getX() + distance * angleRobotToCoral.getCos());
+        // SmartDashboard.putNumber("CoralY", iOdata.state.Pose.getY() + distance * angleRobotToCoral.getSin());
+        // SmartDashboard.putNumber("startingPoseX", iOdata.state.Pose.getX());
+        // SmartDashboard.putNumber("startingPoseY", iOdata.state.Pose.getY());
+        // SmartDashboard.putNumber("startingPoseTheta", iOdata.state.Pose.getRotation().getDegrees());
+        // SmartDashboard.putNumber("camera to coral", cameraToCoral);
+
+
+
+        for (int i=0; i<10; ++i) {
+
+            if (corals[i].equals(coralSubs.get(i).get())) {
+                ++framesLost[i];
+            } else {
+                framesLost[i] = 0;
+            }
+
+            if (framesLost[i] < 15) {
+                corals[i] = coralSubs.get(i).get();
+
+                double newX =(corals[i][0] + corals[i][2]) / 2;
+                double newY = corals[i][3];
+                double bestX = (corals[bestCoral][0] + corals[bestCoral][2]) / 2;
+                double bestY = corals[bestCoral][3];
+
+                if (newY > bestY - 15) {  //close or better y
+                    if (Math.abs(newX - targetXPixel) < Math.abs(bestX - targetXPixel) + 15) {  //close or better x
+                        bestCoral = i;
                     }
                 }
-            
-                public boolean objectClose() {
-                    return pixelYmax > targetYPixel;
-                }
-            
-                public Command chaseObject() {
+            }
+        }
+
+
+        pixelYmax = corals[bestCoral][3];
+
+        pixelX = (corals[bestCoral][0] + corals[bestCoral][2]) / 2; // xmin + xmax
+        pixelY = (corals[bestCoral][1] + pixelYmax) / 2;  //ymin + ymax
+
+        // SmartDashboard.putNumber("chase object/pixel error", Math.abs(pixelX - targetXPixel));
+        SmartDashboard.putNumber("pixelX", pixelX);
+        SmartDashboard.putNumber("pixelY", pixelY);
+        SmartDashboard.putNumberArray("chase object/frames lost", framesLost);
+    }
+
+    public boolean alignedToObject() {
+        return Math.abs(pixelX - targetXPixel) < pixelTolerance;
+    }
+
+    public boolean noObjectsSeen() {
+        if (corals[0].equals(coralSubs.get(0).get())) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public boolean objectClose() {
+        return pixelYmax > targetYPixel;
+    }
+
+    public Command chaseObject() {
         return runOnce(() -> {                    pixelTolerance = 10;
             double cameraToCoral = -((pixelX-320) / 320.0) * 35.0 * Math.PI/180.0;
             double distance = 2;
@@ -367,38 +367,38 @@ public class Drive extends SubsystemBase {
             Pose2d poseFieldToCoral = new Pose2d(poseFieldToCoralNoRotation.getTranslation(), angleFieldToCoral);
 
 
-if (targetSeenSub.get()) {
+            if (targetSeenSub.get()) {
 
 
-            chaseWayPoints = PathPlannerPath.waypointsFromPoses(
-            new Pose2d(iOdata.state.Pose.getX(),iOdata.state.Pose.getY(), angleFieldToCoral),            
-            poseFieldToCoral // pos through object  
-        );
-        PathConstraints constraints = new PathConstraints(4.96, 10.0, 540.0, 720.0, 12.0);
-        SmartDashboard.putNumberArray("coral Pose no rotation",  new double[] {poseFieldToCoralNoRotation.getX(), poseFieldToCoralNoRotation.getY(), poseFieldToCoralNoRotation.getRotation().getRadians()});
-        SmartDashboard.putNumberArray("coral Pose",  new double[] {poseFieldToCoral.getX(), poseFieldToCoral.getY(), poseFieldToCoral.getRotation().getRadians()});
-        SmartDashboard.putNumberArray("start Pose",  new double[] {iOdata.state.Pose.getX(), iOdata.state.Pose.getY(), angleFieldToCoral.getRadians()});
-        SmartDashboard.putNumberArray("CtoR", new Double[] {translationRtoC.getX(),translationRtoC.getY()});
+                chaseWayPoints = PathPlannerPath.waypointsFromPoses(
+                new Pose2d(iOdata.state.Pose.getX(),iOdata.state.Pose.getY(), angleFieldToCoral),            
+                poseFieldToCoral // pos through object  
+            );
+            PathConstraints constraints = new PathConstraints(4.96, 10.0, 540.0, 720.0, 12.0);
+            SmartDashboard.putNumberArray("coral Pose no rotation",  new double[] {poseFieldToCoralNoRotation.getX(), poseFieldToCoralNoRotation.getY(), poseFieldToCoralNoRotation.getRotation().getRadians()});
+            SmartDashboard.putNumberArray("coral Pose",  new double[] {poseFieldToCoral.getX(), poseFieldToCoral.getY(), poseFieldToCoral.getRotation().getRadians()});
+            SmartDashboard.putNumberArray("start Pose",  new double[] {iOdata.state.Pose.getX(), iOdata.state.Pose.getY(), angleFieldToCoral.getRadians()});
+            SmartDashboard.putNumberArray("CtoR", new Double[] {translationRtoC.getX(),translationRtoC.getY()});
 
 
-        // Create the path using the waypoints created above
-        fetchPath = new PathPlannerPath(
-    chaseWayPoints,
-    constraints,
-    null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-    new GoalEndState(.75, angleFieldToCoral.rotateBy(Rotation2d.fromDegrees(-90.0))) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-);
+            // Create the path using the waypoints created above
+            fetchPath = new PathPlannerPath(
+                chaseWayPoints,
+                constraints,
+                null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+                new GoalEndState(.75, angleFieldToCoral.rotateBy(Rotation2d.fromDegrees(-90.0))) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+            );
+            fetchPath.preventFlipping = true;
 
-AutoBuilder.followPath(fetchPath).schedule();
-
-
-// Prevent the path from being flipped if the coordinates are already correct
-fetchPath.preventFlipping = true;
-}
+            AutoBuilder.followPath(fetchPath).schedule();
 
 
-SmartDashboard.putNumber("cameraToCoral", Math.toDegrees(cameraToCoral));
-});
+            // Prevent the path from being flipped if the coordinates are already correct
+            }
+
+
+            SmartDashboard.putNumber("cameraToCoral", Math.toDegrees(cameraToCoral));
+        });
     }
 
     public boolean pathend() {
