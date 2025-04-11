@@ -12,6 +12,7 @@ import org.opencv.core.Mat;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.RobotConfig;
@@ -125,12 +126,12 @@ public class Drive extends SubsystemBase {
 
     private final SwerveRequest.SwerveDriveBrake BRAKE = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.FieldCentric FIELD_CENTRIC = new SwerveRequest.FieldCentric()
-    .withDeadband(0.2).withRotationalDeadband(0.0);
+    .withDeadband(0.2).withRotationalDeadband(0.0).withDriveRequestType(DriveRequestType.Velocity).withDesaturateWheelSpeeds(true);
 
     private final SwerveRequest.FieldCentric AUTO_ALIGN = new SwerveRequest.FieldCentric()
     .withDeadband(0.0).withRotationalDeadband(0.0);
     private final SwerveRequest.RobotCentric ROBOT_CENTRIC = new SwerveRequest.RobotCentric();
-    private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
+    private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds().withDriveRequestType(DriveRequestType.Velocity);
 
     private int currentPathIndex;
     private List<PathPlannerPath> pathGroup;
@@ -653,12 +654,23 @@ public class Drive extends SubsystemBase {
                 ); 
             });
         }
+
+        
 		
         this.iOdata = driveIO.update();
         if (this.iOdata.state.Speeds != null) {
+
             speedEntry.setDouble(Math.hypot(
                 this.iOdata.state.Speeds.vxMetersPerSecond,
                 this.iOdata.state.Speeds.vyMetersPerSecond) / 5.0);
+
+                SmartDashboard.putNumber("act Speed", (Math.hypot(
+                    this.iOdata.state.Speeds.vxMetersPerSecond,
+                    this.iOdata.state.Speeds.vyMetersPerSecond) ));
+
+                    SmartDashboard.putNumber("req Speed", (Math.hypot(
+                        FIELD_CENTRIC.VelocityX,
+                        FIELD_CENTRIC.VelocityY) ));
         }
         if (this.iOdata.state.Pose != null) {
             poseEntry.setDoubleArray(new Double[]{
