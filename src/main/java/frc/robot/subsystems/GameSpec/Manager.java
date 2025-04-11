@@ -496,10 +496,10 @@ public class Manager extends SubsystemBase{
       return Commands.sequence(
       elevatorSubsystem.goToPackage(),
       Commands.parallel(
-          armSubsystem.horizontal(),
+          armSubsystem.almostHorizontal(),
           intakeSubsystem.deploy(),
-          manipulatorSubsystem.L4Spit(),
-          elevatorSubsystem.intakeCoral()
+          manipulatorSubsystem.intake(),
+          elevatorSubsystem.pokeAlgae()
           )
         .until(() -> intakeSubsystem.getBeamBreak())
         .andThen(Commands.sequence(
@@ -558,6 +558,26 @@ public class Manager extends SubsystemBase{
         elevatorSubsystem.intakeCoral()
         ).until(() -> intakeSubsystem.getBeamBreak());
     }
+
+    public Command autonFloorIntakeStartPoke() {
+      return Commands.parallel(
+        armSubsystem.almostHorizontal(),
+        intakeSubsystem.deployPoke(),
+        manipulatorSubsystem.intake(),
+        elevatorSubsystem.pokeAlgae()
+        ).until(() -> intakeSubsystem.getBeamBreak());
+    }
+
+    public Command autonFloorIntakeStartPokeDown() {
+      return Commands.parallel(
+        armSubsystem.almostHorizontal(),
+        intakeSubsystem.deploy(),
+        manipulatorSubsystem.intake(),
+        elevatorSubsystem.pokeAlgae()
+        ).until(() -> intakeSubsystem.getBeamBreak());
+    }
+
+    
 
     /**
      * @apiNote ends with a coral in da grippa and kicks balls right

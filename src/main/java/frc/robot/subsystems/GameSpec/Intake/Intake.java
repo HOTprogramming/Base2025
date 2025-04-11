@@ -111,6 +111,14 @@ public class Intake extends SubsystemBase {
      }); 
   }
 
+  public Command deployPoke(){
+    return run(() -> {
+      intakeCommandedPos.setDouble(13.0);
+      io.setIntakeMotorControl(13.0);
+      io.setIntakeSpinVelocityControl(95.0, 120.0);
+     }); 
+  }
+
   public Command deployAuton(){
     return runOnce(() -> {
       intakeCommandedPos.setDouble(IntakeConstants.intakeGround);
