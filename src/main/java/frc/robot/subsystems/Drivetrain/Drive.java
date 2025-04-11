@@ -8,7 +8,10 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import org.json.simple.parser.ParseException;
+import org.opencv.features2d.FlannBasedMatcher;
 
+import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -274,6 +277,28 @@ public class Drive extends SubsystemBase {
                 }
             
                 private void getObjectMeasurements() {
+                    // double cameraToCoral = ((pixelX-320) / 320.0) * 35.0 * Math.PI/180.0;
+                    // double distance = 1.5;
+                    
+                    // Pose2d poseRobotToCoral = new Pose2d(distance * Math.sin(cameraToCoral),distance * Math.cos(cameraToCoral)+0.4572,Rotation2d.fromDegrees(0));
+
+                    // Pose2d poseFieldToCoral = new Pose2d(iOdata.state.Pose.getX() + (poseRobotToCoral.getY() * iOdata.state.Pose.getRotation().getCos()) + (poseRobotToCoral.getX() *  iOdata.state.Pose.getRotation().getSin()), iOdata.state.Pose.getY() + (poseRobotToCoral.getY() * iOdata.state.Pose.getRotation().getSin()) + (poseRobotToCoral.getX() * iOdata.state.Pose.getRotation().getCos()), Rotation2d.fromDegrees(0));
+
+                    // Rotation2d angleFieldToCoral = Rotation2d.fromDegrees(-90).minus(Rotation2d.fromRadians(Math.atan2(iOdata.state.Pose.getX() - poseFieldToCoral.getX(), iOdata.state.Pose.getY() - poseFieldToCoral.getY())));
+
+                    // SmartDashboard.putNumberArray("coral Pose",  new double[] {poseFieldToCoral.getX(), poseFieldToCoral.getY(), angleFieldToCoral.getRadians()});
+                    // SmartDashboard.putNumber("poseCameraToCoral", poseRobotToCoral.getRotation().getDegrees());
+                    // SmartDashboard.putNumber("poseCameraToCoral_X", poseRobotToCoral.getX());
+                    // SmartDashboard.putNumber("poseCameraToCoral_Y", poseRobotToCoral.getY());
+                    // SmartDashboard.putNumber("target Angle", angleRobotToCoral.getDegrees());
+                    // SmartDashboard.putNumber("CoralX", iOdata.state.Pose.getX() + distance * angleRobotToCoral.getCos());
+                    // SmartDashboard.putNumber("CoralY", iOdata.state.Pose.getY() + distance * angleRobotToCoral.getSin());
+                    // SmartDashboard.putNumber("startingPoseX", iOdata.state.Pose.getX());
+                    // SmartDashboard.putNumber("startingPoseY", iOdata.state.Pose.getY());
+                    // SmartDashboard.putNumber("startingPoseTheta", iOdata.state.Pose.getRotation().getDegrees());
+                    // SmartDashboard.putNumber("camera to coral", cameraToCoral);
+
+        
             
                     for (int i=0; i<10; ++i) {
             
@@ -298,6 +323,7 @@ public class Drive extends SubsystemBase {
                             }
                         }
                     }
+
             
                     pixelYmax = corals[bestCoral][3];
             
@@ -329,30 +355,38 @@ public class Drive extends SubsystemBase {
                 public Command chaseObject() {
         return runOnce(() -> {                    pixelTolerance = 10;
             double cameraToCoral = -((pixelX-320) / 320.0) * 35.0 * Math.PI/180.0;
-            // double targetAngle = cameraToCoral - iOdata.state.Pose.getRotation().getRadians();
-            double distance = 1.5;
+            double distance = 2;
             
-            Pose2d poseRobotToCoral = new Pose2d(distance * Math.sin(cameraToCoral),distance * Math.cos(cameraToCoral)+0.4572,Rotation2d.fromRadians(0));
+            Pose2d translationRtoC = new Pose2d(distance * Math.sin(-cameraToCoral),distance * Math.cos(-cameraToCoral)+0.4572,Rotation2d.fromDegrees(0));
 
-            Rotation2d angleRobotToCoral = Rotation2d.fromRadians(Math.atan2(poseRobotToCoral.getX(), poseRobotToCoral.getY()) + (Math.PI/4));
+            Transform2d transform = new Transform2d(translationRtoC.getTranslation(), translationRtoC.getRotation());
+
+            Pose2d poseFieldToCoralNoRotation = iOdata.state.Pose.transformBy(transform);
+
+            Rotation2d angleFieldToCoral = Rotation2d.fromDegrees(270).minus(Rotation2d.fromRadians(Math.atan2(iOdata.state.Pose.getX() - poseFieldToCoralNoRotation.getX(), iOdata.state.Pose.getY() - poseFieldToCoralNoRotation.getY())));
+            Pose2d poseFieldToCoral = new Pose2d(poseFieldToCoralNoRotation.getTranslation(), angleFieldToCoral);
+
 
 if (targetSeenSub.get()) {
 
-            fetchPose = poseRobotToCoral.relativeTo(iOdata.state.Pose);
 
             chaseWayPoints = PathPlannerPath.waypointsFromPoses(
-            new Pose2d(iOdata.state.Pose.getX(),iOdata.state.Pose.getY(),angleRobotToCoral.minus(iOdata.state.Pose.getRotation())),            
-            fetchPose // pos through object  
+            new Pose2d(iOdata.state.Pose.getX(),iOdata.state.Pose.getY(), angleFieldToCoral),            
+            poseFieldToCoral // pos through object  
         );
-        PathConstraints constraints = new PathConstraints(4.96, 6.0, 540.0, 720.0, 12.0);
-        SmartDashboard.putNumberArray("coral Pose",  new double[] {fetchPose.getX(), fetchPose.getY(), fetchPose.getRotation().getRadians()});
+        PathConstraints constraints = new PathConstraints(4.96, 10.0, 540.0, 720.0, 12.0);
+        SmartDashboard.putNumberArray("coral Pose no rotation",  new double[] {poseFieldToCoralNoRotation.getX(), poseFieldToCoralNoRotation.getY(), poseFieldToCoralNoRotation.getRotation().getRadians()});
+        SmartDashboard.putNumberArray("coral Pose",  new double[] {poseFieldToCoral.getX(), poseFieldToCoral.getY(), poseFieldToCoral.getRotation().getRadians()});
+        SmartDashboard.putNumberArray("start Pose",  new double[] {iOdata.state.Pose.getX(), iOdata.state.Pose.getY(), angleFieldToCoral.getRadians()});
+        SmartDashboard.putNumberArray("CtoR", new Double[] {translationRtoC.getX(),translationRtoC.getY()});
+
 
         // Create the path using the waypoints created above
         fetchPath = new PathPlannerPath(
     chaseWayPoints,
     constraints,
     null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-    new GoalEndState(1.5, angleRobotToCoral) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+    new GoalEndState(.75, angleFieldToCoral.rotateBy(Rotation2d.fromDegrees(-90.0))) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
 );
 
 AutoBuilder.followPath(fetchPath).schedule();
@@ -360,15 +394,6 @@ AutoBuilder.followPath(fetchPath).schedule();
 
 // Prevent the path from being flipped if the coordinates are already correct
 fetchPath.preventFlipping = true;
-SmartDashboard.putNumber("poseCameraToCoral", poseRobotToCoral.getRotation().getDegrees());
-SmartDashboard.putNumber("poseCameraToCoral_X", poseRobotToCoral.getX());
-SmartDashboard.putNumber("poseCameraToCoral_Y", poseRobotToCoral.getY());
-SmartDashboard.putNumber("target Angle", angleRobotToCoral.getDegrees());
-SmartDashboard.putNumber("CoralX", iOdata.state.Pose.getX() + distance * angleRobotToCoral.getCos());
-SmartDashboard.putNumber("CoralY", iOdata.state.Pose.getY() + distance * angleRobotToCoral.getSin());
-SmartDashboard.putNumber("startingPoseX", iOdata.state.Pose.getX());
-SmartDashboard.putNumber("startingPoseY", iOdata.state.Pose.getY());
-SmartDashboard.putNumber("startingPoseTheta", iOdata.state.Pose.getRotation().getDegrees());
 }
 
 
