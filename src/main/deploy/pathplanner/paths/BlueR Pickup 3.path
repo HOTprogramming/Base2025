@@ -20,8 +20,8 @@
         "y": 0.668
       },
       "prevControl": {
-        "x": 2.0978483606557377,
-        "y": 1.4716188524590152
+        "x": 1.7170478861893075,
+        "y": 0.8783855233512988
       },
       "nextControl": null,
       "isLocked": false,
@@ -58,7 +58,14 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Blink",
+      "waypointRelativePos": 0.7916224814422048,
+      "endWaypointRelativePos": 1.0,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.96,
     "maxAcceleration": 6.0,

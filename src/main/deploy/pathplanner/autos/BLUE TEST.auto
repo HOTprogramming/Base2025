@@ -195,12 +195,6 @@
                             }
                           },
                           {
-                            "type": "wait",
-                            "data": {
-                              "waitTime": 0.5
-                            }
-                          },
-                          {
                             "type": "named",
                             "data": {
                               "name": "Auton Intake Start"
@@ -223,12 +217,6 @@
                             "type": "path",
                             "data": {
                               "pathName": "BlueR Pickup 2"
-                            }
-                          },
-                          {
-                            "type": "wait",
-                            "data": {
-                              "waitTime": 0.05
                             }
                           }
                         ]
@@ -307,12 +295,6 @@
                             "type": "named",
                             "data": {
                               "name": "Auton Shoot"
-                            }
-                          },
-                          {
-                            "type": "wait",
-                            "data": {
-                              "waitTime": 0.5
                             }
                           },
                           {

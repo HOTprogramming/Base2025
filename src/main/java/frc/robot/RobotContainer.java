@@ -160,7 +160,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("Auton Fast Shoot End", gamespecManager.autonShootFinish());
     NamedCommands.registerCommand("Auton Shoot Intake", gamespecManager.autonShootIntake());
 
-
     
     NamedCommands.registerCommand("Auton Floor Intake End", gamespecManager.autonFloorIntakeEnd());
     NamedCommands.registerCommand("Stop Drive", drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
@@ -170,7 +169,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Chase Auton", drivetrain.run(() -> drivetrain.chaseAuton()).until(() -> gamespecManager.intakeSubsystem.getBeamBreak()).onlyIf(() -> drivetrain.targetSeen)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
    // NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.chaseSlow()).until(() -> (gamespecManager.intakeSubsystem.getBeamBreak()))); // gamespecManager.intakeSubsystem.getBeamBreak() ||
 
-    //new EventTrigger("Package").whileTrue(gamespecManager.goToPackage());
+    new EventTrigger("Blink").onTrue(gamespecManager.lightsSubsystem.setAutoAlign())
+    .onFalse(Commands.sequence(gamespecManager.lightsSubsystem.stopAnimation(), refreshLights()));
 
 
     // must make a runonce command using a functional command interface

@@ -20,8 +20,8 @@
         "y": 0.6684426229508199
       },
       "prevControl": {
-        "x": 2.7451844262295078,
-        "y": 1.0520491803278673
+        "x": 2.529405737704918,
+        "y": 1.4596311475409833
       },
       "nextControl": null,
       "isLocked": false,
@@ -69,7 +69,14 @@
       "name": "Cameras"
     }
   ],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Blink",
+      "waypointRelativePos": 0.8022269353128266,
+      "endWaypointRelativePos": 1.0,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.96,
     "maxAcceleration": 6.0,

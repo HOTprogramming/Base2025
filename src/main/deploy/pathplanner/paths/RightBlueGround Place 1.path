@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.889999999999999,
-        "y": 2.3600000000000003
+        "x": 6.97,
+        "y": 2.06
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.61101184850439,
-        "y": 2.456867489689853
+        "x": 6.691011848504391,
+        "y": 2.1568674896898528
       },
       "isLocked": false,
       "linkedName": null
@@ -48,7 +48,7 @@
   "folder": "RedRG",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -150.0
+    "rotation": -140.0
   },
   "useDefaultConstraints": true
 }
