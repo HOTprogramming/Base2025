@@ -20,8 +20,8 @@
         "y": 0.6684426229508199
       },
       "prevControl": {
-        "x": 2.049897540983607,
-        "y": 1.0460553278688534
+        "x": 2.7451844262295078,
+        "y": 1.0520491803278673
       },
       "nextControl": null,
       "isLocked": false,
@@ -57,7 +57,18 @@
       }
     }
   ],
-  "pointTowardsZones": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 4.1,
+        "y": 3.2
+      },
+      "rotationOffset": 90.0,
+      "minWaypointRelativePos": 0.2592788971367976,
+      "maxWaypointRelativePos": 0.5689289501590657,
+      "name": "Cameras"
+    }
+  ],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.96,

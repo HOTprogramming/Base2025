@@ -16,27 +16,27 @@
     },
     {
       "anchor": {
-        "x": 1.4505122950819673,
-        "y": 0.6085040983606563
+        "x": 1.582,
+        "y": 0.668
       },
       "prevControl": {
-        "x": 1.6802011809437938,
-        "y": 0.775316290976651
+        "x": 2.1098360655737705,
+        "y": 1.4596311475409833
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "BlueR42"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.6462488129154828,
+      "minWaypointRelativePos": 0.5965005302226958,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 4.96,
-        "maxAcceleration": 3.0,
+        "maxAcceleration": 4.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.6,

@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4505122950819673,
-        "y": 0.6085040983606563
+        "x": 1.582,
+        "y": 0.668
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6423155737704915,
-        "y": 0.8362704918032795
+        "x": 1.7738032786885243,
+        "y": 0.8957663934426232
       },
       "isLocked": false,
-      "linkedName": "BlueR42"
+      "linkedName": null
     },
     {
       "anchor": {
