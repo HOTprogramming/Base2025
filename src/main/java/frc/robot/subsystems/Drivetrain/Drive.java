@@ -165,6 +165,7 @@ public class Drive extends SubsystemBase {
         new GoalEndState(1.5, Rotation2d.fromDegrees(0))); // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
     private BooleanSubscriber targetSeenSub;
 
+    private double coralRecalcDistance = 0.0;
 
 
     public Drive(DriveIO driveIO) { 
@@ -379,6 +380,25 @@ public class Drive extends SubsystemBase {
         SmartDashboard.putNumber("cameraToCoral", Math.toDegrees(cameraToCoral));
     }
 
+    public void recalculateCoralPose() {
+        double cameraToCoral = -((pixelX-320) / 320.0) * 35.0 * Math.PI/180.0;
+
+        double distance = Math.abs(coralRecalcDistance);
+        
+        Pose2d translationRtoC = new Pose2d(distance * Math.sin(-cameraToCoral) - .1, distance * Math.cos(-cameraToCoral),Rotation2d.fromDegrees(0));
+
+        Transform2d transform = new Transform2d(translationRtoC.getTranslation(), translationRtoC.getRotation());
+
+        Pose2d poseFieldToCoralNoRotation = iOdata.state.Pose.transformBy(transform);
+        SmartDashboard.putNumberArray("coral Recalculated Pose",  new double[] {poseFieldToCoralNoRotation.getX(), poseFieldToCoralNoRotation.getY(), poseFieldToCoralNoRotation.getRotation().getRadians()});
+        Rotation2d angleFieldToCoral = Rotation2d.fromDegrees(270).minus(Rotation2d.fromRadians(Math.atan2(iOdata.state.Pose.getX() - poseFieldToCoralNoRotation.getX(), iOdata.state.Pose.getY() - poseFieldToCoralNoRotation.getY())));
+        if (this.poseFieldToCoral.getTranslation().getDistance(poseFieldToCoralNoRotation.getTranslation()) > .1 && distance > .5 && this.poseFieldToCoral.getTranslation().getDistance(poseFieldToCoralNoRotation.getTranslation()) < .35) {
+            poseFieldToCoral = new Pose2d(poseFieldToCoralNoRotation.getTranslation(), angleFieldToCoral);
+            SmartDashboard.putNumberArray("coral Pose",  new double[] {poseFieldToCoral.getX(), poseFieldToCoral.getY(), poseFieldToCoral.getRotation().getRadians()});
+
+        }
+    }
+
     public void driveToCoral(double slowDownDistance) {
         // if (targetSeenSub.get()) {
         //     calculateCoralPose();
@@ -393,6 +413,8 @@ public class Drive extends SubsystemBase {
 
         translationControllerIn.calculate(Error.getX(), 0.0);
         translationControllerAcross.calculate(Error.getY(), 0.0);
+
+        coralRecalcDistance = Error.getX();
 
         double in = -translationControllerIn.calculate(Error.getX(), 0.0);
         double across = translationControllerAcross.calculate(Error.getY(), 0.0);
@@ -450,7 +472,13 @@ public class Drive extends SubsystemBase {
     public Command fetchAuto(double distance, double slowDistance) {
         return new FunctionalCommand(
         () -> calculateCoralPose(distance),
-        () -> driveToCoral(slowDistance),
+        () -> {
+            driveToCoral(slowDistance);
+            // if (targetSeenSub.get()) {
+            //     recalculateCoralPose();
+            // }
+
+        },
         (interrupted) -> {},
         () -> atCoral(), this)
         .onlyIf(() -> targetSeenSub.get());
