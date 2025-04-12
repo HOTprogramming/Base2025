@@ -321,6 +321,7 @@ public class Manager extends SubsystemBase{
         intakeSubsystem.deploy(),
         manipulatorSubsystem.knockAlgaeLeft()
         ).until(() -> intakeSubsystem.getBeamBreak());
+    }
      /**
      * @apinote full shooting to floor intake
      */
