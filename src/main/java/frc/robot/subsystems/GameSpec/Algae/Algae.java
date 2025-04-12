@@ -60,6 +60,10 @@ public class Algae extends SubsystemBase {
         return stats.algaeDistance > AlgaeConstants.algaeHoldDistance;
     }
 
+    public double getAlgaePosition() {
+        return stats.algaeDistance;
+    }
+
 
     /**
    * 
