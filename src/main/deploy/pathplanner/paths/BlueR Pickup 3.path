@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.543488422172037,
-        "y": 2.752061131331884
+        "x": 3.560348360655738,
+        "y": 2.6703893442622952
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.582,
-        "y": 0.668
+        "x": 3.2246926229508195,
+        "y": 2.0829918032786896
       },
       "prevControl": {
-        "x": 1.7170478861893075,
-        "y": 0.8783855233512988
+        "x": 3.359740509140127,
+        "y": 2.2933773266299875
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,54 +29,9 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.277777777777779,
-      "constraints": {
-        "maxVelocity": 4.96,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.6,
-        "unlimited": false
-      }
-    },
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.6766381766381766,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 4.96,
-        "maxAcceleration": 4.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.6,
-        "unlimited": false
-      }
-    }
-  ],
-  "pointTowardsZones": [
-    {
-      "fieldPosition": {
-        "x": 3.75,
-        "y": 3.2
-      },
-      "rotationOffset": 90.0,
-      "minWaypointRelativePos": 0.11081654294803987,
-      "maxWaypointRelativePos": 0.6537645811240701,
-      "name": "Point Towards Zone"
-    }
-  ],
-  "eventMarkers": [
-    {
-      "name": "Blink",
-      "waypointRelativePos": 0.7916224814422048,
-      "endWaypointRelativePos": 1.0,
-      "command": null
-    }
-  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.96,
     "maxAcceleration": 6.0,
@@ -87,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 145.0
+    "rotation": 140.0
   },
   "reversed": false,
   "folder": "BlueR",

@@ -310,7 +310,7 @@
                 }
               },
               {
-                "type": "parallel",
+                "type": "race",
                 "data": {
                   "commands": [
                     {
@@ -318,15 +318,28 @@
                       "data": {
                         "commands": [
                           {
-                            "type": "named",
+                            "type": "parallel",
                             "data": {
-                              "name": "Auton Shoot"
+                              "commands": [
+                                {
+                                  "type": "named",
+                                  "data": {
+                                    "name": "Auton Shoot"
+                                  }
+                                },
+                                {
+                                  "type": "named",
+                                  "data": {
+                                    "name": "Auton Drop Intake"
+                                  }
+                                }
+                              ]
                             }
                           },
                           {
                             "type": "named",
                             "data": {
-                              "name": "Auton Intake Start"
+                              "name": "Auton Floor Intake Start"
                             }
                           }
                         ]
@@ -339,7 +352,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 0.3
+                              "waitTime": 0.6
                             }
                           },
                           {
@@ -349,9 +362,9 @@
                             }
                           },
                           {
-                            "type": "wait",
+                            "type": "named",
                             "data": {
-                              "waitTime": 0.05
+                              "name": "Auton Fetch 15M"
                             }
                           }
                         ]
@@ -368,7 +381,7 @@
           "data": {
             "commands": [
               {
-                "type": "parallel",
+                "type": "deadline",
                 "data": {
                   "commands": [
                     {
@@ -380,7 +393,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Auton Finish Intake"
+                        "name": "Auton Floor Intake End"
                       }
                     }
                   ]

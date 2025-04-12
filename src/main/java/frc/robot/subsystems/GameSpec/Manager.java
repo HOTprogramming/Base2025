@@ -519,7 +519,7 @@ public class Manager extends SubsystemBase{
      */
     public Command autonFloorIntakeEnd() {
       return Commands.sequence(
-        Commands.waitSeconds(0.0),
+        Commands.waitSeconds(0.1),
         Commands.parallel(
           armSubsystem.horizontal(),
           intakeSubsystem.handoffAndSpin(),
@@ -529,7 +529,7 @@ public class Manager extends SubsystemBase{
         .until(() -> !manipulatorSubsystem.returnBeamBreak()) //coral beambreak true/false is flipped from intake beambreak
         .andThen(
         Commands.sequence(
-        Commands.waitSeconds(0.1),
+        Commands.waitSeconds(0.25),
         Commands.parallel(
           armSubsystem.goToPackage(),
           elevatorSubsystem.intakeCoral(),

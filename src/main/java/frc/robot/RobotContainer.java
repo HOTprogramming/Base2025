@@ -167,8 +167,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Auton Floor Intake End", gamespecManager.autonFloorIntakeEnd());
     NamedCommands.registerCommand("Stop Drive", drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
 
-    NamedCommands.registerCommand("Auton Fetch 2M", drivetrain.fetchAuto(2.0));
-    NamedCommands.registerCommand("Auton Fetch 15M", drivetrain.fetchAuto(1.5));
+    NamedCommands.registerCommand("Auton Fetch 2M", drivetrain.fetchAuto(2.0, 1.0));
+    NamedCommands.registerCommand("Auton Fetch 15M", drivetrain.fetchAuto(1.5, 1.2));
     // NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.chaseSlow()).until(() -> gamespecManager.intakeSubsystem.getBeamBreak()).onlyIf(() -> drivetrain.targetSeen)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
     
     // NamedCommands.registerCommand("Chase Auton", drivetrain.run(() -> drivetrain.chaseAuton()).until(() -> gamespecManager.intakeSubsystem.getBeamBreak()).onlyIf(() -> drivetrain.targetSeen)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
@@ -191,7 +191,7 @@ public class RobotContainer {
 
   private void configureBindings() {   
 
-    driver.a().onTrue(drivetrain.fetchAuto(2)).onFalse(drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
+    driver.a().onTrue(drivetrain.fetchAuto(2, 1.0)).onFalse(drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
 
     // drivetrain.setDefaultCommand
     //   (drivetrain.run(() -> {
