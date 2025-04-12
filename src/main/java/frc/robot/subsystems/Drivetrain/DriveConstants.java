@@ -52,7 +52,7 @@ public class DriveConstants {
 
 
     public static final TrapezoidProfile.Constraints DEFAULT_XY_CONSTRAINTS = new TrapezoidProfile.Constraints(
-        2.4,
+        1.6,
         kSpeedAt12Volts.in(MetersPerSecond) * .7);
 
     public static final Map<Rotation2d, Pose2d> redPoses = new HashMap<>() {
@@ -116,7 +116,7 @@ public class DriveConstants {
     public static final Map<Rotation2d, Double[]> bluePoleShift = new HashMap<>() {
         {   //                                                  left center right
             put(Rotation2d.fromDegrees(0), new Double[] {6.0, -0.25, -7.5});
-            put(Rotation2d.fromDegrees(60), new Double[] {5.5, -0.25, -8.0});
+            put(Rotation2d.fromDegrees(60), new Double[] {6.25, -0.25, -8.0});
             put(Rotation2d.fromDegrees(120), new Double[] {5.5, -0.25, -8.0});
             put(Rotation2d.fromDegrees(180), new Double[] {7.0, -0.25, -6.0});
             put(Rotation2d.fromDegrees(-120), new Double[] {8.0, -0.25,  -7.0});
@@ -144,8 +144,12 @@ public class DriveConstants {
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     private static final Slot0Configs driveGains = new Slot0Configs()
-        .withKP(0.1).withKI(0).withKD(0)
-        .withKS(0).withKV(0.124);
+        .withKP(5.3).withKI(0).withKD(0)
+        .withKS(5.5).withKV(0.3);
+
+        // private static final Slot0Configs driveGains = new Slot0Configs()
+        // .withKP(0.1).withKI(0).withKD(0)
+        // .withKS(0).withKV(0.124);
 
     private static final Slot0Configs driveGainsVoltage = new Slot0Configs()
         .withKP(0.1).withKI(0).withKD(0)
@@ -185,8 +189,8 @@ public class DriveConstants {
                 .withSupplyCurrentLowerTime(1)
         ).withTorqueCurrent(
             new TorqueCurrentConfigs()
-                .withPeakForwardTorqueCurrent(65)
-                .withPeakReverseTorqueCurrent(-65)
+                .withPeakForwardTorqueCurrent(70)
+                .withPeakReverseTorqueCurrent(-70)
         );
 
     public static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()

@@ -163,6 +163,10 @@ public class Elevator extends SubsystemBase {
     return elevatorCommand(ElevatorConstants.intakeCoralHeight);
   }
 
+  public Command pokeAlgae() {
+    return elevatorCommand(8.1);
+  }
+
   public Command climbDown(){
     return elevatorCommand(ElevatorConstants.climbHeight);
   }

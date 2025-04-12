@@ -379,7 +379,7 @@ public class Camera extends SubsystemBase {
         }
 
         if (constant.getName().equals("TOP")) {
-            if (avgDist > 3.0) {
+            if (avgDist > 2.6) {
                 estStdDevs =VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
 
             } else {

@@ -103,10 +103,22 @@ public class Intake extends SubsystemBase {
     return intakeCommand(IntakeConstants.intakeClimb, 0.0, 0.0);
   }
 
+  public Command drop() {
+    return intakeCommand(IntakeConstants.intakeGround, 0.0, 0.0);
+  }
+
   public Command deploy(){
     return run(() -> {
       intakeCommandedPos.setDouble(IntakeConstants.intakeGround);
       io.setIntakeMotorControl(IntakeConstants.intakeGround);
+      io.setIntakeSpinVelocityControl(95.0, 120.0);
+     }); 
+  }
+
+  public Command deployPoke(){
+    return run(() -> {
+      intakeCommandedPos.setDouble(13.0);
+      io.setIntakeMotorControl(13.0);
       io.setIntakeSpinVelocityControl(95.0, 120.0);
      }); 
   }

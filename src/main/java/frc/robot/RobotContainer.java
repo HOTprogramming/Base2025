@@ -92,9 +92,17 @@ public class RobotContainer {
     chooser.addOption("RightBlueLolipop", "RightBlueLolipop"); 
     chooser.addOption("RightRedLolipopp", "RightRedLolipop"); 
     chooser.addOption("RedLeftLolipop", "RedLeftLolipop"); 
-    chooser.addOption("BlueLeftLolipop", "BlueLeftLolipop");
-    chooser.addOption("FetchTest", "FetchTest"); 
- 
+    chooser.addOption("BlueLeftLolipop", "BlueLeftLolipop"); 
+    chooser.addOption("MiniBackshot", "MiniBackshot"); 
+    chooser.addOption("MiniBackshot-optimized", "MiniBackshot-optimized"); 
+    chooser.addOption("sacrifice", "Backshot-full"); 
+
+
+    chooser.addOption("Copy of Regular4", "Copy of Regular4"); 
+    chooser.addOption("Test of Regular4", "TestofRegular4"); 
+    chooser.addOption("BLUE FLOOR TEST", "BLUE FLOOR TEST"); 
+    chooser.addOption("BlueRLoliFetch", "BlueRLoliFetch"); 
+
 
 
 
@@ -148,6 +156,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Auton Intake Start", gamespecManager.autonIntake());
     NamedCommands.registerCommand("Auton Finish Intake", gamespecManager.autonFinishIntake());
     NamedCommands.registerCommand("AL4", gamespecManager.autonL4());
+    NamedCommands.registerCommand("AL3", gamespecManager.autonL3());
+
     NamedCommands.registerCommand("Intake Clearence", gamespecManager.intakeSubsystem.clearance());
     NamedCommands.registerCommand("Intake Bump", gamespecManager.intakeSubsystem.bump());
     NamedCommands.registerCommand("Half Height", gamespecManager.autonHalfL4());
@@ -155,22 +165,46 @@ public class RobotContainer {
     NamedCommands.registerCommand("Auton Floor Intake Start", gamespecManager.autonFloorIntakeStart());
     NamedCommands.registerCommand("Auton Floor Intake End Fast", gamespecManager.autonFloorIntakeEndFast());
 
+
+    NamedCommands.registerCommand("Auton Floor Intake Start Poke", gamespecManager.autonFloorIntakeStartPoke());
+
+    NamedCommands.registerCommand("Auton Floor Intake Start Poke Down", gamespecManager.autonFloorIntakeStartPokeDown());
+    
+
     NamedCommands.registerCommand("Auton Fast Shoot Start", gamespecManager.autonShootStart());
     NamedCommands.registerCommand("Auton Fast Shoot End", gamespecManager.autonShootFinish());
     NamedCommands.registerCommand("Auton Shoot Intake", gamespecManager.autonShootIntake());
+    NamedCommands.registerCommand("Auton Shoot Intake Drop", gamespecManager.autonShootIntakeDrop());
 
+
+    NamedCommands.registerCommand("Auton Drop Intake", gamespecManager.intakeSubsystem.drop());
+
+    NamedCommands.registerCommand("Auton Shoot L3", gamespecManager.autonShootL3());
+
+
+    NamedCommands.registerCommand("Auton Shoot Intake", gamespecManager.autonShootIntake());
+    NamedCommands.registerCommand("Auton High Algae Start", gamespecManager.autonHighPluckStart());
+    NamedCommands.registerCommand("Auton High Algae End", gamespecManager.autonHighPluckEnd());
+
+    NamedCommands.registerCommand("Auton L3 Floor Intake", gamespecManager.autonL3ToIntake());
+    NamedCommands.registerCommand("Auton Intake L3", gamespecManager.autonFloorIntakeEndToL3());
+    NamedCommands.registerCommand("Auton Intake High Pluck", gamespecManager.autonFloorIntakeEndToHighPluck());
+
+    NamedCommands.registerCommand("Auton Floor Intake Start Right", gamespecManager.autonFloorIntakeStart());
 
     
     NamedCommands.registerCommand("Auton Floor Intake End", gamespecManager.autonFloorIntakeEnd());
     NamedCommands.registerCommand("Stop Drive", drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
 
-    NamedCommands.registerCommand("fetch auto no path", drivetrain.fetchAuto());
+    NamedCommands.registerCommand("Auton Fetch 2M", drivetrain.fetchAuto(2.0, 1.0));
+    NamedCommands.registerCommand("Auton Fetch 15M", drivetrain.fetchAuto(1.6, 1.2));
     // NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.chaseSlow()).until(() -> gamespecManager.intakeSubsystem.getBeamBreak()).onlyIf(() -> drivetrain.targetSeen)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
     
     // NamedCommands.registerCommand("Chase Auton", drivetrain.run(() -> drivetrain.chaseAuton()).until(() -> gamespecManager.intakeSubsystem.getBeamBreak()).onlyIf(() -> drivetrain.targetSeen)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
    // NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.chaseSlow()).until(() -> (gamespecManager.intakeSubsystem.getBeamBreak()))); // gamespecManager.intakeSubsystem.getBeamBreak() ||
 
-    //new EventTrigger("Package").whileTrue(gamespecManager.goToPackage());
+    new EventTrigger("Blink").onTrue(gamespecManager.lightsSubsystem.setAutoAlign())
+    .onFalse(Commands.sequence(gamespecManager.lightsSubsystem.stopAnimation(), refreshLights()));
 
 
     // must make a runonce command using a functional command interface
@@ -186,7 +220,7 @@ public class RobotContainer {
 
   private void configureBindings() {   
 
-    // driver.a().onTrue(drivetrain.fetchAuto()).onFalse(drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
+    driver.a().onTrue(drivetrain.fetchAuto(2, 1.0)).onFalse(drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
 
     // drivetrain.setDefaultCommand
     //   (drivetrain.run(() -> {
