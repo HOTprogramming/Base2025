@@ -128,7 +128,8 @@ public class Drive extends SubsystemBase {
     private PIDController yChaseObjectPID = new PIDController(0.011, 0, 0);
     private PIDController thetaChaseObjectPID = new PIDController(0.0075, 0, 0);
 
-
+    private PIDController translationControllerFetchX = new PIDController(5, 0, 0);
+    private PIDController translationControllerFetchY = new PIDController(5, 0, 0);
 
     private final SwerveRequest.SwerveDriveBrake BRAKE = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.FieldCentric FIELD_CENTRIC = new SwerveRequest.FieldCentric()
@@ -352,93 +353,52 @@ public class Drive extends SubsystemBase {
         return pixelYmax > targetYPixel;
     }
 
-    public void chaseObject() {
+    
+    public void calculateCoralPose() {
+        
+        double cameraToCoral = -((pixelX-320) / 320.0) * 35.0 * Math.PI/180.0;
+        double distance = 2;
+        
+        Pose2d translationRtoC = new Pose2d(distance * Math.sin(-cameraToCoral),distance * Math.cos(-cameraToCoral)+0.4572,Rotation2d.fromDegrees(0));
 
-            double cameraToCoral = -((pixelX-320) / 320.0) * 35.0 * Math.PI/180.0;
-            double distance = 2;
-            
-            Pose2d translationRtoC = new Pose2d(distance * Math.sin(-cameraToCoral),distance * Math.cos(-cameraToCoral)+0.4572,Rotation2d.fromDegrees(0));
+        Transform2d transform = new Transform2d(translationRtoC.getTranslation(), translationRtoC.getRotation());
 
-            Transform2d transform = new Transform2d(translationRtoC.getTranslation(), translationRtoC.getRotation());
+        Pose2d poseFieldToCoralNoRotation = iOdata.state.Pose.transformBy(transform);
 
-            Pose2d poseFieldToCoralNoRotation = iOdata.state.Pose.transformBy(transform);
-
-            Rotation2d angleFieldToCoral = Rotation2d.fromDegrees(270).minus(Rotation2d.fromRadians(Math.atan2(iOdata.state.Pose.getX() - poseFieldToCoralNoRotation.getX(), iOdata.state.Pose.getY() - poseFieldToCoralNoRotation.getY())));
-            poseFieldToCoral = new Pose2d(poseFieldToCoralNoRotation.getTranslation(), angleFieldToCoral);
-
-
-            if (targetSeenSub.get()) {
+        Rotation2d angleFieldToCoral = Rotation2d.fromDegrees(270).minus(Rotation2d.fromRadians(Math.atan2(iOdata.state.Pose.getX() - poseFieldToCoralNoRotation.getX(), iOdata.state.Pose.getY() - poseFieldToCoralNoRotation.getY())));
+        poseFieldToCoral = new Pose2d(poseFieldToCoralNoRotation.getTranslation(), angleFieldToCoral);
 
 
-                chaseWayPoints = PathPlannerPath.waypointsFromPoses(
-                new Pose2d(iOdata.state.Pose.getX(),iOdata.state.Pose.getY(), angleFieldToCoral),            
-                poseFieldToCoral // pos through object  
-            );
-            PathConstraints constraints = new PathConstraints(4.96, 10.0, 540.0, 720.0, 12.0);
-            SmartDashboard.putNumberArray("coral Pose no rotation",  new double[] {poseFieldToCoralNoRotation.getX(), poseFieldToCoralNoRotation.getY(), poseFieldToCoralNoRotation.getRotation().getRadians()});
-            SmartDashboard.putNumberArray("coral Pose",  new double[] {poseFieldToCoral.getX(), poseFieldToCoral.getY(), poseFieldToCoral.getRotation().getRadians()});
-            SmartDashboard.putNumberArray("start Pose",  new double[] {iOdata.state.Pose.getX(), iOdata.state.Pose.getY(), angleFieldToCoral.getRadians()});
-            SmartDashboard.putNumberArray("CtoR", new Double[] {translationRtoC.getX(),translationRtoC.getY()});
+        SmartDashboard.putNumberArray("coral Pose no rotation",  new double[] {poseFieldToCoralNoRotation.getX(), poseFieldToCoralNoRotation.getY(), poseFieldToCoralNoRotation.getRotation().getRadians()});
+        SmartDashboard.putNumberArray("coral Pose",  new double[] {poseFieldToCoral.getX(), poseFieldToCoral.getY(), poseFieldToCoral.getRotation().getRadians()});
+        SmartDashboard.putNumberArray("start Pose",  new double[] {iOdata.state.Pose.getX(), iOdata.state.Pose.getY(), angleFieldToCoral.getRadians()});
+        SmartDashboard.putNumberArray("CtoR", new Double[] {translationRtoC.getX(),translationRtoC.getY()});
 
-
-            // Create the path using the waypoints created above
-            fetchPath = new PathPlannerPath(
-                chaseWayPoints,
-                constraints,
-                null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-                new GoalEndState(.75, angleFieldToCoral.rotateBy(Rotation2d.fromDegrees(-90.0))) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-            );
-            fetchPath.preventFlipping = true;
-
-            driveIO.setSwerveRequest(AUTO_ALIGN
-            .withVelocityX(!translationControllerX.atGoal() ? translationControllerX.calculate(iOdata.state.Pose.getX(), poseFieldToCoral.getX()) : 0.0)
-            .withVelocityY(!translationControllerY.atGoal() ? translationControllerY.calculate(iOdata.state.Pose.getY(), poseFieldToCoral.getY()) : 0.0)
-            .withRotationalRate(thetaController.calculate(
-                iOdata.state.Pose.getRotation().getRadians(), 
-                poseFieldToCoral.getRotation().getRadians() + Math.toRadians(90)
-            ))
-            );
-
-            // Prevent the path from being flipped if the coordinates are already correct
-            }
-
-
-            SmartDashboard.putNumber("cameraToCoral", Math.toDegrees(cameraToCoral));
-        }
-
-        public void calculateCoralPose() {
-            
-            double cameraToCoral = -((pixelX-320) / 320.0) * 35.0 * Math.PI/180.0;
-            double distance = 2;
-            
-            Pose2d translationRtoC = new Pose2d(distance * Math.sin(-cameraToCoral),distance * Math.cos(-cameraToCoral)+0.4572,Rotation2d.fromDegrees(0));
-
-            Transform2d transform = new Transform2d(translationRtoC.getTranslation(), translationRtoC.getRotation());
-
-            Pose2d poseFieldToCoralNoRotation = iOdata.state.Pose.transformBy(transform);
-
-            Rotation2d angleFieldToCoral = Rotation2d.fromDegrees(270).minus(Rotation2d.fromRadians(Math.atan2(iOdata.state.Pose.getX() - poseFieldToCoralNoRotation.getX(), iOdata.state.Pose.getY() - poseFieldToCoralNoRotation.getY())));
-            poseFieldToCoral = new Pose2d(poseFieldToCoralNoRotation.getTranslation(), angleFieldToCoral);
-
-
-            SmartDashboard.putNumberArray("coral Pose no rotation",  new double[] {poseFieldToCoralNoRotation.getX(), poseFieldToCoralNoRotation.getY(), poseFieldToCoralNoRotation.getRotation().getRadians()});
-            SmartDashboard.putNumberArray("coral Pose",  new double[] {poseFieldToCoral.getX(), poseFieldToCoral.getY(), poseFieldToCoral.getRotation().getRadians()});
-            SmartDashboard.putNumberArray("start Pose",  new double[] {iOdata.state.Pose.getX(), iOdata.state.Pose.getY(), angleFieldToCoral.getRadians()});
-            SmartDashboard.putNumberArray("CtoR", new Double[] {translationRtoC.getX(),translationRtoC.getY()});
-
-            SmartDashboard.putNumber("cameraToCoral", Math.toDegrees(cameraToCoral));
-        }
+        SmartDashboard.putNumber("cameraToCoral", Math.toDegrees(cameraToCoral));
+    }
 
     public void driveToCoral() {
-        if (targetSeenSub.get()) {
-            calculateCoralPose();
+        // if (targetSeenSub.get()) {
+        //     calculateCoralPose();
+        // }
+
+        double x = translationControllerFetchX.calculate(iOdata.state.Pose.getX(), poseFieldToCoral.getX());
+        double y = translationControllerFetchY.calculate(iOdata.state.Pose.getY(), poseFieldToCoral.getY());
+
+        if (iOdata.state.Pose.getTranslation().getDistance(poseFieldToCoral.getTranslation()) < 1.5) {
+            x = MathUtil.clamp(x, -auto_align_slow_speed_teleop, auto_align_slow_speed_teleop);
+            y =  MathUtil.clamp(y, -auto_align_slow_speed_teleop, auto_align_slow_speed_teleop);
         }
+
+        
+        
+
         driveIO.setSwerveRequest(AUTO_ALIGN
-        .withVelocityX(!translationControllerX.atGoal() ? translationControllerX.calculate(iOdata.state.Pose.getX(), poseFieldToCoral.getX()) : 0.0)
-        .withVelocityY(!translationControllerY.atGoal() ? translationControllerY.calculate(iOdata.state.Pose.getY(), poseFieldToCoral.getY()) : 0.0)
+        .withVelocityX(x)
+        .withVelocityY(y)
         .withRotationalRate(thetaController.calculate(
             iOdata.state.Pose.getRotation().getRadians(), 
-            poseFieldToCoral.getRotation().getRadians() + Math.toRadians(90)
+            poseFieldToCoral.getRotation().getRadians() - Math.toRadians(90)
         )));
     }
 
@@ -457,12 +417,6 @@ public class Drive extends SubsystemBase {
         (interrupted) -> {},
         () -> atCoral(), this)
         .onlyIf(() -> targetSeenSub.get());
-    }
-
-    public Command chaseObjectCommand() {
-        return Commands.sequence(
-            // chaseObject(),
-            AutoBuilder.followPath(fetchPath));
     }
 
     public void chaseSlow() {
@@ -759,6 +713,10 @@ public class Drive extends SubsystemBase {
                 SmartDashboard.putBoolean("Auto Align On Target", 
                 this.iOdata.state.Pose.getTranslation().getDistance(currentTarget.getTranslation()) < auto_align_lights_tolerance);
             }
+
+            // if (targetSeenSub.get()) {
+            //     calculateCoralPose();
+            // }
         }
 
         if (pathGroup != null) {
