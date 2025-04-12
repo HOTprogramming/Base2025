@@ -297,6 +297,29 @@ public class Manager extends SubsystemBase{
             );
     }
 
+     /**
+     * @apinote full shooting to floor intake
+     */
+    public Command autonShootIntakeDrop() {
+      return 
+      Commands.sequence(
+            runOnce(() -> {doneScoring = true;}),
+            Commands.deadline(
+              armSubsystem.L4Score().withTimeout(0.75),
+              intakeSubsystem.drop()
+            ),
+            Commands.parallel(
+              manipulatorSubsystem.L4Spit()
+                .andThen(Commands.waitSeconds(.5))
+                .andThen(manipulatorSubsystem.zero())
+                .andThen(manipulatorSubsystem.goScore()),
+              armSubsystem.horizontal(),
+              intakeSubsystem.deploy(),
+              elevatorSubsystem.intakeCoral()
+            ).until(() -> intakeSubsystem.getBeamBreak())
+            );
+    }
+
     /**
      * @apinote Half shoot for fast driving
      */

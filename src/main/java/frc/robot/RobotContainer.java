@@ -96,6 +96,8 @@ public class RobotContainer {
     chooser.addOption("Copy of Regular4", "Copy of Regular4"); 
     chooser.addOption("Test of Regular4", "TestofRegular4"); 
     chooser.addOption("BLUE FLOOR TEST", "BLUE FLOOR TEST"); 
+    chooser.addOption("BlueRLoliFetch", "BlueRLoliFetch"); 
+
 
 
 
@@ -159,6 +161,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Auton Fast Shoot Start", gamespecManager.autonShootStart());
     NamedCommands.registerCommand("Auton Fast Shoot End", gamespecManager.autonShootFinish());
     NamedCommands.registerCommand("Auton Shoot Intake", gamespecManager.autonShootIntake());
+    NamedCommands.registerCommand("Auton Shoot Intake Drop", gamespecManager.autonShootIntakeDrop());
+
 
     NamedCommands.registerCommand("Auton Drop Intake", gamespecManager.intakeSubsystem.drop());
 
