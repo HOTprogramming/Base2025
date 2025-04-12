@@ -95,15 +95,19 @@ public class Intake extends SubsystemBase {
     return intakeCommand(IntakeConstants.intakeBump, 0.0, 0.0);
   }
 
+  public Command bumpLowAlgae(){
+    return intakeCommand(IntakeConstants.intakeBumpLowAlgae, 0.0, 0.0);
+  }
+
   public Command climb(){
-    return intakeCommand(IntakeConstants.intakeGround, 0.0, 0.0);
+    return intakeCommand(IntakeConstants.intakeClimb, 0.0, 0.0);
   }
 
   public Command deploy(){
     return run(() -> {
       intakeCommandedPos.setDouble(IntakeConstants.intakeGround);
       io.setIntakeMotorControl(IntakeConstants.intakeGround);
-      io.setIntakeSpinVelocityControl(100.0, 85.0);
+      io.setIntakeSpinVelocityControl(95.0, 120.0);
      }); 
   }
 

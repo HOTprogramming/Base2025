@@ -26,6 +26,7 @@ import frc.robot.subsystems.GameSpec.Arm.ArmConstants;
 import frc.robot.subsystems.GameSpec.Arm.ArmIOReal;
 import frc.robot.subsystems.GameSpec.Arm.ArmIOSim;
 import frc.robot.subsystems.GameSpec.Climber.Climber;
+import frc.robot.subsystems.GameSpec.Climber.ClimberConstants;
 import frc.robot.subsystems.GameSpec.Climber.ClimberIOReal;
 import frc.robot.subsystems.GameSpec.Climber.ClimberIOSim;
 import frc.robot.subsystems.GameSpec.Elevator.Elevator;
@@ -48,11 +49,12 @@ public class Manager extends SubsystemBase{
     public Elevator elevatorSubsystem;
     public Climber climberSubsystem;
     public Intake intakeSubsystem;
-    private Manipulator manipulatorSubsystem;
-    private Lights lightsSubsystem;
+    public Lights lightsSubsystem;
+    public Manipulator manipulatorSubsystem;
     public Algae algaeSubsystem;
 
     public GenericEntry scoringEnum;
+    public boolean intakeState;
 
     private enum ScoringLevel {
       L1,
@@ -87,6 +89,7 @@ public class Manager extends SubsystemBase{
       } 
 
       scoringLevel = ScoringLevel.L1;
+      intakeState = false;
     }
 
 
@@ -155,7 +158,7 @@ public class Manager extends SubsystemBase{
       run(() -> {scoringLevel = ScoringLevel.L3;})
       ,elevatorSubsystem.goToL3().unless(() -> (armSubsystem.armLessThan(ArmConstants.Intermediate, 2.0)))
       ,armSubsystem.goToPackage())
-      .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L3Height-30.0,2.0)))
+      .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L3Height-5.0,2.0)))
       .andThen(Commands.parallel(Commands.sequence(elevatorSubsystem.goToL3()
       .onlyWhile(() -> manipulatorSubsystem.returnOuterBeamBreak()), elevatorSubsystem.goToL3Long()).onlyWhile(() -> !manipulatorSubsystem.returnOuterBeamBreak()
       )), 
@@ -194,6 +197,7 @@ public class Manager extends SubsystemBase{
     public Command lowAlgae(){
       return Commands.parallel(elevatorSubsystem.goToLowAlgae()
         ,armSubsystem.getAlgaeFromReef()
+        ,intakeSubsystem.bumpLowAlgae()
         ,algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeIntakeVoltage)
         .onlyWhile(() -> algaeSubsystem.returnAlgaeIn())
       );
@@ -216,15 +220,17 @@ public class Manager extends SubsystemBase{
             gotoL4Package()),
             manipulatorSubsystem.zero()
             ),
-          ScoringLevel.L3, 
+          ScoringLevel.L3,
+          Commands.sequence(
+          Commands.parallel(
+            elevatorSubsystem.goToL3(),
             Commands.sequence(
             runOnce(() -> {doneScoring = true;}),
             armSubsystem.L3Score(),
-            manipulatorSubsystem.L3Spit(),
-            elevatorSubsystem.L3Score(),
-            goToPackage()
-            )
-            ,
+            manipulatorSubsystem.L3Spit()
+            )),
+            elevatorSubsystem.L3Score()
+          ),
           ScoringLevel.L2,
             Commands.parallel(
             elevatorSubsystem.goToL2(),
@@ -244,11 +250,66 @@ public class Manager extends SubsystemBase{
       );
     }
 
+    public Command L3Package(){
+      return Commands.sequence(
+        elevatorSubsystem.L3Score(),
+          armSubsystem.goToPackage()
+        );
+    }
+
+    /**
+     * @apinote full shooting to package
+     */
     public Command autonShoot() {
       return 
       Commands.sequence(
             runOnce(() -> {doneScoring = true;}),
             armSubsystem.L4Score().withTimeout(0.75),
+            Commands.parallel(
+            manipulatorSubsystem.L4Spit(),
+            gotoL4Package()),
+            manipulatorSubsystem.zero()
+            );
+    }
+
+
+    /**
+     * @apinote full shooting to floor intake
+     */
+    public Command autonShootIntake() {
+      return 
+      Commands.sequence(
+            runOnce(() -> {doneScoring = true;}),
+            armSubsystem.L4Score().withTimeout(0.75),
+            Commands.parallel(
+              manipulatorSubsystem.L4Spit()
+                .andThen(Commands.waitSeconds(.5))
+                .andThen(manipulatorSubsystem.zero())
+                .andThen(manipulatorSubsystem.goScore()),
+              armSubsystem.horizontal(),
+              intakeSubsystem.deploy(),
+              elevatorSubsystem.intakeCoral()
+            ).until(() -> intakeSubsystem.getBeamBreak())
+            );
+    }
+
+    /**
+     * @apinote Half shoot for fast driving
+     */
+    public Command autonShootStart() {
+      return 
+      Commands.sequence(
+            runOnce(() -> {doneScoring = true;}),
+            armSubsystem.L4Score().withTimeout(0.75)
+            );
+    }
+
+    /**
+     * @apinote finish the half shoot
+     */
+    public Command autonShootFinish() {
+      return 
+      Commands.sequence(
             Commands.parallel(
             manipulatorSubsystem.L4Spit(),
             gotoL4Package()),
@@ -328,8 +389,7 @@ public class Manager extends SubsystemBase{
     }
 
     public Command climberOut(){
-      return 
-      Commands.parallel(
+      return Commands.parallel(
       intakeSubsystem.climb(),
       Commands.sequence(
       lockFingers()
@@ -344,8 +404,26 @@ public class Manager extends SubsystemBase{
       ));
     }
 
+    public Command autoPackageClimber(){
+      return Commands.sequence(
+        ClimbStage1(),
+        ClimbStage2()
+      );
+    }
+
+    public Command ClimbStage1(){
+      return run(() -> climberSubsystem.setPower(-0.33))
+      .onlyWhile(() -> climberSubsystem.checkClimberPos(ClimberConstants.slowPullClicks));
+    }
+
+    public Command ClimbStage2(){
+      return run(() -> climberSubsystem.setPower(-1.0))
+      .onlyWhile(() -> climberSubsystem.checkClimberPos(ClimberConstants.softStopClicks))
+      .andThen(runOnce(() -> climberSubsystem.setPower(0.0)));
+    }
+
     public Command climberDeploy(){
-    return run(() -> climberSubsystem.setPower(4.0))
+    return run(() -> climberSubsystem.setPower(1.0))
       .onlyWhile(() -> climberSubsystem.checkClimberDeployed())
       .andThen(runOnce(() -> climberSubsystem.setPower(0.0)));
     }
@@ -376,10 +454,71 @@ public class Manager extends SubsystemBase{
           )
         .until(() -> intakeSubsystem.getBeamBreak())
         .andThen(Commands.sequence(
+        runOnce(() -> intakeState = true),
         Commands.waitSeconds(0.2),
         Commands.parallel(
           armSubsystem.horizontal(),
-          Commands.sequence(Commands.waitSeconds(0.02), intakeSubsystem.handoffAndSpin()),
+          intakeSubsystem.handoffAndSpin(),
+          manipulatorSubsystem.intakeGround(),
+          elevatorSubsystem.intakeCoral()
+          ))
+        .until(() -> !manipulatorSubsystem.returnBeamBreak()) //coral beambreak true/false is flipped from intake beambreak
+        .andThen(
+        Commands.sequence(
+        Commands.waitSeconds(0.25),
+        Commands.parallel(
+          armSubsystem.goToPackage(),
+          elevatorSubsystem.intakeCoral(),
+          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
+          intakeSubsystem.handoff())
+          .until(() -> armSubsystem.returnArmPos() < ArmConstants.Horizontal-5.0)
+          .andThen(
+          Commands.parallel(
+          armSubsystem.goToPackage(),
+          elevatorSubsystem.goToPackage(),
+          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
+          intakeSubsystem.handoff())
+          ),
+        intakeSubsystem.clearance())
+        )),
+        runOnce(() -> intakeState = false)
+        );
+    }
+
+    public void setIntakeStateFalse(){
+      runOnce(() -> intakeState = false);
+    }
+
+    
+
+    /**
+     *@return True if it needs to finish the ground intake. False if it has ground intaked. 
+     */
+    public boolean returnIntakeState(){
+      return this.intakeState;
+    }
+
+    /**
+     * @apiNote ends with a coral in da grippa
+     */
+    public Command autonFloorIntakeStart() {
+      return Commands.parallel(
+        armSubsystem.horizontal(),
+        intakeSubsystem.deploy(),
+        manipulatorSubsystem.goScore(),
+        elevatorSubsystem.intakeCoral()
+        ).until(() -> intakeSubsystem.getBeamBreak());
+    }
+
+    /**
+     * @apiNote handoff
+     */
+    public Command autonFloorIntakeEnd() {
+      return Commands.sequence(
+        Commands.waitSeconds(0.0),
+        Commands.parallel(
+          armSubsystem.horizontal(),
+          intakeSubsystem.handoffAndSpin(),
           manipulatorSubsystem.intakeGround(),
           elevatorSubsystem.intakeCoral()
           ))
@@ -401,12 +540,40 @@ public class Manager extends SubsystemBase{
           intakeSubsystem.handoff())
           ),
         intakeSubsystem.clearance())
-        )));
+        );
     }
 
-    //handoff code for auton, doesn't do the elevator at first and doesn't wait.
-    public Command floorIntakeAutonDeployFull(){
+    /**
+     * @apiNote handoff straight to L4
+     */
+    public Command autonFloorIntakeEndFast() {
       return Commands.sequence(
+        Commands.waitSeconds(0.0),
+        Commands.parallel(
+          armSubsystem.horizontal(),
+          Commands.sequence(Commands.waitSeconds(0.07), intakeSubsystem.handoffAndSpin()),
+          manipulatorSubsystem.intakeGround(),
+          elevatorSubsystem.intakeCoral()
+          ))
+        .until(() -> !manipulatorSubsystem.returnBeamBreak()) //coral beambreak true/false is flipped from intake beambreak
+        .andThen(
+        Commands.sequence(
+        Commands.waitSeconds(0.1),
+        Commands.parallel(
+          Commands.deadline(
+            elevatorSubsystem.autonGoToL4(), 
+            armSubsystem.goToPackage()),
+          intakeSubsystem.clearance()
+          )
+        )
+        );
+    }
+
+    /**
+     * @deprecated full sequence
+     */
+    public Command floorIntakeAutonDeployFull(){
+      return 
       Commands.parallel(
           armSubsystem.horizontal(),
           intakeSubsystem.deploy(),
@@ -440,16 +607,7 @@ public class Manager extends SubsystemBase{
           intakeSubsystem.handoff())
           ),
         intakeSubsystem.clearance())
-        )));
-    }
-
-    public Command floorIntakeAutonDeploy(){
-     return Commands.parallel(
-        armSubsystem.horizontal(),
-        intakeSubsystem.deployAuton(),
-        manipulatorSubsystem.goScore(),
-        elevatorSubsystem.intakeCoral()
-        );
+        ));
     }
 
     //packages the floor intake after a deploy
@@ -471,6 +629,11 @@ public class Manager extends SubsystemBase{
       return Commands.parallel(armSubsystem.goToPackage());
     }
 
+    public Command algaePackageLowPluck(){
+      return Commands.parallel(armSubsystem.goToPackage(),
+      intakeSubsystem.bumpLowAlgae());
+    }
+
     //does the normal package like in coral mode, but stops the holding voltage for the algae instead of moving the wrist.
     public Command algaePackageElevator(){
       return Commands.parallel(armSubsystem.goToPackage()).until(() -> (armSubsystem.armGreaterThan(ArmConstants.Intermediate,2.0)))
@@ -488,8 +651,17 @@ public class Manager extends SubsystemBase{
       Commands.parallel(
         Commands.parallel(elevatorSubsystem.goToBarge(), runOnce(() -> {scoringLevel = ScoringLevel.Barge;}))
         ,armSubsystem.barge()),
-        algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage).withTimeout(0.5),
+        algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage).withTimeout(0.25),
+        Commands.waitSeconds(0.25),
+        algaeSubsystem.algaeVoltage(0.0),
         bargePackage());
+    }
+
+    public Command bargeManual(){
+      return Commands.sequence(
+      Commands.parallel(
+        Commands.parallel(elevatorSubsystem.goToBarge(), runOnce(() -> {scoringLevel = ScoringLevel.Barge;}))
+        ,armSubsystem.barge()));
     }
 
     public Command setLightsCoral() {
@@ -525,11 +697,11 @@ public class Manager extends SubsystemBase{
     }
 
     public Command setLightsAlignGood() {
-      return Commands.sequence(lightsSubsystem.changeAnimation(AnimationTypes.AutoAlign), lightsSubsystem.animate());
+      return lightsSubsystem.changeAnimation(AnimationTypes.AutoAlign);
     }
 
     public Command setFancyLights() {
-      return Commands.sequence(lightsSubsystem.changeAnimation(AnimationTypes.Twinkle), lightsSubsystem.animate());
+      return Commands.sequence(lightsSubsystem.changeAnimation(AnimationTypes.Twinkle));
     }
 
     public Command setOneLights(int light, Boolean good) {

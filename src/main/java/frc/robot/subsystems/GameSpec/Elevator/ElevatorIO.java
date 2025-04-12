@@ -33,7 +33,7 @@ import edu.wpi.first.units.measure.Temperature;
 public abstract class ElevatorIO {
 
     // Protected TalonFX object accessible to subclasses
-    protected TalonFX elevator;
+    public TalonFX elevator;
     protected TalonFX elevator2;
     //protected PositionTorqueCurrentFOC elevatorControl;
     //protected MotionMagicVoltage elevatorControl;

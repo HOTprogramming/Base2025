@@ -18,7 +18,7 @@ import frc.robot.subsystems.GameSpec.Elevator.ElevatorIO.ElevatorIOStats;
 public class Elevator extends SubsystemBase {
   public FunctionalCommand testCommand;
 
-  private final ElevatorIO io;
+  public final ElevatorIO io;
   public final ElevatorIOStats stats;
   private final ShuffleboardTab elevatorShuffleboard;
 

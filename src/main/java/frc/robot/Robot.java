@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -68,6 +69,9 @@ public class Robot extends TimedRobot {
       ppConfigured = true;
     }
     
+    SmartDashboard.putBoolean("Teleop", false);
+    SmartDashboard.putBoolean("Auto", false);
+
     m_robotContainer.lightsDisable().ignoringDisable(true);
   }
 
@@ -83,8 +87,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    SmartDashboard.putBoolean("Auto", true);
+
     m_autonomousCommand = Commands.waitSeconds(0.01).andThen(m_robotContainer.getAutonomousCommand());
-    m_robotContainer.turnOnTopCam().ignoringDisable(true).schedule();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -99,11 +104,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    SmartDashboard.putBoolean("Teleop", true);
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
     
-    m_robotContainer.turnOffTopCam().ignoringDisable(true).schedule();
     m_robotContainer.resetLeds();
   }
 

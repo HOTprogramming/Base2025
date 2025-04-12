@@ -2,7 +2,7 @@ package frc.robot.subsystems.Drivetrain;
 
 import static edu.wpi.first.units.Units.*;
 
-
+import java.util.DuplicateFormatFlagsException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +29,10 @@ public class DriveConstants {
 
     public static final double auto_align_theta_disable = .1;
     public static final double auto_align_top_speed_teleop = 2.4;
-    public static final double auto_align_top_speed_auton = 1.0;
+    public static final double auto_align_slow_speed_teleop = 1.0;
+    public static final double auto_align_top_speed_auton = 2.4;
+
+    public static final double auto_align_slow_in_percent = 0.66;
 
     public static final double auto_align_tolerance = 0.01;
     public static final double auto_align_lights_tolerance = Units.inchesToMeters(1.5);
@@ -78,21 +81,21 @@ public class DriveConstants {
     //     {   //                                                  left center right
     //         put(Rotation2d.fromDegrees(0), new Double[] {6.0, -1.6, -6.0});
     //         put(Rotation2d.fromDegrees(60), new Double[] {6.0, -1.6,  -6.0});
-    //         put(Rotation2d.fromDegrees(120), new Double[] {5.5, -1.6, -6.0});
-    //         put(Rotation2d.fromDegrees(180), new Double[] {6.0, -1.6, -6.0});
+    //         put(Rotation2d.fromDegrees(120), new Double[] {6.0, -1.6,  -6.0});
+    //         put(Rotation2d.fromDegrees(180), new Double[] {6.2, -1.6, -6.5});
     //         put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -1.6, -6.0});
-    //         put(Rotation2d.fromDegrees(-60), new Double[] {7.0, -1.6, -6.0});
+    //         put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -1.6,  -6.0});
     //     }
     // };
 
     // public static final Map<Rotation2d, Double[]> bluePoleShift = new HashMap<>() {
     //     {   //                                                  left center right
-    //         put(Rotation2d.fromDegrees(0), new Double[] {6.0, -1.6, -6.0});
-    //         put(Rotation2d.fromDegrees(60), new Double[] {7.0, -1.6,  -5.5});
-    //         put(Rotation2d.fromDegrees(120), new Double[] {6.0, -1.6, -6.0});
-    //         put(Rotation2d.fromDegrees(180), new Double[] {5.5, -1.6, -6.0});
-    //         put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -1.6, -6.0});
-    //         put(Rotation2d.fromDegrees(-60), new Double[] {6.0, -1.6, -6.0});
+    //         put(Rotation2d.fromDegrees(0), new Double[] {6.0, -0.25, -6.0}); // left maybe -
+    //         put(Rotation2d.fromDegrees(60), new Double[] {6.0, -0.25,  -6.5});
+    //         put(Rotation2d.fromDegrees(120), new Double[] {6.0, -0.25, -6.2});
+    //         put(Rotation2d.fromDegrees(180), new Double[] {6.0, -0.25,  -6.0});
+    //         put(Rotation2d.fromDegrees(-120), new Double[] {6.0, -0.25, -6.3});
+    //         put(Rotation2d.fromDegrees(-60), new Double[] {6.5, -0.25, -6.0});
     //     }
     // };
 
@@ -101,19 +104,19 @@ public class DriveConstants {
     //                             GM GAINS
     public static final Map<Rotation2d, Double[]> redPoleShift = new HashMap<>() {
         {   //                                                  left center right
-            put(Rotation2d.fromDegrees(0), new Double[] {6.0, -0.25, -6.5});
+            put(Rotation2d.fromDegrees(0), new Double[] {6.75, -0.25, -6.0});
             put(Rotation2d.fromDegrees(60), new Double[] {8.0, -0.25,  -7.0});
             put(Rotation2d.fromDegrees(120), new Double[] {5.0, -0.25, -8.0});
             put(Rotation2d.fromDegrees(180), new Double[] {6.0, -0.25, -7.5});
-            put(Rotation2d.fromDegrees(-120), new Double[] {5.5, -0.25, -6.0});
-            put(Rotation2d.fromDegrees(-60), new Double[] {5.5, -0.25, -6.5});
+            put(Rotation2d.fromDegrees(-120), new Double[] {6.5, -0.25, -7.0});
+            put(Rotation2d.fromDegrees(-60), new Double[] {5.5, -1.25, -8.0});
         }
     };
 
     public static final Map<Rotation2d, Double[]> bluePoleShift = new HashMap<>() {
         {   //                                                  left center right
             put(Rotation2d.fromDegrees(0), new Double[] {6.0, -0.25, -7.5});
-            put(Rotation2d.fromDegrees(60), new Double[] {5.5, -0.25, -6.0});
+            put(Rotation2d.fromDegrees(60), new Double[] {5.5, -0.25, -8.0});
             put(Rotation2d.fromDegrees(120), new Double[] {5.5, -0.25, -8.0});
             put(Rotation2d.fromDegrees(180), new Double[] {7.0, -0.25, -6.0});
             put(Rotation2d.fromDegrees(-120), new Double[] {8.0, -0.25,  -7.0});
@@ -587,9 +590,17 @@ public class DriveConstants {
         PIDConstants TELEOP_ROTATION_PID
         ) {}
 
+        //Comp Gains:
+        // public static final double bargePosRedFar = 9.925;
+        // public static final double bargePosRedClose = 9.75;
+        // public static final double bargePosBlueFar = 7.86;
+        // public static final double bargePosBlueClose = 7.685;
+
+        //GM Gains:
         public static final double bargePosRedFar = 10.0;
         public static final double bargePosRedClose = 9.75;
         public static final double bargePosBlueFar = 7.86;
         public static final double bargePosBlueClose = 7.61;
+
 
 }

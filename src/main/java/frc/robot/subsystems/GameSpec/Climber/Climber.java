@@ -67,6 +67,10 @@ public class Climber extends SubsystemBase {
     climberLimitSwitch2.setBoolean(!io.limitSwitch2.get());//false if ready to climb
   }
 
+
+  /**
+   * @apiNote: Sets percentout power for the climber. 1 = 16 volts.
+   */
     public void setPower(Double supplier){
         io.setPower(supplier);
     }
@@ -92,7 +96,7 @@ public class Climber extends SubsystemBase {
     }
 
     public Command servoOpen(){
-      return run(() -> {
+      return runOnce(() -> {
       io.climberServo.set(ClimberConstants.climberServoOpenPos);
       io.climberServo2.set(1.0 - ClimberConstants.climberServoOpenPos);
       });
@@ -116,6 +120,15 @@ public class Climber extends SubsystemBase {
    */
   public boolean checkClimberDeployed(){
     if(stats.climberPosition > ClimberConstants.targetClicks){
+      return false;
+    }
+    else{
+      return true;
+    }
+  }
+
+  public boolean checkClimberPos(double pos){
+    if(stats.climberPosition <= pos){
       return false;
     }
     else{

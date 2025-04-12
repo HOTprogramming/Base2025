@@ -5,15 +5,54 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "sequential",
           "data": {
-            "pathName": "Test"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Package"
+                }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Floor Intake Auton Deploy"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Floor Intake Auton Deploy 2"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Chase Object"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Dev Autos",
   "choreoAuto": false
 }

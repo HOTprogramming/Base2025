@@ -62,8 +62,9 @@ public class ArmConstants {
 
         armMotorID = 14;
         armEncoderID = 44;
-        armGains = new MMGains(0.004, 0.0025, 1.75, 0.0, 0.14, 0.0, 0.0, -2.0);
-        armEncoderOffset = -0.0383293999565972;
+        armGains = new MMGains(0.004, 0.0025, 1.82, 0.0, 0.13, 0.0, 0.0, -2.0);
+        //old gains:armGains = new MMGains(0.004, 0.0025, 1.75, 0.0, 0.14, 0.0, 0.0, -2.0);
+        armEncoderOffset = 0.149658203125;
 
         PackageAngle = -90;
         FeederAngle = -51.4;
@@ -72,12 +73,12 @@ public class ArmConstants {
         L3Angle = -129.7;
         L4Angle = -130.0;
         L4Score = -172;
-        L3Score = -147.7;
+        L3Score = -161.5;//-166.5
         L2Score = -172.8;
         Horizontal = 0;
         Intermediate = -139.0;
         CurrentFail = -10.0;
-        L3short = -114.0;
+        L3short = -129.7;//-114.0;
         L2Short = -119.6;
         L4Short = -112.5;
         Processor = -55.0;

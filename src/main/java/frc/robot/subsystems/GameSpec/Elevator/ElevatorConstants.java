@@ -65,29 +65,57 @@ public class ElevatorConstants {
         //elevatorGains = new MMGains(0, 0, 0, 45.0 , 0, 2.25, 30.0, 1.0, 0.0);//torque position pid
 
         elevatorEncoderOffset = 0.2546;
+
+        //Comp Constants:
         PackageHeight = 15.0; 
-        AutoL4Height = 58.0;
-        L4Height = 53.0;
+        AutoL4Height = 53.0;
+        L4Height = 51.0;
         L4LongHeight = 52.0;
-        L3Height = 23.2;
-        L3LongHeight = 20.8;
+        L3Height = 24.7;
+        L3LongHeight = 24.7;
         L2Height = 10.4;
         L2LongHeight = 9.73;
         L1Height = 17.5;
         FeederHeight = 9.1;
         L4ReturnScoreHeight = 50.0;
-        L3ScoreHeight = 18.0;
+        L3ScoreHeight = 17.2;
         L2ScoreHeight = 9.8; 
         HPHeight = 17.0;
         climbHeight = 0.25;
         highAlgae = 35;
         lowAlgae = 17;
-        BargeHeight = 68.75;
+        BargeHeight = 69.25;
         ProcessorHeight = 14.0;
         initialClimbHeight = 12.0;
         L4MiniScoreHeight = 50.0;
         intakeCoralHeight = 9.1;
         autonHalfHeight = 25.0;
+
+
+        //GM CONSTANTS:
+        // PackageHeight = 15.0; 
+        // AutoL4Height = 53.0;
+        // L4Height = 51.0;
+        // L4LongHeight = 52.0;
+        // L3Height = 23.7;
+        // L3LongHeight = 20.8;
+        // L2Height = 10.4;
+        // L2LongHeight = 9.73;
+        // L1Height = 17.5;
+        // FeederHeight = 9.1;
+        // L4ReturnScoreHeight = 50.0;
+        // L3ScoreHeight = 18.0;
+        // L2ScoreHeight = 9.8; 
+        // HPHeight = 17.0;
+        // climbHeight = 0.25;
+        // highAlgae = 35;
+        // lowAlgae = 17;
+        // BargeHeight = 68.75;
+        // ProcessorHeight = 14.0;
+        // initialClimbHeight = 12.0;
+        // L4MiniScoreHeight = 50.0;
+        // intakeCoralHeight = 9.1;
+        // autonHalfHeight = 25.0;
 
     }
 
