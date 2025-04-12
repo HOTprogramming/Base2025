@@ -92,7 +92,9 @@ public class RobotContainer {
     chooser.addOption("RightBlueLolipop", "RightBlueLolipop"); 
     chooser.addOption("RightRedLolipopp", "RightRedLolipop"); 
     chooser.addOption("RedLeftLolipop", "RedLeftLolipop"); 
-    chooser.addOption("BlueLeftLolipop", "BlueLeftLolipop"); 
+    chooser.addOption("BlueLeftLolipop", "BlueLeftLolipop");
+    chooser.addOption("FetchTest", "FetchTest"); 
+ 
 
 
 
@@ -162,9 +164,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("Auton Floor Intake End", gamespecManager.autonFloorIntakeEnd());
     NamedCommands.registerCommand("Stop Drive", drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
 
-    NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.chaseSlow()).until(() -> gamespecManager.intakeSubsystem.getBeamBreak()).onlyIf(() -> drivetrain.targetSeen)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
+    NamedCommands.registerCommand("fetch auto no path", drivetrain.fetchAuto());
+    // NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.chaseSlow()).until(() -> gamespecManager.intakeSubsystem.getBeamBreak()).onlyIf(() -> drivetrain.targetSeen)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
     
-    NamedCommands.registerCommand("Chase Auton", drivetrain.run(() -> drivetrain.chaseAuton()).until(() -> gamespecManager.intakeSubsystem.getBeamBreak()).onlyIf(() -> drivetrain.targetSeen)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
+    // NamedCommands.registerCommand("Chase Auton", drivetrain.run(() -> drivetrain.chaseAuton()).until(() -> gamespecManager.intakeSubsystem.getBeamBreak()).onlyIf(() -> drivetrain.targetSeen)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
    // NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.chaseSlow()).until(() -> (gamespecManager.intakeSubsystem.getBeamBreak()))); // gamespecManager.intakeSubsystem.getBeamBreak() ||
 
     //new EventTrigger("Package").whileTrue(gamespecManager.goToPackage());
@@ -182,6 +185,8 @@ public class RobotContainer {
   }
 
   private void configureBindings() {   
+
+    // driver.a().onTrue(drivetrain.fetchAuto()).onFalse(drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
 
     // drivetrain.setDefaultCommand
     //   (drivetrain.run(() -> {
@@ -241,13 +246,13 @@ public class RobotContainer {
       //     Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
       //   })));
 
-      driver.a().whileTrue(
-        drivetrain.run(() -> {drivetrain.alignObjectTeleop(
-          (Math.abs(driver.getLeftX()) >= 0.1 ? driver.getLeftX() : 0) * 0.5,
-          (Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0) * 0.5,
-          (Math.abs(driver.getRightX()) >= 0.015 ? -driver.getRightX() : 0) * 0.5);
-        }
-      ));
+      // driver.a().whileTrue(
+      //   drivetrain.run(() -> {drivetrain.alignObjectTeleop(
+      //     (Math.abs(driver.getLeftX()) >= 0.1 ? driver.getLeftX() : 0) * 0.5,
+      //     (Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0) * 0.5,
+      //     (Math.abs(driver.getRightX()) >= 0.015 ? -driver.getRightX() : 0) * 0.5);
+      //   }
+      // ));
 
 
       driver.y()

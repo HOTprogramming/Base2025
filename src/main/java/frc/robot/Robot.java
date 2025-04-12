@@ -50,6 +50,7 @@ public class Robot extends TimedRobot {
     ampsEntry = tab.add("Amps",0.0).getEntry();
 
     initAuto = new PathPlannerAuto("initAuto").ignoringDisable(true);
+
   }
 
   @Override
