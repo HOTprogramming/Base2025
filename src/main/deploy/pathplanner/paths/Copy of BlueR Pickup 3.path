@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.692213114754098,
-        "y": 2.970081967213115
+        "x": 3.9799180327868857,
+        "y": 2.8022540983606565
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.543488422172037,
-        "y": 2.752061131331884
+        "x": 3.596311475409836,
+        "y": 2.442622950819673
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.582,
-        "y": 0.668
+        "x": 1.2467213114754097,
+        "y": 2.1788934426229516
       },
       "prevControl": {
-        "x": 1.7170478861893075,
-        "y": 0.8783855233512988
+        "x": 1.5224385245901637,
+        "y": 2.2028688524590168
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
     {
       "name": "Constraints Zone",
       "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.277777777777779,
+      "maxWaypointRelativePos": 0.22746553552492182,
       "constraints": {
         "maxVelocity": 4.96,
         "maxAcceleration": 3.0,
@@ -45,11 +45,11 @@
     },
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.6766381766381766,
+      "minWaypointRelativePos": 0.834040296924707,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 4.96,
-        "maxAcceleration": 4.0,
+        "maxVelocity": 1.0,
+        "maxAcceleration": 6.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.6,
@@ -57,26 +57,8 @@
       }
     }
   ],
-  "pointTowardsZones": [
-    {
-      "fieldPosition": {
-        "x": 3.75,
-        "y": 3.2
-      },
-      "rotationOffset": 90.0,
-      "minWaypointRelativePos": 0.11081654294803987,
-      "maxWaypointRelativePos": 0.6537645811240701,
-      "name": "Point Towards Zone"
-    }
-  ],
-  "eventMarkers": [
-    {
-      "name": "Blink",
-      "waypointRelativePos": 0.7916224814422048,
-      "endWaypointRelativePos": 1.0,
-      "command": null
-    }
-  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.96,
     "maxAcceleration": 6.0,
@@ -87,10 +69,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 145.0
+    "rotation": 90.0
   },
   "reversed": false,
-  "folder": "BlueR",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 150.0

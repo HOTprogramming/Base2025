@@ -126,7 +126,7 @@ public class Drive extends SubsystemBase {
 
     private final SwerveRequest.SwerveDriveBrake BRAKE = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.FieldCentric FIELD_CENTRIC = new SwerveRequest.FieldCentric()
-    .withDeadband(0.2).withRotationalDeadband(0.0).withDriveRequestType(DriveRequestType.Velocity).withDesaturateWheelSpeeds(true);
+    .withDeadband(0.2).withRotationalDeadband(0.0).withDriveRequestType(DriveRequestType.Velocity).withDesaturateWheelSpeeds(false);
 
     private final SwerveRequest.FieldCentric AUTO_ALIGN = new SwerveRequest.FieldCentric()
     .withDeadband(0.0).withRotationalDeadband(0.0);

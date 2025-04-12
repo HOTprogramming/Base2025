@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.943954918032787,
-        "y": 2.86219262295082
+        "x": 3.1767418032786883,
+        "y": 3.869159836065574
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.6900934271094106,
-        "y": 2.6281563011116624
+        "x": 1.7741803278688524,
+        "y": 3.821209016393443
       },
       "isLocked": false,
       "linkedName": null
@@ -32,7 +32,7 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.7831389183456999,
+      "minWaypointRelativePos": 0.8531283138918333,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 4.96,
@@ -44,7 +44,18 @@
       }
     }
   ],
-  "pointTowardsZones": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 3.85,
+        "y": 3.25
+      },
+      "rotationOffset": 90.0,
+      "minWaypointRelativePos": 0.31654294803817584,
+      "maxWaypointRelativePos": 0.7470837751855753,
+      "name": "Point Towards Zone"
+    }
+  ],
   "eventMarkers": [
     {
       "name": "Blink",
@@ -69,7 +80,7 @@
   "folder": "BlueR",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 150.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

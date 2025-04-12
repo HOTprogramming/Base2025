@@ -189,8 +189,8 @@ public class DriveConstants {
                 .withSupplyCurrentLowerTime(1)
         ).withTorqueCurrent(
             new TorqueCurrentConfigs()
-                .withPeakForwardTorqueCurrent(65)
-                .withPeakReverseTorqueCurrent(-65)
+                .withPeakForwardTorqueCurrent(200)
+                .withPeakReverseTorqueCurrent(-200)
         );
 
     public static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
