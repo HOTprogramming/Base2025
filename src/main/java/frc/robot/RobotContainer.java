@@ -186,7 +186,7 @@ public class RobotContainer {
 
   private void configureBindings() {   
 
-    driver.a().onTrue(drivetrain.fetchAuto()).onFalse(drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
+    // driver.a().onTrue(drivetrain.fetchAuto()).onFalse(drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
 
     // drivetrain.setDefaultCommand
     //   (drivetrain.run(() -> {
