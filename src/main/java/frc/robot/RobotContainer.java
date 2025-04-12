@@ -97,6 +97,8 @@ public class RobotContainer {
     chooser.addOption("Test of Regular4", "TestofRegular4"); 
     chooser.addOption("BLUE FLOOR TEST", "BLUE FLOOR TEST"); 
     chooser.addOption("BlueRLoliFetch", "BlueRLoliFetch"); 
+    chooser.addOption("BlueLeftLoliFetch", "BlueLeftLoliFetch"); 
+
 
 
 

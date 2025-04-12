@@ -532,7 +532,7 @@ public class Manager extends SubsystemBase{
       return Commands.parallel(
         armSubsystem.horizontal(),
         intakeSubsystem.deploy(),
-        manipulatorSubsystem.goScore(),
+        manipulatorSubsystem.intakeGround(),
         elevatorSubsystem.intakeCoral()
         ).until(() -> intakeSubsystem.getBeamBreak());
     }
