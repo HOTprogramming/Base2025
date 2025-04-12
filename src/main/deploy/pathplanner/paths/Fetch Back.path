@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.5703893442622954,
-        "y": 0.7283811475409834
+        "x": 1.9779713114754096,
+        "y": 1.3277663934426243
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9609631147540987,
-        "y": 1.7173668032786897
+        "x": 2.613319672131148,
+        "y": 1.8911885245901634
       },
       "isLocked": false,
-      "linkedName": "BlueR44"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.7931352459016394,
-        "y": 3.6054303278688526
+        "x": 3.512397540983606,
+        "y": 2.742315573770493
       },
       "prevControl": {
-        "x": 1.2227459016393443,
-        "y": 3.737295081967213
+        "x": 2.7212090163934417,
+        "y": 2.142930327868853
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,8 +32,8 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.6766381766381802,
-      "maxWaypointRelativePos": 1.0,
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.2698833510074186,
       "constraints": {
         "maxVelocity": 4.96,
         "maxAcceleration": 3.0,
@@ -55,14 +55,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.3,
-    "rotation": 90.0
+    "velocity": 0.0,
+    "rotation": 150.0
   },
   "reversed": false,
-  "folder": "BlueR",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 145.0
+    "rotation": 140.0
   },
   "useDefaultConstraints": true
 }

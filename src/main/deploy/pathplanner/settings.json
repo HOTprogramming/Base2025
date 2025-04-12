@@ -12,8 +12,8 @@
   ],
   "autoFolders": [
     "Blue Autos",
-    "Init Auto",
     "Dev Autos",
+    "Init Auto",
     "Red Autos"
   ],
   "defaultMaxVel": 4.96,

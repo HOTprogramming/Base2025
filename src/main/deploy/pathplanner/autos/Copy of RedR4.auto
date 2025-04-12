@@ -17,7 +17,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RightRedRightBlueGround Place 1"
+                  "pathName": "RedR Place 1"
                 }
               },
               {
@@ -30,39 +30,26 @@
           }
         },
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "wait",
+                "type": "named",
                 "data": {
-                  "waitTime": 1.0
+                  "name": "Align Reef Right"
                 }
               },
               {
-                "type": "parallel",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Align Reef Right"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "AL4"
-                      }
-                    }
-                  ]
+                  "name": "AL4"
                 }
               }
             ]
           }
         },
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -371,6 +358,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Red Autos",
+  "folder": null,
   "choreoAuto": false
 }

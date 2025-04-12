@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4505122950819673,
-        "y": 0.6085040983606563
+        "x": 2.085860655737705,
+        "y": 1.627459016393443
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6423155737704915,
-        "y": 0.8362704918032795
+        "x": 2.2776639344262293,
+        "y": 1.855225409836066
       },
       "isLocked": false,
-      "linkedName": "BlueR42"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.404508196721311,
-        "y": 2.7902663934426233
+        "x": 3.3925204918032783,
+        "y": 2.6464139344262296
       },
       "prevControl": {
-        "x": 3.248668032786885,
-        "y": 2.5625
+        "x": 3.2366803278688523,
+        "y": 2.4186475409836063
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,11 +33,11 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.96,
-    "maxAcceleration": 6.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
-    "nominalVoltage": 12.6,
+    "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
@@ -50,5 +50,5 @@
     "velocity": 0,
     "rotation": 145.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

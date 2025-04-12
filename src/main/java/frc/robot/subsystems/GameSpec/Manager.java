@@ -245,7 +245,11 @@ public class Manager extends SubsystemBase{
             manipulatorSubsystem.shoot()
             .onlyWhile(() -> (armSubsystem.armCurrent(ArmConstants.CurrentFail)))
             .andThen(goToL1().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail))))),
-          ScoringLevel.Algae, algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage),
+          ScoringLevel.Algae, 
+            algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage).until(() -> algaeSubsystem.getAlgaePosition() > 0.12)
+              .andThen(algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelSlowVoltage))
+            
+            ,
           ScoringLevel.Barge, algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage)
         ),
         this::getLevel
@@ -317,6 +321,27 @@ public class Manager extends SubsystemBase{
         intakeSubsystem.deploy(),
         manipulatorSubsystem.knockAlgaeLeft()
         ).until(() -> intakeSubsystem.getBeamBreak());
+     /**
+     * @apinote full shooting to floor intake
+     */
+    public Command autonShootIntakeDrop() {
+      return 
+      Commands.sequence(
+            runOnce(() -> {doneScoring = true;}),
+            Commands.deadline(
+              armSubsystem.L4Score().withTimeout(0.75),
+              intakeSubsystem.drop()
+            ),
+            Commands.parallel(
+              manipulatorSubsystem.L4Spit()
+                .andThen(Commands.waitSeconds(.5))
+                .andThen(manipulatorSubsystem.zero())
+                .andThen(manipulatorSubsystem.goScore()),
+              armSubsystem.horizontal(),
+              intakeSubsystem.deploy(),
+              elevatorSubsystem.intakeCoral()
+            ).until(() -> intakeSubsystem.getBeamBreak())
+            );
     }
 
     /**
@@ -596,7 +621,7 @@ public class Manager extends SubsystemBase{
      */
     public Command autonFloorIntakeEnd() {
       return Commands.sequence(
-        Commands.waitSeconds(0.0),
+        Commands.waitSeconds(0.1),
         Commands.parallel(
           armSubsystem.horizontal(),
           intakeSubsystem.handoffAndSpin(),
@@ -606,7 +631,7 @@ public class Manager extends SubsystemBase{
         .until(() -> !manipulatorSubsystem.returnBeamBreak()) //coral beambreak true/false is flipped from intake beambreak
         .andThen(
         Commands.sequence(
-        Commands.waitSeconds(0.1),
+        Commands.waitSeconds(0.25),
         Commands.parallel(
           armSubsystem.goToPackage(),
           elevatorSubsystem.intakeCoral(),
@@ -788,9 +813,9 @@ public class Manager extends SubsystemBase{
     }
 
     public Command alignProcessor(){
-      return Commands.sequence(runOnce(() -> {scoringLevel = ScoringLevel.Algae;}),
-        Commands.parallel(elevatorSubsystem.goToProcessor())
-        ,Commands.parallel(armSubsystem.processor()));
+      return Commands.parallel(runOnce(() -> {scoringLevel = ScoringLevel.Algae;}),
+        Commands.parallel(armSubsystem.processor()),
+        Commands.parallel(elevatorSubsystem.goToProcessor()));
     }
 
     public Command barge(){
