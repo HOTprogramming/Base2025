@@ -115,7 +115,7 @@ public class Drive extends SubsystemBase {
 
     double sideRatio; //.4 long side, 1.2 short side h/w
 
-    Pose2d fetchPose = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
+    Pose2d poseFieldToCoral;
 
     NetworkTable objectDetection;
     ArrayList<DoubleArraySubscriber> coralSubs = new ArrayList<>();
@@ -352,8 +352,8 @@ public class Drive extends SubsystemBase {
         return pixelYmax > targetYPixel;
     }
 
-    public Command chaseObject() {
-        return runOnce(() -> {                    pixelTolerance = 10;
+    public void chaseObject() {
+
             double cameraToCoral = -((pixelX-320) / 320.0) * 35.0 * Math.PI/180.0;
             double distance = 2;
             
@@ -364,7 +364,7 @@ public class Drive extends SubsystemBase {
             Pose2d poseFieldToCoralNoRotation = iOdata.state.Pose.transformBy(transform);
 
             Rotation2d angleFieldToCoral = Rotation2d.fromDegrees(270).minus(Rotation2d.fromRadians(Math.atan2(iOdata.state.Pose.getX() - poseFieldToCoralNoRotation.getX(), iOdata.state.Pose.getY() - poseFieldToCoralNoRotation.getY())));
-            Pose2d poseFieldToCoral = new Pose2d(poseFieldToCoralNoRotation.getTranslation(), angleFieldToCoral);
+            poseFieldToCoral = new Pose2d(poseFieldToCoralNoRotation.getTranslation(), angleFieldToCoral);
 
 
             if (targetSeenSub.get()) {
@@ -390,24 +390,78 @@ public class Drive extends SubsystemBase {
             );
             fetchPath.preventFlipping = true;
 
-            AutoBuilder.followPath(fetchPath).schedule();
-
+            driveIO.setSwerveRequest(AUTO_ALIGN
+            .withVelocityX(!translationControllerX.atGoal() ? translationControllerX.calculate(iOdata.state.Pose.getX(), poseFieldToCoral.getX()) : 0.0)
+            .withVelocityY(!translationControllerY.atGoal() ? translationControllerY.calculate(iOdata.state.Pose.getY(), poseFieldToCoral.getY()) : 0.0)
+            .withRotationalRate(thetaController.calculate(
+                iOdata.state.Pose.getRotation().getRadians(), 
+                poseFieldToCoral.getRotation().getRadians() + Math.toRadians(90)
+            ))
+            );
 
             // Prevent the path from being flipped if the coordinates are already correct
             }
 
 
             SmartDashboard.putNumber("cameraToCoral", Math.toDegrees(cameraToCoral));
-        });
+        }
+
+        public void calculateCoralPose() {
+            
+            double cameraToCoral = -((pixelX-320) / 320.0) * 35.0 * Math.PI/180.0;
+            double distance = 2;
+            
+            Pose2d translationRtoC = new Pose2d(distance * Math.sin(-cameraToCoral),distance * Math.cos(-cameraToCoral)+0.4572,Rotation2d.fromDegrees(0));
+
+            Transform2d transform = new Transform2d(translationRtoC.getTranslation(), translationRtoC.getRotation());
+
+            Pose2d poseFieldToCoralNoRotation = iOdata.state.Pose.transformBy(transform);
+
+            Rotation2d angleFieldToCoral = Rotation2d.fromDegrees(270).minus(Rotation2d.fromRadians(Math.atan2(iOdata.state.Pose.getX() - poseFieldToCoralNoRotation.getX(), iOdata.state.Pose.getY() - poseFieldToCoralNoRotation.getY())));
+            poseFieldToCoral = new Pose2d(poseFieldToCoralNoRotation.getTranslation(), angleFieldToCoral);
+
+
+            SmartDashboard.putNumberArray("coral Pose no rotation",  new double[] {poseFieldToCoralNoRotation.getX(), poseFieldToCoralNoRotation.getY(), poseFieldToCoralNoRotation.getRotation().getRadians()});
+            SmartDashboard.putNumberArray("coral Pose",  new double[] {poseFieldToCoral.getX(), poseFieldToCoral.getY(), poseFieldToCoral.getRotation().getRadians()});
+            SmartDashboard.putNumberArray("start Pose",  new double[] {iOdata.state.Pose.getX(), iOdata.state.Pose.getY(), angleFieldToCoral.getRadians()});
+            SmartDashboard.putNumberArray("CtoR", new Double[] {translationRtoC.getX(),translationRtoC.getY()});
+
+            SmartDashboard.putNumber("cameraToCoral", Math.toDegrees(cameraToCoral));
+        }
+
+    public void driveToCoral() {
+        if (targetSeenSub.get()) {
+            calculateCoralPose();
+        }
+        driveIO.setSwerveRequest(AUTO_ALIGN
+        .withVelocityX(!translationControllerX.atGoal() ? translationControllerX.calculate(iOdata.state.Pose.getX(), poseFieldToCoral.getX()) : 0.0)
+        .withVelocityY(!translationControllerY.atGoal() ? translationControllerY.calculate(iOdata.state.Pose.getY(), poseFieldToCoral.getY()) : 0.0)
+        .withRotationalRate(thetaController.calculate(
+            iOdata.state.Pose.getRotation().getRadians(), 
+            poseFieldToCoral.getRotation().getRadians() + Math.toRadians(90)
+        )));
     }
 
-    public boolean pathend() {
-        return iOdata.state.Pose.getTranslation().getDistance(fetchPose.getTranslation()) < 0.1;
+    public boolean atCoral() {
+        if (poseFieldToCoral != null) {
+            return iOdata.state.Pose.getTranslation().getDistance(poseFieldToCoral.getTranslation()) < 0.1;
+        } else {
+            return false;
+        }
+    }
+
+    public Command fetchAuto() {
+        return new FunctionalCommand(
+        () -> calculateCoralPose(),
+        () -> driveToCoral(),
+        (interrupted) -> {},
+        () -> atCoral(), this)
+        .onlyIf(() -> targetSeenSub.get());
     }
 
     public Command chaseObjectCommand() {
         return Commands.sequence(
-            chaseObject(),
+            // chaseObject(),
             AutoBuilder.followPath(fetchPath));
     }
 

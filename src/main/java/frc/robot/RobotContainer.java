@@ -153,6 +153,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.chaseSlow()).until(() -> (gamespecManager.intakeSubsystem.getBeamBreak())).withTimeout(1)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
     
     NamedCommands.registerCommand("Chase Auton", Commands.sequence(drivetrain.run(() -> drivetrain.chaseObject()).until(() -> drivetrain.objectClose()), drivetrain.run(() -> drivetrain.chaseSlow())).until(() -> gamespecManager.intakeSubsystem.getBeamBreak()).withTimeout(0.5)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
+    NamedCommands.registerCommand("fetch auto no path", drivetrain.fetchAuto());
    // NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.chaseSlow()).until(() -> (gamespecManager.intakeSubsystem.getBeamBreak()))); // gamespecManager.intakeSubsystem.getBeamBreak() ||
 
     //new EventTrigger("Package").whileTrue(gamespecManager.goToPackage());
