@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 2.697233606557377,
-        "y": 3.887141393442622
+        "y": 3.6294057377049183
       },
       "prevControl": {
-        "x": 1.7861680327868856,
-        "y": 3.8391905737704914
+        "x": 1.858094262295082,
+        "y": 3.3417008196721314
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     },
     {
       "name": "End",
-      "minWaypointRelativePos": 0.75,
+      "minWaypointRelativePos": 0.6421011368090962,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 3.0,
