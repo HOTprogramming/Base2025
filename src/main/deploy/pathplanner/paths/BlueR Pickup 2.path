@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7741803278688524,
-        "y": 3.821209016393443
+        "x": 2.5773565573770494,
+        "y": 3.7972336065573775
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.582,
-        "y": 0.668
+        "x": 2.6492827868852458,
+        "y": 3.07797131147541
       },
       "prevControl": {
-        "x": 2.1098360655737705,
-        "y": 1.4596311475409833
+        "x": 2.7212090163934426,
+        "y": 3.4495901639344266
       },
       "nextControl": null,
       "isLocked": false,
@@ -44,26 +44,8 @@
       }
     }
   ],
-  "pointTowardsZones": [
-    {
-      "fieldPosition": {
-        "x": 3.85,
-        "y": 3.25
-      },
-      "rotationOffset": 90.0,
-      "minWaypointRelativePos": 0.31654294803817584,
-      "maxWaypointRelativePos": 0.7470837751855753,
-      "name": "Point Towards Zone"
-    }
-  ],
-  "eventMarkers": [
-    {
-      "name": "Blink",
-      "waypointRelativePos": 0.7937433722163325,
-      "endWaypointRelativePos": 1.0,
-      "command": null
-    }
-  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.96,
     "maxAcceleration": 6.0,
@@ -74,7 +56,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 145.0
+    "rotation": 155.0
   },
   "reversed": false,
   "folder": "BlueR",

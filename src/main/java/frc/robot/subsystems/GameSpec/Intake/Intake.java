@@ -103,6 +103,10 @@ public class Intake extends SubsystemBase {
     return intakeCommand(IntakeConstants.intakeClimb, 0.0, 0.0);
   }
 
+  public Command drop() {
+    return intakeCommand(IntakeConstants.intakeGround, 0.0, 0.0);
+  }
+
   public Command deploy(){
     return run(() -> {
       intakeCommandedPos.setDouble(IntakeConstants.intakeGround);

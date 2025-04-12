@@ -356,10 +356,10 @@ public class Drive extends SubsystemBase {
     }
 
     
-    public void calculateCoralPose() {
+    public void calculateCoralPose(double distance) {
         
         double cameraToCoral = -((pixelX-320) / 320.0) * 35.0 * Math.PI/180.0;
-        double distance = 2;
+        distance -= .4;
         
         Pose2d translationRtoC = new Pose2d(distance * Math.sin(-cameraToCoral),distance * Math.cos(-cameraToCoral)+0.4572,Rotation2d.fromDegrees(0));
 
@@ -412,9 +412,9 @@ public class Drive extends SubsystemBase {
         }
     }
 
-    public Command fetchAuto() {
+    public Command fetchAuto(double distance) {
         return new FunctionalCommand(
-        () -> calculateCoralPose(),
+        () -> calculateCoralPose(distance),
         () -> driveToCoral(),
         (interrupted) -> {},
         () -> atCoral(), this)

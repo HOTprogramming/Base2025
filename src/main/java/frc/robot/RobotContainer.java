@@ -95,7 +95,7 @@ public class RobotContainer {
     chooser.addOption("BlueLeftLolipop", "BlueLeftLolipop"); 
     chooser.addOption("Copy of Regular4", "Copy of Regular4"); 
     chooser.addOption("Test of Regular4", "TestofRegular4"); 
-    chooser.addOption("BLUE TEST", "BLUE TEST"); 
+    chooser.addOption("BLUE FLOOR TEST", "BLUE FLOOR TEST"); 
 
 
 
@@ -160,11 +160,15 @@ public class RobotContainer {
     NamedCommands.registerCommand("Auton Fast Shoot End", gamespecManager.autonShootFinish());
     NamedCommands.registerCommand("Auton Shoot Intake", gamespecManager.autonShootIntake());
 
+    NamedCommands.registerCommand("Auton Drop Intake", gamespecManager.intakeSubsystem.drop());
+
+
     
     NamedCommands.registerCommand("Auton Floor Intake End", gamespecManager.autonFloorIntakeEnd());
     NamedCommands.registerCommand("Stop Drive", drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
 
-    NamedCommands.registerCommand("fetch auto no path", drivetrain.fetchAuto());
+    NamedCommands.registerCommand("Auton Fetch 2M", drivetrain.fetchAuto(2.0));
+    NamedCommands.registerCommand("Auton Fetch 15M", drivetrain.fetchAuto(1.5));
     // NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.chaseSlow()).until(() -> gamespecManager.intakeSubsystem.getBeamBreak()).onlyIf(() -> drivetrain.targetSeen)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
     
     // NamedCommands.registerCommand("Chase Auton", drivetrain.run(() -> drivetrain.chaseAuton()).until(() -> gamespecManager.intakeSubsystem.getBeamBreak()).onlyIf(() -> drivetrain.targetSeen)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
@@ -187,7 +191,7 @@ public class RobotContainer {
 
   private void configureBindings() {   
 
-    // driver.a().onTrue(drivetrain.fetchAuto()).onFalse(drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
+    driver.a().onTrue(drivetrain.fetchAuto(2)).onFalse(drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
 
     // drivetrain.setDefaultCommand
     //   (drivetrain.run(() -> {

@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.790061475409836,
-        "y": 1.885194672131147
+        "x": 5.55030737704918,
+        "y": 2.226844262295082
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.5823770491803275,
-        "y": 0.6684426229508199
+        "x": 4.039856557377049,
+        "y": 1.735348360655738
       },
       "prevControl": {
-        "x": 2.529405737704918,
-        "y": 1.4596311475409833
+        "x": 4.591290983606556,
+        "y": 2.071004098360658
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "z"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -57,44 +57,8 @@
       }
     }
   ],
-  "pointTowardsZones": [
-    {
-      "fieldPosition": {
-        "x": 4.1,
-        "y": 3.2
-      },
-      "rotationOffset": 90.0,
-      "minWaypointRelativePos": 0.2592788971367976,
-      "maxWaypointRelativePos": 0.5689289501590657,
-      "name": "Cameras"
-    }
-  ],
-  "eventMarkers": [
-    {
-      "name": "Blink",
-      "waypointRelativePos": 0.8022269353128266,
-      "endWaypointRelativePos": 1.0,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 0
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Blink"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.96,
     "maxAcceleration": 6.0,
@@ -104,8 +68,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 145.0
+    "velocity": 0.0,
+    "rotation": 100.0
   },
   "reversed": false,
   "folder": "BlueR",
