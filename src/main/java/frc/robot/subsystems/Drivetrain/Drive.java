@@ -488,7 +488,7 @@ public class Drive extends SubsystemBase {
         pixelTolerance = 20;
         driveIO.setSwerveRequest(ROBOT_CENTRIC
         .withRotationalRate(alignedToObject() ? 0 : thetaChaseObjectPID.calculate(pixelX, targetXPixel)* 0.5)
-        .withVelocityY(1.5)
+        .withVelocityY(1.75) //1.5
         );
     }
 
