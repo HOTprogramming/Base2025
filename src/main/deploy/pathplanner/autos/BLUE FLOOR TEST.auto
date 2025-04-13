@@ -120,7 +120,7 @@
                           {
                             "type": "named",
                             "data": {
-                              "name": "Auton Fetch 2M"
+                              "name": "Auton Fetch 15M"
                             }
                           }
                         ]
@@ -352,7 +352,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 0.6
+                              "waitTime": 0.4
                             }
                           },
                           {

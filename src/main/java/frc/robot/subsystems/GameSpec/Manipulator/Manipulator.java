@@ -83,7 +83,7 @@ public class Manipulator extends SubsystemBase {
     public Command intake() {
         return run(() -> {
             io.setCoralSpinMotorControl(8);
-            io.setCoralAngleMotorControl(ManipulatorConstants.coralWristHP);
+            io.setCoralAngleMotorControl(ManipulatorConstants.coralWristScore);
 
         }).onlyWhile(() -> stats.candiPWM1).andThen(Commands.waitSeconds(0.4)).andThen(zero());    
     }

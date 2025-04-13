@@ -102,6 +102,8 @@ public class RobotContainer {
     chooser.addOption("Test of Regular4", "TestofRegular4"); 
     chooser.addOption("BLUE FLOOR TEST", "BLUE FLOOR TEST"); 
     chooser.addOption("BlueRLoliFetch", "BlueRLoliFetch"); 
+    chooser.addOption("BlueLeftLoliFetch", "BlueLeftLoliFetch"); 
+
 
 
 
@@ -197,7 +199,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Drive", drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
 
     NamedCommands.registerCommand("Auton Fetch 2M", drivetrain.fetchAuto(2.0, 1.0));
-    NamedCommands.registerCommand("Auton Fetch 15M", drivetrain.fetchAuto(1.6, 1.2));
+    NamedCommands.registerCommand("Auton Fetch 15M", drivetrain.fetchAuto(1.2, 0.8));
     // NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.chaseSlow()).until(() -> gamespecManager.intakeSubsystem.getBeamBreak()).onlyIf(() -> drivetrain.targetSeen)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
     
     // NamedCommands.registerCommand("Chase Auton", drivetrain.run(() -> drivetrain.chaseAuton()).until(() -> gamespecManager.intakeSubsystem.getBeamBreak()).onlyIf(() -> drivetrain.targetSeen)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
