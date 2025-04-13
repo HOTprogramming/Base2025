@@ -112,6 +112,10 @@ public class Arm extends SubsystemBase {
     return armCommand(ArmConstants.Horizontal);
   }
 
+  public Command almostHorizontal(){
+    return armCommand(-16.5);
+  }
+
   public Command barge(){
     return armCommand(ArmConstants.Barge);
   }

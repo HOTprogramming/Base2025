@@ -3,6 +3,8 @@ package frc.robot.subsystems.GameSpec;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
 
+import javax.sound.midi.Sequence;
+
 import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
@@ -297,6 +299,29 @@ public class Manager extends SubsystemBase{
             );
     }
 
+    public Command autonShootL3() {
+      return Commands.sequence(
+        Commands.parallel(
+          elevatorSubsystem.goToL3(),
+          Commands.sequence(
+          armSubsystem.L3Score(),
+          manipulatorSubsystem.L3Spit()
+          )),
+          elevatorSubsystem.L3Score()
+        );
+    }
+
+    /**
+     * @apiNote safely goes from l3 shoot straight to intaking
+     */
+    public Command autonL3ToIntake(){
+      return Commands.parallel(
+        armSubsystem.horizontal()
+          .andThen(elevatorSubsystem.intakeCoral()),
+        intakeSubsystem.deploy(),
+        manipulatorSubsystem.knockAlgaeLeft()
+        ).until(() -> intakeSubsystem.getBeamBreak());
+    }
      /**
      * @apinote full shooting to floor intake
      */
@@ -370,6 +395,16 @@ public class Manager extends SubsystemBase{
       ))));
     }
 
+    public Command autonL3(){
+      return Commands.parallel(
+        intakeSubsystem.bump(), 
+        manipulatorSubsystem.goScore(),
+        armSubsystem.goToL3(),
+        elevatorSubsystem.goToL3()
+      );
+        
+    }
+
     public Command autonIntake() {
       return 
       Commands.parallel(
@@ -386,6 +421,19 @@ public class Manager extends SubsystemBase{
       Commands.parallel(
         armSubsystem.goToPackage(),
         intakeSubsystem.clearance());
+    }
+
+    public Command autonHighPluckStart(){
+      return Commands.parallel(
+        elevatorSubsystem.goToHighAlgae()
+        ,armSubsystem.getAlgaeFromReef()
+        );
+    }
+
+    public Command autonHighPluckEnd(){
+      return algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeIntakeVoltage)
+        .onlyWhile(() -> algaeSubsystem.returnAlgaeIn())
+        .andThen(algaeSubsystem.algaeVoltage(AlgaeConstants.algaeHoldVoltage));
     }
 
     public Command autonHalfL4() {
@@ -474,10 +522,10 @@ public class Manager extends SubsystemBase{
       return Commands.sequence(
       elevatorSubsystem.goToPackage(),
       Commands.parallel(
-          armSubsystem.horizontal(),
+          armSubsystem.almostHorizontal(),
           intakeSubsystem.deploy(),
-          manipulatorSubsystem.goScore(),
-          elevatorSubsystem.intakeCoral()
+          manipulatorSubsystem.intake(),
+          elevatorSubsystem.pokeAlgae()
           )
         .until(() -> intakeSubsystem.getBeamBreak())
         .andThen(Commands.sequence(
@@ -532,7 +580,39 @@ public class Manager extends SubsystemBase{
       return Commands.parallel(
         armSubsystem.horizontal(),
         intakeSubsystem.deploy(),
-        manipulatorSubsystem.intakeGround(),
+        manipulatorSubsystem.zero(),
+        elevatorSubsystem.intakeCoral()
+        ).until(() -> intakeSubsystem.getBeamBreak());
+    }
+
+    public Command autonFloorIntakeStartPoke() {
+      return Commands.parallel(
+        armSubsystem.almostHorizontal(),
+        intakeSubsystem.deployPoke(),
+        manipulatorSubsystem.intake(),
+        elevatorSubsystem.pokeAlgae()
+        ).until(() -> intakeSubsystem.getBeamBreak());
+    }
+
+    public Command autonFloorIntakeStartPokeDown() {
+      return Commands.parallel(
+        armSubsystem.almostHorizontal(),
+        intakeSubsystem.deploy(),
+        manipulatorSubsystem.intake(),
+        elevatorSubsystem.pokeAlgae()
+        ).until(() -> intakeSubsystem.getBeamBreak());
+    }
+
+    
+
+    /**
+     * @apiNote ends with a coral in da grippa and kicks balls right
+     */
+    public Command autonFloorIntakeStartRight() {
+      return Commands.parallel(
+        armSubsystem.horizontal(),
+        intakeSubsystem.deploy(),
+        manipulatorSubsystem.knockAlgaeSlowRight(),
         elevatorSubsystem.intakeCoral()
         ).until(() -> intakeSubsystem.getBeamBreak());
     }
@@ -556,7 +636,7 @@ public class Manager extends SubsystemBase{
         Commands.parallel(
           armSubsystem.goToPackage(),
           elevatorSubsystem.intakeCoral(),
-          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
+          Commands.sequence(Commands.waitSeconds(.2), manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
           intakeSubsystem.handoff())
           .until(() -> armSubsystem.returnArmPos() < ArmConstants.Horizontal-5.0)
           .andThen(
@@ -567,6 +647,72 @@ public class Manager extends SubsystemBase{
           intakeSubsystem.handoff())
           ),
         intakeSubsystem.clearance())
+        );
+    }
+
+    /**
+     * @apiNote handoff to high pluck
+     */
+    public Command autonFloorIntakeEndToHighPluck() {
+      return Commands.sequence(
+        Commands.waitSeconds(0.0),
+        Commands.parallel(
+          armSubsystem.horizontal(),
+          intakeSubsystem.handoffAndSpin(),
+          manipulatorSubsystem.intakeGround(),
+          elevatorSubsystem.intakeCoral()
+          ))
+        .until(() -> !manipulatorSubsystem.returnBeamBreak()) //coral beambreak true/false is flipped from intake beambreak
+        .andThen(
+        Commands.sequence(
+        Commands.waitSeconds(0.1),
+        Commands.parallel(
+          armSubsystem.horizontal(),
+          elevatorSubsystem.goToHighAlgae(),
+          Commands.sequence(Commands.waitSeconds(.7), manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
+          intakeSubsystem.handoff())
+          .until(() -> elevatorSubsystem.returnElevatorPos() > ElevatorConstants.intakeCoralHeight + 6.0)
+          .andThen(
+          Commands.parallel(
+          armSubsystem.getAlgaeFromReef(),
+          elevatorSubsystem.goToHighAlgae(),
+          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
+          intakeSubsystem.handoff())
+          ),
+        intakeSubsystem.clearance())
+        );
+    }
+
+    /**
+     * @apiNote handoff to L3
+     */
+    public Command autonFloorIntakeEndToL3() {
+      return Commands.sequence(
+        Commands.waitSeconds(0.0),
+        Commands.parallel(
+          armSubsystem.horizontal(),
+          intakeSubsystem.handoffAndSpin(),
+          manipulatorSubsystem.intakeGround(),
+          elevatorSubsystem.intakeCoral()
+          ))
+        .until(() -> !manipulatorSubsystem.returnBeamBreak()) //coral beambreak true/false is flipped from intake beambreak
+        .andThen(
+        Commands.sequence(
+        Commands.waitSeconds(0.3),
+        Commands.parallel(
+          armSubsystem.goToL3(),
+          elevatorSubsystem.goToL3(),
+          Commands.sequence(Commands.waitSeconds(0.4), manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
+          intakeSubsystem.handoff())
+          .until(() -> elevatorSubsystem.returnElevatorPos() > ElevatorConstants.intakeCoralHeight + 8.0)
+          .andThen(
+          Commands.parallel(
+          armSubsystem.goToL3(),
+          elevatorSubsystem.goToL3(),
+          Commands.sequence(manipulatorSubsystem.zero(), manipulatorSubsystem.goScore()),
+          intakeSubsystem.bump())
+          ),
+        intakeSubsystem.bump())
         );
     }
 

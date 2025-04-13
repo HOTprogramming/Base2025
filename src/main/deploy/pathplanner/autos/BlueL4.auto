@@ -17,7 +17,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "BlueL Place 1"
+                  "pathName": "BlueLeftRedLeftRightRedRightBlueGround Place 1"
                 }
               },
               {
@@ -30,26 +30,39 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "wait",
                 "data": {
-                  "name": "Align Reef Left"
+                  "waitTime": 1.0
                 }
               },
               {
-                "type": "named",
+                "type": "parallel",
                 "data": {
-                  "name": "AL4"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Align Reef Left"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AL4"
+                      }
+                    }
+                  ]
                 }
               }
             ]
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {

@@ -7,6 +7,7 @@ import com.ctre.phoenix6.StatusSignal;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.GameSpec.Algae.AlgaeIO.AlgaeIOStats;
@@ -39,6 +40,7 @@ public class Algae extends SubsystemBase {
         io.periodic();
 
         io.updateStats();
+        SmartDashboard.putBoolean("No Algae", this.returnAlgaeIn());
           
         UpdateTelemetry();
     }
@@ -80,6 +82,8 @@ public class Algae extends SubsystemBase {
             io.setAlgaeSpinMotorControl(voltage);
         });
 }
+
+
      
 
     @Override

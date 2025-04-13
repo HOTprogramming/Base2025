@@ -93,6 +93,11 @@ public class RobotContainer {
     chooser.addOption("RightRedLolipopp", "RightRedLolipop"); 
     chooser.addOption("RedLeftLolipop", "RedLeftLolipop"); 
     chooser.addOption("BlueLeftLolipop", "BlueLeftLolipop"); 
+    chooser.addOption("MiniBackshot", "MiniBackshot"); 
+    chooser.addOption("MiniBackshot-optimized", "MiniBackshot-optimized"); 
+    chooser.addOption("sacrifice", "Backshot-full"); 
+
+
     chooser.addOption("Copy of Regular4", "Copy of Regular4"); 
     chooser.addOption("Test of Regular4", "TestofRegular4"); 
     chooser.addOption("BLUE FLOOR TEST", "BLUE FLOOR TEST"); 
@@ -153,12 +158,20 @@ public class RobotContainer {
     NamedCommands.registerCommand("Auton Intake Start", gamespecManager.autonIntake());
     NamedCommands.registerCommand("Auton Finish Intake", gamespecManager.autonFinishIntake());
     NamedCommands.registerCommand("AL4", gamespecManager.autonL4());
+    NamedCommands.registerCommand("AL3", gamespecManager.autonL3());
+
     NamedCommands.registerCommand("Intake Clearence", gamespecManager.intakeSubsystem.clearance());
     NamedCommands.registerCommand("Intake Bump", gamespecManager.intakeSubsystem.bump());
     NamedCommands.registerCommand("Half Height", gamespecManager.autonHalfL4());
     NamedCommands.registerCommand("Floor Intake Deploy", gamespecManager.floorIntakeDeploy());
     NamedCommands.registerCommand("Auton Floor Intake Start", gamespecManager.autonFloorIntakeStart());
     NamedCommands.registerCommand("Auton Floor Intake End Fast", gamespecManager.autonFloorIntakeEndFast());
+
+
+    NamedCommands.registerCommand("Auton Floor Intake Start Poke", gamespecManager.autonFloorIntakeStartPoke());
+
+    NamedCommands.registerCommand("Auton Floor Intake Start Poke Down", gamespecManager.autonFloorIntakeStartPokeDown());
+    
 
     NamedCommands.registerCommand("Auton Fast Shoot Start", gamespecManager.autonShootStart());
     NamedCommands.registerCommand("Auton Fast Shoot End", gamespecManager.autonShootFinish());
@@ -168,6 +181,18 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("Auton Drop Intake", gamespecManager.intakeSubsystem.drop());
 
+    NamedCommands.registerCommand("Auton Shoot L3", gamespecManager.autonShootL3());
+
+
+    NamedCommands.registerCommand("Auton Shoot Intake", gamespecManager.autonShootIntake());
+    NamedCommands.registerCommand("Auton High Algae Start", gamespecManager.autonHighPluckStart());
+    NamedCommands.registerCommand("Auton High Algae End", gamespecManager.autonHighPluckEnd());
+
+    NamedCommands.registerCommand("Auton L3 Floor Intake", gamespecManager.autonL3ToIntake());
+    NamedCommands.registerCommand("Auton Intake L3", gamespecManager.autonFloorIntakeEndToL3());
+    NamedCommands.registerCommand("Auton Intake High Pluck", gamespecManager.autonFloorIntakeEndToHighPluck());
+
+    NamedCommands.registerCommand("Auton Floor Intake Start Right", gamespecManager.autonFloorIntakeStart());
 
     
     NamedCommands.registerCommand("Auton Floor Intake End", gamespecManager.autonFloorIntakeEnd());
