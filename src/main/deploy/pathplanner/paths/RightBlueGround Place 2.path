@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9899590163934435,
+        "x": 1.9899590163934437,
         "y": 4.066956967213116
       },
       "isLocked": false,
@@ -88,7 +88,7 @@
   "folder": "RedRG",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 85.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": false
 }
