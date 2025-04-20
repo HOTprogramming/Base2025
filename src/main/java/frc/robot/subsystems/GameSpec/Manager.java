@@ -112,10 +112,16 @@ public class Manager extends SubsystemBase{
       );
     }
 
+    /**
+     * @apiNote Sets doneScoring boolean to false
+     */
     public Command doneScoring(){
       return runOnce(() -> doneScoring = false);
     }
 
+    /**
+     * @return Inverse value of donescoring variable
+     */
     public boolean checkDoneScoring(){
       if(doneScoring == false){
         return true;
@@ -133,7 +139,7 @@ public class Manager extends SubsystemBase{
       ,armSubsystem.goToPackage())
       .until(() -> (elevatorSubsystem.elevatorGreaterThan(ElevatorConstants.L1Height-30.0,2.0)))
       .andThen(Commands.parallel(elevatorSubsystem.goToL1(), armSubsystem.goToL1()), manipulatorSubsystem.goHP()))
-      .onlyIf(() -> checkDoneScoring());
+      .onlyIf(() -> checkDoneScoring()); //Runs the command only if the driver hasn't pressed shoot button. Deals with overlapping button presses.
     }
 
     public Command goToL2(){
@@ -209,13 +215,16 @@ public class Manager extends SubsystemBase{
       return scoringLevel;
     }
 
+    /**
+     * @apiNote when driver presses shoot button, does different sequence depending on scoringLevel Enum
+     */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public Command shoot(){
 
       return new SelectCommand(
         Map.of(
           ScoringLevel.L4, Commands.sequence(
-            runOnce(() -> {doneScoring = true;}),
+            runOnce(() -> {doneScoring = true;}), //sets donescoring variable to true, won't run the operator command while the shoot command is running.
             armSubsystem.L4Score().withTimeout(0.75),
             Commands.parallel(
             manipulatorSubsystem.L4Spit(),
@@ -247,9 +256,8 @@ public class Manager extends SubsystemBase{
             .andThen(goToL1().onlyIf(() -> (!armSubsystem.armCurrent(ArmConstants.CurrentFail))))),
           ScoringLevel.Algae, 
             algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage).until(() -> algaeSubsystem.getAlgaePosition() > 0.12)
-              .andThen(algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelSlowVoltage))
-            
-            ,
+              .andThen(algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelSlowVoltage)
+            ),
           ScoringLevel.Barge, algaeSubsystem.runAlwaysAlgaeVoltage(AlgaeConstants.algaeExpelVoltage)
         ),
         this::getLevel
@@ -264,7 +272,7 @@ public class Manager extends SubsystemBase{
     }
 
     /**
-     * @apinote full shooting to package
+     * @apiNote full shooting to package
      */
     public Command autonShoot() {
       return 
@@ -280,7 +288,7 @@ public class Manager extends SubsystemBase{
 
 
     /**
-     * @apinote full shooting to floor intake
+     * @apiNote full shooting to floor intake
      */
     public Command autonShootIntake() {
       return 
@@ -323,7 +331,7 @@ public class Manager extends SubsystemBase{
         ).until(() -> intakeSubsystem.getBeamBreak());
     }
      /**
-     * @apinote full shooting to floor intake
+     * @apiNote full shooting to floor intake
      */
     public Command autonShootIntakeDrop() {
       return 
@@ -346,7 +354,7 @@ public class Manager extends SubsystemBase{
     }
 
     /**
-     * @apinote Half shoot for fast driving
+     * @apiNote Half shoot for fast driving
      */
     public Command autonShootStart() {
       return 
@@ -357,7 +365,7 @@ public class Manager extends SubsystemBase{
     }
 
     /**
-     * @apinote finish the half shoot
+     * @apiNote finish the half shoot
      */
     public Command autonShootFinish() {
       return 
@@ -440,6 +448,9 @@ public class Manager extends SubsystemBase{
       return elevatorSubsystem.halfHeight();
     }
 
+    /**
+     * @apiNote Picks up from the human player station
+     */
     public Command alignStationIntake(){
       return Commands.parallel(
         Commands.deadline(manipulatorSubsystem.intake(), armSubsystem.goToFeeder(), intakeSubsystem.handoff())
@@ -463,6 +474,9 @@ public class Manager extends SubsystemBase{
       return climberSubsystem.servoOpen();
     }
 
+    /**
+     * @apiNote deploys the climber, full sequence including arm, elevator, and intake commands
+     */
     public Command climberOut(){
       return Commands.parallel(
       intakeSubsystem.climb(),
@@ -479,6 +493,9 @@ public class Manager extends SubsystemBase{
       ));
     }
 
+    /**
+     * @apiNote Auto packages climber slow to latch, then fast.
+     */
     public Command autoPackageClimber(){
       return Commands.sequence(
         ClimbStage1(),
@@ -517,7 +534,9 @@ public class Manager extends SubsystemBase{
       return climberSubsystem.ratchetServoPosition(0.59);
     }
 
-    //handoff code for teleop
+    /**
+     * @apiNote Intake handoff for teleop
+     */
     public Command floorIntakeDeploy(){
       return Commands.sequence(
       elevatorSubsystem.goToPackage(),
@@ -527,7 +546,7 @@ public class Manager extends SubsystemBase{
           manipulatorSubsystem.intake(),
           elevatorSubsystem.intakeCoral()
           )
-        .until(() -> intakeSubsystem.getBeamBreak())
+        .until(() -> intakeSubsystem.getBeamBreak())//first trigger of sequence, intake folds up to hand off the coral to the gripper
         .andThen(Commands.sequence(
         runOnce(() -> intakeState = true),
         Commands.waitSeconds(0.2),
@@ -537,7 +556,7 @@ public class Manager extends SubsystemBase{
           manipulatorSubsystem.intakeGround(),
           elevatorSubsystem.intakeCoral()
           ))
-        .until(() -> !manipulatorSubsystem.returnBeamBreak()) //coral beambreak true/false is flipped from intake beambreak
+        .until(() -> !manipulatorSubsystem.returnBeamBreak()) //coral beambreak true/false is flipped from intake beambreak. Once this triggers, go back to package.
         .andThen(
         Commands.sequence(
         Commands.waitSeconds(0.25),
@@ -564,9 +583,8 @@ public class Manager extends SubsystemBase{
       runOnce(() -> intakeState = false);
     }
 
-    
-
     /**
+     * @deprecated
      *@return True if it needs to finish the ground intake. False if it has ground intaked. 
      */
     public boolean returnIntakeState(){
@@ -783,7 +801,9 @@ public class Manager extends SubsystemBase{
         ));
     }
 
-    //packages the floor intake after a deploy
+    /**
+     * @apiNote: packages the floor intake after a deploy
+     */
     public Command floorIntakeClearance(){
       return Commands.parallel(
         armSubsystem.goToPackage(), 
@@ -802,6 +822,9 @@ public class Manager extends SubsystemBase{
       return Commands.parallel(armSubsystem.goToPackage());
     }
 
+    /**
+     * @apiNote Different package coming from a low algae pluck. Makes sure the intake stays out of the way
+     */
     public Command algaePackageLowPluck(){
       return Commands.parallel(armSubsystem.goToPackage(),
       intakeSubsystem.bumpLowAlgae());
