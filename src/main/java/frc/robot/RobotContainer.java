@@ -369,6 +369,7 @@ public class RobotContainer {
       operator.b().and(this::isAlgae).whileTrue(NamedCommands.getCommand("high algae")).onFalse(Commands.parallel(NamedCommands.getCommand("Algae Package")));
       operator.x().and(this::isAlgae).onTrue(NamedCommands.getCommand("align processor")).onFalse(gamespecManager.algaePackageElevator());
 
+      //Auto barge
       operator.y()
       .and(this::isAlgae)
       .and(new Trigger(() -> drivetrain.returnAutoBarge()))
