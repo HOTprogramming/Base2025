@@ -36,12 +36,9 @@ import frc.robot.subsystems.Camera.Camera;
 import frc.robot.subsystems.Camera.Camera.CameraPositions;
 import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
-import frc.robot.subsystems.GameSpec.Manager;
-import frc.robot.subsystems.GameSpec.Algae.AlgaeConstants;
-import frc.robot.subsystems.GameSpec.Climber.Climber;
-import frc.robot.subsystems.GameSpec.Intake.Intake;
-import frc.robot.subsystems.GameSpec.Lights.Lights;
-import frc.robot.subsystems.GameSpec.Lights.Lights.AnimationTypes;
+import frc.robot.subsystems.Turret.Turret;
+import frc.robot.subsystems.Turret.TurretIOKraken;
+import frc.robot.subsystems.Turret.TurretIOSim;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
 
 
@@ -53,18 +50,8 @@ public class RobotContainer {
 
   private Drive drivetrain;
   private Camera cameraSubsystem;
-  private Manager gamespecManager;
-
-  private enum Mode {
-    coral,
-    algae,
-    climb
-  }
-
-
-
-  private Mode mode;
-
+  private Turret turretSubsystem;
+  
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
 
@@ -73,14 +60,14 @@ public class RobotContainer {
 
     if(!Utils.isSimulation()){
         drivetrain = new Drive(new DriveKraken());
-        cameraSubsystem = new Camera(drivetrain);
+        // cameraSubsystem = new Camera(drivetrain);
+        turretSubsystem = new Turret(new TurretIOKraken());
     } else {
-      drivetrain = new Drive(new DriveSim());
-      cameraSubsystem = new Camera(drivetrain);
-
+        drivetrain = new Drive(new DriveSim());
+        // cameraSubsystem = new Camera(drivetrain);
+        turretSubsystem = new Turret(new TurretIOSim());
     }
 
-    gamespecManager = new Manager();
 
     chooser.setDefaultOption("Auto", "Auto");
     
@@ -97,107 +84,16 @@ public class RobotContainer {
     chooser.addOption("MiniBackshot-optimized", "MiniBackshot-optimized"); 
     chooser.addOption("sacrifice", "Backshot-full"); 
 
-
     chooser.addOption("Copy of Regular4", "Copy of Regular4"); 
     chooser.addOption("Test of Regular4", "TestofRegular4"); 
     chooser.addOption("BLUE FLOOR TEST", "BLUE FLOOR TEST"); 
     chooser.addOption("BlueRLoliFetch", "BlueRLoliFetch"); 
     chooser.addOption("BlueLeftLoliFetch", "BlueLeftLoliFetch"); 
 
-
-
-
-
-
-    // chooser.addOption("RedL3", "RedL3");
-    // chooser.addOption("BlueR3", "BlueR3");
-    // chooser.addOption("BlueL3", "BlueL3");
-    // chooser.addOption("Copy of BlueL3", "Copy of BlueL3");
-
-     
-
-    // chooser.addOption("Complex Auto", "m_complexAuto");
-    
-    NamedCommands.registerCommand("L1", gamespecManager.goToL1());
-    NamedCommands.registerCommand("L2", gamespecManager.goToL2());
-    NamedCommands.registerCommand("L3", gamespecManager.goToL3());
-    NamedCommands.registerCommand("L4", gamespecManager.goToL4());
-    NamedCommands.registerCommand("Package", gamespecManager.goToPackage());
-    NamedCommands.registerCommand("Coral HP", gamespecManager.coralGoHP());
-    NamedCommands.registerCommand("Coral Score", gamespecManager.coralGoScore());
-    NamedCommands.registerCommand("align station intake", gamespecManager.alignStationIntake());
-    NamedCommands.registerCommand("shoot", gamespecManager.shoot());
-    NamedCommands.registerCommand("lock fingers", gamespecManager.lockFingers()); 
-    NamedCommands.registerCommand("open fingers", gamespecManager.OpenFingers());
-    NamedCommands.registerCommand("done scoring", gamespecManager.doneScoring());
-    NamedCommands.registerCommand("climb", gamespecManager.climberOut());
-    NamedCommands.registerCommand("high algae", gamespecManager.highAlgae());
-    NamedCommands.registerCommand("low algae", gamespecManager.lowAlgae());
-    NamedCommands.registerCommand("align processor", gamespecManager.alignProcessor());
-    NamedCommands.registerCommand("barge", gamespecManager.barge());
-    NamedCommands.registerCommand("L2 Package", gamespecManager.goToL2Package());
-    NamedCommands.registerCommand("Algae Package", gamespecManager.algaePackage());
-    NamedCommands.registerCommand("Barge Package", gamespecManager.bargePackage());
-
-    NamedCommands.registerCommand("Lights Coral", gamespecManager.setLightsCoral());
-    NamedCommands.registerCommand("Lights Algae", gamespecManager.setLightsAlgae());
-    NamedCommands.registerCommand("Lights Climb", gamespecManager.setLightsClimb());
-
-
-    NamedCommands.registerCommand("Lights Auto Bad", gamespecManager.setLightsBad());
-    NamedCommands.registerCommand("Lights Auto Ok", gamespecManager.setLightsOk());
-    NamedCommands.registerCommand("Lights Auto Good", gamespecManager.setLightsGood());
-
-
     NamedCommands.registerCommand("Align Reef Left",  drivetrain.autonAlignReefCommand(0));
     NamedCommands.registerCommand("Align Reef Center",  drivetrain.autonAlignReefCommand(1));
     NamedCommands.registerCommand("Align Reef Right",  drivetrain.autonAlignReefCommand(2));
-
-    NamedCommands.registerCommand("Auton Shoot",  gamespecManager.autonShoot());
-    NamedCommands.registerCommand("Auton Finish Shoot",  gamespecManager.autonFinishShoot());
-    NamedCommands.registerCommand("Auton Intake Start", gamespecManager.autonIntake());
-    NamedCommands.registerCommand("Auton Finish Intake", gamespecManager.autonFinishIntake());
-    NamedCommands.registerCommand("AL4", gamespecManager.autonL4());
-    NamedCommands.registerCommand("AL3", gamespecManager.autonL3());
-
-    NamedCommands.registerCommand("Intake Clearence", gamespecManager.intakeSubsystem.clearance());
-    NamedCommands.registerCommand("Intake Bump", gamespecManager.intakeSubsystem.bump());
-    NamedCommands.registerCommand("Half Height", gamespecManager.autonHalfL4());
-    NamedCommands.registerCommand("Floor Intake Deploy", gamespecManager.floorIntakeDeploy());
-    NamedCommands.registerCommand("Auton Floor Intake Start", gamespecManager.autonFloorIntakeStart());
-    NamedCommands.registerCommand("Auton Floor Intake End Fast", gamespecManager.autonFloorIntakeEndFast());
-
-
-    NamedCommands.registerCommand("Auton Floor Intake Start Poke", gamespecManager.autonFloorIntakeStartPoke());
-
-    NamedCommands.registerCommand("Auton Floor Intake Start Poke Down", gamespecManager.autonFloorIntakeStartPokeDown());
-    
-
-    NamedCommands.registerCommand("Auton Fast Shoot Start", gamespecManager.autonShootStart());
-    NamedCommands.registerCommand("Auton Fast Shoot End", gamespecManager.autonShootFinish());
-    NamedCommands.registerCommand("Auton Shoot Intake", gamespecManager.autonShootIntake());
-    NamedCommands.registerCommand("Auton Shoot Intake Drop", gamespecManager.autonShootIntakeDrop());
-
-
-    NamedCommands.registerCommand("Auton Drop Intake", gamespecManager.intakeSubsystem.drop());
-
-    NamedCommands.registerCommand("Auton Shoot L3", gamespecManager.autonShootL3());
-
-
-    NamedCommands.registerCommand("Auton Shoot Intake", gamespecManager.autonShootIntake());
-    NamedCommands.registerCommand("Auton High Algae Start", gamespecManager.autonHighPluckStart());
-    NamedCommands.registerCommand("Auton High Algae End", gamespecManager.autonHighPluckEnd());
-
-    NamedCommands.registerCommand("Auton L3 Floor Intake", gamespecManager.autonL3ToIntake());
-    NamedCommands.registerCommand("Auton Intake L3", gamespecManager.autonFloorIntakeEndToL3());
-    NamedCommands.registerCommand("Auton Intake High Pluck", gamespecManager.autonFloorIntakeEndToHighPluck());
-
-    NamedCommands.registerCommand("Auton Floor Intake Start Right", gamespecManager.autonFloorIntakeStart());
-
-    
-    NamedCommands.registerCommand("Auton Floor Intake End", gamespecManager.autonFloorIntakeEnd());
     NamedCommands.registerCommand("Stop Drive", drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
-
     NamedCommands.registerCommand("Auton Fetch 2M", drivetrain.fetchAuto(2.0, 1.0));
     NamedCommands.registerCommand("Auton Fetch 15M", drivetrain.fetchAuto(1.2, 0.8));
     // NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.chaseSlow()).until(() -> gamespecManager.intakeSubsystem.getBeamBreak()).onlyIf(() -> drivetrain.targetSeen)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
@@ -205,15 +101,10 @@ public class RobotContainer {
     // NamedCommands.registerCommand("Chase Auton", drivetrain.run(() -> drivetrain.chaseAuton()).until(() -> gamespecManager.intakeSubsystem.getBeamBreak()).onlyIf(() -> drivetrain.targetSeen)); // gamespecManager.intakeSubsystem.getBeamBreak() ||
    // NamedCommands.registerCommand("Chase Object", drivetrain.run(() -> drivetrain.chaseSlow()).until(() -> (gamespecManager.intakeSubsystem.getBeamBreak()))); // gamespecManager.intakeSubsystem.getBeamBreak() ||
 
-    new EventTrigger("Blink").onTrue(gamespecManager.lightsSubsystem.setAutoAlign())
-    .onFalse(Commands.sequence(gamespecManager.lightsSubsystem.stopAnimation(), refreshLights()));
-
-
     // must make a runonce command using a functional command interface
     // NamedCommands.registerCommand("Auton Align Left",  drivetrain.run(() -> drivetrain.alignReef(0)));
     // NamedCommands.registerCommand("Auton Align Right", drivetrain.run(() -> drivetrain.alignReef(1)));
 
-    mode = Mode.coral;
 
     SmartDashboard.putData(chooser);
 
@@ -239,20 +130,6 @@ public class RobotContainer {
       //   .and(driver.y().negate())
       //   .whileTrue
 
-      gamespecManager.intakeSubsystem.setDefaultCommand(
-        Commands.either(gamespecManager.intakeSubsystem.bump(), gamespecManager.intakeSubsystem.clearance(), 
-        () -> (((gamespecManager.armSubsystem.returnArmCommandedPos() < -90.0) && (gamespecManager.elevatorSubsystem.returnElevatorPos() <= 28.0)) 
-        || (((gamespecManager.armSubsystem.returnArmPos() < -100.0) && (gamespecManager.armSubsystem.returnArmCommandedPos() <= -90.0)) && (gamespecManager.elevatorSubsystem.returnElevatorCommandedPos() <= 28.0))
-        || (gamespecManager.armSubsystem.returnArmCommandedPos() > 5.0 && gamespecManager.elevatorSubsystem.returnElevatorCommandedPos() < 20.0)
-        || (gamespecManager.armSubsystem.returnArmPos() > -20.0 && gamespecManager.elevatorSubsystem.returnElevatorPos() < 20.0)))
-        .unless(this::isClimb) 
-      );
-
-      gamespecManager.algaeSubsystem.setDefaultCommand(  
-      Commands.either(gamespecManager.algaeSubsystem.algaeVoltage(0.0), 
-      gamespecManager.algaeSubsystem.algaeVoltage(AlgaeConstants.algaeHoldVoltage),
-      () -> gamespecManager.algaeSubsystem.returnAlgaeInWhileHolding())
-      );
 
       drivetrain.setDefaultCommand
       (drivetrain.run(() -> {
@@ -308,10 +185,6 @@ public class RobotContainer {
       // driver.y().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1)), gamespecManager.setLightsAligning()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefRobotcentric(false)))).onFalse(refreshLights());
       // driver.leftBumper().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTarget(0)), gamespecManager.setLightsAligning()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefRobotcentric(false)))).onFalse(refreshLights());
 
-      driver.rightBumper().onTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(2)), gamespecManager.setLightsAligning(), drivetrain.resetControllers()));
-      driver.y().onTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1)), gamespecManager.setLightsAligning(), drivetrain.resetControllers()));
-      driver.leftBumper().onTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(0)), gamespecManager.setLightsAligning(), drivetrain.resetControllers()));
-
       driver.rightBumper().whileTrue(drivetrain.run(() -> drivetrain.alignReefRobotcentric(false)));
       driver.y().whileTrue(drivetrain.run(() -> drivetrain.alignReefRobotcentric(false)));
       driver.leftBumper().whileTrue(drivetrain.run(() -> drivetrain.alignReefRobotcentric(false)));
@@ -320,32 +193,10 @@ public class RobotContainer {
       // driver.y().onFalse(refreshLights());
       // driver.leftBumper().onFalse(refreshLights());
 
-      new Trigger(() -> drivetrain.getAutoAlignGood()).onTrue(gamespecManager.lightsSubsystem.setAutoAlign())
-      .onFalse(Commands.sequence(gamespecManager.lightsSubsystem.stopAnimation(), refreshLights()));
-
-      
-      driver.rightBumper().and(() -> drivetrain.getAutoAlignGood()).onTrue(gamespecManager.setLightsAlignGood());
-      driver.y().and(() -> drivetrain.getAutoAlignGood()).onTrue(gamespecManager.setLightsAlignGood());
-      driver.leftBumper().and(() -> drivetrain.getAutoAlignGood()).onTrue(gamespecManager.setLightsAlignGood());
-      // driver.b().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));      
-      // driver.x().whileTrue(Commands.sequence(drivetrain.runOnce(() -> drivetrain.updateReefTarget(0)), drivetrain.run(() -> drivetrain.alignReefFieldcentric())));      
-    
-      new Trigger(() -> cameraSubsystem.getCameraAlive(CameraPositions.RIGHT)).onTrue(gamespecManager.setOneLights(0, true).ignoringDisable(true)).onFalse(gamespecManager.setOneLights(0, false).ignoringDisable(true));
-      new Trigger(() -> cameraSubsystem.getCameraAlive(CameraPositions.LEFT)).onTrue(gamespecManager.setOneLights(3, true).ignoringDisable(true)).onFalse(gamespecManager.setOneLights(3, false).ignoringDisable(true));
-      new Trigger(() -> cameraSubsystem.getCameraAlive(CameraPositions.TOP)).onTrue(gamespecManager.setOneLights(5, true).ignoringDisable(true)).onFalse(gamespecManager.setOneLights(5, false).ignoringDisable(true));
-
-
-      new Trigger(() -> gamespecManager.climberSubsystem.returnReadyToClimb()).and(this::isClimb).onTrue(gamespecManager.setLightsGood()).onFalse(gamespecManager.setLightsClimb());
-      // driver.a().onTrue(gamespecManager.setOneLights(0, true)).onFalse(gamespecManager.setOneLights(0, false).ignoringDisable(true));
-      // driver.b().onTrue(gamespecManager.setOneLights(3, true)).onFalse(gamespecManager.setOneLights(3, false).ignoringDisable(true));
-      // driver.x().onTrue(gamespecManager.setOneLights(5, true)).onFalse(gamespecManager.setOneLights(5, false).ignoringDisable(true));
-
-
       // driver.b().whileTrue(NamedCommands.getCommand("Align Reef Left"));
       // driver.x().whileTrue(NamedCommands.getCommand("Align Reef Right"));
       // driver.b().onTrue(NamedCommands.getCommand("expel"));
-      driver.rightTrigger().onTrue(NamedCommands.getCommand("shoot")
-      .onlyIf(operator.b().or(operator.a()).or(operator.x()).or(operator.y())));
+  
 
       driver.start().onTrue(drivetrain.resetPidgeon()).onFalse(drivetrain.run(() -> {
         drivetrain.teleopDrive(
@@ -354,105 +205,11 @@ public class RobotContainer {
           Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
         }));
 
-       operator.leftBumper().onTrue(Commands.parallel(gamespecManager.runOnce(() -> mode = Mode.coral), NamedCommands.getCommand("Lights Coral")));
-       operator.rightBumper().onTrue(Commands.parallel(gamespecManager.runOnce(() -> mode = Mode.algae), NamedCommands.getCommand("Lights Algae")));
-       operator.start().onTrue(Commands.parallel(gamespecManager.runOnce(() -> mode = Mode.climb), NamedCommands.getCommand("Lights Climb")));
-       operator.back().onTrue(Commands.parallel(gamespecManager.runOnce(() -> mode = Mode.climb), NamedCommands.getCommand("Lights Climb")));
-
-      operator.a().and(this::isCoral).onTrue(NamedCommands.getCommand("L2")).onFalse(Commands.parallel(NamedCommands.getCommand("L2 Package"), NamedCommands.getCommand("done scoring")));
-      operator.b().and(this::isCoral).onTrue(NamedCommands.getCommand("L3")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"), NamedCommands.getCommand("done scoring")));
-      operator.x().and(this::isCoral).onTrue(NamedCommands.getCommand("L1")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"), NamedCommands.getCommand("done scoring")));
-      operator.y().and(this::isCoral).onTrue(NamedCommands.getCommand("L4")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"), NamedCommands.getCommand("done scoring")));
-      operator.rightTrigger().and(this::isCoral).whileTrue(NamedCommands.getCommand("align station intake")).onFalse(Commands.parallel(NamedCommands.getCommand("Package"))); //, NamedCommands.getCommand("Stop Intake")));
-
-      operator.a().and(this::isAlgae).whileTrue(NamedCommands.getCommand("low algae")).onFalse(gamespecManager.algaePackageLowPluck());
-      operator.b().and(this::isAlgae).whileTrue(NamedCommands.getCommand("high algae")).onFalse(Commands.parallel(NamedCommands.getCommand("Algae Package")));
-      operator.x().and(this::isAlgae).onTrue(NamedCommands.getCommand("align processor")).onFalse(gamespecManager.algaePackageElevator());
-
-      //Auto barge
-      operator.y()
-      .and(this::isAlgae)
-      .and(new Trigger(() -> drivetrain.returnAutoBarge()))
-      .onTrue(
-      Commands.parallel(
-      drivetrain.runOnce(() -> 
-      drivetrain.teleopDrive(0, 0, 0))
-      .andThen(Commands.sequence(
-      Commands.waitSeconds(0.5), 
-      drivetrain.run(() -> {
-        drivetrain.teleopDrive(
-          Math.abs(driver.getLeftY()) >= 0.0 ? -driver.getLeftY() : 0,
-          Math.abs(driver.getLeftX()) >= 0.0 ? -driver.getLeftX() : 0,
-          Math.abs(driver.getRightX()) >= 0.015 ? -driver.getRightX() : 0);
-        }
-      ).withTimeout(3.0)
-      ))
-      ,gamespecManager.barge()));
-
-      operator.y()
-        .and(this::isAlgae)
-          .onTrue(gamespecManager.lightsSubsystem.setPurple())
-          .onFalse(refreshLights());
-
-      //Manual barge for pit testing.
-      // operator.rightStick().and(operator.leftStick()).and(this::isAlgae).onTrue(gamespecManager.bargeManual())
-      // .onFalse(gamespecManager.bargePackage());
-        
-      operator.a().and(this::isClimb).onTrue(NamedCommands.getCommand("climb"));      
-      operator.y().and(this::isClimb).onTrue(NamedCommands.getCommand("lock fingers"));
-      operator.x().and(this::isClimb).onTrue(NamedCommands.getCommand("open fingers"));
-
-      //auto climb code
-      new Trigger(() -> gamespecManager.climberSubsystem.returnReadyToClimb())
-      .debounce(0.8)
-      .and(operator.b().and(this::isClimb))
-      .onTrue(gamespecManager.autoPackageClimber());
-
-      new Trigger(() -> gamespecManager.climberSubsystem.returnReadyToClimb())
-      .debounce(0.3)
-      .and(operator.b().and(this::isClimb))
-      .onTrue(NamedCommands.getCommand("open fingers"));
-
-      driver.leftTrigger().onTrue(Commands.sequence(
-        gamespecManager.runOnce(() -> operator.setRumble(RumbleType.kBothRumble, .7))
-        )).onFalse(gamespecManager.runOnce(() -> operator.setRumble(RumbleType.kBothRumble, 0.0)));      
-      
-      operator.leftTrigger().or(driver.leftTrigger())
-      .whileTrue(
-        gamespecManager.floorIntakeDeploy()
-        )
-      .onFalse(gamespecManager.floorIntakeClearance());
-
-      operator.povUp().or(operator.povLeft().or(operator.povDown().or(operator.povRight()))).onTrue(NamedCommands.getCommand("Package").unless(this::isClimb));
-
-      operator.axisLessThan(5, -0.05).or(operator.axisGreaterThan(5, 0.05)).and(this::isClimb).whileTrue(
-      Commands.sequence(
-        gamespecManager.climberSubsystem.run(
-        () -> gamespecManager.climberSubsystem.setPower(-operator.getRightY())
-      ).onlyWhile(() -> gamespecManager.climberSubsystem.checkClimberSoftStop())
-      ,gamespecManager.climberSubsystem.run(
-        () -> gamespecManager.climberSubsystem.setPower(0.0)
-      ).onlyIf(() -> !gamespecManager.climberSubsystem.checkClimberSoftStop())))
-      .whileFalse(gamespecManager.climberSubsystem.runOnce(
-        () -> gamespecManager.climberSubsystem.setPower(0.0)));
-
-      operator.leftTrigger().or(operator.rightTrigger()).onFalse(NamedCommands.getCommand("Coral Zero"));
-
-       NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
+      NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
       NamedCommands.registerCommand("R_OTF", drivetrain.runOnTheFly());
 
       new EventTrigger("OTF").onTrue(Commands.runOnce(() -> drivetrain.generateOnTheFly()));
 
-  }
-
-  public boolean isCoral() {
-    return mode == Mode.coral;
-  }
-  public boolean isAlgae() {
-    return mode == Mode.algae;
-  }
-  public boolean isClimb() {
-    return mode == Mode.climb;
   }
 
   public void updateAutonCommand() {
@@ -472,33 +229,6 @@ public class RobotContainer {
       }
     } else {
       autoString = chooser.getSelected();
-    }
-  }
-
-  public Command refreshLights() {
-    return gamespecManager.lightsSubsystem.stopAnimation()
-    .andThen(gamespecManager.setLightsAlgae().onlyIf(() -> isAlgae()))
-    .andThen(gamespecManager.setLightsClimb().onlyIf(() -> isClimb()))
-    .andThen(gamespecManager.setLightsCoral().onlyIf(() -> isCoral()));
-  }
-
-  public Command lightsDisable() {
-    return gamespecManager.setFancyLights();
-  }
-
-  public void resetLeds() {
-    switch (this.mode) {
-      case coral:
-      NamedCommands.getCommand("Lights Coral").schedule();
-        break;
-    
-      case algae:
-      NamedCommands.getCommand("Lights Algae").schedule();
-        break;
-
-      case climb:
-      NamedCommands.getCommand("Lights Climb").schedule();
-        break;
     }
   }
 

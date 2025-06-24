@@ -36,27 +36,30 @@ public class Robot extends TimedRobot {
   private Command initAuto;
 
   public Robot() {
-    m_robotContainer = new RobotContainer();
-
-    
-
+    /*Start Logging */
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog(), true);
-
+ 
+    /*Create Robot Contrainer */
+    m_robotContainer = new RobotContainer();
     
+    /*Initialize base Shuffleboard tab */
     tab = Shuffleboard.getTab("tab");
     matchTimeEntry = tab.add("Match time",0.0).getEntry();
     voltsEntry = tab.add("Volts",0.0).getEntry();
     ampsEntry = tab.add("Amps",0.0).getEntry();
 
+    /* Create a default auto to initialize Path Planner  */
     initAuto = new PathPlannerAuto("initAuto").ignoringDisable(true);
 
   }
 
   @Override
   public void robotPeriodic() {
+    /* Run the command scheduler */
     CommandScheduler.getInstance().run();
 
+    /* Update base Shuffleboard tab with Roborio data  */
     matchTimeEntry.setDouble(DriverStation.getMatchTime());
     voltsEntry.setDouble(RoboRioDataJNI.getVInVoltage());
     ampsEntry.setDouble(RoboRioDataJNI.getVInCurrent());
@@ -64,6 +67,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
+    /* Fire off the Pathplanner Auto to initialize Path Planner (Work around a bug) */
     if (!ppConfigured) {
       initAuto.schedule();
       ppConfigured = true;
@@ -72,7 +76,6 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Teleop", false);
     SmartDashboard.putBoolean("Auto", false);
 
-    m_robotContainer.lightsDisable().ignoringDisable(true);
   }
 
   @Override
@@ -82,6 +85,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledExit() {
+    /*Clear our the fake Path Planner Auto Initialize  */
     initAuto.cancel();
   }
 
@@ -109,8 +113,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    
-    m_robotContainer.resetLeds();
   }
 
   @Override

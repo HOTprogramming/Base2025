@@ -8,10 +8,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import org.json.simple.parser.ParseException;
-import org.opencv.features2d.FlannBasedMatcher;
 
-import com.ctre.phoenix6.controls.PositionDutyCycle;
-import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;

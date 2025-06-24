@@ -562,6 +562,20 @@ public class DriveConstants {
                 autoPidConstantsTheta,
                 teleopPidConstantsTheta
                 );
+            case CAMERABOT -> new DriveConfig(
+                    FrontLeftCambot, 
+                    FrontRightCambot, 
+                    BackLeftCambot, 
+                    BackRightCambot,
+                    DrivetrainConstants,
+                    kSpeedAt12Volts.in(MetersPerSecond),
+                    kMaxAngularVelocity.in(RadiansPerSecond),
+                    driveInitialConfigs.CurrentLimits,
+                    steerInitialConfigs.CurrentLimits,
+                    autoPidConstantsTranslation,
+                    autoPidConstantsTheta,
+                    teleopPidConstantsTheta
+                    );
             case SIMBOT -> new DriveConfig(
                 FrontLeftCambot, 
                 FrontRightCambot, 
