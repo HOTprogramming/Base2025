@@ -1,98 +1,121 @@
 package frc.robot.subsystems.Turret;
-
-
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import java.util.function.BooleanSupplier;
-
-import frc.robot.subsystems.Turret.TurretIO.TurretIOInputs;
-
+import frc.robot.subsystems.Turret.TurretIO.TurretIOStats;
 
 public class Turret extends SubsystemBase {
+  private final TurretIO io;
+  private final TurretIOStats stats = new TurretIOStats();
+  
+  private static final double INTAKE_SPEED = 2000.0; 
+  private static final double EJECT_SPEED = 1000.0;
+  private static final double INTAKE_STOP = 0.0; 
 
-  private final TurretIO turretIO;
-  private TurretIOInputs turretSignals = new TurretIOInputs();
-  private TurretState turretState = TurretState.IDLE;
-  private BooleanSupplier coastOverride = () -> false;
-  private final ShuffleboardTab turretShuffleboard;
+  public enum State {
+    IDLE(INTAKE_STOP),
+    INTAKE(INTAKE_SPEED),
+    CHARACTERIZING(INTAKE_SPEED),
+    EJECT(-EJECT_SPEED);
 
-  /* Shuffleboard entries */
-  public GenericEntry turretPosition;
-  public GenericEntry turretVelocity; 
+    private final double rpm;
+  
+    private State (double rpmIn) {
+        this.rpm = rpmIn; 
+    }
 
-  /* Constructor */
-  public Turret(TurretIO TurretIO) {
-    this.turretIO = TurretIO;
-
-    this.turretShuffleboard = Shuffleboard.getTab("Turret");
-
-    turretPosition = this.turretShuffleboard.add("Turret Position",0.0).getEntry();
-    turretVelocity = this.turretShuffleboard.add("Turret Velocity",0.0).getEntry();
   }
 
-  /*Called Automatically by the Command Scheduler */
-  @Override
-  public void periodic() {
-    /*Update the status Signals from the motor */
-    turretIO.updateStatusSignals(turretSignals);
+  /* Variable to hold the current state of the state machine  */
+  private State currentState = State.IDLE;
 
-    // Stop when disabled
-    if (DriverStation.isDisabled()) {
-      turretIO.stop();
-      turretState = TurretState.IDLE;
-
-      if (coastOverride.getAsBoolean()) {
-        turretIO.coast();
-      }
-    } 
-
-    /* Update Shuffleboard Telemetry */
-    UpdateTelemetry();
-
-    // switch (turretState) {
-    //   case IDLE -> {
-    //     if (DriverStation.isEnabled()) {
-    //     }
-    //   }
-    //   case GOTOPOSITION -> {
-     
-    //     double position = turretSignals.data.positionRads();
-    //     if (position >= Units.degreesToRadians(deployAngle)) {
-    //       turretIO.runVolts(deployVolts);
-    //     } else {
-    //       turretIO.stop();
-    //     }
-
-       
-    //   }
-    // }
+  /** Creates a new IntakeSubsystem. */
+  public Turret(TurretIO io) {
+    this.io = io; 
   }
 
-private void UpdateTelemetry() {
-  turretPosition.setDouble(turretSignals.data.positionRads());
-  turretVelocity.setDouble(turretSignals.data.velocityRadsPerSec());
-}
+  private void flipState(State inState ) {
+   System.out.println("Setting state...." + inState.name());
+   currentState = inState; 
+  }
 
-  public Command readyClimb() {
+  /**
+   * Set command to Intake
+   *
+   * @return a command
+   */
+  public Command intakeCommand() {
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
         () -> {
-          if (turretState == TurretState.GOTOPOSITION) {
-            turretState = TurretState.IDLE;
-          } else {
-            turretState = TurretState.IDLE;
-          }
+          /* one-time action goes here */
+          flipState(State.INTAKE);
         });
   }
 
+   /**
+   * Set command to Idle
+   *
+   * @return a command
+   */
+  public Command idleCommand() {
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
+    return runOnce(
+        () -> {
+          /* one-time action goes here */
+          flipState(State.IDLE);
+        });
+  }
 
-  public enum TurretState {
-    IDLE,
-    GOTOPOSITION,
+   /**
+   * Set Command to Eject
+   *
+   * @return a command
+   */
+  public Command ejectCommand() {
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
+    return runOnce(() -> {flipState(State.EJECT); });
+  }
+
+  /**
+   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
+   *
+   * @return value of some boolean subsystem state, such as a digital sensor.
+   */
+  public boolean exampleCondition() {
+    // Query some boolean state, such as a digital sensor.
+    return false;
+  }
+
+  @Override
+  public void periodic() {
+    /* This method will be called once per scheduler run */
+    
+    //Detwrmine motor speed and process 
+    double motorRPM = currentState.rpm;
+    io.runVelocity(motorRPM, 0.0); 
+
+    //go update the signal data 
+    io.updateStats(stats);
+    
+    //Update Dashboard with Telementry Data 
+    UpdateTelemetry();
+  
+   
+  }
+
+  private void UpdateTelemetry() {
+    SmartDashboard.putNumber("Applied Volts:",stats.AppliedVolts);
+    SmartDashboard.putNumber("Velocity Radians per Sec:",stats.VelocityRadPerSec);
+    SmartDashboard.putNumber("Position (rads):",stats.PositionRads);
+    SmartDashboard.putNumber("Supply Current(Amps):",stats.SupplyCurrentAmps);
+    SmartDashboard.putString("StateName", currentState.name());
+    SmartDashboard.putNumber("Goal RPM", currentState.rpm);
+    SmartDashboard.putNumber("Applied Volts:",stats.AppliedVolts); 
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    // This method will be called once per scheduler run during simulation
   }
 }
