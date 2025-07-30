@@ -23,6 +23,17 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain.DriveConstants.DriveConfig;
 
 public class DriveConstants {
+    // DEFAULT GAINS PULLED FROM CTRE EXAMPLE CODE
+     private static final Slot0Configs steerGainsCameraBot = new Slot0Configs()
+        .withKP(100).withKI(0).withKD(0.5)
+        .withKS(0.1).withKV(1.91).withKA(0)
+        .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
+    // When using closed-loop control, the drive motor uses the control
+    // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
+    private static final Slot0Configs driveGainsCameraBot = new Slot0Configs()
+        .withKP(0.1).withKI(0).withKD(0)
+        .withKS(0).withKV(0.124);
+    
     public static final double slowModeMultiplier = 0.5;
 
     public static final double OTF_end_tolerance = 0.2;
@@ -156,7 +167,7 @@ public class DriveConstants {
         .withKS(0).withKV(0.124);
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
-    private static final ClosedLoopOutputType kSteerClosedLoopOutput = ClosedLoopOutputType.TorqueCurrentFOC;
+    private static final ClosedLoopOutputType kSteerClosedLoopOutput = ClosedLoopOutputType.Voltage;
     // The closed-loop output type to use for the drive motors;
     // This affects the PID/FF gains for the drive motors
     private static final ClosedLoopOutputType kDriveClosedLoopOutput = ClosedLoopOutputType.TorqueCurrentFOC;
@@ -307,7 +318,7 @@ public class DriveConstants {
             .withSteerMotorGearRatio(kSteerGearRatioCambot)
             .withCouplingGearRatio(kCoupleRatioCambot)
             .withWheelRadius(kWheelRadius)
-            .withSteerMotorGains(steerGains)
+            .withSteerMotorGains(steerGainsCameraBot)
             .withDriveMotorGains(driveGainsVoltage)
             .withSteerMotorClosedLoopOutput(kSteerClosedLoopOutput)
             .withDriveMotorClosedLoopOutput(kDriveClosedLoopOutputCambot)
