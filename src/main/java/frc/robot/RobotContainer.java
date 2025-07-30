@@ -56,12 +56,12 @@ public class RobotContainer {
   private final CommandXboxController operator = new CommandXboxController(1);
 
   public RobotContainer() {
-    RobotController.setBrownoutVoltage(Constants.brownoutVoltage); // stops stuttering under high load when the battery is good.
+    //RobotController.setBrownoutVoltage(Constants.brownoutVoltage); // stops stuttering under high load when the battery is good.
 
     if(!Utils.isSimulation()){
         drivetrain = new Drive(new DriveKraken());
         // cameraSubsystem = new Camera(drivetrain);
-        turretSubsystem = new Turret(new TurretIOKraken());
+       // turretSubsystem = new Turret(new TurretIOKraken());
     } else {
         drivetrain = new Drive(new DriveSim());
         // cameraSubsystem = new Camera(drivetrain);
@@ -113,7 +113,7 @@ public class RobotContainer {
 
   private void configureBindings() {   
 
-    driver.a().onTrue(drivetrain.fetchAuto(2, 1.0)).onFalse(drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
+    //driver.a().onTrue(drivetrain.fetchAuto(2, 1.0)).onFalse(drivetrain.runOnce(() -> drivetrain.teleopDrive(0, 0, 0)));
 
     // drivetrain.setDefaultCommand
     //   (drivetrain.run(() -> {
@@ -168,26 +168,26 @@ public class RobotContainer {
       // ));
 
 
-      driver.y()
-      .and(driver.axisLessThan(4, -0.15).or(driver.axisGreaterThan(4, 0.15))
-      .or(driver.axisLessThan(5, -0.15)).or(driver.axisGreaterThan(5, 0.15)))
-      .whileTrue
-      (drivetrain.run(() -> {
-        drivetrain.lockReefManual(
-          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
-          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
-          Math.abs(driver.getRightX()) >= 0.1 ? -driver.getRightX() : 0,
-          Math.abs(driver.getRightY()) >= 0.1 ? -driver.getRightY() : 0);
-        }
-      ));
+      // driver.y()
+      // .and(driver.axisLessThan(4, -0.15).or(driver.axisGreaterThan(4, 0.15))
+      // .or(driver.axisLessThan(5, -0.15)).or(driver.axisGreaterThan(5, 0.15)))
+      // .whileTrue
+      // (drivetrain.run(() -> {
+      //   drivetrain.lockReefManual(
+      //     Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+      //     Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+      //     Math.abs(driver.getRightX()) >= 0.1 ? -driver.getRightX() : 0,
+      //     Math.abs(driver.getRightY()) >= 0.1 ? -driver.getRightY() : 0);
+      //   }
+      // ));
       // b right y middle x left
       // driver.rightBumper().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTarget(2)), gamespecManager.setLightsAligning()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefRobotcentric(false)))).onFalse(refreshLights());
       // driver.y().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTarget(1)), gamespecManager.setLightsAligning()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefRobotcentric(false)))).onFalse(refreshLights());
       // driver.leftBumper().whileTrue(Commands.sequence(Commands.parallel(drivetrain.runOnce(() -> drivetrain.updateReefTarget(0)), gamespecManager.setLightsAligning()), drivetrain.resetControllers(), drivetrain.run(() -> drivetrain.alignReefRobotcentric(false)))).onFalse(refreshLights());
 
-      driver.rightBumper().whileTrue(drivetrain.run(() -> drivetrain.alignReefRobotcentric(false)));
-      driver.y().whileTrue(drivetrain.run(() -> drivetrain.alignReefRobotcentric(false)));
-      driver.leftBumper().whileTrue(drivetrain.run(() -> drivetrain.alignReefRobotcentric(false)));
+      // driver.rightBumper().whileTrue(drivetrain.run(() -> drivetrain.alignReefRobotcentric(false)));
+      // driver.y().whileTrue(drivetrain.run(() -> drivetrain.alignReefRobotcentric(false)));
+      // driver.leftBumper().whileTrue(drivetrain.run(() -> drivetrain.alignReefRobotcentric(false)));
 
       // driver.rightBumper().onFalse(refreshLights());
       // driver.y().onFalse(refreshLights());
@@ -198,12 +198,24 @@ public class RobotContainer {
       // driver.b().onTrue(NamedCommands.getCommand("expel"));
   
 
-      driver.start().onTrue(drivetrain.resetPidgeon()).onFalse(drivetrain.run(() -> {
-        drivetrain.teleopDrive(
-          Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
-          Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
-          Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
-        }));
+      // driver.start().onTrue(drivetrain.resetPidgeon()).onFalse(drivetrain.run(() -> {
+      //   drivetrain.teleopDrive(
+      //     Math.abs(driver.getLeftY()) >= 0.1 ? -driver.getLeftY() : 0,
+      //     Math.abs(driver.getLeftX()) >= 0.1 ? -driver.getLeftX() : 0,
+      //     Math.abs(driver.getRightX()) >= 0.15 ? -driver.getRightX() : 0);
+      //   }));
+
+    // driver.a().whileTrue(Commands.runOnce(() -> turretSubsystem.gotoPosition(10.0)));
+    // driver.b().onTrue(Commands.runOnce(() -> turretSubsystem.gotoPosition(10.0)));
+    // driver.x().onTrue(Commands.runOnce(() -> turretSubsystem.gotoPosition(10.0)));
+    // driver.y().whileTrue(Commands.runOnce(() -> turretSubsystem.sendMessage()));
+
+     // Schedule Intake command on button press, cancelling on release.
+     //driver.a().whileTrue(turretSubsystem.intakeCommand()).whileFalse(turretSubsystem.idleCommand());
+     //driver.b().whileTrue(turretSubsystem.ejectCommand()).whileFalse(turretSubsystem.idleCommand());
+     //driver.x().whileTrue(turretSubsystem.idleCommand());
+   
+
 
       NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
       NamedCommands.registerCommand("R_OTF", drivetrain.runOnTheFly());

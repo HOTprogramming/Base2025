@@ -1,28 +1,36 @@
 package frc.robot.subsystems.Turret;
 
-
 public interface TurretIO {
+        
+  class TurretIOStats {
+          public boolean MotorConnected = true;    
+          public double PositionRads = 0.0;
+          public double VelocityRadPerSec = 0.0;
+          public double AppliedVolts = 0.0;
+          public double SupplyCurrentAmps = 0.0;
+          public double TorqueCurrentAmps = 0.0;
+          public double TempCelsius = 0.0;
+        }
 
-  class TurretIOInputs {
-    public TurretIOData data = new TurretIOData(false, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-  }
+  /** Update stats */
+  default void updateStats(TurretIOStats stats) {}
 
-  record TurretIOData(
-      boolean motorConnected,
-      double positionRads,
-      double velocityRadsPerSec,
-      double appliedVoltage,
-      double torqueCurrentAmps,
-      double supplyVolts,
-      double tempCelsius) {}
+  /** Run motor at voltage */
+  default void runVolts(double Volts) {}
 
-  default void updateStatusSignals(TurretIOInputs inputs) {}
-
-  default void runTorqueCurrent(double current) {}
-
-  default void runVolts(double volts) {}
-
+  /** Stop Intake */
   default void stop() {}
 
-  default void coast() {}
+  /** Run motor at velocity in rpm */
+  default void runVelocity(double Rpm, double Feedforward) {}
+
+  /** Config PID values for motor */
+  default void setPID(double kP, double kI, double kD) {}
+
+  /** Config FF values for motor */
+  default void setFF(double kS, double kV, double kA) {}
+
+  /** Run Characterization for motor at voltage */
+  default void runCharacterization(double input) {}
+ 
 }
