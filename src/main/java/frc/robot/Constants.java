@@ -40,7 +40,9 @@
       SIMBOT,
       DEVBOT,
       CAMERABOT,
-      COMPBOT
+      COMPBOT,
+      COMP24,
+      MINIBOT
     }
 
     public static boolean disableHAL = false;

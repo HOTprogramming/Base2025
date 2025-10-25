@@ -3,42 +3,23 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot;
 
-import static edu.wpi.first.units.Units.derive;
-import static frc.robot.subsystems.Drivetrain.DriveConstants.slowModeMultiplier;
-
 import java.io.IOException;
-import java.util.Map;
-import java.util.jar.Attributes.Name;
+
 
 import org.json.simple.parser.ParseException;
 
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.events.EventTrigger;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.util.PathPlannerLogging;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.subsystems.Camera.Camera;
-import frc.robot.subsystems.Camera.Camera.CameraPositions;
 import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
-import frc.robot.subsystems.Turret.Turret;
-import frc.robot.subsystems.Turret.TurretIOKraken;
-import frc.robot.subsystems.Turret.TurretIOSim;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
 
 
@@ -49,8 +30,6 @@ public class RobotContainer {
   private String autoString;
 
   private Drive drivetrain;
-  private Camera cameraSubsystem;
-  private Turret turretSubsystem;
   
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
@@ -60,12 +39,8 @@ public class RobotContainer {
 
     if(!Utils.isSimulation()){
         drivetrain = new Drive(new DriveKraken());
-        // cameraSubsystem = new Camera(drivetrain);
-       // turretSubsystem = new Turret(new TurretIOKraken());
     } else {
         drivetrain = new Drive(new DriveSim());
-        // cameraSubsystem = new Camera(drivetrain);
-        turretSubsystem = new Turret(new TurretIOSim());
     }
 
 
