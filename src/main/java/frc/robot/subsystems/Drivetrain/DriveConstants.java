@@ -205,9 +205,9 @@ public class DriveConstants {
     ***************************************************************************************************/
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
-    private static final double kCoupleRatioMinibot = 3.5714285714285716;
-    private static final double kDriveGearRatioMinibot = 5.01;
-    private static final double kSteerGearRatioMinibot = 13.3714;
+    private static final double kCoupleRatioMinibot = 2;
+    private static final double kDriveGearRatioMinibot = 6.545454545454545;
+    private static final double kSteerGearRatioMinibot = 10.285714285714286;
     // Are steer motors GENERALLY reversed
     private static final boolean kSteerMotorReversedMinibot = true;
   
@@ -220,22 +220,22 @@ public class DriveConstants {
        .withPigeon2Configs(pigeonConfigs);
 
     // Simulated voltage necessary to overcome friction
-    private static final double kSteerFrictionVoltageMinibot = 0.25;
-    private static final double kDriveFrictionVoltageMinibot = 0.25;   
+    private static final double kSteerFrictionVoltageMinibot = 0.2;
+    private static final double kDriveFrictionVoltageMinibot = 0.2;   
     private static final double kSlipCurrentMinibot = 300.0; // *tune later
 
     // The steer motor uses any SwerveModule.SteerRequestType control request with the
     // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
     private static final Slot0Configs steerGainsMinibot = new Slot0Configs()
-        .withKP(100).withKI(0).withKD(0.2)
-        .withKS(0).withKV(1.5).withKA(0)
+        .withKP(100).withKI(0).withKD(0.5)
+        .withKS(0.1).withKV(1.28).withKA(0)
         .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign)
         ;
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     private static final Slot0Configs driveGainsMinibot = new Slot0Configs()
-        .withKP(3.0).withKI(0).withKD(0)
-        .withKS(0.0).withKV(0.0).withKA(0.0);
+        .withKP(0.1).withKI(0).withKD(0)
+        .withKS(0.0).withKV(0.124).withKA(0.0);
 
     private static final ClosedLoopOutputType STEER_CLOSED_LOOP_OUTPUT_TYPEMinibot = ClosedLoopOutputType.Voltage;
     private static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT_TYPEMinibot = ClosedLoopOutputType.TorqueCurrentFOC;
@@ -264,45 +264,45 @@ public class DriveConstants {
             .withDriveFrictionVoltage(kDriveFrictionVoltageMinibot);
 
     // Front Left
-    private static final int kFrontLeftDriveMotorIdMinibot = 1;
-    private static final int kFrontLeftSteerMotorIdMinibot = 2;
-    private static final int kFrontLeftEncoderIdMinibot = 43;
-    private static final Angle kFrontLeftEncoderOffsetMinibot = Rotations.of(0.441162109375);
-    private static final boolean kFrontLeftSteerMotorInvertedMinibot = false;
+    private static final int kFrontLeftDriveMotorIdMinibot = 6;
+    private static final int kFrontLeftSteerMotorIdMinibot = 5;
+    private static final int kFrontLeftEncoderIdMinibot = 42;
+    private static final Angle kFrontLeftEncoderOffsetMinibot = Rotations.of(-0.180908203125);
+    private static final boolean kFrontLeftSteerMotorInvertedMinibot = true;
     private static final boolean kFrontLeftEncoderInvertedMinibot = false;  //?????????????????????????????????
-    private static final Distance kFrontLeftXPosMinibot = Inches.of(10.125);
-    private static final Distance kFrontLeftYPosMinibot = Inches.of(10.125);
+    private static final Distance kFrontLeftXPosMinibot = Inches.of(9);
+    private static final Distance kFrontLeftYPosMinibot = Inches.of(9);
 
     // Front Right
-    private static final int kFrontRightDriveMotorIdMinibot = 3;
-    private static final int kFrontRightSteerMotorIdMinibot = 4;
-    private static final int kFrontRightEncoderIdMinibot = 41;
-    private static final Angle kFrontRightEncoderOffsetMinibot = Rotations.of(0.12060546875);
+    private static final int kFrontRightDriveMotorIdMinibot = 8;
+    private static final int kFrontRightSteerMotorIdMinibot = 7;
+    private static final int kFrontRightEncoderIdMinibot = 44;
+    private static final Angle kFrontRightEncoderOffsetMinibot = Rotations.of(-0.12255859375);
     private static final boolean kFrontRightSteerMotorInvertedMinibot = true;
     private static final boolean kFrontRightEncoderInvertedMinibot = false; //???????????????????????????????
-    private static final Distance kFrontRightXPosMinibot = Inches.of(10.125);
-    private static final Distance kFrontRightYPosMinibot = Inches.of(-10.125);
+    private static final Distance kFrontRightXPosMinibot = Inches.of(9);
+    private static final Distance kFrontRightYPosMinibot = Inches.of(-9);
 
     // Back Left
-    private static final int kBackLeftDriveMotorIdMinibot = 5;
-    private static final int kBackLeftSteerMotorIdMinibot = 6;
-    private static final int kBackLeftEncoderIdMinibot = 42;
-    private static final Angle kBackLeftEncoderOffsetMinibot = Rotations.of(-0.452880859375);
-    private static final boolean kBackLeftSteerMotorInvertedMinibot = false;  
+    private static final int kBackLeftDriveMotorIdMinibot = 4;
+    private static final int kBackLeftSteerMotorIdMinibot = 3;
+    private static final int kBackLeftEncoderIdMinibot = 41;
+    private static final Angle kBackLeftEncoderOffsetMinibot = Rotations.of(0.168212890625);
+    private static final boolean kBackLeftSteerMotorInvertedMinibot = true;  
     private static final boolean kBackLeftEncoderInvertedMinibot = false;  //????????????????????????????????????
-    private static final Distance kBackLeftXPosMinibot = Inches.of(-10.125);
-    private static final Distance kBackLeftYPosMinibot = Inches.of(10.125);
+    private static final Distance kBackLeftXPosMinibot = Inches.of(-9);
+    private static final Distance kBackLeftYPosMinibot = Inches.of(9);
 
     // Back Right
-    private static final int kBackRightDriveMotorIdMinibot = 7;
-    private static final int kBackRightSteerMotorIdMinibot = 8;
-    private static final int kBackRightEncoderIdMinibot = 40;
-    private static final Angle kBackRightEncoderOffsetMinibot = Rotations.of(-0.431884765625);
-    private static final boolean kBackRightSteerMotorInvertedMinibot = false;
+    private static final int kBackRightDriveMotorIdMinibot = 2;
+    private static final int kBackRightSteerMotorIdMinibot = 1;
+    private static final int kBackRightEncoderIdMinibot = 43;
+    private static final Angle kBackRightEncoderOffsetMinibot = Rotations.of(0.279541015625);
+    private static final boolean kBackRightSteerMotorInvertedMinibot = true;
     private static final boolean kBackRightEncoderInvertedMinibot = false; //??????????????????????????????????????
 
-    private static final Distance kBackRightXPosMinibot = Inches.of(-10.125);
-    private static final Distance kBackRightYPosMinibot = Inches.of(-10.125);
+    private static final Distance kBackRightXPosMinibot = Inches.of(-9);
+    private static final Distance kBackRightYPosMinibot = Inches.of(-9);
 
 
     public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontLeftMinibot =
