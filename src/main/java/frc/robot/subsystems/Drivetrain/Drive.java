@@ -25,6 +25,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -58,6 +59,12 @@ import frc.robot.subsystems.Drivetrain.DriveIO.DriveIOdata;
 
 
 public class Drive extends SubsystemBase {
+
+    private final SlewRateLimiter xLimiter = new SlewRateLimiter(3.0);
+    private final SlewRateLimiter yLimiter = new SlewRateLimiter(3.0);
+    private final SlewRateLimiter rotLimiter = new SlewRateLimiter(3.0);
+
+    
     private DriveIO driveIO;
     private DriveIOdata iOdata;
 
@@ -642,10 +649,15 @@ public class Drive extends SubsystemBase {
     }
 
     public void teleopDrive(double driveX, double driveY, double driveTheta)  {
+
+        double rampedY = yLimiter.calculate(driveY); 
+        double rampedX = xLimiter.calculate(driveX); 
+        double rampedTheta = rotLimiter.calculate(driveTheta); 
+
        driveIO.setSwerveRequest(FIELD_CENTRIC
-            .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY())
-            .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY())
-            .withRotationalRate((driveTheta <= 0 ? -(driveTheta * driveTheta) : (driveTheta * driveTheta)) * DriveConfig.MAX_ANGULAR_VELOCITY())
+            .withVelocityX((rampedX <= 0 ? -(rampedX * rampedX) : (rampedX * rampedX)) * DriveConfig.MAX_VELOCITY())
+            .withVelocityY((rampedY <= 0 ? -(rampedY * rampedY) : (rampedY * rampedY)) * DriveConfig.MAX_VELOCITY())
+            .withRotationalRate((rampedTheta <= 0 ? -(rampedTheta * rampedTheta) : (rampedTheta * rampedTheta)) * DriveConfig.MAX_ANGULAR_VELOCITY())
         );
 
         heading = this.iOdata.state.Pose.getRotation();

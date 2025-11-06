@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 
 
 public class RobotContainer {
@@ -33,6 +34,7 @@ public class RobotContainer {
   
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
+  
 
   public RobotContainer() {
     //RobotController.setBrownoutVoltage(Constants.brownoutVoltage); // stops stuttering under high load when the battery is good.
@@ -105,7 +107,30 @@ public class RobotContainer {
       //   .and(driver.y().negate())
       //   .whileTrue
 
+     /*  drivetrain.setDefaultCommand(
+        drivetrain.run(()-> {
+          double rawY = -driver.getLeftY();
+          double rawX = -driver.getLeftX();
+          double rawRot = -driver.getRightX();
 
+         // double y = Math.abs(rawY) >=0.05 ? rawY : 0.0;
+          //double x = Math.abs(rawX) >=0.05 ? rawX : 0.0;
+          //double rot = Math.abs(rawRot) >=0.05 ? rawRot : 0.0;
+
+          double rampedY = yLimiter.calculate(rawY);
+          double rampedX = xLimiter.calculate(rawX);
+          double rampedRot = rotLimiter.calculate(rawRot);
+
+          drivetrain.teleopDrive(rampedY, rampedX, rampedRot);
+        })
+      );*/
+
+
+
+
+        
+     // );
+ 
       drivetrain.setDefaultCommand
       (drivetrain.run(() -> {
         drivetrain.teleopDrive(
@@ -114,6 +139,7 @@ public class RobotContainer {
           Math.abs(driver.getRightX()) >= 0.015 ? -driver.getRightX() : 0);
         }
       ));
+      
       // .onFalse(Commands.race(Commands.waitSeconds(0.15), drivetrain.run(() -> {
       //   drivetrain.teleopDrive(
       //     Math.abs(driver.getLeftY()) >= 0.0 ? -driver.getLeftY() : 0,
