@@ -60,11 +60,10 @@ import frc.robot.subsystems.Drivetrain.DriveIO.DriveIOdata;
 
 public class Drive extends SubsystemBase {
 
-    private final SlewRateLimiter xLimiter = new SlewRateLimiter(3.0);
-    private final SlewRateLimiter yLimiter = new SlewRateLimiter(3.0);
-    private final SlewRateLimiter rotLimiter = new SlewRateLimiter(3.0);
-
-    
+    private final SlewRateLimiter xLimiter = new SlewRateLimiter(kTranslationRateLimiter);
+    private final SlewRateLimiter yLimiter = new SlewRateLimiter(kTranslationRateLimiter);
+    private final SlewRateLimiter rotLimiter = new SlewRateLimiter(kRotationRateLimiter);
+       
     private DriveIO driveIO;
     private DriveIOdata iOdata;
 
@@ -74,8 +73,13 @@ public class Drive extends SubsystemBase {
     private GenericEntry pathXEntry;
     private GenericEntry pathYEntry;
     private GenericEntry pathRotEntry;
-
+    private GenericEntry rampedXEntry;//remove after debug
+    private GenericEntry rampedYEntry;//remove after debug
+    private GenericEntry rampedThetaEntry;//remove after debug
     private Rotation2d heading;
+    private GenericEntry leftXEntry;//remove after debug
+    private GenericEntry leftYEntry;//remove after debug
+
 
     private PathConstraints constraints;
     private List<Waypoint> waypoints;
@@ -89,6 +93,10 @@ public class Drive extends SubsystemBase {
     private Pose2d reefTarget;
 
     private Alert alert;
+
+    double rampedX;//remove after debug
+    double rampedY;//remove after debug
+    double rampedTheta;//remove after debug
 
     double[][] corals = {
     {320, -1, 321, -1},
@@ -185,11 +193,16 @@ public class Drive extends SubsystemBase {
         heading = Rotation2d.fromDegrees(0);
 
         driveTab = Shuffleboard.getTab("Drive");
-        speedEntry = driveTab.add("Speed (RJU)", 0.0).getEntry();
+        speedEntry = driveTab.add("Speed", 0.0).getEntry();
         poseEntry = driveTab.add("Pose", new Double[] {0.0, 0.0, 0.0}).getEntry();
         pathXEntry = driveTab.add("Path X", 0.0).getEntry();
         pathYEntry = driveTab.add("Path Y", 0.0).getEntry();
         pathRotEntry = driveTab.add("Path Rot", 0.0).getEntry();
+        rampedXEntry = driveTab.add("Ramped X Cmd", 0.0).getEntry();//remove after debug
+        rampedYEntry = driveTab.add("Ramped Y Cmd", 0.0).getEntry();//remove after debug
+        rampedThetaEntry = driveTab.add("Ramped Rot Cmd", 0.0).getEntry();//remove after debug
+        leftXEntry = driveTab.add("Left X", 0.0).getEntry();//remove after debug
+        leftYEntry = driveTab.add("Left Y", 0.0).getEntry();//remove after debug
 
         objectDetection = NetworkTableInstance.getDefault().getTable("ObjectDetection");
         for (int i=0; i<10; ++i) {
@@ -650,9 +663,11 @@ public class Drive extends SubsystemBase {
 
     public void teleopDrive(double driveX, double driveY, double driveTheta)  {
 
-        double rampedY = yLimiter.calculate(driveY); 
-        double rampedX = xLimiter.calculate(driveX); 
-        double rampedTheta = rotLimiter.calculate(driveTheta); 
+        rampedX = xLimiter.calculate(driveX); 
+        rampedY = yLimiter.calculate(driveY);    
+        rampedTheta = rotLimiter.calculate(driveTheta); 
+        leftXEntry.setDouble(driveX); //remove after testing
+        leftYEntry.setDouble(driveY); //remove after testing
 
        driveIO.setSwerveRequest(FIELD_CENTRIC
             .withVelocityX((rampedX <= 0 ? -(rampedX * rampedX) : (rampedX * rampedX)) * DriveConfig.MAX_VELOCITY())
@@ -664,6 +679,7 @@ public class Drive extends SubsystemBase {
     }
 
     public void teleopDriveSlow(double driveX, double driveY, double driveTheta)  {
+        //no rate limiter applied for slow mode
         driveIO.setSwerveRequest(FIELD_CENTRIC
              .withVelocityX((driveX <= 0 ? -(driveX * driveX) : (driveX * driveX)) * DriveConfig.MAX_VELOCITY() * slowModeMultiplier)
              .withVelocityY((driveY <= 0 ? -(driveY * driveY) : (driveY * driveY)) * DriveConfig.MAX_VELOCITY() * slowModeMultiplier)
@@ -771,6 +787,9 @@ public class Drive extends SubsystemBase {
             });
         }
 
+        rampedXEntry.setDouble(rampedX);//remove after debug
+        rampedYEntry.setDouble(rampedY);//remove after debug
+        rampedThetaEntry.setDouble(rampedTheta);//remove after debug
         
 		
         this.iOdata = driveIO.update();
