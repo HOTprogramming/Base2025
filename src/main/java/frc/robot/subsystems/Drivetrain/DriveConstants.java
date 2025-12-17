@@ -12,7 +12,6 @@ import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 import com.pathplanner.lib.config.PIDConstants;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -210,8 +209,6 @@ public class DriveConstants {
     private static final double kCoupleRatioMinibot = 2;
     private static final double kDriveGearRatioMinibot = 6.545454545454545;
     private static final double kSteerGearRatioMinibot = 10.285714285714286;
-    // Are steer motors GENERALLY reversed
-    private static final boolean kSteerMotorReversedMinibot = true;
   
     // CAN bus that the devices are located on; All swerve devices must share the same CAN bus
     public static final CANBus kCANBusMinibot = new CANBus("drivetrain", "./logs/example.hoot");
@@ -337,8 +334,6 @@ public class DriveConstants {
     private static final double kCoupleRatioComp24 = 3.5714285714285716;
     private static final double kDriveGearRatioComp24 = 5.01;
     private static final double kSteerGearRatioComp24 = 13.3714;
-    // Are steer motors GENERALLY reversed
-    private static final boolean kSteerMotorReversedComp24 = true;
   
     // CAN bus that the devices are located on; All swerve devices must share the same CAN bus
     public static final CANBus kCANBusComp24 = new CANBus("drivetrain", "./logs/example.hoot");
@@ -455,6 +450,129 @@ public class DriveConstants {
             kBackRightXPosComp24, kBackRightYPosComp24, kInvertRightSide, kBackRightSteerMotorInvertedComp24, kBackRightEncoderInvertedComp24
         );
 
+    /**************************************************************************************************
+    * Define the Comp25 (2025 Competition Robot) Swerve Constants  
+    ***************************************************************************************************/
+    // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
+    // This may need to be tuned to your individual robot
+    private static final double kCoupleRatioComp25 = 2.6666666666666665;
+    private static final double kDriveGearRatioComp25 = 5.142857142857143;
+    private static final double kSteerGearRatioComp25 = 11.314285714285715;
+  
+    // CAN bus that the devices are located on; All swerve devices must share the same CAN bus
+    public static final CANBus kCANBusComp25 = new CANBus("robot", "./logs/example.hoot");
+
+    public static final SwerveDrivetrainConstants DrivetrainConstantsComp25 = new SwerveDrivetrainConstants()
+       .withCANBusName(kCANBusComp25.getName())
+       .withPigeon2Id(kPigeonId)
+       .withPigeon2Configs(pigeonConfigs);
+
+    // Simulated voltage necessary to overcome friction
+    private static final Voltage kSteerFrictionVoltageComp25 = Volts.of(0.2);
+    private static final Voltage kDriveFrictionVoltageComp25 = Volts.of(0.2);   
+    private static final Current kSlipCurrentComp25 = Amps.of(120.0);
+
+    // The steer motor uses any SwerveModule.SteerRequestType control request with the
+    // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
+    private static final Slot0Configs steerGainsComp25 = new Slot0Configs()
+        .withKP(100).withKI(0).withKD(0.5)
+        .withKS(0.1).withKV(1.4).withKA(0)
+        .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign)
+        ;
+    // When using closed-loop control, the drive motor uses the control
+    // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
+    private static final Slot0Configs driveGainsComp25 = new Slot0Configs()
+        .withKP(0.1).withKI(0).withKD(0)
+        .withKS(0.0).withKV(0.124).withKA(0.0);
+
+    private static final ClosedLoopOutputType STEER_CLOSED_LOOP_OUTPUT_TYPEComp25 = ClosedLoopOutputType.Voltage;
+    private static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT_TYPEComp25 = ClosedLoopOutputType.Voltage;
+    
+    private static final SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> ConstantCreatorComp25 =
+        new SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>()
+            .withDriveMotorGearRatio(kDriveGearRatioComp25)
+            .withSteerMotorGearRatio(kSteerGearRatioComp25)
+            .withCouplingGearRatio(kCoupleRatioComp25)
+            .withWheelRadius(kWheelRadius)
+            .withSteerMotorGains(steerGainsComp25)
+            .withDriveMotorGains(driveGainsComp25)
+            .withSteerMotorClosedLoopOutput(STEER_CLOSED_LOOP_OUTPUT_TYPEComp25)
+            .withDriveMotorClosedLoopOutput(DRIVE_CLOSED_LOOP_OUTPUT_TYPEComp25)
+            .withSlipCurrent(kSlipCurrentComp25)
+            .withSpeedAt12Volts(kSpeedAt12Volts)
+            .withDriveMotorType(kDriveMotorType)
+            .withSteerMotorType(kSteerMotorType)
+            .withFeedbackSource(kSteerFeedbackType)
+            .withDriveMotorInitialConfigs(driveInitialConfigs)
+            .withSteerMotorInitialConfigs(steerInitialConfigs)
+            .withEncoderInitialConfigs(encoderInitialConfigs)
+            .withSteerInertia(kSteerInertia)
+            .withDriveInertia(kDriveInertia)
+            .withSteerFrictionVoltage(kSteerFrictionVoltageComp25)
+            .withDriveFrictionVoltage(kDriveFrictionVoltageComp25);
+
+    // Front Left
+    private static final int kFrontLeftDriveMotorIdComp25 = 4;
+    private static final int kFrontLeftSteerMotorIdComp25 = 3;
+    private static final int kFrontLeftEncoderIdComp25 = 43;
+    private static final Angle kFrontLeftEncoderOffsetComp25 = Rotations.of(0.425048828125);
+    private static final boolean kFrontLeftSteerMotorInvertedComp25 = false;
+    private static final boolean kFrontLeftEncoderInvertedComp25 = true;  
+    private static final Distance kFrontLeftXPosComp25 = Inches.of(11.5);
+    private static final Distance kFrontLeftYPosComp25 = Inches.of(11.5);
+
+    // Front Right
+    private static final int kFrontRightDriveMotorIdComp25 = 8;
+    private static final int kFrontRightSteerMotorIdComp25 = 7;
+    private static final int kFrontRightEncoderIdComp25 = 41;
+    private static final Angle kFrontRightEncoderOffsetComp25 = Rotations.of(-0.102294921875);
+    private static final boolean kFrontRightSteerMotorInvertedComp25 = false;
+    private static final boolean kFrontRightEncoderInvertedComp25 = true;
+    private static final Distance kFrontRightXPosComp25 = Inches.of(11.5);
+    private static final Distance kFrontRightYPosComp25 = Inches.of(-11.5);
+
+    // Back Left
+    private static final int kBackLeftDriveMotorIdComp25 = 2;
+    private static final int kBackLeftSteerMotorIdComp25 = 1;
+    private static final int kBackLeftEncoderIdComp25 = 42;
+    private static final Angle kBackLeftEncoderOffsetComp25 = Rotations.of(0.31787109375);
+    private static final boolean kBackLeftSteerMotorInvertedComp25 = false;  
+    private static final boolean kBackLeftEncoderInvertedComp25 = true;  
+    private static final Distance kBackLeftXPosComp25 = Inches.of(-11.5);
+    private static final Distance kBackLeftYPosComp25 = Inches.of(11.5);
+
+    // Back Right
+    private static final int kBackRightDriveMotorIdComp25 = 6;
+    private static final int kBackRightSteerMotorIdComp25 = 5;
+    private static final int kBackRightEncoderIdComp25 = 40;
+    private static final Angle kBackRightEncoderOffsetComp25 = Rotations.of(-0.282958984375);
+    private static final boolean kBackRightSteerMotorInvertedComp25 = false;
+    private static final boolean kBackRightEncoderInvertedComp25 = true; 
+
+    private static final Distance kBackRightXPosComp25 = Inches.of(-11.5);
+    private static final Distance kBackRightYPosComp25 = Inches.of(-11.5);
+
+
+    public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontLeftComp25 =
+        ConstantCreatorComp25.createModuleConstants(
+            kFrontLeftSteerMotorIdComp25, kFrontLeftDriveMotorIdComp25, kFrontLeftEncoderIdComp25, kFrontLeftEncoderOffsetComp25,
+            kFrontLeftXPosComp25, kFrontLeftYPosComp25, kInvertLeftSide, kFrontLeftSteerMotorInvertedComp25, kFrontLeftEncoderInvertedComp25
+        );
+    public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontRightComp25 =
+        ConstantCreatorComp25.createModuleConstants(
+            kFrontRightSteerMotorIdComp25, kFrontRightDriveMotorIdComp25, kFrontRightEncoderIdComp25, kFrontRightEncoderOffsetComp25,
+            kFrontRightXPosComp25, kFrontRightYPosComp25, kInvertRightSide, kFrontRightSteerMotorInvertedComp25, kFrontRightEncoderInvertedComp25
+        );
+    public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> BackLeftComp25 =
+        ConstantCreatorComp25.createModuleConstants(
+            kBackLeftSteerMotorIdComp25, kBackLeftDriveMotorIdComp25, kBackLeftEncoderIdComp25, kBackLeftEncoderOffsetComp25,
+            kBackLeftXPosComp25, kBackLeftYPosComp25, kInvertLeftSide, kBackLeftSteerMotorInvertedComp25, kBackLeftEncoderInvertedComp25
+        );
+    public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> BackRightComp25 =
+        ConstantCreatorComp25.createModuleConstants(
+            kBackRightSteerMotorIdComp25, kBackRightDriveMotorIdComp25, kBackRightEncoderIdComp25, kBackRightEncoderOffsetComp25,
+            kBackRightXPosComp25, kBackRightYPosComp25, kInvertRightSide, kBackRightSteerMotorInvertedComp25, kBackRightEncoderInvertedComp25
+        );
 
 
     /**************************************************************************************************
@@ -904,6 +1022,21 @@ public class DriveConstants {
                 BackLeftComp24, 
                 BackRightComp24,
                 DrivetrainConstantsComp24,
+                kSpeedAt12Volts.in(MetersPerSecond),
+                kMaxAngularVelocity.in(RadiansPerSecond),
+                driveInitialConfigs.CurrentLimits,
+                steerInitialConfigs.CurrentLimits,
+                autoPidConstantsTranslation,
+                autoPidConstantsTheta,
+                teleopPidConstantsTheta
+                );
+
+            case COMP25 -> new DriveConfig(
+                FrontLeftComp25, 
+                FrontRightComp25, 
+                BackLeftComp25, 
+                BackRightComp25,
+                DrivetrainConstantsComp25,
                 kSpeedAt12Volts.in(MetersPerSecond),
                 kMaxAngularVelocity.in(RadiansPerSecond),
                 driveInitialConfigs.CurrentLimits,
