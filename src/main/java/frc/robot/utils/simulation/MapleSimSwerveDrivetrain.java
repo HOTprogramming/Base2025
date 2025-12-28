@@ -125,8 +125,9 @@ public class MapleSimSwerveDrivetrain {
     public void update() {
         SimulatedArena.getInstance().simulationPeriodic();
         DogLog.log("FieldSimulation/RobotPosition", new Pose3d(mapleSimDrive.getSimulatedDriveTrainPose()));
-        //Logger.recordOutput("FieldSimulation/GamePiece", SimulatedArena.getInstance().getGamePiecesByType("Algae").toArray(new Pose3d[0]));
-        
+        DogLog.log("FieldSimulation/AlgaePoses", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
+        DogLog.log("FieldSimulation/CoralPoses", SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
+
         pigeonSim.setRawYaw(
                 mapleSimDrive.getSimulatedDriveTrainPose().getRotation().getMeasure());
         pigeonSim.setAngularVelocityZ(RadiansPerSecond.of(
