@@ -1,6 +1,7 @@
 package frc.robot.subsystems.Drivetrain;
 
 import static frc.robot.subsystems.Drivetrain.DriveConstants.*;
+import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -13,13 +14,18 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
-
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import frc.robot.utils.simulation.MapleSimSwerveDrivetrain;
 
 public class DriveSim extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder>  implements DriveIO {
-    private static final double kSimLoopPeriod = 0.005; // 5 ms
+    private static final double kSimLoopPeriod = 0.002; // 2 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
 
@@ -30,25 +36,57 @@ public class DriveSim extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder>  impl
 
     private Pigeon2 m_Pigeon2;
 
-
     private SwerveDriveState currentState;
 
     private DriveIOdata iOdata = new DriveIOdata();
 
     
     public DriveSim() {
-        super(TalonFX::new, TalonFX::new, CANcoder::new,
-        DriveConfig.DRIVETRAIN(), 
-        DriveConfig.FRONT_LEFT(), 
-        DriveConfig.FRONT_RIGHT(), 
-        DriveConfig.BACK_LEFT(), 
-        DriveConfig.BACK_RIGHT());
+        super(
+            TalonFX::new,
+            TalonFX::new,
+            CANcoder::new,
+            DriveConfig.DRIVETRAIN(),
+            MapleSimSwerveDrivetrain.regulateModuleConstantsForSimulation(
+                    new SwerveModuleConstants[] {
+                            DriveConfig.FRONT_LEFT(),
+                            DriveConfig.FRONT_RIGHT(),
+                            DriveConfig.BACK_LEFT(),
+                            DriveConfig.BACK_RIGHT()
+                    }
+            )
+    );
 
         startSimThread();
 
         m_Pigeon2 = getPigeon2();
 
         this.iOdata.m_moduleLocations = getModuleLocations();
+    }
+
+    public MapleSimSwerveDrivetrain mapleSimSwerveDrivetrain = null;
+
+    private void startSimThread() {
+                mapleSimSwerveDrivetrain = new MapleSimSwerveDrivetrain(
+                Seconds.of(kSimLoopPeriod),
+                Pounds.of(115),
+                Inches.of(30),
+                Inches.of(30),
+                DCMotor.getKrakenX60(1),
+                DCMotor.getFalcon500(1),
+                1.2,
+                getModuleLocations(),
+                getPigeon2(),
+                getModules(),
+                DriveConfig.FRONT_LEFT(),
+                DriveConfig.FRONT_RIGHT(),
+                DriveConfig.BACK_LEFT(),
+                DriveConfig.BACK_RIGHT());
+        /* Run simulation at a faster rate so PID gains behave more reasonably */
+        m_simNotifier = new Notifier(mapleSimSwerveDrivetrain::update);
+
+        /* Run simulation at a faster rate so PID gains behave more reasonably */
+        m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
     public void setCurrentLimits() { // used for setting different current limits for auton/teleop
@@ -90,19 +128,11 @@ public class DriveSim extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder>  impl
         }
     }
 
-    private void startSimThread() {
-        m_lastSimTime = Utils.getCurrentTimeSeconds();
-
-        /* Run simulation at a faster rate so PID gains behave more reasonably */
-        m_simNotifier = new Notifier(() -> {
-            final double currentTime = Utils.getCurrentTimeSeconds();
-            double deltaTime = currentTime - m_lastSimTime;
-            m_lastSimTime = currentTime;
-
-            /* use the measured time delta, get battery voltage from WPILib */
-            updateSimState(deltaTime, RobotController.getBatteryVoltage());
-        });
-        m_simNotifier.startPeriodic(kSimLoopPeriod);
+    @Override
+    public void resetPose(Pose2d pose) {
+        if (this.mapleSimSwerveDrivetrain != null) mapleSimSwerveDrivetrain.mapleSimDrive.setSimulationWorldPose(pose);
+        Timer.delay(0.1); // wait for simulation to update
+        super.resetPose(pose);
     }
 
     @Override
@@ -119,4 +149,12 @@ public class DriveSim extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder>  impl
     public void setOperatorPerspective(Rotation2d rotation2d) {
         setOperatorPerspectiveForward(rotation2d);
     }
+    
+    @Override
+    public void setSimulationWorldPose(Pose2d pose) {
+        if (this.mapleSimSwerveDrivetrain != null) {
+            this.mapleSimSwerveDrivetrain.mapleSimDrive.setSimulationWorldPose(pose);
+        }
+    }
+
 }

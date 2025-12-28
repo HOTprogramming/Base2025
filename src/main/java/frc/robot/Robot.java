@@ -17,6 +17,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 
+//added for maplesim
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoralOnField;
+
 import edu.wpi.first.wpilibj.DataLogManager;
 
 
@@ -72,7 +76,7 @@ public class Robot extends TimedRobot {
       initAuto.schedule();
       ppConfigured = true;
     }
-    
+    m_robotContainer.resetSimulation();
     SmartDashboard.putBoolean("Teleop", false);
     SmartDashboard.putBoolean("Auto", false);
 
@@ -93,6 +97,9 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     SmartDashboard.putBoolean("Auto", true);
 
+    if (Robot.isSimulation()) {
+        SimulatedArena.getInstance().resetFieldForAuto();
+    }
     m_autonomousCommand = Commands.waitSeconds(0.01).andThen(m_robotContainer.getAutonomousCommand());
 
     if (m_autonomousCommand != null) {
@@ -134,6 +141,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void simulationPeriodic() {
-    
+
   }
 }

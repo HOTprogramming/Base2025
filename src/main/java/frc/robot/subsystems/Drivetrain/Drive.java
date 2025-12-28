@@ -920,5 +920,9 @@ public class Drive extends SubsystemBase {
 
         }
     }
+
+    public void resetDriveSimulation(Pose2d pose) {
+        this.driveIO.setSimulationWorldPose(pose);
+    }
 }
 

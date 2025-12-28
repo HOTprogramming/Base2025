@@ -74,4 +74,7 @@ public interface DriveIO {
     default void setOperatorPerspective(Rotation2d rotation2d) {}
 
     default void setNeutralMode(NeutralModeValue neutralModeValue) {}
+
+    default void setSimulationWorldPose(Pose2d pose) {}
 }
+
