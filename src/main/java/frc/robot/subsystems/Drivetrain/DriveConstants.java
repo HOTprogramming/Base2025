@@ -469,21 +469,21 @@ public class DriveConstants {
 
     // Simulated voltage necessary to overcome friction
     private static final Voltage kSteerFrictionVoltageComp25 = Volts.of(0.2);
-    private static final Voltage kDriveFrictionVoltageComp25 = Volts.of(0.2);   
-    private static final Current kSlipCurrentComp25 = Amps.of(120.0);
+    private static final Voltage kDriveFrictionVoltageComp25 = Volts.of(0.2);
+    private static final Current kSlipCurrentComp25 =Amps.of(120.0); 
 
     // The steer motor uses any SwerveModule.SteerRequestType control request with the
     // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
     private static final Slot0Configs steerGainsComp25 = new Slot0Configs()
-        .withKP(100).withKI(0).withKD(0.5)
-        .withKS(0.1).withKV(1.4).withKA(0)
-        .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign)
+    .withKP(100).withKI(0).withKD(0.5)
+    .withKS(0.1).withKV(1.4).withKA(0)
+    .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
         ;
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     private static final Slot0Configs driveGainsComp25 = new Slot0Configs()
-        .withKP(0.1).withKI(0).withKD(0)
-        .withKS(0.0).withKV(0.124).withKA(0.0);
+    .withKP(0.1).withKI(0).withKD(0)
+    .withKS(0).withKV(0.124);
 
     private static final ClosedLoopOutputType STEER_CLOSED_LOOP_OUTPUT_TYPEComp25 = ClosedLoopOutputType.Voltage;
     private static final ClosedLoopOutputType DRIVE_CLOSED_LOOP_OUTPUT_TYPEComp25 = ClosedLoopOutputType.Voltage;
@@ -515,9 +515,9 @@ public class DriveConstants {
     private static final int kFrontLeftDriveMotorIdComp25 = 4;
     private static final int kFrontLeftSteerMotorIdComp25 = 3;
     private static final int kFrontLeftEncoderIdComp25 = 43;
-    private static final Angle kFrontLeftEncoderOffsetComp25 = Rotations.of(0.425048828125);
-    private static final boolean kFrontLeftSteerMotorInvertedComp25 = false;
-    private static final boolean kFrontLeftEncoderInvertedComp25 = true;  
+    private static final Angle kFrontLeftEncoderOffsetComp25 = Rotations.of(-0.425537109375);
+    private static final boolean kFrontLeftSteerMotorInvertedComp25 = true;
+    private static final boolean kFrontLeftEncoderInvertedComp25 = false;  
     private static final Distance kFrontLeftXPosComp25 = Inches.of(11.5);
     private static final Distance kFrontLeftYPosComp25 = Inches.of(11.5);
 
@@ -525,9 +525,9 @@ public class DriveConstants {
     private static final int kFrontRightDriveMotorIdComp25 = 8;
     private static final int kFrontRightSteerMotorIdComp25 = 7;
     private static final int kFrontRightEncoderIdComp25 = 41;
-    private static final Angle kFrontRightEncoderOffsetComp25 = Rotations.of(-0.102294921875);
-    private static final boolean kFrontRightSteerMotorInvertedComp25 = false;
-    private static final boolean kFrontRightEncoderInvertedComp25 = true;
+    private static final Angle kFrontRightEncoderOffsetComp25 =Rotations.of(0.103759765625);
+    private static final boolean kFrontRightSteerMotorInvertedComp25 = true;
+    private static final boolean kFrontRightEncoderInvertedComp25 = false; 
     private static final Distance kFrontRightXPosComp25 = Inches.of(11.5);
     private static final Distance kFrontRightYPosComp25 = Inches.of(-11.5);
 
@@ -535,9 +535,9 @@ public class DriveConstants {
     private static final int kBackLeftDriveMotorIdComp25 = 2;
     private static final int kBackLeftSteerMotorIdComp25 = 1;
     private static final int kBackLeftEncoderIdComp25 = 42;
-    private static final Angle kBackLeftEncoderOffsetComp25 = Rotations.of(0.31787109375);
-    private static final boolean kBackLeftSteerMotorInvertedComp25 = false;  
-    private static final boolean kBackLeftEncoderInvertedComp25 = true;  
+    private static final Angle kBackLeftEncoderOffsetComp25 = Rotations.of(-0.3125);
+    private static final boolean kBackLeftSteerMotorInvertedComp25 = true;  
+    private static final boolean kBackLeftEncoderInvertedComp25= false;  
     private static final Distance kBackLeftXPosComp25 = Inches.of(-11.5);
     private static final Distance kBackLeftYPosComp25 = Inches.of(11.5);
 
@@ -545,9 +545,9 @@ public class DriveConstants {
     private static final int kBackRightDriveMotorIdComp25 = 6;
     private static final int kBackRightSteerMotorIdComp25 = 5;
     private static final int kBackRightEncoderIdComp25 = 40;
-    private static final Angle kBackRightEncoderOffsetComp25 = Rotations.of(-0.282958984375);
-    private static final boolean kBackRightSteerMotorInvertedComp25 = false;
-    private static final boolean kBackRightEncoderInvertedComp25 = true; 
+    private static final Angle kBackRightEncoderOffsetComp25 = Rotations.of(0.28125);
+    private static final boolean kBackRightSteerMotorInvertedComp25 = true;
+    private static final boolean kBackRightEncoderInvertedComp25 = false;
 
     private static final Distance kBackRightXPosComp25 = Inches.of(-11.5);
     private static final Distance kBackRightYPosComp25 = Inches.of(-11.5);
@@ -901,7 +901,7 @@ public class DriveConstants {
     private static final int kFrontLeftSteerMotorIdCompbot = 7;
     private static final int kFrontLeftEncoderIdCompbot = 41;
     private static final Angle kFrontLeftEncoderOffsetCompbot = Rotations.of(-0.267822);
-    private static final boolean kFrontLeftSteerMotorInvertedCompbot = true;
+    private static final boolean kFrontLeftSteerMotorInvertedCompbot = false;
     private static final boolean kFrontLeftEncoderInvertedCompbot = false;
 
     private static final Distance kFrontLeftXPosCompbot = Inches.of(11.5);
@@ -912,7 +912,7 @@ public class DriveConstants {
     private static final int kFrontRightSteerMotorIdCompbot = 5;
     private static final int kFrontRightEncoderIdCompbot = 40;
     private static final Angle kFrontRightEncoderOffsetCompbot = Rotations.of(0.3642578125);
-    private static final boolean kFrontRightSteerMotorInvertedCompbot = true;
+    private static final boolean kFrontRightSteerMotorInvertedCompbot = false;
     private static final boolean kFrontRightEncoderInvertedCompbot = false;
 
     private static final Distance kFrontRightXPosCompbot = Inches.of(11.5);
@@ -923,7 +923,7 @@ public class DriveConstants {
     private static final int kBackLeftSteerMotorIdCompbot = 3;
     private static final int kBackLeftEncoderIdCompbot = 43;
     private static final Angle kBackLeftEncoderOffsetCompbot = Rotations.of(-0.1357421875);
-    private static final boolean kBackLeftSteerMotorInvertedCompbot = true;
+    private static final boolean kBackLeftSteerMotorInvertedCompbot = false;
     private static final boolean kBackLeftEncoderInvertedCompbot = false;
 
     private static final Distance kBackLeftXPosCompbot = Inches.of(-11.5);
@@ -934,7 +934,7 @@ public class DriveConstants {
     private static final int kBackRightSteerMotorIdCompbot = 1;
     private static final int kBackRightEncoderIdCompbot = 42;
     private static final Angle kBackRightEncoderOffsetCompbot = Rotations.of(-0.0908203125);
-    private static final boolean kBackRightSteerMotorInvertedCompbot = true;
+    private static final boolean kBackRightSteerMotorInvertedCompbot = false;
     private static final boolean kBackRightEncoderInvertedCompbot = false;
 
     private static final Distance kBackRightXPosCompbot = Inches.of(-11.5);
