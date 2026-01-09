@@ -20,7 +20,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
+import frc.robot.subsystems.Turret.Turret;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
+
 
 
 public class RobotContainer {
@@ -30,6 +32,7 @@ public class RobotContainer {
   private String autoString;
 
   private Drive drivetrain;
+  private Turret turretSubsystem;
   
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
@@ -44,6 +47,7 @@ public class RobotContainer {
         drivetrain = new Drive(new DriveSim());
     }
 
+    turretSubsystem = new Turret();
 
     chooser.setDefaultOption("Auto", "Auto");
     
@@ -215,6 +219,12 @@ public class RobotContainer {
      //driver.b().whileTrue(turretSubsystem.ejectCommand()).whileFalse(turretSubsystem.idleCommand());
      //driver.x().whileTrue(turretSubsystem.idleCommand());
    
+    // Turret Test Commands 
+    driver.a().onTrue(turretSubsystem.moveByRotations(0.0833333333333));   // should be 45 degrees 
+    driver.b().onTrue(turretSubsystem.moveByRotations(0.16666666667));    //should be 90 degrees 
+    driver.x().onTrue(turretSubsystem.moveByDegrees(-45.0));
+    driver.y().onTrue(turretSubsystem.moveByDegrees(-90.0));
+    driver.start().onTrue(turretSubsystem.zeroTurret());
 
 
       NamedCommands.registerCommand("OTF", drivetrain.generateOnTheFly());
