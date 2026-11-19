@@ -123,6 +123,9 @@ public class ElevatorKraken implements MotorInterface {
         if (targetActive) motor2.setControl(follower);
     }
 
+    /**
+     * @param position in inches (package is 10)
+     */
 	@Override
     public void goToSetpoint(double position) {
         // do not execute if any major errors are present
@@ -149,6 +152,9 @@ public class ElevatorKraken implements MotorInterface {
         motor.setControl(motionMagic.withPosition(target));
     }
 
+    /**
+     * @return Position in inches (package is 10)
+     */
 	@Override
     public double getState() {
         return elevatorPosition.getValueAsDouble();

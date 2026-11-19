@@ -98,31 +98,31 @@ public class ArmKraken implements MotorInterface {
     }
 
     /**
-     * @param position angle in degrees (package is -90)
+     * @param angle in degrees (package is -90)
      */
 	@Override
-    public void goToSetpoint(double position) {
+    public void goToSetpoint(double angle) {
         // do not execute if any major errors are present
         if (!ArmConstants.kPresetsCalibrated 
                 || !configOK
-                || !Double.isFinite(position)
-                || position < ArmConstants.kMinPosition
-                || position > ArmConstants.kMaxPosition
+                || !Double.isFinite(angle)
+                || angle < ArmConstants.kMinPosition
+                || angle > ArmConstants.kMaxPosition
                 || subsystemFault.isError()) {
 
             // Publish Errors
-            SmartDashboard.putBoolean("Arm/Command Too Low", position < ArmConstants.kMinPosition);
-            SmartDashboard.putBoolean("Arm/Command Too High", position > ArmConstants.kMaxPosition);
-            SmartDashboard.putBoolean("Arm/position isnt finite", !Double.isFinite(position));
+            SmartDashboard.putBoolean("Arm/Command Too Low", angle < ArmConstants.kMinPosition);
+            SmartDashboard.putBoolean("Arm/Command Too High", angle > ArmConstants.kMaxPosition);
+            SmartDashboard.putBoolean("Arm/position isnt finite", !Double.isFinite(angle));
             SmartDashboard.putBoolean("Arm/Config Bad", !configOK);
             SmartDashboard.putBoolean("Arm/Encoder Bad", !ArmCancoderPosition.refresh().getStatus().isOK());
             stop();
             return;
         }
 
-        target = position;
+        target = angle;
         targetActive = true;
-        motor.setControl(motionMagic.withPosition(position).withSlot(0));
+        motor.setControl(motionMagic.withPosition(angle).withSlot(0));
     }
 
     /**
