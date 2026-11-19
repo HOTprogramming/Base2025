@@ -13,9 +13,15 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.util.SubsystemExamples.ExampleMotorInterface;
 
+/**
+ * This "component" example has one motor and zero encoders. This component will work best 
+ * for shooters and simple intakes that take in <b>velocity</b> setpoints
+ * <p>
+ * This skeleton is also good as a starting point for more complex/unique systems
+ */
 public class ExampleKraken implements ExampleMotorInterface {
     // declare IO
-    public final TalonFX motor;
+    private final TalonFX motor;
 
     private double target;
     private boolean targetActive;

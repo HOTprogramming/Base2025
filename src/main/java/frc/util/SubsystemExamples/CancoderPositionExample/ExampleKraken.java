@@ -15,11 +15,15 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.util.SubsystemExamples.ExampleMotorInterface;;
+import frc.util.SubsystemExamples.ExampleMotorInterface;
 
+/**
+ * This "component" example has one motor and a fused encoder. This component will work best 
+ * for elevators and arms that take in <b>positional</b> setpoints
+ */
 public class ExampleKraken implements ExampleMotorInterface {
-    public final CANcoder encoder;
-    public final TalonFX motor;
+    private final CANcoder encoder;
+    private final TalonFX motor;
 
     private double target;
     private boolean targetActive;
