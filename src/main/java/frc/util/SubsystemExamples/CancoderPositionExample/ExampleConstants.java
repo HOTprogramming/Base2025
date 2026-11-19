@@ -1,4 +1,4 @@
-package frc.util.SubsystemExample;
+package frc.util.SubsystemExamples.CancoderPositionExample;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;

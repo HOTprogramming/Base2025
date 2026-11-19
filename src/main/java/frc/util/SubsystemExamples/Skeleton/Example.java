@@ -1,13 +1,13 @@
-package frc.util.SubsystemExample;
+package frc.util.SubsystemExamples.Skeleton;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.MotorInterface;
+import frc.util.SubsystemExamples.ExampleMotorInterface;
 
 public class Example extends SubsystemBase {
-    private final MotorInterface mExampleKraken;
+    private final ExampleMotorInterface mExampleKraken;
     private double commandedPosition;
 
     public Example() {
@@ -26,13 +26,13 @@ public class Example extends SubsystemBase {
 	private FunctionalCommand ExampleCommand(double position){
 		return new FunctionalCommand(
 			() -> this.commandedPosition = position,
-			() -> this.mExampleKraken.goToPosition(position),
-			interrupted -> this.mExampleKraken.goToPosition(position),
+			() -> this.mExampleKraken.goToSetpoint(position),
+			interrupted -> this.mExampleKraken.goToSetpoint(position),
 			() -> this.mExampleKraken.atTarget(),
 			this);
 	}
 
-    public double getPosition() { return this.mExampleKraken.getPosition(); }
+    public double getPosition() { return this.mExampleKraken.getState(); }
 
     public double getCommandedPosition() { return this.commandedPosition; }
 
@@ -40,7 +40,7 @@ public class Example extends SubsystemBase {
     @Override
     public void periodic() {
         mExampleKraken.update();
-        SmartDashboard.putNumber("Example/Position", mExampleKraken.getPosition());
+        SmartDashboard.putNumber("Example/Position", mExampleKraken.getState());
         SmartDashboard.putNumber("Example/Target", mExampleKraken.getTarget());
         SmartDashboard.putBoolean("Example/At Target", mExampleKraken.atTarget());
         SmartDashboard.putBoolean("Example/Control Active", mExampleKraken.isActive());

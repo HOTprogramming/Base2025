@@ -1,4 +1,4 @@
-package frc.util.SubsystemExample;
+package frc.util.SubsystemExamples.CancoderPositionExample;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
@@ -15,9 +15,9 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.MotorInterface;
+import frc.util.SubsystemExamples.ExampleMotorInterface;;
 
-public class ExampleKraken implements MotorInterface {
+public class ExampleKraken implements ExampleMotorInterface {
     public final CANcoder encoder;
     public final TalonFX motor;
 
@@ -83,7 +83,7 @@ public class ExampleKraken implements MotorInterface {
     }
 
 	@Override
-    public void goToPosition(double position) {
+    public void goToSetpoint(double position) {
         // do not execute if any major errors are present
         if (!ExampleConstants.kPresetsCalibrated 
                 || !configOK
@@ -108,7 +108,7 @@ public class ExampleKraken implements MotorInterface {
     }
 
 	@Override
-    public double getPosition() {
+    public double getState() {
         return ExamplePosition.getValueAsDouble();
     }
 
@@ -122,7 +122,7 @@ public class ExampleKraken implements MotorInterface {
 
 	@Override
     public boolean atTarget() {
-        return targetActive && Math.abs(getPosition() - target) <= ExampleConstants.kPositionTolerance;
+        return targetActive && Math.abs(getState() - target) <= ExampleConstants.kPositionTolerance;
     }
 
 	@Override
