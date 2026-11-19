@@ -9,7 +9,7 @@ public final class ExampleConstants {
     public static final int kExampleSensorID = 1;
     public static final CANBus canbus = new CANBus(Constants.canName);
 
-    // Expected Value Range
+    // Expected Value Range (May be unnessesary depending on specific sensor)
     public static final double kMaxReading = 2;
     public static final double kMineading = -2;
 }
