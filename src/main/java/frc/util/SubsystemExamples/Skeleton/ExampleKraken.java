@@ -1,7 +1,5 @@
 package frc.util.SubsystemExamples.Skeleton;
 
-import java.util.concurrent.PriorityBlockingQueue;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
