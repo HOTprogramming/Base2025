@@ -132,6 +132,11 @@ public class ExampleKraken implements ExampleMotorInterface {
 	@Override
     public boolean isConfigured() { return configOK; }
 
+    @Override
+    public StatusCode getComponentStatus() {
+        return this.subsystemFault;
+    }
+
 	@Override
     public boolean atTarget() {
         return targetActive && Math.abs(getState() - target) <= ExampleConstants.kPositionTolerance;
