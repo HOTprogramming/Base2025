@@ -6,7 +6,6 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -98,6 +97,9 @@ public class ArmKraken implements MotorInterface {
         );
     }
 
+    /**
+     * @param position angle in degrees (package is -90)
+     */
 	@Override
     public void goToSetpoint(double position) {
         // do not execute if any major errors are present
@@ -123,6 +125,9 @@ public class ArmKraken implements MotorInterface {
         motor.setControl(motionMagic.withPosition(position).withSlot(0));
     }
 
+    /**
+     * Angle in degrees (package is -90)
+     */
 	@Override
     public double getState() {
         return ArmPosition.getValueAsDouble();
@@ -136,11 +141,16 @@ public class ArmKraken implements MotorInterface {
 	@Override
     public boolean isConfigured() { return configOK; }
 
+    @Override
+    public StatusCode getComponentStatus() {
+        return this.subsystemFault;
+    }
+
 	@Override
     public boolean atTarget() {
         return targetActive && Math.abs(getState() - target) <= ArmConstants.kPositionTolerance;
     }
-
+    
 	@Override
     public void stop() {
         targetActive = false;

@@ -13,11 +13,15 @@ public class Arm extends SubsystemBase {
 
     public Arm() {
         mArmKraken = new ArmKraken();
-        commandedPosition = ArmConstants.kSetpoint1;
+        commandedPosition = ArmConstants.kPackage;
     }
 
-    public Command goToSetpoint1() {
-        return ArmCommand(ArmConstants.kSetpoint1);
+    public Command goToPackage() {
+        return ArmCommand(ArmConstants.kPackage);
+    }
+
+    public Command horizontal() {
+        return ArmCommand(ArmConstants.kHorizontal);
     }
 
     public Command stopArm() {

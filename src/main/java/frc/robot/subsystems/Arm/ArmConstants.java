@@ -35,12 +35,13 @@ public final class ArmConstants {
     public static final int kArmEncoderID = 44;
     public static final CANBus canbus = new CANBus(Constants.canName);
 
-    // Setpoints
-    public static final double kSetpoint1 = 1;
+    // Setpoints (Degrees)
+    public static final double kPackage = -90;
+    public static final double kHorizontal = 0;
 
-    // Positional Limits
-    public static final double kMinPosition = 0;
-    public static final double kMaxPosition = 2;
+    // Positional Limits (Degrees)
+    public static final double kMinPosition = -360;
+    public static final double kMaxPosition = 1;
     public static final double kPositionTolerance = 1.0;
 
     // Sensor Zeroing

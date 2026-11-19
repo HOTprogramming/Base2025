@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusCode;
+
 /**
  * There should be one interface PER subsystem component.
  * <p>
@@ -34,6 +36,10 @@ public interface MotorInterface {
      * @return Is all IO in the component correctly configured
      */
     public boolean isConfigured();
+    /**
+     * @return status code of entire component, run <b>.toString</b> to get the verbose issue
+     */
+    public StatusCode getComponentStatus();
     /**
      * @return Is the component at its target within the tolerance
      */
