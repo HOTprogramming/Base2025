@@ -38,8 +38,8 @@ public final class ElevatorConstants {
     public static final CANBus canbus = new CANBus(Constants.canName);
 
     // Setpoints
-    public static final double kSetpoint1 = 10.4;
-    public static final double kSetpoint2 = 20.0;
+    public static final double kPackage = 15.0;
+    public static final double kL3 = 24.7;
 
     // Positional Limits
     public static final double kMinPosition = 10.0;

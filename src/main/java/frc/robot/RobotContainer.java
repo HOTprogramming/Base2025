@@ -60,8 +60,8 @@ public class RobotContainer {
         }
       ));
       
-      operator.a().onTrue(elevator.goToSetpoint1());
-      operator.b().onTrue(elevator.goToSetpoint2());
+      operator.a().onTrue(elevator.goToPackage());
+      operator.b().onTrue(elevator.goToL3());
   }
 
   /**

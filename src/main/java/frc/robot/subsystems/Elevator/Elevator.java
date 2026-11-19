@@ -12,15 +12,15 @@ public class Elevator extends SubsystemBase {
 
     public Elevator() {
         mElevatorKraken = new ElevatorKraken();
-        commandedPosition = ElevatorConstants.kSetpoint1;
+        commandedPosition = ElevatorConstants.kPackage;
     }
 
-    public Command goToSetpoint1() {
-        return elevatorCommand(ElevatorConstants.kSetpoint1);
+    public Command goToPackage() {
+        return elevatorCommand(ElevatorConstants.kPackage);
     }
 
-    public Command goToSetpoint2() {
-        return elevatorCommand(ElevatorConstants.kSetpoint2);
+    public Command goToL3() {
+        return elevatorCommand(ElevatorConstants.kL3);
     }
 
     public Command stopElevator() {
