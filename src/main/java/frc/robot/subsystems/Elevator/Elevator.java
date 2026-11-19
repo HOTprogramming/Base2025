@@ -4,9 +4,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.MotorInterface;
 
 public class Elevator extends SubsystemBase {
-    public final ElevatorKraken mElevatorKraken = new ElevatorKraken();
+    public final MotorInterface mElevatorKraken = new ElevatorKraken();
 
     public Command goToSetpoint1() {
         return elevatorCommand(ElevatorConstants.kSetpoint1);

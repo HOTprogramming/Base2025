@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-public interface subsystembase {
+public interface MotorInterface {
     public void update();
     public void goToPosition(double position);
     public double getPosition();

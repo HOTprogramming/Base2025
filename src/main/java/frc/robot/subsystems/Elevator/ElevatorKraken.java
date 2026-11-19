@@ -7,10 +7,10 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.subsystembase;
+import frc.robot.subsystems.MotorInterface;
 
 /** Two Kraken X60 TalonFX motors using the sample's leader/follower CANcoder approach. */
-public class ElevatorKraken implements subsystembase {
+public class ElevatorKraken implements MotorInterface {
     public final TalonFX motor = new TalonFX(
         ElevatorConstants.kelevatorMotorID, ElevatorConstants.canbus);
     public final TalonFX motor2 = new TalonFX(
