@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.Drivetrain.Drive;
 import frc.robot.subsystems.Drivetrain.DriveSim;
+import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.Drivetrain.DriveKraken;
 
 
@@ -30,6 +31,7 @@ public class RobotContainer {
   private String autoString;
 
   private Drive drivetrain;
+  private Elevator elevator;
   
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
@@ -42,7 +44,7 @@ public class RobotContainer {
     } else {
         drivetrain = new Drive(new DriveSim());
     }
-
+    elevator = new Elevator();
 
     chooser.setDefaultOption("Auto", "Auto");
     
@@ -197,6 +199,8 @@ public class RobotContainer {
 
       new EventTrigger("OTF").onTrue(Commands.runOnce(() -> drivetrain.generateOnTheFly()));
 
+      operator.a().onTrue(elevator.goToSetpoint1());
+      operator.b().onTrue(elevator.goToSetpoint2());
   }
 
   public void updateAutonCommand() {

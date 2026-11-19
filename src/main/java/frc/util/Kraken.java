@@ -16,7 +16,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
+//import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -173,9 +173,9 @@ public class Kraken {
 		}
 	}
 
-	public void setFollower(int leaderID, MotorAlignmentValue alignment) {
-		motor.setControl(new Follower(leaderID, alignment));
-	}
+	//public void setFollower(int leaderID, MotorAlignmentValue alignment) {
+	//	motor.setControl(new Follower(leaderID, alignment));
+	//}
 
 	public double getSupplyCurrent(){
 		return motor.getSupplyCurrent().getValueAsDouble();

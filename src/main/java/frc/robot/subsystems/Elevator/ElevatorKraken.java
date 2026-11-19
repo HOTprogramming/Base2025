@@ -1,50 +1,90 @@
 package frc.robot.subsystems.Elevator;
 
-import frc.util.Kraken;
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
 
-public class ElevatorKraken {
-	public Kraken m_krakenFXLeftTop = new Kraken(ElevatorConstants.kMotorIDLeftTop, ElevatorConstants.ShooterConfigs.shooterMotorConfigs(), "Shooter", "Left Top");
-	public Kraken m_krakenFXLeftBottom = new Kraken(ElevatorConstants.kMotorIDLeftBottom, ElevatorConstants.ShooterConfigs.shooterMotorConfigs(), "Shooter", "Left Bottom");
-	public Kraken m_krakenFXRightTop = new Kraken(ElevatorConstants.kMotorIDRightTop, ElevatorConstants.ShooterConfigs.shooterMotorConfigs(), "Shooter", "Right Top");
-	public Kraken m_krakenFXHood = new Kraken(ElevatorConstants.kHoodMotorID, ElevatorConstants.ShooterConfigs.hoodMotorConfigs(), 
-	"Shooter", "Hood");
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.subsystembase;
 
-	public ElevatorKraken() {
-		m_krakenFXLeftTop.setup();
-		m_krakenFXLeftBottom.setup();
-		m_krakenFXRightTop.setup();
-		m_krakenFXHood.setup();
+/** Two Kraken X60 TalonFX motors using the sample's leader/follower CANcoder approach. */
+public class ElevatorKraken implements subsystembase {
+    public final TalonFX motor = new TalonFX(
+        ElevatorConstants.kelevatorMotorID, ElevatorConstants.canbus);
+    public final TalonFX motor2 = new TalonFX(
+        ElevatorConstants.kelevatorMotor2ID, ElevatorConstants.canbus);
+    public final CANcoder encoder = new CANcoder(
+        ElevatorConstants.kelevatorEncoderID, ElevatorConstants.canbus);
 
-		m_krakenFXHood.motor.setPosition(0);
-	}
+    private final MotionMagicExpoTorqueCurrentFOC motionMagic =
+        new MotionMagicExpoTorqueCurrentFOC(0).withSlot(0);
+    private final Follower follower = new Follower(motor.getDeviceID(), true);
+    private double target = 0;
+    private boolean targetActive = false;
+    private boolean configOK = false;
 
-	public void update() {
-		m_krakenFXLeftTop.update();
-		m_krakenFXLeftBottom.update();
-		m_krakenFXRightTop.update();
-		m_krakenFXHood.update();
-	}
+    public ElevatorKraken() {
+        StatusCode encoderStatus = encoder.getConfigurator().apply(ElevatorConstants.EncoderConfigs);
+        StatusCode leaderStatus = motor.getConfigurator().apply(ElevatorConstants.ElevatorConfigs);
+        StatusCode followerStatus = motor2.getConfigurator().apply(ElevatorConstants.ElevatorConfigs);
+        configOK = encoderStatus.isOK() && leaderStatus.isOK() && followerStatus.isOK();
+        if (!configOK) {
+            System.err.println("Elevator config error. Encoder=" + encoderStatus
+                + " leader=" + leaderStatus + " follower=" + followerStatus);
+        }
+        stop();
+    }
 
-	public void runVelocity(double desiredRotationsPerSecond) {
-		if(desiredRotationsPerSecond == 0) {
-			stop();
-			return;
-		}
-		m_krakenFXLeftTop.setVelocity(desiredRotationsPerSecond, Kraken.VelocityControlType.VelocityTorqueCurrentFOC, 1);
-		m_krakenFXLeftBottom.setVelocity(desiredRotationsPerSecond, Kraken.VelocityControlType.VelocityTorqueCurrentFOC, 1);
-		m_krakenFXRightTop.setVelocity(desiredRotationsPerSecond, Kraken.VelocityControlType.VelocityTorqueCurrentFOC, 1);
-	}
+	@Override
+    public void update() {
+        if (targetActive) motor2.setControl(follower);
+    }
 
-	public void runPosition(double desiredRotations) {
-		m_krakenFXHood.setPosition(desiredRotations, Kraken.PositionControlType.PositionVoltage, 0);
-	}
+	@Override
+    public void goToPosition(double position) {
+        if (!ElevatorConstants.kPresetsCalibrated || !configOK
+            || !Double.isFinite(position)
+            || position < ElevatorConstants.kMinPosition
+            || position > ElevatorConstants.kMaxPosition
+            || !encoder.getPosition().refresh().getStatus().isOK()) {
+				//SmartDashboard.getBoolean("elevator1", position < ElevatorConstants.kMinPosition);
+				//SmartDashboard.putBoolean("elevatr2", position > ElevatorConstants.kMaxPosition);
+				SmartDashboard.putBoolean("Finite", !Double.isFinite(position));
+				//SmartDashboard.putBoolean("Config", configOK);
+				//SmartDashboard.putBoolean("encoder", encoder.getPosition().refresh().getStatus().isOK());
+           stop();
+            return;
+        }
+        target = position;
+        targetActive = true;
+        motor2.setControl(follower);
+        motor.setControl(motionMagic.withPosition(target));
+    }
 
-	public void stop() {
-		m_krakenFXLeftTop.stop();
-		m_krakenFXLeftBottom.stop();
-		m_krakenFXRightTop.stop();
-	}
-	public double getTotalCurrent(){
-		return m_krakenFXHood.getSupplyCurrent() + m_krakenFXLeftBottom.getSupplyCurrent() + m_krakenFXLeftTop.getSupplyCurrent() + m_krakenFXRightTop.getSupplyCurrent();
-	}
+	@Override
+    public double getPosition() {
+        return motor.getPosition().getValueAsDouble();
+    }
+
+    public double getTarget() { return target; }
+
+	@Override
+    public boolean isActive() { return targetActive; }
+
+	@Override
+    public boolean isConfigured() { return configOK; }
+
+	@Override
+    public boolean atTarget() {
+        return targetActive && Math.abs(getPosition() - target) <= ElevatorConstants.kPositionTolerance;
+    }
+
+	@Override
+    public void stop() {
+        targetActive = false;
+        motor.stopMotor();
+        motor2.stopMotor();
+    }
 }

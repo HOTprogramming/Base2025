@@ -1,51 +1,50 @@
 package frc.robot.subsystems.Elevator;
 
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotState;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-
 public class Elevator extends SubsystemBase {
-	public final ElevatorKraken mShooterKraken = new ElevatorKraken();
+    public final ElevatorKraken mElevatorKraken = new ElevatorKraken();
 
-	
+    public Command goToSetpoint1() {
+        return elevatorCommand(ElevatorConstants.kSetpoint1);
+    }
 
-	public Elevator() {
-		
+    public Command goToSetpoint2() {
+        return elevatorCommand(ElevatorConstants.kSetpoint2);
+    }
 
-		
+    public Command stopElevator() {
+        return runOnce(mElevatorKraken::stop);
+    }
+
+	private FunctionalCommand elevatorCommand(double position){
+		return new FunctionalCommand(
+			() -> {},
+			() -> mElevatorKraken.goToPosition(position),
+			interrupted -> mElevatorKraken.goToPosition(position),
+			() -> mElevatorKraken.atTarget(),
+			this);
 	}
 
-	public double getShooterSpeed() {
-		return mShooterKraken.m_krakenFXLeftTop.motor.getVelocity().getValueAsDouble();
-	}
+	// private FunctionalCommand elevatorCommand(double position){
+    // //return new FunctionalCommand(
+    //   //() -> this.elevatorCommandedPos.setDouble(position),
+    //   () -> io.setElevatorMotorControl(position),
+    //   interrupted -> io.setElevatorMotorControl(position), 
+    //   () -> checkRange(1.0),
+    //   this);
+  //}
 
-	public double getHoodAngle() {
-		return mShooterKraken.m_krakenFXHood.motor.getPosition().getValueAsDouble();
-	}
-
-	@Override
-	public void periodic() {
-		mShooterKraken.update();
-		// SmartDashboard.putNumber("target hood", targetHood);		
-		// SmartDashboard.putNumber("target speed", targetSpeed);
-
-	}
-
-	public Command reverseShooter() {
-		return Commands.sequence(
-			runOnce(() -> mShooterKraken.runVelocity(0.1)),
-			Commands.waitSeconds(0.5),
-			run(() -> mShooterKraken.runVelocity(-20)));
-	}
-
-	
+    @Override
+    public void periodic() {
+        mElevatorKraken.update();
+        SmartDashboard.putNumber("Elevator/Position", mElevatorKraken.getPosition());
+        SmartDashboard.putNumber("Elevator/Target", mElevatorKraken.getTarget());
+        SmartDashboard.putBoolean("Elevator/At Target", mElevatorKraken.atTarget());
+        SmartDashboard.putBoolean("Elevator/Control Active", mElevatorKraken.isActive());
+        SmartDashboard.putBoolean("Elevator/Configured", mElevatorKraken.isConfigured());
+    }
 }
