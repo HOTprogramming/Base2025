@@ -1,4 +1,4 @@
-package frc.util.SubsystemExamples.CancoderPositionExample;
+package frc.util.SubsystemExamples.CancoderPosition;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;

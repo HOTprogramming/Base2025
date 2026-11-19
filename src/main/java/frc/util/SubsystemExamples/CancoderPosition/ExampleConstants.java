@@ -1,4 +1,4 @@
-package frc.util.SubsystemExamples.CancoderPositionExample;
+package frc.util.SubsystemExamples.CancoderPosition;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -16,6 +16,18 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import frc.robot.Constants;
 
+/**
+ * This file should hold all of the constants for the entire subsystem.
+ * If there is a value that doesnt change, it should be in here!
+ * <p>
+ * try to label units on values if possible with comments, 
+ * and keep values with similar functions together in clearly marked code blocks
+ * <p>
+ * <b>anyone from the programming team should be able to easily make changes at a competition</b>
+ * <p> 
+ * do not forget to add current limits for both torqueFOC and voltage control modes,
+ * regardless of the current intended control strat
+ */
 public final class ExampleConstants {
     // CAN identification
     public static final int kExampleMotorID = 0;

@@ -1,4 +1,4 @@
-package frc.util.SubsystemExamples.CancoderPositionExample;
+package frc.util.SubsystemExamples.CancoderPosition;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
