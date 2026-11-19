@@ -67,19 +67,23 @@ public class ElevatorKraken implements MotorInterface {
 	@Override
     public void goToPosition(double position) {
         // do not execute if any major errors are present
-        if (!ElevatorConstants.kPresetsCalibrated || !configOK
-            || !Double.isFinite(position)
-            || position < ElevatorConstants.kMinPosition
-            || position > ElevatorConstants.kMaxPosition
-            || !encoder.getPosition().refresh().getStatus().isOK()) {
-				//SmartDashboard.putBoolean("Elevator/Command Too Low", position < ElevatorConstants.kMinPosition);
-				//SmartDashboard.putBoolean("Elevator/Command Too High", position > ElevatorConstants.kMaxPosition);
-				SmartDashboard.putBoolean("Elevator/position isnt finite", !Double.isFinite(position));
-				//SmartDashboard.putBoolean("Elevator/Config Bad", !configOK);
-				//SmartDashboard.putBoolean("Elevator/Encoder Bad", !encoder.getPosition().refresh().getStatus().isOK());
-           stop();
+        if (!ElevatorConstants.kPresetsCalibrated 
+                || !configOK
+                || !Double.isFinite(position)
+                || position < ElevatorConstants.kMinPosition
+                || position > ElevatorConstants.kMaxPosition
+                || !encoder.getPosition().refresh().getStatus().isOK()) {
+
+            // Publish Errors
+            SmartDashboard.putBoolean("Elevator/Command Too Low", position < ElevatorConstants.kMinPosition);
+            SmartDashboard.putBoolean("Elevator/Command Too High", position > ElevatorConstants.kMaxPosition);
+            SmartDashboard.putBoolean("Elevator/position isnt finite", !Double.isFinite(position));
+            SmartDashboard.putBoolean("Elevator/Config Bad", !configOK);
+            SmartDashboard.putBoolean("Elevator/Encoder Bad", !encoder.getPosition().refresh().getStatus().isOK());
+            stop();
             return;
         }
+        
         target = position;
         targetActive = true;
         motor2.setControl(follower);
