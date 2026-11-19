@@ -68,7 +68,7 @@ public class ArmKraken implements MotorInterface {
         encoder.optimizeBusUtilization();
 
         // Configure motors
-        configureIO(ArmConstants.EncoderConfigs, ArmConstants.ArmConfigs);
+        configureIO(ArmConstants.ArmEncoderConfigs, ArmConstants.ArmConfigs);
         stop();
     }
 
@@ -76,9 +76,9 @@ public class ArmKraken implements MotorInterface {
      * This exists to have different configs depending on different situations, 
      * such as different current limits for auto and teleop, or a possible 'limp mode' if excessive errors are detected
      */
-    private void configureIO(CANcoderConfiguration cancoderConfig, TalonFXConfiguration kracken) {
-        StatusCode encoderStatus = encoder.getConfigurator().apply(ArmConstants.EncoderConfigs);
-        StatusCode motorStatus = motor.getConfigurator().apply(ArmConstants.ArmConfigs);
+    private void configureIO(CANcoderConfiguration cancoderConfig, TalonFXConfiguration krackenConfig) {
+        StatusCode encoderStatus = encoder.getConfigurator().apply(cancoderConfig);
+        StatusCode motorStatus = motor.getConfigurator().apply(krackenConfig);
         configOK = encoderStatus.isOK() && motorStatus.isOK();
         if (!configOK) {
             System.err.println("Arm config error. Encoder=" + encoderStatus

@@ -65,7 +65,7 @@ public class ExampleKraken implements ExampleMotorInterface {
           );
 
         // Configure motors
-        configureIO(ExampleConstants.EncoderConfigs, ExampleConstants.ExampleConfigs);
+        configureIO(ExampleConstants.ExampleEncoderConfigs, ExampleConstants.ExampleConfigs);
         stop();
     }
 
@@ -73,9 +73,9 @@ public class ExampleKraken implements ExampleMotorInterface {
      * This exists to have different configs depending on different situations, 
      * such as different current limits for auto and teleop, or a possible 'limp mode' if excessive errors are detected
      */
-    private void configureIO(CANcoderConfiguration cancoderConfig, TalonFXConfiguration kracken) {
-        StatusCode encoderStatus = encoder.getConfigurator().apply(ExampleConstants.EncoderConfigs);
-        StatusCode motorStatus = motor.getConfigurator().apply(ExampleConstants.ExampleConfigs);
+    private void configureIO(CANcoderConfiguration cancoderConfig, TalonFXConfiguration krackenConfig) {
+        StatusCode encoderStatus = encoder.getConfigurator().apply(cancoderConfig);
+        StatusCode motorStatus = motor.getConfigurator().apply(krackenConfig);
         configOK = encoderStatus.isOK() && motorStatus.isOK();
         if (!configOK) {
             System.err.println("Example config error. Encoder=" + encoderStatus

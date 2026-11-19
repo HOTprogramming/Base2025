@@ -88,7 +88,7 @@ public class ElevatorKraken implements MotorInterface {
         encoder.optimizeBusUtilization();
 
         // Configure motors
-        configureIO(ElevatorConstants.EncoderConfigs, ElevatorConstants.ElevatorConfigs, ElevatorConstants.ElevatorConfigs);
+        configureIO(ElevatorConstants.ElevatorEncoderConfigs, ElevatorConstants.ElevatorConfigs, ElevatorConstants.ElevatorConfigs);
         stop();
     }
 
@@ -96,10 +96,10 @@ public class ElevatorKraken implements MotorInterface {
      * This exists to have different configs depending on different situations, 
      * such as different current limits for auto and teleop, or a possible 'limp mode' if excessive errors are detected
      */
-    private void configureIO(CANcoderConfiguration cancoderConfig, TalonFXConfiguration kracken1, TalonFXConfiguration kracken2) {
-        StatusCode encoderStatus = encoder.getConfigurator().apply(ElevatorConstants.EncoderConfigs);
-        StatusCode leaderStatus = motor.getConfigurator().apply(ElevatorConstants.ElevatorConfigs);
-        StatusCode followerStatus = motor2.getConfigurator().apply(ElevatorConstants.ElevatorConfigs);
+    private void configureIO(CANcoderConfiguration cancoderConfig, TalonFXConfiguration kracken1Config, TalonFXConfiguration kracken2Config) {
+        StatusCode encoderStatus = encoder.getConfigurator().apply(cancoderConfig);
+        StatusCode leaderStatus = motor.getConfigurator().apply(kracken1Config);
+        StatusCode followerStatus = motor2.getConfigurator().apply(kracken2Config);
         configOK = encoderStatus.isOK() && leaderStatus.isOK() && followerStatus.isOK();
         if (!configOK) {
             System.err.println("Elevator config error. Encoder=" + encoderStatus

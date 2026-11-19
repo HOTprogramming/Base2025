@@ -58,7 +58,7 @@ public final class ArmConstants {
     // Motor data update rate (slow down if CAN util is > 70%)
     public static final double kStatusSignalUpdateRate = 100.0; // hz
 
-    public static final CANcoderConfiguration EncoderConfigs = new CANcoderConfiguration()
+    public static final CANcoderConfiguration ArmEncoderConfigs = new CANcoderConfiguration()
         .withMagnetSensor(new MagnetSensorConfigs()
             .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
             .withMagnetOffset(kArmEncoderOffset)

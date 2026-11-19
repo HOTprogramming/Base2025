@@ -66,8 +66,8 @@ public class ExampleKraken implements ExampleMotorInterface {
      * This exists to have different configs depending on different situations, 
      * such as different current limits for auto and teleop, or a possible 'limp mode' if excessive errors are detected
      */
-    private void configureIO(TalonFXConfiguration kracken) {
-        StatusCode motorStatus = motor.getConfigurator().apply(ExampleConstants.ExampleConfigs);
+    private void configureIO(TalonFXConfiguration krackenConfig) {
+        StatusCode motorStatus = motor.getConfigurator().apply(krackenConfig);
         configOK = motorStatus.isOK();
         if (!configOK) {
             System.err.println("Example config error. " + "motor=" + motorStatus);
