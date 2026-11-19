@@ -44,6 +44,8 @@ public final class ElevatorConstants {
     public static final double kCruiseVelocityRPS = 0.0; // 0.0 Is unlimited velocity (based on KV calculations)
     public static final boolean kPresetsCalibrated = true;
 
+    // Motor data update rate (slow down if CAN util is > 70%)
+    public static final double kStatusSignalUpdateRate = 50.0; // hz
 
     public static final CANcoderConfiguration EncoderConfigs = new CANcoderConfiguration()
         .withMagnetSensor(new MagnetSensorConfigs()

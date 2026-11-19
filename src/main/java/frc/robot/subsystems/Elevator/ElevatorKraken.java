@@ -1,6 +1,8 @@
 package frc.robot.subsystems.Elevator;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -8,6 +10,9 @@ import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.MotorInterface;
 
@@ -24,6 +29,19 @@ public class ElevatorKraken implements MotorInterface {
     private boolean targetActive;
     private boolean configOK;
 
+    // status signals
+    private final StatusSignal<Angle> elevatorPosition;
+    private final StatusSignal<AngularVelocity> elevatorVelocity;
+    private final StatusSignal<Current> SupplyCurrent;
+    private final StatusSignal<Current> TorqueCurrent;
+
+    private final StatusSignal<Angle> elevatorPosition2;
+    private final StatusSignal<AngularVelocity> elevatorVelocity2;
+    private final StatusSignal<Current> SupplyCurrent2;
+    private final StatusSignal<Current> TorqueCurrent2;
+
+    private final StatusSignal<Angle> elevatorCancoderPosition;
+
     public ElevatorKraken() {
         encoder = new CANcoder(
             ElevatorConstants.kelevatorEncoderID, ElevatorConstants.canbus);
@@ -38,6 +56,30 @@ public class ElevatorKraken implements MotorInterface {
         target = 0;
         targetActive = false;
         configOK = false;
+
+        elevatorPosition = motor.getPosition();
+        elevatorVelocity = motor.getVelocity();
+        SupplyCurrent = motor.getSupplyCurrent();
+        TorqueCurrent = motor.getTorqueCurrent();
+
+        elevatorPosition2 = motor2.getPosition();
+        elevatorVelocity2 = motor2.getVelocity();
+        SupplyCurrent2 = motor2.getSupplyCurrent();
+        TorqueCurrent2 = motor2.getTorqueCurrent();
+        elevatorCancoderPosition = encoder.getPosition();
+    
+        BaseStatusSignal.setUpdateFrequencyForAll(
+            ElevatorConstants.kStatusSignalUpdateRate,
+            elevatorPosition,
+            elevatorVelocity,
+            SupplyCurrent,
+            TorqueCurrent,
+            elevatorPosition2,
+            elevatorVelocity2,
+            SupplyCurrent2,
+            TorqueCurrent2,
+            elevatorCancoderPosition
+          );
 
         // Configure motors
         configureIO(ElevatorConstants.EncoderConfigs, ElevatorConstants.ElevatorConfigs, ElevatorConstants.ElevatorConfigs);
@@ -72,18 +114,18 @@ public class ElevatorKraken implements MotorInterface {
                 || !Double.isFinite(position)
                 || position < ElevatorConstants.kMinPosition
                 || position > ElevatorConstants.kMaxPosition
-                || !encoder.getPosition().refresh().getStatus().isOK()) {
+                || !elevatorCancoderPosition.refresh().getStatus().isOK()) {
 
             // Publish Errors
             SmartDashboard.putBoolean("Elevator/Command Too Low", position < ElevatorConstants.kMinPosition);
             SmartDashboard.putBoolean("Elevator/Command Too High", position > ElevatorConstants.kMaxPosition);
             SmartDashboard.putBoolean("Elevator/position isnt finite", !Double.isFinite(position));
             SmartDashboard.putBoolean("Elevator/Config Bad", !configOK);
-            SmartDashboard.putBoolean("Elevator/Encoder Bad", !encoder.getPosition().refresh().getStatus().isOK());
+            SmartDashboard.putBoolean("Elevator/Encoder Bad", !elevatorCancoderPosition.refresh().getStatus().isOK());
             stop();
             return;
         }
-        
+
         target = position;
         targetActive = true;
         motor2.setControl(follower);
@@ -92,7 +134,7 @@ public class ElevatorKraken implements MotorInterface {
 
 	@Override
     public double getPosition() {
-        return motor.getPosition().getValueAsDouble();
+        return elevatorPosition.getValueAsDouble();
     }
 
     public double getTarget() { return target; }
