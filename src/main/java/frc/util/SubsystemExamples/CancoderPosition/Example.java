@@ -6,6 +6,14 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.util.SubsystemExamples.ExampleMotorInterface;
 
+/**
+ * To create your subsystem, copy this entire folder and change each instance of the word "Example" to your subsystem name
+ * <p>
+ * you should evaluate how many "components" your subsystem has. Each component should have their own "____Kracken" file.
+ * components are explained in more detail in the <b>"ExampleMotorInterface.java"</b> file
+ * <p>
+ * This format assumes you have at least ONE motor with a fused caNcoder.
+ */
 public class Example extends SubsystemBase {
     private final ExampleMotorInterface mExampleKraken;
     private double commandedPosition;

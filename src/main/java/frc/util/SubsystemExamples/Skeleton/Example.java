@@ -17,11 +17,11 @@ import frc.util.SubsystemExamples.ExampleMotorInterface;
  */
 public class Example extends SubsystemBase {
     private final ExampleMotorInterface mExampleKraken;
-    private double commandedPosition;
+    private double commandedState;
 
     public Example() {
         mExampleKraken = new ExampleKraken();
-        commandedPosition = ExampleConstants.kSetpoint1;
+        commandedState = ExampleConstants.kSetpoint1;
     }
 
     public Command goToSetpoint1() {
@@ -32,24 +32,30 @@ public class Example extends SubsystemBase {
         return runOnce(mExampleKraken::stop);
     }
 
-	private FunctionalCommand ExampleCommand(double position){
+    /**
+     * @param state Label what units this command takes!
+     */
+	private FunctionalCommand ExampleCommand(double state){
 		return new FunctionalCommand(
-			() -> this.commandedPosition = position,
-			() -> this.mExampleKraken.goToSetpoint(position),
-			interrupted -> this.mExampleKraken.goToSetpoint(position),
+			() -> this.commandedState = state,
+			() -> this.mExampleKraken.goToSetpoint(state),
+			interrupted -> this.mExampleKraken.goToSetpoint(state),
 			() -> this.mExampleKraken.atTarget(),
 			this);
 	}
 
-    public double getPosition() { return this.mExampleKraken.getState(); }
+    /**
+     * @return position/rpm in UNITS
+     */
+    public double getState() { return this.mExampleKraken.getState(); }
 
-    public double getCommandedPosition() { return this.commandedPosition; }
+    public double getCommandedState() { return this.commandedState; }
 
     
     @Override
     public void periodic() {
         mExampleKraken.update();
-        SmartDashboard.putNumber("Example/Position", mExampleKraken.getState());
+        SmartDashboard.putNumber("Example/State", mExampleKraken.getState());
         SmartDashboard.putNumber("Example/Target", mExampleKraken.getTarget());
         SmartDashboard.putBoolean("Example/At Target", mExampleKraken.atTarget());
         SmartDashboard.putBoolean("Example/Control Active", mExampleKraken.isActive());

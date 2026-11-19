@@ -76,24 +76,24 @@ public class ExampleKraken implements ExampleMotorInterface {
     public void update() {}
 
 	@Override
-    public void goToSetpoint(double position) {
+    public void goToSetpoint(double setpoint) {
         // do not execute if any major errors are present
         if (!ExampleConstants.kPresetsCalibrated 
                 || !configOK
-                || !Double.isFinite(position)
-                || position < ExampleConstants.kMinPosition
-                || position > ExampleConstants.kMaxPosition) {
+                || !Double.isFinite(setpoint)
+                || setpoint < ExampleConstants.kMinSetpoint
+                || setpoint > ExampleConstants.kMaxSetpoint) {
 
             // Publish Errors (true = bad)
-            SmartDashboard.putBoolean("Example/Command Too Low", position < ExampleConstants.kMinPosition);
-            SmartDashboard.putBoolean("Example/Command Too High", position > ExampleConstants.kMaxPosition);
-            SmartDashboard.putBoolean("Example/setpoint isnt finite", !Double.isFinite(position));
+            SmartDashboard.putBoolean("Example/Command Too Low", setpoint < ExampleConstants.kMinSetpoint);
+            SmartDashboard.putBoolean("Example/Command Too High", setpoint > ExampleConstants.kMaxSetpoint);
+            SmartDashboard.putBoolean("Example/setpoint isnt finite", !Double.isFinite(setpoint));
             SmartDashboard.putBoolean("Example/Config Bad", !configOK);
             stop();
             return;
         }
 
-        target = position;
+        target = setpoint;
         targetActive = true;
         motor.setControl(new NeutralOut());
     }
@@ -113,7 +113,7 @@ public class ExampleKraken implements ExampleMotorInterface {
 
 	@Override
     public boolean atTarget() {
-        return targetActive && Math.abs(getState() - target) <= ExampleConstants.kPositionTolerance;
+        return targetActive && Math.abs(getState() - target) <= ExampleConstants.kSetpointTolerance;
     }
 
 	@Override

@@ -31,10 +31,10 @@ public final class ExampleConstants {
     // Setpoints
     public static final double kSetpoint1 = 1;
 
-    // Positional Limits
-    public static final double kMinPosition = 0;
-    public static final double kMaxPosition = 2;
-    public static final double kPositionTolerance = 1.0;
+    // Setpoint Limits
+    public static final double kMinSetpoint = 0;
+    public static final double kMaxSetpoint = 2;
+    public static final double kSetpointTolerance = 1.0;
 
     public static final boolean kPresetsCalibrated = true;
 
