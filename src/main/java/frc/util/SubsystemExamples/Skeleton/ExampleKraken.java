@@ -110,7 +110,7 @@ public class ExampleKraken implements ExampleMotorInterface {
 
 	@Override
     public double getState() {
-        return ExamplePosition.getValueAsDouble();
+        return ExampleVelocity.getValueAsDouble();
     }
 
     public double getTarget() { return target; }
