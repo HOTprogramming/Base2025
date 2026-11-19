@@ -9,11 +9,11 @@ import frc.robot.subsystems.MotorInterface;
 
 public class Arm extends SubsystemBase {
     private final MotorInterface mArmKraken;
-    private double commandedPosition;
+    private double commandedAngle;
 
     public Arm() {
         mArmKraken = new ArmKraken();
-        commandedPosition = ArmConstants.kPackage;
+        commandedAngle = ArmConstants.kPackage;
     }
 
     public Command goToPackage() {
@@ -28,18 +28,18 @@ public class Arm extends SubsystemBase {
         return runOnce(mArmKraken::stop);
     }
 
-	private FunctionalCommand ArmCommand(double position){
+	private FunctionalCommand ArmCommand(double angle){
 		return new FunctionalCommand(
-			() -> this.commandedPosition = position,
-			() -> this.mArmKraken.goToSetpoint(position),
-			interrupted -> this.mArmKraken.goToSetpoint(position),
+			() -> this.commandedAngle = angle,
+			() -> this.mArmKraken.goToSetpoint(angle),
+			interrupted -> this.mArmKraken.goToSetpoint(angle),
 			() -> this.mArmKraken.atTarget(),
 			this);
 	}
 
     public double getPosition() { return this.mArmKraken.getState(); }
 
-    public double getCommandedPosition() { return this.commandedPosition; }
+    public double getCommandedPosition() { return this.commandedAngle; }
 
     
     @Override
