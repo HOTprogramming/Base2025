@@ -3,8 +3,12 @@ package frc.robot.subsystems.Elevator;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -15,61 +19,72 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import frc.robot.Constants;
 
 public final class ElevatorConstants {
-    private ElevatorConstants() {}
-
+    // CAN identification
     public static final int kelevatorMotorID = 9;
     public static final int kelevatorMotor2ID = 10;
     public static final int kelevatorEncoderID = 52;
     public static final CANBus canbus = new CANBus(Constants.canName);
+
+    // Setpoints
     public static final double kSetpoint1 = 10.4;
     public static final double kSetpoint2 = 20.0;
-    public static final boolean kPresetsCalibrated = true;
 
+    // Positional Limits
     public static final double kMinPosition = 10.0;
     public static final double kMaxPosition = 24.7;
     public static final double kPositionTolerance = 1.0;
 
+    // Sensor Zeroing
     public static final double kelevatorEncoderOffset = 0.2546;
     public static final double kSensorToMechanismRatio = 0.208 / 24.75;
+
+    // Motion Magic Tuning
     public static final double kExpoKV = 0.0;
     public static final double kExpoKA = 0.001;
-    public static final double kCruiseVelocityRPS = 0.0;
+    public static final double kCruiseVelocityRPS = 0.0; // 0.0 Is unlimited velocity (based on KV calculations)
+    public static final boolean kPresetsCalibrated = true;
 
-    public static final CANcoderConfiguration EncoderConfigs = new CANcoderConfiguration();
-    static {
-        EncoderConfigs.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-        EncoderConfigs.MagnetSensor.MagnetOffset = kelevatorEncoderOffset;
-    }
 
-    public static final TalonFXConfiguration ElevatorConfigs = new TalonFXConfiguration();
-    static {
-        ElevatorConfigs.CurrentLimits = new CurrentLimitsConfigs()
+    public static final CANcoderConfiguration EncoderConfigs = new CANcoderConfiguration()
+        .withMagnetSensor(new MagnetSensorConfigs()
+            .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
+            .withMagnetOffset(kelevatorEncoderOffset)
+        );
+
+
+    public static final TalonFXConfiguration ElevatorConfigs = new TalonFXConfiguration()
+        .withCurrentLimits(new CurrentLimitsConfigs()
             .withStatorCurrentLimit(60)
             .withStatorCurrentLimitEnable(true)
             .withSupplyCurrentLimit(60)
-            .withSupplyCurrentLimitEnable(true);
-        ElevatorConfigs.TorqueCurrent = new TorqueCurrentConfigs()
+            .withSupplyCurrentLimitEnable(true)
+        )
+        .withTorqueCurrent(new TorqueCurrentConfigs()
             .withPeakForwardTorqueCurrent(60)
-            .withPeakReverseTorqueCurrent(-60);
-        ElevatorConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-        ElevatorConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-
-        ElevatorConfigs.Feedback.FeedbackRemoteSensorID = kelevatorEncoderID;
-        ElevatorConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-        ElevatorConfigs.Feedback.SensorToMechanismRatio = kSensorToMechanismRatio;
-        ElevatorConfigs.Feedback.RotorToSensorRatio = 1.0;
-
-        ElevatorConfigs.MotionMagic = new MotionMagicConfigs()
+            .withPeakReverseTorqueCurrent(-60)
+        )
+        .withMotorOutput(new MotorOutputConfigs()
+            .withInverted(InvertedValue.Clockwise_Positive)
+            .withNeutralMode(NeutralModeValue.Brake)
+        )
+        .withFeedback(new FeedbackConfigs()
+            .withFeedbackRemoteSensorID(kelevatorEncoderID)
+            .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder)
+            .withSensorToMechanismRatio(kSensorToMechanismRatio)
+            .withRotorToSensorRatio(1.0)
+        )
+        .withMotionMagic(new MotionMagicConfigs()
             .withMotionMagicCruiseVelocity(kCruiseVelocityRPS)
             .withMotionMagicExpo_kV(kExpoKV)
-            .withMotionMagicExpo_kA(kExpoKA);
-
-        ElevatorConfigs.Slot0 = new Slot0Configs()
+            .withMotionMagicExpo_kA(kExpoKA)
+        )
+        .withSlot0(new Slot0Configs() // PID tuning
             .withKP(20.0).withKI(0.0).withKD(1.3)
-            .withKV(0.0).withKS(0.0).withKG(8.0);
-        ElevatorConfigs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
-
-        ElevatorConfigs.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
-        ElevatorConfigs.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
-    }
+            .withKV(0.0).withKS(0.0).withKG(8.0)
+            .withGravityType(GravityTypeValue.Elevator_Static)
+        )
+        .withSoftwareLimitSwitch(new SoftwareLimitSwitchConfigs()
+            .withForwardSoftLimitEnable(false)
+            .withReverseSoftLimitEnable(false)
+        );
 }
