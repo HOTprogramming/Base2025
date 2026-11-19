@@ -7,7 +7,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.MotorInterface;
 
 public class Elevator extends SubsystemBase {
-    public final MotorInterface mElevatorKraken = new ElevatorKraken();
+    private final MotorInterface mElevatorKraken;
+    private double commandedPosition;
+
+    public Elevator() {
+        mElevatorKraken = new ElevatorKraken();
+        commandedPosition = ElevatorConstants.kSetpoint1;
+    }
 
     public Command goToSetpoint1() {
         return elevatorCommand(ElevatorConstants.kSetpoint1);
@@ -23,22 +29,18 @@ public class Elevator extends SubsystemBase {
 
 	private FunctionalCommand elevatorCommand(double position){
 		return new FunctionalCommand(
-			() -> {},
-			() -> mElevatorKraken.goToPosition(position),
-			interrupted -> mElevatorKraken.goToPosition(position),
-			() -> mElevatorKraken.atTarget(),
+			() -> this.commandedPosition = position,
+			() -> this.mElevatorKraken.goToPosition(position),
+			interrupted -> this.mElevatorKraken.goToPosition(position),
+			() -> this.mElevatorKraken.atTarget(),
 			this);
 	}
 
-	// private FunctionalCommand elevatorCommand(double position){
-    // //return new FunctionalCommand(
-    //   //() -> this.elevatorCommandedPos.setDouble(position),
-    //   () -> io.setElevatorMotorControl(position),
-    //   interrupted -> io.setElevatorMotorControl(position), 
-    //   () -> checkRange(1.0),
-    //   this);
-  //}
+    public double getPosition() { return this.mElevatorKraken.getPosition(); }
 
+    public double getCommandedPosition() { return this.commandedPosition; }
+
+    
     @Override
     public void periodic() {
         mElevatorKraken.update();

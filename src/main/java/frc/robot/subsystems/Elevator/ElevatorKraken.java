@@ -1,6 +1,8 @@
 package frc.robot.subsystems.Elevator;
 
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -11,21 +13,42 @@ import frc.robot.subsystems.MotorInterface;
 
 /** Two Kraken X60 TalonFX motors using the sample's leader/follower CANcoder approach. */
 public class ElevatorKraken implements MotorInterface {
-    public final TalonFX motor = new TalonFX(
-        ElevatorConstants.kelevatorMotorID, ElevatorConstants.canbus);
-    public final TalonFX motor2 = new TalonFX(
-        ElevatorConstants.kelevatorMotor2ID, ElevatorConstants.canbus);
-    public final CANcoder encoder = new CANcoder(
-        ElevatorConstants.kelevatorEncoderID, ElevatorConstants.canbus);
+    public final CANcoder encoder;
+    public final TalonFX motor;
+    public final TalonFX motor2;
 
-    private final MotionMagicExpoTorqueCurrentFOC motionMagic =
-        new MotionMagicExpoTorqueCurrentFOC(0).withSlot(0);
-    private final Follower follower = new Follower(motor.getDeviceID(), true);
-    private double target = 0;
-    private boolean targetActive = false;
-    private boolean configOK = false;
+    private final MotionMagicExpoTorqueCurrentFOC motionMagic;
+    private final Follower follower;
+
+    private double target;
+    private boolean targetActive;
+    private boolean configOK;
 
     public ElevatorKraken() {
+        encoder = new CANcoder(
+            ElevatorConstants.kelevatorEncoderID, ElevatorConstants.canbus);
+        motor = new TalonFX(
+            ElevatorConstants.kelevatorMotorID, ElevatorConstants.canbus);
+        motor2 = new TalonFX(
+            ElevatorConstants.kelevatorMotor2ID, ElevatorConstants.canbus);
+
+        motionMagic = new MotionMagicExpoTorqueCurrentFOC(0).withSlot(0);
+        follower = new Follower(motor.getDeviceID(), true);
+
+        target = 0;
+        targetActive = false;
+        configOK = false;
+
+        // Configure motors
+        configureIO(ElevatorConstants.EncoderConfigs, ElevatorConstants.ElevatorConfigs, ElevatorConstants.ElevatorConfigs);
+        stop();
+    }
+
+    /**
+     * This exists to have different configs depending on different situations, 
+     * such as different current limits for auto and teleop, or a possible 'limp mode' if excessive errors are detected
+     */
+    private void configureIO(CANcoderConfiguration cancoderConfig, TalonFXConfiguration kracken1, TalonFXConfiguration kracken2) {
         StatusCode encoderStatus = encoder.getConfigurator().apply(ElevatorConstants.EncoderConfigs);
         StatusCode leaderStatus = motor.getConfigurator().apply(ElevatorConstants.ElevatorConfigs);
         StatusCode followerStatus = motor2.getConfigurator().apply(ElevatorConstants.ElevatorConfigs);
@@ -34,7 +57,6 @@ public class ElevatorKraken implements MotorInterface {
             System.err.println("Elevator config error. Encoder=" + encoderStatus
                 + " leader=" + leaderStatus + " follower=" + followerStatus);
         }
-        stop();
     }
 
 	@Override
@@ -44,16 +66,17 @@ public class ElevatorKraken implements MotorInterface {
 
 	@Override
     public void goToPosition(double position) {
+        // do not execute if any major errors are present
         if (!ElevatorConstants.kPresetsCalibrated || !configOK
             || !Double.isFinite(position)
             || position < ElevatorConstants.kMinPosition
             || position > ElevatorConstants.kMaxPosition
             || !encoder.getPosition().refresh().getStatus().isOK()) {
-				//SmartDashboard.getBoolean("elevator1", position < ElevatorConstants.kMinPosition);
-				//SmartDashboard.putBoolean("elevatr2", position > ElevatorConstants.kMaxPosition);
-				SmartDashboard.putBoolean("Finite", !Double.isFinite(position));
-				//SmartDashboard.putBoolean("Config", configOK);
-				//SmartDashboard.putBoolean("encoder", encoder.getPosition().refresh().getStatus().isOK());
+				//SmartDashboard.putBoolean("Elevator/Command Too Low", position < ElevatorConstants.kMinPosition);
+				//SmartDashboard.putBoolean("Elevator/Command Too High", position > ElevatorConstants.kMaxPosition);
+				SmartDashboard.putBoolean("Elevator/position isnt finite", !Double.isFinite(position));
+				//SmartDashboard.putBoolean("Elevator/Config Bad", !configOK);
+				//SmartDashboard.putBoolean("Elevator/Encoder Bad", !encoder.getPosition().refresh().getStatus().isOK());
            stop();
             return;
         }

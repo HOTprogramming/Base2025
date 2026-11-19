@@ -67,25 +67,26 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    /* Fire off the Pathplanner Auto to initialize Path Planner (Work around a bug) */
+    /* Fire off the Pathplanner Auto to initialize Path Planner */
     if (!ppConfigured) {
       initAuto.schedule();
       ppConfigured = true;
     }
     
+    // Values are used buy autorecorder (camera pole)
     SmartDashboard.putBoolean("Teleop", false);
     SmartDashboard.putBoolean("Auto", false);
-
   }
 
   @Override
   public void disabledPeriodic() {
+    /* Pregenerate Auto */
     m_robotContainer.updateAutonCommand();
   }
 
   @Override
   public void disabledExit() {
-    /*Clear our the fake Path Planner Auto Initialize  */
+    /* Clear our the fake Path Planner Auto Initialize  */
     initAuto.cancel();
   }
 
