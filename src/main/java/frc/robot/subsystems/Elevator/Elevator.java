@@ -30,13 +30,13 @@ public class Elevator extends SubsystemBase {
 	private FunctionalCommand elevatorCommand(double position){
 		return new FunctionalCommand(
 			() -> this.commandedPosition = position,
-			() -> this.mElevatorKraken.goToPosition(position),
-			interrupted -> this.mElevatorKraken.goToPosition(position),
+			() -> this.mElevatorKraken.goToSetpoint(position),
+			interrupted -> this.mElevatorKraken.goToSetpoint(position),
 			() -> this.mElevatorKraken.atTarget(),
 			this);
 	}
 
-    public double getPosition() { return this.mElevatorKraken.getPosition(); }
+    public double getPosition() { return this.mElevatorKraken.getState(); }
 
     public double getCommandedPosition() { return this.commandedPosition; }
 
@@ -44,7 +44,7 @@ public class Elevator extends SubsystemBase {
     @Override
     public void periodic() {
         mElevatorKraken.update();
-        SmartDashboard.putNumber("Elevator/Position", mElevatorKraken.getPosition());
+        SmartDashboard.putNumber("Elevator/Position", mElevatorKraken.getState());
         SmartDashboard.putNumber("Elevator/Target", mElevatorKraken.getTarget());
         SmartDashboard.putBoolean("Elevator/At Target", mElevatorKraken.atTarget());
         SmartDashboard.putBoolean("Elevator/Control Active", mElevatorKraken.isActive());

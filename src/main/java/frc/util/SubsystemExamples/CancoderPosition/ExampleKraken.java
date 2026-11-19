@@ -26,6 +26,7 @@ public class ExampleKraken implements ExampleMotorInterface {
     private double target;
     private boolean targetActive;
     private boolean configOK;
+    private StatusCode subsystemFault;
 
     // status signals
     private final StatusSignal<Angle> ExamplePosition;
@@ -44,6 +45,8 @@ public class ExampleKraken implements ExampleMotorInterface {
         target = 0;
         targetActive = false;
         configOK = false;
+        subsystemFault = StatusCode.StatusCodeNotInitialized;
+
 
         ExamplePosition = motor.getPosition();
         ExampleVelocity = motor.getVelocity();
@@ -82,6 +85,13 @@ public class ExampleKraken implements ExampleMotorInterface {
 
 	@Override
     public void update() {
+        this.subsystemFault = BaseStatusSignal.refreshAll(
+            ExamplePosition,
+            ExampleVelocity,
+            SupplyCurrent,
+            TorqueCurrent,
+            ExampleCancoderPosition
+        );
     }
 
 	@Override
@@ -92,7 +102,7 @@ public class ExampleKraken implements ExampleMotorInterface {
                 || !Double.isFinite(position)
                 || position < ExampleConstants.kMinPosition
                 || position > ExampleConstants.kMaxPosition
-                || !ExampleCancoderPosition.refresh().getStatus().isOK()) {
+                || subsystemFault.isError()) {
 
             // Publish Errors
             SmartDashboard.putBoolean("Example/Command Too Low", position < ExampleConstants.kMinPosition);

@@ -1,5 +1,7 @@
 package frc.util.SubsystemExamples.Skeleton;
 
+import java.util.concurrent.PriorityBlockingQueue;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
@@ -26,6 +28,7 @@ public class ExampleKraken implements ExampleMotorInterface {
     private double target;
     private boolean targetActive;
     private boolean configOK;
+    private StatusCode subsystemFault;
 
     // status signals
     private final StatusSignal<Angle> ExamplePosition;
@@ -40,6 +43,7 @@ public class ExampleKraken implements ExampleMotorInterface {
         target = 0;
         targetActive = false;
         configOK = false;
+        subsystemFault = StatusCode.StatusCodeNotInitialized;
 
         ExamplePosition = motor.getPosition();
         ExampleVelocity = motor.getVelocity();
@@ -73,7 +77,14 @@ public class ExampleKraken implements ExampleMotorInterface {
     }
 
 	@Override
-    public void update() {}
+    public void update() {
+        this.subsystemFault = BaseStatusSignal.refreshAll(
+            ExamplePosition,
+            ExampleVelocity,
+            SupplyCurrent,
+            TorqueCurrent
+        );
+    }
 
 	@Override
     public void goToSetpoint(double setpoint) {
@@ -82,7 +93,8 @@ public class ExampleKraken implements ExampleMotorInterface {
                 || !configOK
                 || !Double.isFinite(setpoint)
                 || setpoint < ExampleConstants.kMinSetpoint
-                || setpoint > ExampleConstants.kMaxSetpoint) {
+                || setpoint > ExampleConstants.kMaxSetpoint
+                || subsystemFault.isError()) {
 
             // Publish Errors (true = bad)
             SmartDashboard.putBoolean("Example/Command Too Low", setpoint < ExampleConstants.kMinSetpoint);

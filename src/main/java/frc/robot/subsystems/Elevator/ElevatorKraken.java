@@ -28,6 +28,7 @@ public class ElevatorKraken implements MotorInterface {
     private double target;
     private boolean targetActive;
     private boolean configOK;
+    private StatusCode subsystemFault;
 
     // status signals
     private final StatusSignal<Angle> elevatorPosition;
@@ -56,6 +57,7 @@ public class ElevatorKraken implements MotorInterface {
         target = 0;
         targetActive = false;
         configOK = false;
+        subsystemFault = StatusCode.StatusCodeNotInitialized;
 
         elevatorPosition = motor.getPosition();
         elevatorVelocity = motor.getVelocity();
@@ -81,6 +83,10 @@ public class ElevatorKraken implements MotorInterface {
             elevatorCancoderPosition
           );
 
+        motor.optimizeBusUtilization();
+        motor2.optimizeBusUtilization();
+        encoder.optimizeBusUtilization();
+
         // Configure motors
         configureIO(ElevatorConstants.EncoderConfigs, ElevatorConstants.ElevatorConfigs, ElevatorConstants.ElevatorConfigs);
         stop();
@@ -103,18 +109,29 @@ public class ElevatorKraken implements MotorInterface {
 
 	@Override
     public void update() {
+        this.subsystemFault = BaseStatusSignal.refreshAll(
+            elevatorPosition,
+            elevatorVelocity,
+            SupplyCurrent,
+            TorqueCurrent,
+            elevatorPosition2,
+            elevatorVelocity2,
+            SupplyCurrent2,
+            TorqueCurrent2,
+            elevatorCancoderPosition
+          );
         if (targetActive) motor2.setControl(follower);
     }
 
 	@Override
-    public void goToPosition(double position) {
+    public void goToSetpoint(double position) {
         // do not execute if any major errors are present
         if (!ElevatorConstants.kPresetsCalibrated 
                 || !configOK
                 || !Double.isFinite(position)
                 || position < ElevatorConstants.kMinPosition
                 || position > ElevatorConstants.kMaxPosition
-                || !elevatorCancoderPosition.refresh().getStatus().isOK()) {
+                || subsystemFault.isError()) {
 
             // Publish Errors
             SmartDashboard.putBoolean("Elevator/Command Too Low", position < ElevatorConstants.kMinPosition);
@@ -133,7 +150,7 @@ public class ElevatorKraken implements MotorInterface {
     }
 
 	@Override
-    public double getPosition() {
+    public double getState() {
         return elevatorPosition.getValueAsDouble();
     }
 
@@ -147,7 +164,7 @@ public class ElevatorKraken implements MotorInterface {
 
 	@Override
     public boolean atTarget() {
-        return targetActive && Math.abs(getPosition() - target) <= ElevatorConstants.kPositionTolerance;
+        return targetActive && Math.abs(getState() - target) <= ElevatorConstants.kPositionTolerance;
     }
 
 	@Override
