@@ -42,6 +42,7 @@ public final class ElevatorConstants {
     public static final double kExpoKV = 0.0;
     public static final double kExpoKA = 0.001;
     public static final double kCruiseVelocityRPS = 0.0; // 0.0 Is unlimited velocity (based on KV calculations)
+
     public static final boolean kPresetsCalibrated = true;
 
     // Motor data update rate (slow down if CAN util is > 70%)
